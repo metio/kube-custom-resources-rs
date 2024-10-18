@@ -904,6 +904,7 @@ spec:
                               enum:
                                 - "ingress"
                                 - "route"
+                                - ""
                               type: "string"
                           type: "object"
                       required:
@@ -1485,6 +1486,7 @@ spec:
                                   enum:
                                     - "ingress"
                                     - "route"
+                                    - ""
                                   type: "string"
                               type: "object"
                             monitorTab:

@@ -29,22 +29,16 @@ pub struct EventSourceMappingSpec {
     /// the batch to the function in a single call, up to the payload limit for synchronous
     /// invocation (6 MB).
     /// 
-    /// 
     ///    * Amazon Kinesis – Default 100. Max 10,000.
     /// 
-    /// 
     ///    * Amazon DynamoDB Streams – Default 100. Max 10,000.
-    /// 
     /// 
     ///    * Amazon Simple Queue Service – Default 10. For standard queues the
     ///    max is 10,000. For FIFO queues the max is 10.
     /// 
-    /// 
     ///    * Amazon Managed Streaming for Apache Kafka – Default 100. Max 10,000.
     /// 
-    /// 
     ///    * Self-managed Apache Kafka – Default 100. Max 10,000.
-    /// 
     /// 
     ///    * Amazon MQ (ActiveMQ and RabbitMQ) – Default 100. Max 10,000.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "batchSize")]
@@ -60,24 +54,18 @@ pub struct EventSourceMappingSpec {
     /// When true, the event source mapping is active. When false, Lambda pauses
     /// polling and invocation.
     /// 
-    /// 
     /// Default: True
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// The Amazon Resource Name (ARN) of the event source.
     /// 
-    /// 
     ///    * Amazon Kinesis – The ARN of the data stream or a stream consumer.
-    /// 
     /// 
     ///    * Amazon DynamoDB Streams – The ARN of the stream.
     /// 
-    /// 
     ///    * Amazon Simple Queue Service – The ARN of the queue.
     /// 
-    /// 
     ///    * Amazon Managed Streaming for Apache Kafka – The ARN of the cluster.
-    /// 
     /// 
     ///    * Amazon MQ – The ARN of the broker.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventSourceARN")]
@@ -86,7 +74,6 @@ pub struct EventSourceMappingSpec {
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    /// 
     /// 
     /// 	from:
     /// 	  name: my-api
@@ -99,21 +86,15 @@ pub struct EventSourceMappingSpec {
     pub filter_criteria: Option<EventSourceMappingFilterCriteria>,
     /// The name of the Lambda function.
     /// 
-    /// 
     /// Name formats
-    /// 
     /// 
     ///    * Function name – MyFunction.
     /// 
-    /// 
     ///    * Function ARN – arn:aws:lambda:us-west-2:123456789012:function:MyFunction.
-    /// 
     /// 
     ///    * Version or Alias ARN – arn:aws:lambda:us-west-2:123456789012:function:MyFunction:PROD.
     /// 
-    /// 
     ///    * Partial ARN – 123456789012:function:MyFunction.
-    /// 
     /// 
     /// The length constraint applies only to the full ARN. If you specify only the
     /// function name, it's limited to 64 characters in length.
@@ -123,7 +104,6 @@ pub struct EventSourceMappingSpec {
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    /// 
     /// 
     /// 	from:
     /// 	  name: my-api
@@ -137,7 +117,6 @@ pub struct EventSourceMappingSpec {
     /// before invoking the function. You can configure MaximumBatchingWindowInSeconds
     /// to any value from 0 seconds to 300 seconds in increments of seconds.
     /// 
-    /// 
     /// For streams and Amazon SQS event sources, the default batching window is
     /// 0 seconds. For Amazon MSK, Self-managed Apache Kafka, and Amazon MQ event
     /// sources, the default batching window is 500 ms. Note that because you can
@@ -145,7 +124,6 @@ pub struct EventSourceMappingSpec {
     /// cannot revert back to the 500 ms default batching window after you have changed
     /// it. To restore the default batching window, you must create a new event source
     /// mapping.
-    /// 
     /// 
     /// Related setting: For streams and Amazon SQS event sources, when you set BatchSize
     /// to a value greater than 10, you must set MaximumBatchingWindowInSeconds to
@@ -240,7 +218,6 @@ pub struct EventSourceMappingDestinationConfigOnSuccess {
 /// Ex:
 /// APIIDRef:
 /// 
-/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -283,7 +260,6 @@ pub struct EventSourceMappingFilterCriteriaFilters {
 /// Ex:
 /// APIIDRef:
 /// 
-/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -308,7 +284,6 @@ pub struct EventSourceMappingFunctionRefFrom {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -411,7 +386,6 @@ pub struct EventSourceMappingStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

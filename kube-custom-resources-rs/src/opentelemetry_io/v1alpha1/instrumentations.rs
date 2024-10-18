@@ -344,6 +344,22 @@ pub struct InstrumentationEnvValueFromSecretKeyRef {
 pub struct InstrumentationExporter {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tls: Option<InstrumentationExporterTls>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstrumentationExporterTls {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub ca_file: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cert_file: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapName")]
+    pub config_map_name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key_file: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
+    pub secret_name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

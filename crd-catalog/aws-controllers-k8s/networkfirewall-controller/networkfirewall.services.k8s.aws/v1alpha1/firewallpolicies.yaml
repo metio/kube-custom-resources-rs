@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.2"
   name: "firewallpolicies.networkfirewall.services.k8s.aws"
 spec:
   group: "networkfirewall.services.k8s.aws"
@@ -27,7 +27,7 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "FirewallPolicySpec defines the desired state of FirewallPolicy.\n\n\nThe firewall policy defines the behavior of a firewall using a collection\nof stateless and stateful rule groups and other settings. You can use one\nfirewall policy for multiple firewalls.\n\n\nThis, along with FirewallPolicyResponse, define the policy. You can retrieve\nall objects for a firewall policy by calling DescribeFirewallPolicy."
+              description: "FirewallPolicySpec defines the desired state of FirewallPolicy.\n\nThe firewall policy defines the behavior of a firewall using a collection\nof stateless and stateful rule groups and other settings. You can use one\nfirewall policy for multiple firewalls.\n\nThis, along with FirewallPolicyResponse, define the policy. You can retrieve\nall objects for a firewall policy by calling DescribeFirewallPolicy."
               properties:
                 description:
                   description: "A description of the firewall policy."
@@ -88,7 +88,7 @@ spec:
                       type: "array"
                     statelessCustomActions:
                       items:
-                        description: "An optional, non-standard action to use for stateless packet handling. You\ncan define this in addition to the standard action that you must specify.\n\n\nYou define and name the custom actions that you want to be able to use, and\nthen you reference them by name in your actions settings.\n\n\nYou can use custom actions in the following places:\n\n\n   * In a rule group's StatelessRulesAndCustomActions specification. The\n   custom actions are available for use by name inside the StatelessRulesAndCustomActions\n   where you define them. You can use them for your stateless rule actions\n   to specify what to do with a packet that matches the rule's match attributes.\n\n\n   * In a FirewallPolicy specification, in StatelessCustomActions. The custom\n   actions are available for use inside the policy where you define them.\n   You can use them for the policy's default stateless actions settings to\n   specify what to do with packets that don't match any of the policy's stateless\n   rules."
+                        description: "An optional, non-standard action to use for stateless packet handling. You\ncan define this in addition to the standard action that you must specify.\n\nYou define and name the custom actions that you want to be able to use, and\nthen you reference them by name in your actions settings.\n\nYou can use custom actions in the following places:\n\n   * In a rule group's StatelessRulesAndCustomActions specification. The\n   custom actions are available for use by name inside the StatelessRulesAndCustomActions\n   where you define them. You can use them for your stateless rule actions\n   to specify what to do with a packet that matches the rule's match attributes.\n\n   * In a FirewallPolicy specification, in StatelessCustomActions. The custom\n   actions are available for use inside the policy where you define them.\n   You can use them for the policy's default stateless actions settings to\n   specify what to do with packets that don't match any of the policy's stateless\n   rules."
                         properties:
                           actionDefinition:
                             description: "A custom action to use in stateless rule actions settings. This is used in\nCustomAction."
@@ -98,7 +98,7 @@ spec:
                                 properties:
                                   dimensions:
                                     items:
-                                      description: "The value to use in an Amazon CloudWatch custom metric dimension. This is\nused in the PublishMetrics CustomAction. A CloudWatch custom metric dimension\nis a name/value pair that's part of the identity of a metric.\n\n\nNetwork Firewall sets the dimension name to CustomAction and you provide\nthe dimension value.\n\n\nFor more information about CloudWatch custom metric dimensions, see Publishing\nCustom Metrics (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/publishingMetrics.html#usingDimensions)\nin the Amazon CloudWatch User Guide (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html)."
+                                      description: "The value to use in an Amazon CloudWatch custom metric dimension. This is\nused in the PublishMetrics CustomAction. A CloudWatch custom metric dimension\nis a name/value pair that's part of the identity of a metric.\n\nNetwork Firewall sets the dimension name to CustomAction and you provide\nthe dimension value.\n\nFor more information about CloudWatch custom metric dimensions, see Publishing\nCustom Metrics (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/publishingMetrics.html#usingDimensions)\nin the Amazon CloudWatch User Guide (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html)."
                                       properties:
                                         value:
                                           type: "string"
@@ -157,7 +157,7 @@ spec:
                   description: "All CRs managed by ACK have a common `Status.ACKResourceMetadata` member\nthat is used to contain resource sync state, account ownership,\nconstructed ARN for the resource"
                   properties:
                     arn:
-                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nTODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
+                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."
@@ -240,7 +240,7 @@ spec:
                       type: "array"
                   type: "object"
                 updateToken:
-                  description: "A token used for optimistic locking. Network Firewall returns a token to\nyour requests that access the firewall policy. The token marks the state\nof the policy resource at the time of the request.\n\n\nTo make changes to the policy, you provide the token in your request. Network\nFirewall uses the token to ensure that the policy hasn't changed since you\nlast retrieved it. If it has changed, the operation fails with an InvalidTokenException.\nIf this happens, retrieve the firewall policy again to get a current copy\nof it with current token. Reapply your changes as needed, then try the operation\nagain using the new token."
+                  description: "A token used for optimistic locking. Network Firewall returns a token to\nyour requests that access the firewall policy. The token marks the state\nof the policy resource at the time of the request.\n\nTo make changes to the policy, you provide the token in your request. Network\nFirewall uses the token to ensure that the policy hasn't changed since you\nlast retrieved it. If it has changed, the operation fails with an InvalidTokenException.\nIf this happens, retrieve the firewall policy again to get a current copy\nof it with current token. Reapply your changes as needed, then try the operation\nagain using the new token."
                   type: "string"
               type: "object"
           type: "object"

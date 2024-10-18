@@ -12,7 +12,6 @@ use self::prelude::*;
 
 /// FunctionUrlConfigSpec defines the desired state of FunctionUrlConfig.
 /// 
-/// 
 /// Details about a Lambda function URL.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "lambda.services.k8s.aws", version = "v1alpha1", kind = "FunctionURLConfig", plural = "functionurlconfigs")]
@@ -34,18 +33,13 @@ pub struct FunctionURLConfigSpec {
     pub cors: Option<FunctionURLConfigCors>,
     /// The name of the Lambda function.
     /// 
-    /// 
     /// Name formats
-    /// 
     /// 
     ///    * Function name – my-function.
     /// 
-    /// 
     ///    * Function ARN – arn:aws:lambda:us-west-2:123456789012:function:my-function.
     /// 
-    /// 
     ///    * Partial ARN – 123456789012:function:my-function.
-    /// 
     /// 
     /// The length constraint applies only to the full ARN. If you specify only the
     /// function name, it is limited to 64 characters in length.
@@ -55,7 +49,6 @@ pub struct FunctionURLConfigSpec {
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    /// 
     /// 
     /// 	from:
     /// 	  name: my-api
@@ -88,7 +81,6 @@ pub struct FunctionURLConfigCors {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -147,7 +139,6 @@ pub struct FunctionURLConfigStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

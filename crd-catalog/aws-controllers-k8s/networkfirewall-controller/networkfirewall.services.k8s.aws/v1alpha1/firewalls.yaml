@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.2"
   name: "firewalls.networkfirewall.services.k8s.aws"
 spec:
   group: "networkfirewall.services.k8s.aws"
@@ -27,7 +27,7 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "FirewallSpec defines the desired state of Firewall.\n\n\nThe firewall defines the configuration settings for an Network Firewall firewall.\nThese settings include the firewall policy, the subnets in your VPC to use\nfor the firewall endpoints, and any tags that are attached to the firewall\nAmazon Web Services resource.\n\n\nThe status of the firewall, for example whether it's ready to filter network\ntraffic, is provided in the corresponding FirewallStatus. You can retrieve\nboth objects by calling DescribeFirewall."
+              description: "FirewallSpec defines the desired state of Firewall.\n\nThe firewall defines the configuration settings for an Network Firewall firewall.\nThese settings include the firewall policy, the subnets in your VPC to use\nfor the firewall endpoints, and any tags that are attached to the firewall\nAmazon Web Services resource.\n\nThe status of the firewall, for example whether it's ready to filter network\ntraffic, is provided in the corresponding FirewallStatus. You can retrieve\nboth objects by calling DescribeFirewall."
               properties:
                 deleteProtection:
                   description: "A flag indicating whether it is possible to delete the firewall. A setting\nof TRUE indicates that the firewall is protected against deletion. Use this\nsetting to protect against accidentally deleting a firewall that is in use.\nWhen you create a firewall, the operation initializes this flag to TRUE."
@@ -78,7 +78,7 @@ spec:
                     type: "object"
                   type: "array"
                 vpcID:
-                  description: "The unique identifier of the VPC where Network Firewall should create the\nfirewall.\n\n\nYou can't change this setting after you create the firewall."
+                  description: "The unique identifier of the VPC where Network Firewall should create the\nfirewall.\n\nYou can't change this setting after you create the firewall."
                   type: "string"
               required:
                 - "firewallName"
@@ -93,7 +93,7 @@ spec:
                   description: "All CRs managed by ACK have a common `Status.ACKResourceMetadata` member\nthat is used to contain resource sync state, account ownership,\nconstructed ARN for the resource"
                   properties:
                     arn:
-                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nTODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
+                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."
@@ -213,7 +213,7 @@ spec:
                       type: "string"
                     syncStates:
                       additionalProperties:
-                        description: "The status of the firewall endpoint and firewall policy configuration for\na single VPC subnet.\n\n\nFor each VPC subnet that you associate with a firewall, Network Firewall\ndoes the following:\n\n\n   * Instantiates a firewall endpoint in the subnet, ready to take traffic.\n\n\n   * Configures the endpoint with the current firewall policy settings, to\n   provide the filtering behavior for the endpoint.\n\n\nWhen you update a firewall, for example to add a subnet association or change\na rule group in the firewall policy, the affected sync states reflect out-of-sync\nor not ready status until the changes are complete."
+                        description: "The status of the firewall endpoint and firewall policy configuration for\na single VPC subnet.\n\nFor each VPC subnet that you associate with a firewall, Network Firewall\ndoes the following:\n\n   * Instantiates a firewall endpoint in the subnet, ready to take traffic.\n\n   * Configures the endpoint with the current firewall policy settings, to\n   provide the filtering behavior for the endpoint.\n\nWhen you update a firewall, for example to add a subnet association or change\na rule group in the firewall policy, the affected sync states reflect out-of-sync\nor not ready status until the changes are complete."
                         properties:
                           attachment:
                             description: "The configuration and status for a single subnet that you've specified for\nuse by the Network Firewall firewall. This is part of the FirewallStatus."

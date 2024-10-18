@@ -12,21 +12,15 @@ use self::prelude::*;
 
 /// InstanceProfileSpec defines the desired state of InstanceProfile.
 /// 
-/// 
 /// Contains information about an instance profile.
-/// 
 /// 
 /// This data type is used as a response element in the following operations:
 /// 
-/// 
 ///    * CreateInstanceProfile
-/// 
 /// 
 ///    * GetInstanceProfile
 /// 
-/// 
 ///    * ListInstanceProfiles
-/// 
 /// 
 ///    * ListInstanceProfilesForRole
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -39,7 +33,6 @@ use self::prelude::*;
 pub struct InstanceProfileSpec {
     /// The name of the instance profile to create.
     /// 
-    /// 
     /// This parameter allows (through its regex pattern (http://wikipedia.org/wiki/regex))
     /// a string of characters consisting of upper and lowercase alphanumeric characters
     /// with no spaces. You can also include any of the following characters: _+=,.@-
@@ -48,10 +41,8 @@ pub struct InstanceProfileSpec {
     /// Identifiers (https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html)
     /// in the IAM User Guide.
     /// 
-    /// 
     /// This parameter is optional. If it is not included, it defaults to a slash
     /// (/).
-    /// 
     /// 
     /// This parameter allows (through its regex pattern (http://wikipedia.org/wiki/regex))
     /// a string of characters consisting of either a forward slash (/) by itself
@@ -68,7 +59,6 @@ pub struct InstanceProfileSpec {
     /// Ex:
     /// APIIDRef:
     /// 
-    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleRef")]
@@ -77,7 +67,6 @@ pub struct InstanceProfileSpec {
     /// profile. Each tag consists of a key name and an associated value. For more
     /// information about tagging, see Tagging IAM resources (https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html)
     /// in the IAM User Guide.
-    /// 
     /// 
     /// If any one of the tags is invalid or if you exceed the allowed maximum number
     /// of tags, then the entire request fails and the resource is not created.
@@ -89,7 +78,6 @@ pub struct InstanceProfileSpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -158,7 +146,6 @@ pub struct InstanceProfileStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

@@ -13,9 +13,7 @@ use self::prelude::*;
 
 /// DBClusterParameterGroupSpec defines the desired state of DBClusterParameterGroup.
 /// 
-/// 
 /// Contains the details of an Amazon RDS DB cluster parameter group.
-/// 
 /// 
 /// This data type is used as a response element in the DescribeDBClusterParameterGroups
 /// action.
@@ -34,75 +32,53 @@ pub struct DBClusterParameterGroupSpec {
     /// and can be applied only to a DB cluster running a database engine and engine
     /// version compatible with that DB cluster parameter group family.
     /// 
-    /// 
     /// Aurora MySQL
-    /// 
     /// 
     /// Example: aurora5.6, aurora-mysql5.7, aurora-mysql8.0
     /// 
-    /// 
     /// Aurora PostgreSQL
-    /// 
     /// 
     /// Example: aurora-postgresql9.6
     /// 
-    /// 
     /// RDS for MySQL
-    /// 
     /// 
     /// Example: mysql8.0
     /// 
-    /// 
     /// RDS for PostgreSQL
     /// 
-    /// 
     /// Example: postgres12
-    /// 
     /// 
     /// To list all of the available parameter group families for a DB engine, use
     /// the following command:
     /// 
-    /// 
     /// aws rds describe-db-engine-versions --query "DBEngineVersions[].DBParameterGroupFamily"
     /// --engine <engine>
-    /// 
     /// 
     /// For example, to list all of the available parameter group families for the
     /// Aurora PostgreSQL DB engine, use the following command:
     /// 
-    /// 
     /// aws rds describe-db-engine-versions --query "DBEngineVersions[].DBParameterGroupFamily"
     /// --engine aurora-postgresql
     /// 
-    /// 
     /// The output contains duplicates.
-    /// 
     /// 
     /// The following are the valid DB engine values:
     /// 
-    /// 
     ///    * aurora (for MySQL 5.6-compatible Aurora)
-    /// 
     /// 
     ///    * aurora-mysql (for MySQL 5.7-compatible and MySQL 8.0-compatible Aurora)
     /// 
-    /// 
     ///    * aurora-postgresql
     /// 
-    /// 
     ///    * mysql
-    /// 
     /// 
     ///    * postgres
     pub family: String,
     /// The name of the DB cluster parameter group.
     /// 
-    /// 
     /// Constraints:
     /// 
-    /// 
     ///    * Must not match the name of an existing DB cluster parameter group.
-    /// 
     /// 
     /// This value is stored as a lowercase string.
     pub name: String,
@@ -110,13 +86,10 @@ pub struct DBClusterParameterGroupSpec {
     pub parameter_overrides: Option<BTreeMap<String, String>>,
     /// A list of parameters in the DB cluster parameter group to modify.
     /// 
-    /// 
     /// Valid Values (for the application method): immediate | pending-reboot
-    /// 
     /// 
     /// You can use the immediate value with dynamic parameters only. You can use
     /// the pending-reboot value for both dynamic and static parameters.
-    /// 
     /// 
     /// When the application method is immediate, changes to dynamic parameters are
     /// applied immediately to the DB clusters associated with the parameter group.
@@ -132,7 +105,6 @@ pub struct DBClusterParameterGroupSpec {
 
 /// This data type is used as a request parameter in the ModifyDBParameterGroup
 /// and ResetDBParameterGroup actions.
-/// 
 /// 
 /// This data type is used as a response element in the DescribeEngineDefaultParameters
 /// and DescribeDBParameters actions.
@@ -163,7 +135,6 @@ pub struct DBClusterParameterGroupParameters {
 }
 
 /// Metadata assigned to an Amazon RDS resource consisting of a key-value pair.
-/// 
 /// 
 /// For more information, see Tagging Amazon RDS Resources (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html)
 /// in the Amazon RDS User Guide.
@@ -205,7 +176,6 @@ pub struct DBClusterParameterGroupStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,
@@ -219,7 +189,6 @@ pub struct DBClusterParameterGroupStatusAckResourceMetadata {
 
 /// This data type is used as a request parameter in the ModifyDBParameterGroup
 /// and ResetDBParameterGroup actions.
-/// 
 /// 
 /// This data type is used as a response element in the DescribeEngineDefaultParameters
 /// and DescribeDBParameters actions.

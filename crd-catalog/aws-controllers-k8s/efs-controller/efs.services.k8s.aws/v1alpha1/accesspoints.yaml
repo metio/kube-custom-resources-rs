@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.2"
   name: "accesspoints.efs.services.k8s.aws"
 spec:
   group: "efs.services.k8s.aws"
@@ -58,7 +58,7 @@ spec:
                   description: "The ID of the EFS file system that the access point provides access to."
                   type: "string"
                 fileSystemRef:
-                  description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\n\tfrom:\n\t  name: my-api"
+                  description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
                   properties:
                     from:
                       description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
@@ -85,10 +85,10 @@ spec:
                       type: "integer"
                   type: "object"
                 rootDirectory:
-                  description: "Specifies the directory on the EFS file system that the access point exposes\nas the root directory of your file system to NFS clients using the access\npoint. The clients using the access point can only access the root directory\nand below. If the RootDirectory > Path specified does not exist, Amazon EFS\ncreates it and applies the CreationInfo settings when a client connects to\nan access point. When specifying a RootDirectory, you must provide the Path,\nand the CreationInfo.\n\n\nAmazon EFS creates a root directory only if you have provided the CreationInfo:\nOwnUid, OwnGID, and permissions for the directory. If you do not provide\nthis information, Amazon EFS does not create the root directory. If the root\ndirectory does not exist, attempts to mount using the access point will fail."
+                  description: "Specifies the directory on the EFS file system that the access point exposes\nas the root directory of your file system to NFS clients using the access\npoint. The clients using the access point can only access the root directory\nand below. If the RootDirectory > Path specified does not exist, Amazon EFS\ncreates it and applies the CreationInfo settings when a client connects to\nan access point. When specifying a RootDirectory, you must provide the Path,\nand the CreationInfo.\n\nAmazon EFS creates a root directory only if you have provided the CreationInfo:\nOwnUid, OwnGID, and permissions for the directory. If you do not provide\nthis information, Amazon EFS does not create the root directory. If the root\ndirectory does not exist, attempts to mount using the access point will fail."
                   properties:
                     creationInfo:
-                      description: "Required if the RootDirectory > Path specified does not exist. Specifies\nthe POSIX IDs and permissions to apply to the access point's RootDirectory\n> Path. If the access point root directory does not exist, EFS creates it\nwith these settings when a client connects to the access point. When specifying\nCreationInfo, you must include values for all properties.\n\n\nAmazon EFS creates a root directory only if you have provided the CreationInfo:\nOwnUid, OwnGID, and permissions for the directory. If you do not provide\nthis information, Amazon EFS does not create the root directory. If the root\ndirectory does not exist, attempts to mount using the access point will fail.\n\n\nIf you do not provide CreationInfo and the specified RootDirectory does not\nexist, attempts to mount the file system using the access point will fail."
+                      description: "Required if the RootDirectory > Path specified does not exist. Specifies\nthe POSIX IDs and permissions to apply to the access point's RootDirectory\n> Path. If the access point root directory does not exist, EFS creates it\nwith these settings when a client connects to the access point. When specifying\nCreationInfo, you must include values for all properties.\n\nAmazon EFS creates a root directory only if you have provided the CreationInfo:\nOwnUid, OwnGID, and permissions for the directory. If you do not provide\nthis information, Amazon EFS does not create the root directory. If the root\ndirectory does not exist, attempts to mount using the access point will fail.\n\nIf you do not provide CreationInfo and the specified RootDirectory does not\nexist, attempts to mount the file system using the access point will fail."
                       properties:
                         ownerGID:
                           format: "int64"
@@ -124,7 +124,7 @@ spec:
                   description: "All CRs managed by ACK have a common `Status.ACKResourceMetadata` member\nthat is used to contain resource sync state, account ownership,\nconstructed ARN for the resource"
                   properties:
                     arn:
-                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nTODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
+                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."

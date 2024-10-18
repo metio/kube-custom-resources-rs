@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.2"
   name: "eventsourcemappings.lambda.services.k8s.aws"
 spec:
   group: "lambda.services.k8s.aws"
@@ -36,7 +36,7 @@ spec:
                       type: "string"
                   type: "object"
                 batchSize:
-                  description: "The maximum number of records in each batch that Lambda pulls from your stream\nor queue and sends to your function. Lambda passes all of the records in\nthe batch to the function in a single call, up to the payload limit for synchronous\ninvocation (6 MB).\n\n\n   * Amazon Kinesis – Default 100. Max 10,000.\n\n\n   * Amazon DynamoDB Streams – Default 100. Max 10,000.\n\n\n   * Amazon Simple Queue Service – Default 10. For standard queues the\n   max is 10,000. For FIFO queues the max is 10.\n\n\n   * Amazon Managed Streaming for Apache Kafka – Default 100. Max 10,000.\n\n\n   * Self-managed Apache Kafka – Default 100. Max 10,000.\n\n\n   * Amazon MQ (ActiveMQ and RabbitMQ) – Default 100. Max 10,000."
+                  description: "The maximum number of records in each batch that Lambda pulls from your stream\nor queue and sends to your function. Lambda passes all of the records in\nthe batch to the function in a single call, up to the payload limit for synchronous\ninvocation (6 MB).\n\n   * Amazon Kinesis – Default 100. Max 10,000.\n\n   * Amazon DynamoDB Streams – Default 100. Max 10,000.\n\n   * Amazon Simple Queue Service – Default 10. For standard queues the\n   max is 10,000. For FIFO queues the max is 10.\n\n   * Amazon Managed Streaming for Apache Kafka – Default 100. Max 10,000.\n\n   * Self-managed Apache Kafka – Default 100. Max 10,000.\n\n   * Amazon MQ (ActiveMQ and RabbitMQ) – Default 100. Max 10,000."
                   format: "int64"
                   type: "integer"
                 bisectBatchOnFunctionError:
@@ -59,13 +59,13 @@ spec:
                       type: "object"
                   type: "object"
                 enabled:
-                  description: "When true, the event source mapping is active. When false, Lambda pauses\npolling and invocation.\n\n\nDefault: True"
+                  description: "When true, the event source mapping is active. When false, Lambda pauses\npolling and invocation.\n\nDefault: True"
                   type: "boolean"
                 eventSourceARN:
-                  description: "The Amazon Resource Name (ARN) of the event source.\n\n\n   * Amazon Kinesis – The ARN of the data stream or a stream consumer.\n\n\n   * Amazon DynamoDB Streams – The ARN of the stream.\n\n\n   * Amazon Simple Queue Service – The ARN of the queue.\n\n\n   * Amazon Managed Streaming for Apache Kafka – The ARN of the cluster.\n\n\n   * Amazon MQ – The ARN of the broker."
+                  description: "The Amazon Resource Name (ARN) of the event source.\n\n   * Amazon Kinesis – The ARN of the data stream or a stream consumer.\n\n   * Amazon DynamoDB Streams – The ARN of the stream.\n\n   * Amazon Simple Queue Service – The ARN of the queue.\n\n   * Amazon Managed Streaming for Apache Kafka – The ARN of the cluster.\n\n   * Amazon MQ – The ARN of the broker."
                   type: "string"
                 eventSourceRef:
-                  description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\n\tfrom:\n\t  name: my-api"
+                  description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
                   properties:
                     from:
                       description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
@@ -89,10 +89,10 @@ spec:
                       type: "array"
                   type: "object"
                 functionName:
-                  description: "The name of the Lambda function.\n\n\nName formats\n\n\n   * Function name – MyFunction.\n\n\n   * Function ARN – arn:aws:lambda:us-west-2:123456789012:function:MyFunction.\n\n\n   * Version or Alias ARN – arn:aws:lambda:us-west-2:123456789012:function:MyFunction:PROD.\n\n\n   * Partial ARN – 123456789012:function:MyFunction.\n\n\nThe length constraint applies only to the full ARN. If you specify only the\nfunction name, it's limited to 64 characters in length."
+                  description: "The name of the Lambda function.\n\nName formats\n\n   * Function name – MyFunction.\n\n   * Function ARN – arn:aws:lambda:us-west-2:123456789012:function:MyFunction.\n\n   * Version or Alias ARN – arn:aws:lambda:us-west-2:123456789012:function:MyFunction:PROD.\n\n   * Partial ARN – 123456789012:function:MyFunction.\n\nThe length constraint applies only to the full ARN. If you specify only the\nfunction name, it's limited to 64 characters in length."
                   type: "string"
                 functionRef:
-                  description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\n\tfrom:\n\t  name: my-api"
+                  description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
                   properties:
                     from:
                       description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
@@ -109,7 +109,7 @@ spec:
                     type: "string"
                   type: "array"
                 maximumBatchingWindowInSeconds:
-                  description: "The maximum amount of time, in seconds, that Lambda spends gathering records\nbefore invoking the function. You can configure MaximumBatchingWindowInSeconds\nto any value from 0 seconds to 300 seconds in increments of seconds.\n\n\nFor streams and Amazon SQS event sources, the default batching window is\n0 seconds. For Amazon MSK, Self-managed Apache Kafka, and Amazon MQ event\nsources, the default batching window is 500 ms. Note that because you can\nonly change MaximumBatchingWindowInSeconds in increments of seconds, you\ncannot revert back to the 500 ms default batching window after you have changed\nit. To restore the default batching window, you must create a new event source\nmapping.\n\n\nRelated setting: For streams and Amazon SQS event sources, when you set BatchSize\nto a value greater than 10, you must set MaximumBatchingWindowInSeconds to\nat least 1."
+                  description: "The maximum amount of time, in seconds, that Lambda spends gathering records\nbefore invoking the function. You can configure MaximumBatchingWindowInSeconds\nto any value from 0 seconds to 300 seconds in increments of seconds.\n\nFor streams and Amazon SQS event sources, the default batching window is\n0 seconds. For Amazon MSK, Self-managed Apache Kafka, and Amazon MQ event\nsources, the default batching window is 500 ms. Note that because you can\nonly change MaximumBatchingWindowInSeconds in increments of seconds, you\ncannot revert back to the 500 ms default batching window after you have changed\nit. To restore the default batching window, you must create a new event source\nmapping.\n\nRelated setting: For streams and Amazon SQS event sources, when you set BatchSize\nto a value greater than 10, you must set MaximumBatchingWindowInSeconds to\nat least 1."
                   format: "int64"
                   type: "integer"
                 maximumRecordAgeInSeconds:
@@ -126,7 +126,7 @@ spec:
                   type: "integer"
                 queueRefs:
                   items:
-                    description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\n\tfrom:\n\t  name: my-api"
+                    description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
                     properties:
                       from:
                         description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
@@ -201,7 +201,7 @@ spec:
                   description: "All CRs managed by ACK have a common `Status.ACKResourceMetadata` member\nthat is used to contain resource sync state, account ownership,\nconstructed ARN for the resource"
                   properties:
                     arn:
-                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nTODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
+                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."

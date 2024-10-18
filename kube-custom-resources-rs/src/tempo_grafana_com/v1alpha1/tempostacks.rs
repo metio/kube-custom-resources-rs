@@ -1349,6 +1349,8 @@ pub enum TempoStackTemplateGatewayIngressType {
     Ingress,
     #[serde(rename = "route")]
     Route,
+    #[serde(rename = "")]
+    KopiumEmpty,
 }
 
 /// Ingester defines the ingester component spec.
@@ -2256,6 +2258,8 @@ pub enum TempoStackTemplateQueryFrontendJaegerQueryIngressType {
     Ingress,
     #[serde(rename = "route")]
     Route,
+    #[serde(rename = "")]
+    KopiumEmpty,
 }
 
 /// MonitorTab defines the monitor tab configuration.

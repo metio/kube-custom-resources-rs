@@ -13,7 +13,6 @@ use self::prelude::*;
 
 /// LogGroupSpec defines the desired state of LogGroup.
 /// 
-/// 
 /// Represents a log group.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "cloudwatchlogs.services.k8s.aws", version = "v1alpha1", kind = "LogGroup", plural = "loggroups")]
@@ -32,7 +31,6 @@ pub struct LogGroupSpec {
     /// Ex:
     /// APIIDRef:
     /// 
-    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyRef")]
@@ -43,7 +41,6 @@ pub struct LogGroupSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subscriptionFilters")]
     pub subscription_filters: Option<Vec<LogGroupSubscriptionFilters>>,
     /// The key-value pairs to use for the tags.
-    /// 
     /// 
     /// You can grant users access to certain log groups while preventing them from
     /// accessing other log groups. To do so, tag your groups and use IAM policies
@@ -61,7 +58,6 @@ pub struct LogGroupSpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -146,7 +142,6 @@ pub struct LogGroupStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

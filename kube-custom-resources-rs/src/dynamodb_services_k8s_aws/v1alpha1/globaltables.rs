@@ -12,7 +12,6 @@ use self::prelude::*;
 
 /// GlobalTableSpec defines the desired state of GlobalTable.
 /// 
-/// 
 /// Represents the properties of a global table.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "dynamodb.services.k8s.aws", version = "v1alpha1", kind = "GlobalTable", plural = "globaltables")]
@@ -56,15 +55,11 @@ pub struct GlobalTableStatus {
     pub creation_date_time: Option<String>,
     /// The current state of the global table:
     /// 
-    /// 
     ///    * CREATING - The global table is being created.
-    /// 
     /// 
     ///    * UPDATING - The global table is being updated.
     /// 
-    /// 
     ///    * DELETING - The global table is being deleted.
-    /// 
     /// 
     ///    * ACTIVE - The global table is ready for use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalTableStatus")]
@@ -82,7 +77,6 @@ pub struct GlobalTableStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

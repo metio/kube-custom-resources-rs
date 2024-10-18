@@ -12,7 +12,6 @@ use self::prelude::*;
 
 /// SubscriptionSpec defines the desired state of Subscription.
 /// 
-/// 
 /// A wrapper type for the attributes of an Amazon SNS subscription.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "sns.services.k8s.aws", version = "v1alpha1", kind = "Subscription", plural = "subscriptions")]
@@ -26,34 +25,25 @@ pub struct SubscriptionSpec {
     pub delivery_policy: Option<String>,
     /// The endpoint that you want to receive notifications. Endpoints vary by protocol:
     /// 
-    /// 
     ///    * For the http protocol, the (public) endpoint is a URL beginning with
     ///    http://.
-    /// 
     /// 
     ///    * For the https protocol, the (public) endpoint is a URL beginning with
     ///    https://.
     /// 
-    /// 
     ///    * For the email protocol, the endpoint is an email address.
     /// 
-    /// 
     ///    * For the email-json protocol, the endpoint is an email address.
-    /// 
     /// 
     ///    * For the sms protocol, the endpoint is a phone number of an SMS-enabled
     ///    device.
     /// 
-    /// 
     ///    * For the sqs protocol, the endpoint is the ARN of an Amazon SQS queue.
-    /// 
     /// 
     ///    * For the application protocol, the endpoint is the EndpointArn of a mobile
     ///    app and device.
     /// 
-    /// 
     ///    * For the lambda protocol, the endpoint is the ARN of an Lambda function.
-    /// 
     /// 
     ///    * For the firehose protocol, the endpoint is the ARN of an Amazon Kinesis
     ///    Data Firehose delivery stream.
@@ -65,31 +55,22 @@ pub struct SubscriptionSpec {
     pub filter_policy_scope: Option<String>,
     /// The protocol that you want to use. Supported protocols include:
     /// 
-    /// 
     ///    * http – delivery of JSON-encoded message via HTTP POST
-    /// 
     /// 
     ///    * https – delivery of JSON-encoded message via HTTPS POST
     /// 
-    /// 
     ///    * email – delivery of message via SMTP
-    /// 
     /// 
     ///    * email-json – delivery of JSON-encoded message via SMTP
     /// 
-    /// 
     ///    * sms – delivery of message via SMS
     /// 
-    /// 
     ///    * sqs – delivery of JSON-encoded message to an Amazon SQS queue
-    /// 
     /// 
     ///    * application – delivery of JSON-encoded message to an EndpointArn for
     ///    a mobile app and device
     /// 
-    /// 
     ///    * lambda – delivery of JSON-encoded message to an Lambda function
-    /// 
     /// 
     ///    * firehose – delivery of JSON-encoded message to an Amazon Kinesis Data
     ///    Firehose delivery stream.
@@ -108,7 +89,6 @@ pub struct SubscriptionSpec {
     /// Ex:
     /// APIIDRef:
     /// 
-    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topicRef")]
@@ -119,7 +99,6 @@ pub struct SubscriptionSpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -176,7 +155,6 @@ pub struct SubscriptionStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

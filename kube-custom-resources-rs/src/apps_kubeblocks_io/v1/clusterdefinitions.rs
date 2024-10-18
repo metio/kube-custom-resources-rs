@@ -26,7 +26,8 @@ pub struct ClusterDefinitionSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionTopologies {
     /// Components specifies the components in the topology.
-    pub components: Vec<ClusterDefinitionTopologiesComponents>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub components: Option<Vec<ClusterDefinitionTopologiesComponents>>,
     /// Default indicates whether this topology serves as the default configuration.
     /// When set to true, this topology is automatically used unless another is explicitly specified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -39,6 +40,9 @@ pub struct ClusterDefinitionTopologies {
     /// This ordering is crucial for maintaining the correct dependencies and operational flow across components.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub orders: Option<ClusterDefinitionTopologiesOrders>,
+    /// Shardings specifies the shardings in the topology.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub shardings: Option<Vec<ClusterDefinitionTopologiesShardings>>,
 }
 
 /// ClusterTopologyComponent defines a Component within a ClusterTopology.
@@ -75,30 +79,58 @@ pub struct ClusterDefinitionTopologiesComponents {
 /// This ordering is crucial for maintaining the correct dependencies and operational flow across components.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDefinitionTopologiesOrders {
-    /// Specifies the order for creating and initializing components.
-    /// This is designed for components that depend on one another. Components without dependencies can be grouped together.
+    /// Specifies the order for creating and initializing entities.
+    /// This is designed for entities that depend on one another. Entities without dependencies can be grouped together.
     /// 
     /// 
-    /// Components that can be provisioned independently or have no dependencies can be listed together in the same stage,
+    /// Entities that can be provisioned independently or have no dependencies can be listed together in the same stage,
     /// separated by commas.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub provision: Option<Vec<String>>,
-    /// Outlines the order for stopping and deleting components.
-    /// This sequence is designed for components that require a graceful shutdown or have interdependencies.
+    /// Outlines the order for stopping and deleting entities.
+    /// This sequence is designed for entities that require a graceful shutdown or have interdependencies.
     /// 
     /// 
-    /// Components that can be terminated independently or have no dependencies can be listed together in the same stage,
+    /// Entities that can be terminated independently or have no dependencies can be listed together in the same stage,
     /// separated by commas.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub terminate: Option<Vec<String>>,
-    /// Update determines the order for updating components' specifications, such as image upgrades or resource scaling.
-    /// This sequence is designed for components that have dependencies or require specific update procedures.
+    /// Update determines the order for updating entities' specifications, such as image upgrades or resource scaling.
+    /// This sequence is designed for entities that have dependencies or require specific update procedures.
     /// 
     /// 
-    /// Components that can be updated independently or have no dependencies can be listed together in the same stage,
+    /// Entities that can be updated independently or have no dependencies can be listed together in the same stage,
     /// separated by commas.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub update: Option<Vec<String>>,
+}
+
+/// ClusterTopologySharding defines a sharding within a ClusterTopology.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterDefinitionTopologiesShardings {
+    /// Defines the unique identifier of the sharding within the cluster topology.
+    /// It follows IANA Service naming rules and is used as part of the Service's DNS name.
+    /// The name must start with a lowercase letter, can contain lowercase letters, numbers,
+    /// and hyphens, and must end with a lowercase letter or number.
+    /// 
+    /// 
+    /// Cannot be updated once set.
+    pub name: String,
+    /// Specifies the sharding definition that defines the characteristics and behavior of the sharding.
+    /// 
+    /// 
+    /// The system selects the ShardingDefinition CR with the latest version that matches the pattern.
+    /// This approach allows:
+    /// 
+    /// 
+    /// 1. Precise selection by providing the exact name of a ShardingDefinition CR.
+    /// 2. Flexible and automatic selection of the most up-to-date ShardingDefinition CR
+    /// by specifying a regular expression pattern.
+    /// 
+    /// 
+    /// Once set, this field cannot be updated.
+    #[serde(rename = "shardingDef")]
+    pub sharding_def: String,
 }
 
 /// ClusterDefinitionStatus defines the observed state of ClusterDefinition

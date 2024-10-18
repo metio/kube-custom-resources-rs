@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.2"
   name: "groups.iam.services.k8s.aws"
 spec:
   group: "iam.services.k8s.aws"
@@ -27,17 +27,17 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "GroupSpec defines the desired state of Group.\n\n\nContains information about an IAM group entity.\n\n\nThis data type is used as a response element in the following operations:\n\n\n   * CreateGroup\n\n\n   * GetGroup\n\n\n   * ListGroups"
+              description: "GroupSpec defines the desired state of Group.\n\nContains information about an IAM group entity.\n\nThis data type is used as a response element in the following operations:\n\n   * CreateGroup\n\n   * GetGroup\n\n   * ListGroups"
               properties:
                 inlinePolicies:
                   additionalProperties:
                     type: "string"
                   type: "object"
                 name:
-                  description: "The name of the group to create. Do not include the path in this value.\n\n\nIAM user, group, role, and policy names must be unique within the account.\nNames are not distinguished by case. For example, you cannot create resources\nnamed both \"MyResource\" and \"myresource\"."
+                  description: "The name of the group to create. Do not include the path in this value.\n\nIAM user, group, role, and policy names must be unique within the account.\nNames are not distinguished by case. For example, you cannot create resources\nnamed both \"MyResource\" and \"myresource\"."
                   type: "string"
                 path:
-                  description: "The path to the group. For more information about paths, see IAM identifiers\n(https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html)\nin the IAM User Guide.\n\n\nThis parameter is optional. If it is not included, it defaults to a slash\n(/).\n\n\nThis parameter allows (through its regex pattern (http://wikipedia.org/wiki/regex))\na string of characters consisting of either a forward slash (/) by itself\nor a string that must begin and end with forward slashes. In addition, it\ncan contain any ASCII character from the ! (\\u0021) through the DEL character\n(\\u007F), including most punctuation characters, digits, and upper and lowercased\nletters."
+                  description: "The path to the group. For more information about paths, see IAM identifiers\n(https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html)\nin the IAM User Guide.\n\nThis parameter is optional. If it is not included, it defaults to a slash\n(/).\n\nThis parameter allows (through its regex pattern (http://wikipedia.org/wiki/regex))\na string of characters consisting of either a forward slash (/) by itself\nor a string that must begin and end with forward slashes. In addition, it\ncan contain any ASCII character from the ! (\\u0021) through the DEL character\n(\\u007F), including most punctuation characters, digits, and upper and lowercased\nletters."
                   type: "string"
                 policies:
                   items:
@@ -45,7 +45,7 @@ spec:
                   type: "array"
                 policyRefs:
                   items:
-                    description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\n\tfrom:\n\t  name: my-api"
+                    description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
                     properties:
                       from:
                         description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
@@ -67,7 +67,7 @@ spec:
                   description: "All CRs managed by ACK have a common `Status.ACKResourceMetadata` member\nthat is used to contain resource sync state, account ownership,\nconstructed ARN for the resource"
                   properties:
                     arn:
-                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nTODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
+                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."

@@ -12,7 +12,6 @@ use self::prelude::*;
 
 /// DistributionSpec defines the desired state of Distribution.
 /// 
-/// 
 /// A distribution tells CloudFront where you want content to be delivered from,
 /// and the details about how to track and manage content delivery.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -44,13 +43,10 @@ pub struct DistributionDistributionConfig {
     pub continuous_deployment_policy_id: Option<String>,
     /// A complex type that controls:
     /// 
-    /// 
     ///    * Whether CloudFront replaces HTTP status codes in the 4xx and 5xx range
     ///    with custom error messages before returning the response to the viewer.
     /// 
-    /// 
     ///    * How long CloudFront caches HTTP status codes in the 4xx and 5xx range.
-    /// 
     /// 
     /// For more information about custom error pages, see Customizing Error Responses
     /// (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/custom-error-pages.html)
@@ -91,16 +87,13 @@ pub struct DistributionDistributionConfig {
     /// A complex type that determines the distribution's SSL/TLS configuration for
     /// communicating with viewers.
     /// 
-    /// 
     /// If the distribution doesn't use Aliases (also known as alternate domain names
     /// or CNAMEs)—that is, if the distribution uses the CloudFront domain name
     /// such as d111111abcdef8.cloudfront.net—set CloudFrontDefaultCertificate
     /// to true and leave all other fields empty.
     /// 
-    /// 
     /// If the distribution uses Aliases (alternate domain names or CNAMEs), use
     /// the fields in this type to specify the following settings:
-    /// 
     /// 
     ///    * Which viewers the distribution accepts HTTPS connections from: only
     ///    viewers that support server name indication (SNI) (https://en.wikipedia.org/wiki/Server_Name_Indication)
@@ -111,25 +104,21 @@ pub struct DistributionDistributionConfig {
     ///    support SNI, set SSLSupportMethod to vip. This is not recommended, and
     ///    results in additional monthly charges from CloudFront.
     /// 
-    /// 
     ///    * The minimum SSL/TLS protocol version that the distribution can use to
     ///    communicate with viewers. To specify a minimum version, choose a value
     ///    for MinimumProtocolVersion. For more information, see Security Policy
     ///    (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-web-values-specify.html#DownloadDistValues-security-policy)
     ///    in the Amazon CloudFront Developer Guide.
     /// 
-    /// 
     ///    * The location of the SSL/TLS certificate, Certificate Manager (ACM) (https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html)
     ///    (recommended) or Identity and Access Management (IAM) (https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_server-certs.html).
     ///    You specify the location by setting a value in one of the following fields
     ///    (not both): ACMCertificateArn IAMCertificateId
     /// 
-    /// 
     /// All distributions support HTTPS connections from viewers. To require viewers
     /// to use HTTPS only, or to redirect them from HTTP to HTTPS, use ViewerProtocolPolicy
     /// in the CacheBehavior or DefaultCacheBehavior. To specify how CloudFront should
     /// use SSL/TLS to communicate with your custom origin, use CustomOriginConfig.
-    /// 
     /// 
     /// For more information, see Using HTTPS with CloudFront (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-https.html)
     /// and Using Alternate Domain Names and HTTPS (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-https-alternate-domain-names.html)
@@ -157,7 +146,6 @@ pub struct DistributionDistributionConfigCacheBehaviors {
 
 /// A complex type that describes how CloudFront processes requests.
 /// 
-/// 
 /// You must create at least as many cache behaviors (including the default cache
 /// behavior) as you have origins if you want CloudFront to serve objects from
 /// all of the origins. Each cache behavior specifies the one origin from which
@@ -165,24 +153,19 @@ pub struct DistributionDistributionConfigCacheBehaviors {
 /// default cache behavior, the default cache behavior will cause CloudFront
 /// to get objects from one of the origins, but the other origin is never used.
 /// 
-/// 
 /// For the current quota (formerly known as limit) on the number of cache behaviors
 /// that you can add to a distribution, see Quotas (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/cloudfront-limits.html)
 /// in the Amazon CloudFront Developer Guide.
 /// 
-/// 
 /// If you don't want to specify any cache behaviors, include only an empty CacheBehaviors
 /// element. Don't include an empty CacheBehavior element because this is invalid.
-/// 
 /// 
 /// To delete all cache behaviors in an existing distribution, update the distribution
 /// configuration and include only an empty CacheBehaviors element.
 /// 
-/// 
 /// To add, change, or remove one or more cache behaviors, update the distribution
 /// configuration and specify all of the cache behaviors that you want to include
 /// in the updated distribution.
-/// 
 /// 
 /// For more information about cache behaviors, see Cache Behavior Settings (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-web-values-specify.html#DownloadDistValuesCacheBehavior)
 /// in the Amazon CloudFront Developer Guide.
@@ -192,16 +175,12 @@ pub struct DistributionDistributionConfigCacheBehaviorsItems {
     /// forwards to your Amazon S3 bucket or your custom origin. There are three
     /// choices:
     /// 
-    /// 
     ///    * CloudFront forwards only GET and HEAD requests.
-    /// 
     /// 
     ///    * CloudFront forwards only GET, HEAD, and OPTIONS requests.
     /// 
-    /// 
     ///    * CloudFront forwards GET, HEAD, OPTIONS, PUT, PATCH, POST, and DELETE
     ///    requests.
-    /// 
     /// 
     /// If you pick the third choice, you may need to restrict access to your Amazon
     /// S3 bucket or to your custom origin so users can't perform operations that
@@ -220,17 +199,14 @@ pub struct DistributionDistributionConfigCacheBehaviorsItems {
     /// This field is deprecated. We recommend that you use a cache policy or an
     /// origin request policy instead of this field.
     /// 
-    /// 
     /// If you want to include values in the cache key, use a cache policy. For more
     /// information, see Creating cache policies (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/controlling-the-cache-key.html#cache-key-create-cache-policy)
     /// in the Amazon CloudFront Developer Guide.
-    /// 
     /// 
     /// If you want to send values to the origin but not include them in the cache
     /// key, use an origin request policy. For more information, see Creating origin
     /// request policies (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/controlling-origin-requests.html#origin-request-create-origin-request-policy)
     /// in the Amazon CloudFront Developer Guide.
-    /// 
     /// 
     /// A complex type that specifies how CloudFront handles query strings, cookies,
     /// and HTTP headers.
@@ -244,13 +220,11 @@ pub struct DistributionDistributionConfigCacheBehaviorsItems {
     /// A complex type that specifies a list of Lambda@Edge functions associations
     /// for a cache behavior.
     /// 
-    /// 
     /// If you want to invoke one or more Lambda@Edge functions triggered by requests
     /// that match the PathPattern of the cache behavior, specify the applicable
     /// values for Quantity and Items. Note that there can be up to 4 LambdaFunctionAssociation
     /// items in this list (one for each possible value of EventType) and each EventType
     /// can be associated with only one function.
-    /// 
     /// 
     /// If you don't want to invoke any Lambda@Edge functions for the requests that
     /// match PathPattern, specify 0 for Quantity and omit Items.
@@ -288,16 +262,12 @@ pub struct DistributionDistributionConfigCacheBehaviorsItems {
 /// forwards to your Amazon S3 bucket or your custom origin. There are three
 /// choices:
 /// 
-/// 
 ///    * CloudFront forwards only GET and HEAD requests.
-/// 
 /// 
 ///    * CloudFront forwards only GET, HEAD, and OPTIONS requests.
 /// 
-/// 
 ///    * CloudFront forwards GET, HEAD, OPTIONS, PUT, PATCH, POST, and DELETE
 ///    requests.
-/// 
 /// 
 /// If you pick the third choice, you may need to restrict access to your Amazon
 /// S3 bucket or to your custom origin so users can't perform operations that
@@ -308,12 +278,9 @@ pub struct DistributionDistributionConfigCacheBehaviorsItemsAllowedMethods {
     /// A complex type that controls whether CloudFront caches the response to requests
     /// using the specified HTTP methods. There are two choices:
     /// 
-    /// 
     ///    * CloudFront caches responses to GET and HEAD requests.
     /// 
-    /// 
     ///    * CloudFront caches responses to GET, HEAD, and OPTIONS requests.
-    /// 
     /// 
     /// If you pick the second choice for your Amazon S3 Origin, you may need to
     /// forward Access-Control-Request-Method, Access-Control-Request-Headers, and
@@ -327,12 +294,9 @@ pub struct DistributionDistributionConfigCacheBehaviorsItemsAllowedMethods {
 /// A complex type that controls whether CloudFront caches the response to requests
 /// using the specified HTTP methods. There are two choices:
 /// 
-/// 
 ///    * CloudFront caches responses to GET and HEAD requests.
 /// 
-/// 
 ///    * CloudFront caches responses to GET, HEAD, and OPTIONS requests.
-/// 
 /// 
 /// If you pick the second choice for your Amazon S3 Origin, you may need to
 /// forward Access-Control-Request-Method, Access-Control-Request-Headers, and
@@ -346,17 +310,14 @@ pub struct DistributionDistributionConfigCacheBehaviorsItemsAllowedMethodsCached
 /// This field is deprecated. We recommend that you use a cache policy or an
 /// origin request policy instead of this field.
 /// 
-/// 
 /// If you want to include values in the cache key, use a cache policy. For more
 /// information, see Creating cache policies (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/controlling-the-cache-key.html#cache-key-create-cache-policy)
 /// in the Amazon CloudFront Developer Guide.
-/// 
 /// 
 /// If you want to send values to the origin but not include them in the cache
 /// key, use an origin request policy. For more information, see Creating origin
 /// request policies (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/controlling-origin-requests.html#origin-request-create-origin-request-policy)
 /// in the Amazon CloudFront Developer Guide.
-/// 
 /// 
 /// A complex type that specifies how CloudFront handles query strings, cookies,
 /// and HTTP headers.
@@ -365,14 +326,11 @@ pub struct DistributionDistributionConfigCacheBehaviorsItemsForwardedValues {
     /// This field is deprecated. We recommend that you use a cache policy or an
     /// origin request policy instead of this field.
     /// 
-    /// 
     /// If you want to include cookies in the cache key, use CookiesConfig in a cache
     /// policy. See CachePolicy.
     /// 
-    /// 
     /// If you want to send cookies to the origin but not include them in the cache
     /// key, use CookiesConfig in an origin request policy. See OriginRequestPolicy.
-    /// 
     /// 
     /// A complex type that specifies whether you want CloudFront to forward cookies
     /// to the origin and, if so, which ones. For more information about forwarding
@@ -388,14 +346,11 @@ pub struct DistributionDistributionConfigCacheBehaviorsItemsForwardedValues {
     /// This field is deprecated. We recommend that you use a cache policy or an
     /// origin request policy instead of this field.
     /// 
-    /// 
     /// If you want to include query strings in the cache key, use QueryStringsConfig
     /// in a cache policy. See CachePolicy.
     /// 
-    /// 
     /// If you want to send query strings to the origin but not include them in the
     /// cache key, use QueryStringsConfig in an origin request policy. See OriginRequestPolicy.
-    /// 
     /// 
     /// A complex type that contains information about the query string parameters
     /// that you want CloudFront to use for caching for a cache behavior.
@@ -406,14 +361,11 @@ pub struct DistributionDistributionConfigCacheBehaviorsItemsForwardedValues {
 /// This field is deprecated. We recommend that you use a cache policy or an
 /// origin request policy instead of this field.
 /// 
-/// 
 /// If you want to include cookies in the cache key, use CookiesConfig in a cache
 /// policy. See CachePolicy.
 /// 
-/// 
 /// If you want to send cookies to the origin but not include them in the cache
 /// key, use CookiesConfig in an origin request policy. See OriginRequestPolicy.
-/// 
 /// 
 /// A complex type that specifies whether you want CloudFront to forward cookies
 /// to the origin and, if so, which ones. For more information about forwarding
@@ -445,14 +397,11 @@ pub struct DistributionDistributionConfigCacheBehaviorsItemsForwardedValuesHeade
 /// This field is deprecated. We recommend that you use a cache policy or an
 /// origin request policy instead of this field.
 /// 
-/// 
 /// If you want to include query strings in the cache key, use QueryStringsConfig
 /// in a cache policy. See CachePolicy.
 /// 
-/// 
 /// If you want to send query strings to the origin but not include them in the
 /// cache key, use QueryStringsConfig in an origin request policy. See OriginRequestPolicy.
-/// 
 /// 
 /// A complex type that contains information about the query string parameters
 /// that you want CloudFront to use for caching for a cache behavior.
@@ -484,13 +433,11 @@ pub struct DistributionDistributionConfigCacheBehaviorsItemsFunctionAssociations
 /// A complex type that specifies a list of Lambda@Edge functions associations
 /// for a cache behavior.
 /// 
-/// 
 /// If you want to invoke one or more Lambda@Edge functions triggered by requests
 /// that match the PathPattern of the cache behavior, specify the applicable
 /// values for Quantity and Items. Note that there can be up to 4 LambdaFunctionAssociation
 /// items in this list (one for each possible value of EventType) and each EventType
 /// can be associated with only one function.
-/// 
 /// 
 /// If you don't want to invoke any Lambda@Edge functions for the requests that
 /// match PathPattern, specify 0 for Quantity and omit Items.
@@ -533,13 +480,10 @@ pub struct DistributionDistributionConfigCacheBehaviorsItemsTrustedSigners {
 
 /// A complex type that controls:
 /// 
-/// 
 ///    * Whether CloudFront replaces HTTP status codes in the 4xx and 5xx range
 ///    with custom error messages before returning the response to the viewer.
 /// 
-/// 
 ///    * How long CloudFront caches HTTP status codes in the 4xx and 5xx range.
-/// 
 /// 
 /// For more information about custom error pages, see Customizing Error Responses
 /// (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/custom-error-pages.html)
@@ -552,13 +496,10 @@ pub struct DistributionDistributionConfigCustomErrorResponses {
 
 /// A complex type that controls:
 /// 
-/// 
 ///    * Whether CloudFront replaces HTTP status codes in the 4xx and 5xx range
 ///    with custom error messages before returning the response to the viewer.
 /// 
-/// 
 ///    * How long CloudFront caches HTTP status codes in the 4xx and 5xx range.
-/// 
 /// 
 /// For more information about custom error pages, see Customizing Error Responses
 /// (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/custom-error-pages.html)
@@ -585,16 +526,12 @@ pub struct DistributionDistributionConfigDefaultCacheBehavior {
     /// forwards to your Amazon S3 bucket or your custom origin. There are three
     /// choices:
     /// 
-    /// 
     ///    * CloudFront forwards only GET and HEAD requests.
-    /// 
     /// 
     ///    * CloudFront forwards only GET, HEAD, and OPTIONS requests.
     /// 
-    /// 
     ///    * CloudFront forwards GET, HEAD, OPTIONS, PUT, PATCH, POST, and DELETE
     ///    requests.
-    /// 
     /// 
     /// If you pick the third choice, you may need to restrict access to your Amazon
     /// S3 bucket or to your custom origin so users can't perform operations that
@@ -613,17 +550,14 @@ pub struct DistributionDistributionConfigDefaultCacheBehavior {
     /// This field is deprecated. We recommend that you use a cache policy or an
     /// origin request policy instead of this field.
     /// 
-    /// 
     /// If you want to include values in the cache key, use a cache policy. For more
     /// information, see Creating cache policies (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/controlling-the-cache-key.html#cache-key-create-cache-policy)
     /// in the Amazon CloudFront Developer Guide.
-    /// 
     /// 
     /// If you want to send values to the origin but not include them in the cache
     /// key, use an origin request policy. For more information, see Creating origin
     /// request policies (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/controlling-origin-requests.html#origin-request-create-origin-request-policy)
     /// in the Amazon CloudFront Developer Guide.
-    /// 
     /// 
     /// A complex type that specifies how CloudFront handles query strings, cookies,
     /// and HTTP headers.
@@ -637,13 +571,11 @@ pub struct DistributionDistributionConfigDefaultCacheBehavior {
     /// A complex type that specifies a list of Lambda@Edge functions associations
     /// for a cache behavior.
     /// 
-    /// 
     /// If you want to invoke one or more Lambda@Edge functions triggered by requests
     /// that match the PathPattern of the cache behavior, specify the applicable
     /// values for Quantity and Items. Note that there can be up to 4 LambdaFunctionAssociation
     /// items in this list (one for each possible value of EventType) and each EventType
     /// can be associated with only one function.
-    /// 
     /// 
     /// If you don't want to invoke any Lambda@Edge functions for the requests that
     /// match PathPattern, specify 0 for Quantity and omit Items.
@@ -679,16 +611,12 @@ pub struct DistributionDistributionConfigDefaultCacheBehavior {
 /// forwards to your Amazon S3 bucket or your custom origin. There are three
 /// choices:
 /// 
-/// 
 ///    * CloudFront forwards only GET and HEAD requests.
-/// 
 /// 
 ///    * CloudFront forwards only GET, HEAD, and OPTIONS requests.
 /// 
-/// 
 ///    * CloudFront forwards GET, HEAD, OPTIONS, PUT, PATCH, POST, and DELETE
 ///    requests.
-/// 
 /// 
 /// If you pick the third choice, you may need to restrict access to your Amazon
 /// S3 bucket or to your custom origin so users can't perform operations that
@@ -699,12 +627,9 @@ pub struct DistributionDistributionConfigDefaultCacheBehaviorAllowedMethods {
     /// A complex type that controls whether CloudFront caches the response to requests
     /// using the specified HTTP methods. There are two choices:
     /// 
-    /// 
     ///    * CloudFront caches responses to GET and HEAD requests.
     /// 
-    /// 
     ///    * CloudFront caches responses to GET, HEAD, and OPTIONS requests.
-    /// 
     /// 
     /// If you pick the second choice for your Amazon S3 Origin, you may need to
     /// forward Access-Control-Request-Method, Access-Control-Request-Headers, and
@@ -718,12 +643,9 @@ pub struct DistributionDistributionConfigDefaultCacheBehaviorAllowedMethods {
 /// A complex type that controls whether CloudFront caches the response to requests
 /// using the specified HTTP methods. There are two choices:
 /// 
-/// 
 ///    * CloudFront caches responses to GET and HEAD requests.
 /// 
-/// 
 ///    * CloudFront caches responses to GET, HEAD, and OPTIONS requests.
-/// 
 /// 
 /// If you pick the second choice for your Amazon S3 Origin, you may need to
 /// forward Access-Control-Request-Method, Access-Control-Request-Headers, and
@@ -737,17 +659,14 @@ pub struct DistributionDistributionConfigDefaultCacheBehaviorAllowedMethodsCache
 /// This field is deprecated. We recommend that you use a cache policy or an
 /// origin request policy instead of this field.
 /// 
-/// 
 /// If you want to include values in the cache key, use a cache policy. For more
 /// information, see Creating cache policies (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/controlling-the-cache-key.html#cache-key-create-cache-policy)
 /// in the Amazon CloudFront Developer Guide.
-/// 
 /// 
 /// If you want to send values to the origin but not include them in the cache
 /// key, use an origin request policy. For more information, see Creating origin
 /// request policies (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/controlling-origin-requests.html#origin-request-create-origin-request-policy)
 /// in the Amazon CloudFront Developer Guide.
-/// 
 /// 
 /// A complex type that specifies how CloudFront handles query strings, cookies,
 /// and HTTP headers.
@@ -756,14 +675,11 @@ pub struct DistributionDistributionConfigDefaultCacheBehaviorForwardedValues {
     /// This field is deprecated. We recommend that you use a cache policy or an
     /// origin request policy instead of this field.
     /// 
-    /// 
     /// If you want to include cookies in the cache key, use CookiesConfig in a cache
     /// policy. See CachePolicy.
     /// 
-    /// 
     /// If you want to send cookies to the origin but not include them in the cache
     /// key, use CookiesConfig in an origin request policy. See OriginRequestPolicy.
-    /// 
     /// 
     /// A complex type that specifies whether you want CloudFront to forward cookies
     /// to the origin and, if so, which ones. For more information about forwarding
@@ -779,14 +695,11 @@ pub struct DistributionDistributionConfigDefaultCacheBehaviorForwardedValues {
     /// This field is deprecated. We recommend that you use a cache policy or an
     /// origin request policy instead of this field.
     /// 
-    /// 
     /// If you want to include query strings in the cache key, use QueryStringsConfig
     /// in a cache policy. See CachePolicy.
     /// 
-    /// 
     /// If you want to send query strings to the origin but not include them in the
     /// cache key, use QueryStringsConfig in an origin request policy. See OriginRequestPolicy.
-    /// 
     /// 
     /// A complex type that contains information about the query string parameters
     /// that you want CloudFront to use for caching for a cache behavior.
@@ -797,14 +710,11 @@ pub struct DistributionDistributionConfigDefaultCacheBehaviorForwardedValues {
 /// This field is deprecated. We recommend that you use a cache policy or an
 /// origin request policy instead of this field.
 /// 
-/// 
 /// If you want to include cookies in the cache key, use CookiesConfig in a cache
 /// policy. See CachePolicy.
 /// 
-/// 
 /// If you want to send cookies to the origin but not include them in the cache
 /// key, use CookiesConfig in an origin request policy. See OriginRequestPolicy.
-/// 
 /// 
 /// A complex type that specifies whether you want CloudFront to forward cookies
 /// to the origin and, if so, which ones. For more information about forwarding
@@ -836,14 +746,11 @@ pub struct DistributionDistributionConfigDefaultCacheBehaviorForwardedValuesHead
 /// This field is deprecated. We recommend that you use a cache policy or an
 /// origin request policy instead of this field.
 /// 
-/// 
 /// If you want to include query strings in the cache key, use QueryStringsConfig
 /// in a cache policy. See CachePolicy.
 /// 
-/// 
 /// If you want to send query strings to the origin but not include them in the
 /// cache key, use QueryStringsConfig in an origin request policy. See OriginRequestPolicy.
-/// 
 /// 
 /// A complex type that contains information about the query string parameters
 /// that you want CloudFront to use for caching for a cache behavior.
@@ -875,13 +782,11 @@ pub struct DistributionDistributionConfigDefaultCacheBehaviorFunctionAssociation
 /// A complex type that specifies a list of Lambda@Edge functions associations
 /// for a cache behavior.
 /// 
-/// 
 /// If you want to invoke one or more Lambda@Edge functions triggered by requests
 /// that match the PathPattern of the cache behavior, specify the applicable
 /// values for Quantity and Items. Note that there can be up to 4 LambdaFunctionAssociation
 /// items in this list (one for each possible value of EventType) and each EventType
 /// can be associated with only one function.
-/// 
 /// 
 /// If you don't want to invoke any Lambda@Edge functions for the requests that
 /// match PathPattern, specify 0 for Quantity and omit Items.
@@ -1007,21 +912,17 @@ pub struct DistributionDistributionConfigOrigins {
 
 /// An origin.
 /// 
-/// 
 /// An origin is the location where content is stored, and from which CloudFront
 /// gets content to serve to viewers. To specify an origin:
 /// 
-/// 
 ///    * Use S3OriginConfig to specify an Amazon S3 bucket that is not configured
 ///    with static website hosting.
-/// 
 /// 
 ///    * Use CustomOriginConfig to specify all other kinds of origins, including:
 ///    An Amazon S3 bucket that is configured with static website hosting An
 ///    Elastic Load Balancing load balancer An AWS Elemental MediaPackage endpoint
 ///    An AWS Elemental MediaStore container Any other HTTP server, running on
 ///    an Amazon EC2 instance or any other kind of host
-/// 
 /// 
 /// For the current maximum number of origins that you can specify per distribution,
 /// see General Quotas on Web Distributions (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/cloudfront-limits.html#limits-web-distributions)
@@ -1051,7 +952,6 @@ pub struct DistributionDistributionConfigOriginsItems {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "originPath")]
     pub origin_path: Option<String>,
     /// CloudFront Origin Shield.
-    /// 
     /// 
     /// Using Origin Shield can help reduce the load on your origin. For more information,
     /// see Using Origin Shield (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/origin-shield.html)
@@ -1114,7 +1014,6 @@ pub struct DistributionDistributionConfigOriginsItemsCustomOriginConfigOriginSsl
 
 /// CloudFront Origin Shield.
 /// 
-/// 
 /// Using Origin Shield can help reduce the load on your origin. For more information,
 /// see Using Origin Shield (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/origin-shield.html)
 /// in the Amazon CloudFront Developer Guide.
@@ -1158,16 +1057,13 @@ pub struct DistributionDistributionConfigRestrictionsGeoRestriction {
 /// A complex type that determines the distribution's SSL/TLS configuration for
 /// communicating with viewers.
 /// 
-/// 
 /// If the distribution doesn't use Aliases (also known as alternate domain names
 /// or CNAMEs)—that is, if the distribution uses the CloudFront domain name
 /// such as d111111abcdef8.cloudfront.net—set CloudFrontDefaultCertificate
 /// to true and leave all other fields empty.
 /// 
-/// 
 /// If the distribution uses Aliases (alternate domain names or CNAMEs), use
 /// the fields in this type to specify the following settings:
-/// 
 /// 
 ///    * Which viewers the distribution accepts HTTPS connections from: only
 ///    viewers that support server name indication (SNI) (https://en.wikipedia.org/wiki/Server_Name_Indication)
@@ -1178,25 +1074,21 @@ pub struct DistributionDistributionConfigRestrictionsGeoRestriction {
 ///    support SNI, set SSLSupportMethod to vip. This is not recommended, and
 ///    results in additional monthly charges from CloudFront.
 /// 
-/// 
 ///    * The minimum SSL/TLS protocol version that the distribution can use to
 ///    communicate with viewers. To specify a minimum version, choose a value
 ///    for MinimumProtocolVersion. For more information, see Security Policy
 ///    (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-web-values-specify.html#DownloadDistValues-security-policy)
 ///    in the Amazon CloudFront Developer Guide.
 /// 
-/// 
 ///    * The location of the SSL/TLS certificate, Certificate Manager (ACM) (https://docs.aws.amazon.com/acm/latest/userguide/acm-overview.html)
 ///    (recommended) or Identity and Access Management (IAM) (https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_server-certs.html).
 ///    You specify the location by setting a value in one of the following fields
 ///    (not both): ACMCertificateArn IAMCertificateId
 /// 
-/// 
 /// All distributions support HTTPS connections from viewers. To require viewers
 /// to use HTTPS only, or to redirect them from HTTP to HTTPS, use ViewerProtocolPolicy
 /// in the CacheBehavior or DefaultCacheBehavior. To specify how CloudFront should
 /// use SSL/TLS to communicate with your custom origin, use CustomOriginConfig.
-/// 
 /// 
 /// For more information, see Using HTTPS with CloudFront (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-https.html)
 /// and Using Alternate Domain Names and HTTPS (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-https-alternate-domain-names.html)
@@ -1256,7 +1148,6 @@ pub struct DistributionStatus {
     pub active_trusted_key_groups: Option<DistributionStatusActiveTrustedKeyGroups>,
     /// We recommend using TrustedKeyGroups instead of TrustedSigners.
     /// 
-    /// 
     /// This field contains a list of Amazon Web Services account IDs and the active
     /// CloudFront key pairs in each account that CloudFront can use to verify the
     /// signatures of signed URLs or signed cookies.
@@ -1267,7 +1158,6 @@ pub struct DistributionStatus {
     /// an alternate domain name, also known as a CNAME, that they've added to CloudFront.
     /// AliasICPRecordal provides the ICP recordal status for CNAMEs associated with
     /// distributions.
-    /// 
     /// 
     /// For more information about ICP recordals, see Signup, Accounts, and Credentials
     /// (https://docs.amazonaws.cn/en_us/aws/latest/userguide/accounts-and-credentials.html)
@@ -1314,7 +1204,6 @@ pub struct DistributionStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,
@@ -1359,7 +1248,6 @@ pub struct DistributionStatusActiveTrustedKeyGroupsItemsKeyPairIDs {
 
 /// We recommend using TrustedKeyGroups instead of TrustedSigners.
 /// 
-/// 
 /// This field contains a list of Amazon Web Services account IDs and the active
 /// CloudFront key pairs in each account that CloudFront can use to verify the
 /// signatures of signed URLs or signed cookies.
@@ -1398,7 +1286,6 @@ pub struct DistributionStatusActiveTrustedSignersItemsKeyPairIDs {
 /// AliasICPRecordal provides the ICP recordal status for CNAMEs associated with
 /// distributions. The status is returned in the CloudFront response; you can't
 /// configure it yourself.
-/// 
 /// 
 /// For more information about ICP recordals, see Signup, Accounts, and Credentials
 /// (https://docs.amazonaws.cn/en_us/aws/latest/userguide/accounts-and-credentials.html)

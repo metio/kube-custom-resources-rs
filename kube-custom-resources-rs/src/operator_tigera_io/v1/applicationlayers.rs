@@ -256,8 +256,18 @@ pub struct ApplicationLayerStatus {
     /// Ready, Progressing, Degraded or other customer types.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
+    /// SidecarWebhook provides the state of sidecar injection mutatinwebhookconfiguration
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sidecarWebhook")]
+    pub sidecar_webhook: Option<ApplicationLayerStatusSidecarWebhook>,
     /// State provides user-readable status.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
+}
+
+/// ApplicationLayerStatus defines the observed state of ApplicationLayer
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ApplicationLayerStatusSidecarWebhook {
+    Enabled,
+    Disabled,
 }
 

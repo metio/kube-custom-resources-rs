@@ -55,6 +55,9 @@ pub struct NutanixDatacenterConfigFailureDomains {
     /// Subnets holds the list of subnets identifiers cluster's network subnets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subnets: Option<Vec<NutanixDatacenterConfigFailureDomainsSubnets>>,
+    /// Worker Machine Groups holds the list of worker machine group names that will use this failure domain.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workerMachineGroups")]
+    pub worker_machine_groups: Option<Vec<String>>,
 }
 
 /// Cluster is the Prism Element cluster name or uuid that is connected to the Prism Central.

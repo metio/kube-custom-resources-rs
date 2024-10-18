@@ -21,6 +21,9 @@ pub struct DeviceSpec {
     /// Required: DeviceModelRef is reference to the device model used as a template to create the device instance.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceModelRef")]
     pub device_model_ref: Option<DeviceDeviceModelRef>,
+    /// List of methods of device. methods list item must be unique by method.Name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub methods: Option<Vec<DeviceMethods>>,
     /// NodeName is a request to schedule this device onto a specific node. If it is non-empty, the scheduler simply schedules this device onto that node, assuming that it fits resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeName")]
     pub node_name: Option<String>,
@@ -38,6 +41,20 @@ pub struct DeviceDeviceModelRef {
     /// Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+}
+
+/// DeviceMethod describes the specifics all the methods of the device.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DeviceMethods {
+    /// Define the description of device method.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    /// Required: The device method name to be accessed. It must be unique.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// PropertyNames are list of device properties that device methods can control. Required: A device method can control multiple device properties.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "propertyNames")]
+    pub property_names: Option<Vec<String>>,
 }
 
 /// DeviceProperty describes the specifics all the properties of the device.

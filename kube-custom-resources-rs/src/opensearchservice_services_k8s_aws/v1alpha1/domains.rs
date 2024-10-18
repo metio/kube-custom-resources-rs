@@ -27,31 +27,26 @@ pub struct DomainSpec {
     /// Key-value pairs to specify advanced configuration options. The following
     /// key-value pairs are supported:
     /// 
-    /// 
     ///    * "rest.action.multi.allow_explicit_index": "true" | "false" - Note the
     ///    use of a string rather than a boolean. Specifies whether explicit references
     ///    to indexes are allowed inside the body of HTTP requests. If you want to
     ///    configure access policies for domain sub-resources, such as specific indexes
     ///    and domain APIs, you must disable this property. Default is true.
     /// 
-    /// 
     ///    * "indices.fielddata.cache.size": "80" - Note the use of a string rather
     ///    than a boolean. Specifies the percentage of heap space allocated to field
     ///    data. Default is unbounded.
-    /// 
     /// 
     ///    * "indices.query.bool.max_clause_count": "1024" - Note the use of a string
     ///    rather than a boolean. Specifies the maximum number of clauses allowed
     ///    in a Lucene boolean query. Default is 1,024. Queries with more than the
     ///    permitted number of clauses result in a TooManyClauses error.
     /// 
-    /// 
     ///    * "override_main_response_version": "true" | "false" - Note the use of
     ///    a string rather than a boolean. Specifies whether the domain reports its
     ///    version as 7.10 to allow Elasticsearch OSS clients and plugins to continue
     ///    working with it. Default is false when creating a domain and true when
     ///    upgrading a domain.
-    /// 
     /// 
     /// For more information, see Advanced cluster parameters (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/createupdatedomains.html#createdomain-configure-advanced-options).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "advancedOptions")]
@@ -252,7 +247,6 @@ pub struct DomainAutoTuneOptions {
 /// to schedule Auto-Tune optimizations. For migration instructions, see Migrating
 /// from Auto-Tune maintenance windows (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/off-peak.html#off-peak-migrate).
 /// 
-/// 
 /// The Auto-Tune maintenance schedule. For more information, see Auto-Tune for
 /// Amazon OpenSearch Service (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/auto-tune.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -420,10 +414,8 @@ pub struct DomainOffPeakWindowOptions {
     /// OpenSearch Service will schedule these actions during the window that you
     /// specify.
     /// 
-    /// 
     /// If you don't specify a window start time, it defaults to 10:00 P.M. local
     /// time.
-    /// 
     /// 
     /// For more information, see Defining off-peak maintenance windows for Amazon
     /// OpenSearch Service (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/off-peak.html).
@@ -437,10 +429,8 @@ pub struct DomainOffPeakWindowOptions {
 /// OpenSearch Service will schedule these actions during the window that you
 /// specify.
 /// 
-/// 
 /// If you don't specify a window start time, it defaults to 10:00 P.M. local
 /// time.
-/// 
 /// 
 /// For more information, see Defining off-peak maintenance windows for Amazon
 /// OpenSearch Service (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/off-peak.html).
@@ -540,9 +530,7 @@ pub struct DomainStatus {
     /// The key-value pair that exists if the OpenSearch Service domain uses VPC
     /// endpoints. For example:
     /// 
-    /// 
     ///    * IPv4 IP addresses - 'vpc','vpc-endpoint-h2dsd34efgyghrtguk5gt6j2foh4.us-east-1.es.amazonaws.com'
-    /// 
     /// 
     ///    * Dual stack IP addresses - 'vpcv2':'vpc-endpoint-h2dsd34efgyghrtguk5gt6j2foh4.aos.us-east-1.on.aws'
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -579,7 +567,6 @@ pub struct DomainStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

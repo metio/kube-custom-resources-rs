@@ -36,16 +36,28 @@ pub struct WorkflowSpec {
 /// BootOptions are options that control the booting of Hardware.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowBootOptions {
-    /// OneTimeNetboot indicates whether the controller should create a job.bmc.tinkerbell.org object for getting the associated hardware
-    /// into a netbooting state.
+    /// BootMode is the type of booting that will be done.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootMode")]
+    pub boot_mode: Option<WorkflowBootOptionsBootMode>,
+    /// ISOURL is the URL of the ISO that will be one-time booted. When this field is set, the controller will create a job.bmc.tinkerbell.org object
+    /// for getting the associated hardware into a CDROM booting state.
     /// A HardwareRef that contains a spec.BmcRef must be provided.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "oneTimeNetboot")]
-    pub one_time_netboot: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "isoURL")]
+    pub iso_url: Option<String>,
     /// ToggleAllowNetboot indicates whether the controller should toggle the field in the associated hardware for allowing PXE booting.
     /// This will be enabled before a Workflow is executed and disabled after the Workflow has completed successfully.
     /// A HardwareRef must be provided.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "toggleAllowNetboot")]
     pub toggle_allow_netboot: Option<bool>,
+}
+
+/// BootOptions are options that control the booting of Hardware.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum WorkflowBootOptionsBootMode {
+    #[serde(rename = "netboot")]
+    Netboot,
+    #[serde(rename = "iso")]
+    Iso,
 }
 
 /// WorkflowStatus defines the observed state of a Workflow.
@@ -78,16 +90,26 @@ pub struct WorkflowStatus {
 /// BootOptions holds the state of any boot options.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowStatusBootOptions {
-    /// OneTimeNetboot holds the state of a specific job.bmc.tinkerbell.org object created.
-    /// Only used when BootOptions.OneTimeNetboot is true.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "netbootJob")]
-    pub netboot_job: Option<WorkflowStatusBootOptionsNetbootJob>,
+    /// AllowNetboot holds the state of the the controller's interactions with the allowPXE field in a Hardware object.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowNetboot")]
+    pub allow_netboot: Option<WorkflowStatusBootOptionsAllowNetboot>,
+    /// Jobs holds the state of any job.bmc.tinkerbell.org objects created.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub jobs: Option<BTreeMap<String, WorkflowStatusBootOptionsJobs>>,
 }
 
-/// OneTimeNetboot holds the state of a specific job.bmc.tinkerbell.org object created.
-/// Only used when BootOptions.OneTimeNetboot is true.
+/// AllowNetboot holds the state of the the controller's interactions with the allowPXE field in a Hardware object.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct WorkflowStatusBootOptionsNetbootJob {
+pub struct WorkflowStatusBootOptionsAllowNetboot {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "toggledFalse")]
+    pub toggled_false: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "toggledTrue")]
+    pub toggled_true: Option<bool>,
+}
+
+/// Jobs holds the state of any job.bmc.tinkerbell.org objects created.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct WorkflowStatusBootOptionsJobs {
     /// Complete indicates whether the created job.bmc.tinkerbell.org has reported its conditions as complete.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub complete: Option<bool>,

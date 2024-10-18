@@ -25,6 +25,9 @@ pub struct NutanixMachineConfigSpec {
     pub additional_categories: Option<Vec<NutanixMachineConfigAdditionalCategories>>,
     /// cluster is to identify the cluster (the Prism Element under management of the Prism Central), in which the Machine's VM will be created. The cluster identifier (uuid or name) can be obtained from the Prism Central console or using the prism_central API.
     pub cluster: NutanixMachineConfigCluster,
+    /// List of GPU devices that should be added to the VMs.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub gpus: Option<Vec<NutanixMachineConfigGpus>>,
     /// image is to identify the OS image uploaded to the Prism Central (PC) The image identifier (uuid or name) can be obtained from the Prism Central console or using the Prism Central API. It must include the Kubernetes version(s). For example, a template used for Kubernetes 1.27 could be ubuntu-2204-1.27.
     pub image: NutanixMachineConfigImage,
     /// memorySize is the memory size (in Quantity format) of the VM The minimum memorySize is 2Gi bytes
@@ -80,6 +83,29 @@ pub struct NutanixMachineConfigCluster {
 pub enum NutanixMachineConfigClusterType {
     #[serde(rename = "uuid")]
     Uuid,
+    #[serde(rename = "name")]
+    Name,
+}
+
+/// NutanixGPUIdentifier holds VM GPU device configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct NutanixMachineConfigGpus {
+    /// deviceID is the device ID of the GPU device.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceID")]
+    pub device_id: Option<i64>,
+    /// vendorID is the vendor ID of the GPU device.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// type is the type of the GPU device.
+    #[serde(rename = "type")]
+    pub r#type: NutanixMachineConfigGpusType,
+}
+
+/// NutanixGPUIdentifier holds VM GPU device configuration.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum NutanixMachineConfigGpusType {
+    #[serde(rename = "deviceID")]
+    DeviceId,
     #[serde(rename = "name")]
     Name,
 }

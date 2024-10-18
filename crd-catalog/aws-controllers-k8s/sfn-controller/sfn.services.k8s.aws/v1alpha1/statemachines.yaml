@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.2"
   name: "statemachines.sfn.services.k8s.aws"
 spec:
   group: "sfn.services.k8s.aws"
@@ -33,7 +33,7 @@ spec:
                   description: "The Amazon States Language definition of the state machine. See Amazon States\nLanguage (https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html)."
                   type: "string"
                 loggingConfiguration:
-                  description: "Defines what execution history events are logged and where they are logged.\n\n\nBy default, the level is set to OFF. For more information see Log Levels\n(https://docs.aws.amazon.com/step-functions/latest/dg/cloudwatch-log-level.html)\nin the AWS Step Functions User Guide."
+                  description: "Defines what execution history events are logged and where they are logged.\n\nBy default, the level is set to OFF. For more information see Log Levels\n(https://docs.aws.amazon.com/step-functions/latest/dg/cloudwatch-log-level.html)\nin the AWS Step Functions User Guide."
                   properties:
                     destinations:
                       items:
@@ -51,15 +51,15 @@ spec:
                       type: "string"
                   type: "object"
                 name:
-                  description: "The name of the state machine.\n\n\nA name must not contain:\n\n\n   * white space\n\n\n   * brackets < > { } [ ]\n\n\n   * wildcard characters ? *\n\n\n   * special characters \" # % \\ ^ | ~ ` $ & , ; : /\n\n\n   * control characters (U+0000-001F, U+007F-009F)\n\n\nTo enable logging with CloudWatch Logs, the name should only contain 0-9,\nA-Z, a-z, - and _."
+                  description: "The name of the state machine.\n\nA name must not contain:\n\n   * white space\n\n   * brackets < > { } [ ]\n\n   * wildcard characters ? *\n\n   * special characters \" # % \\ ^ | ~ ` $ & , ; : /\n\n   * control characters (U+0000-001F, U+007F-009F)\n\nTo enable logging with CloudWatch Logs, the name should only contain 0-9,\nA-Z, a-z, - and _."
                   type: "string"
                 roleARN:
                   description: "The Amazon Resource Name (ARN) of the IAM role to use for this state machine."
                   type: "string"
                 tags:
-                  description: "Tags to be added when creating a state machine.\n\n\nAn array of key-value pairs. For more information, see Using Cost Allocation\nTags (https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html)\nin the AWS Billing and Cost Management User Guide, and Controlling Access\nUsing IAM Tags (https://docs.aws.amazon.com/IAM/latest/UserGuide/access_iam-tags.html).\n\n\nTags may only contain Unicode letters, digits, white space, or these symbols:\n_ . : / = + - @."
+                  description: "Tags to be added when creating a state machine.\n\nAn array of key-value pairs. For more information, see Using Cost Allocation\nTags (https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html)\nin the AWS Billing and Cost Management User Guide, and Controlling Access\nUsing IAM Tags (https://docs.aws.amazon.com/IAM/latest/UserGuide/access_iam-tags.html).\n\nTags may only contain Unicode letters, digits, white space, or these symbols:\n_ . : / = + - @."
                   items:
-                    description: "Tags are key-value pairs that can be associated with Step Functions state\nmachines and activities.\n\n\nAn array of key-value pairs. For more information, see Using Cost Allocation\nTags (https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html)\nin the AWS Billing and Cost Management User Guide, and Controlling Access\nUsing IAM Tags (https://docs.aws.amazon.com/IAM/latest/UserGuide/access_iam-tags.html).\n\n\nTags may only contain Unicode letters, digits, white space, or these symbols:\n_ . : / = + - @."
+                    description: "Tags are key-value pairs that can be associated with Step Functions state\nmachines and activities.\n\nAn array of key-value pairs. For more information, see Using Cost Allocation\nTags (https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html)\nin the AWS Billing and Cost Management User Guide, and Controlling Access\nUsing IAM Tags (https://docs.aws.amazon.com/IAM/latest/UserGuide/access_iam-tags.html).\n\nTags may only contain Unicode letters, digits, white space, or these symbols:\n_ . : / = + - @."
                     properties:
                       key:
                         type: "string"
@@ -88,7 +88,7 @@ spec:
                   description: "All CRs managed by ACK have a common `Status.ACKResourceMetadata` member\nthat is used to contain resource sync state, account ownership,\nconstructed ARN for the resource"
                   properties:
                     arn:
-                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nTODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
+                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."

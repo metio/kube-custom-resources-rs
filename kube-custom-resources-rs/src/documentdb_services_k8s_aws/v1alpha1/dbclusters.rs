@@ -12,7 +12,6 @@ use self::prelude::*;
 
 /// DBClusterSpec defines the desired state of DBCluster.
 /// 
-/// 
 /// Detailed information about a cluster.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "documentdb.services.k8s.aws", version = "v1alpha1", kind = "DBCluster", plural = "dbclusters")]
@@ -29,30 +28,22 @@ pub struct DBClusterSpec {
     /// The number of days for which automated backups are retained. You must specify
     /// a minimum value of 1.
     /// 
-    /// 
     /// Default: 1
     /// 
-    /// 
     /// Constraints:
-    /// 
     /// 
     ///    * Must be a value from 1 to 35.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupRetentionPeriod")]
     pub backup_retention_period: Option<i64>,
     /// The cluster identifier. This parameter is stored as a lowercase string.
     /// 
-    /// 
     /// Constraints:
-    /// 
     /// 
     ///    * Must contain from 1 to 63 letters, numbers, or hyphens.
     /// 
-    /// 
     ///    * The first character must be a letter.
     /// 
-    /// 
     ///    * Cannot end with a hyphen or contain two consecutive hyphens.
-    /// 
     /// 
     /// Example: my-cluster
     #[serde(rename = "dbClusterIdentifier")]
@@ -62,10 +53,8 @@ pub struct DBClusterSpec {
     pub db_cluster_parameter_group_name: Option<String>,
     /// A subnet group to associate with this cluster.
     /// 
-    /// 
     /// Constraints: Must match the name of an existing DBSubnetGroup. Must not be
     /// default.
-    /// 
     /// 
     /// Example: mySubnetgroup
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dbSubnetGroupName")]
@@ -74,7 +63,6 @@ pub struct DBClusterSpec {
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    /// 
     /// 
     /// 	from:
     /// 	  name: my-api
@@ -97,7 +85,6 @@ pub struct DBClusterSpec {
     pub enable_cloudwatch_logs_exports: Option<Vec<String>>,
     /// The name of the database engine to be used for this cluster.
     /// 
-    /// 
     /// Valid values: docdb
     pub engine: String,
     /// The version number of the database engine to use. The --engine-version will
@@ -111,19 +98,15 @@ pub struct DBClusterSpec {
     pub global_cluster_identifier: Option<String>,
     /// The KMS key identifier for an encrypted cluster.
     /// 
-    /// 
     /// The KMS key identifier is the Amazon Resource Name (ARN) for the KMS encryption
     /// key. If you are creating a cluster using the same Amazon Web Services account
     /// that owns the KMS encryption key that is used to encrypt the new cluster,
     /// you can use the KMS key alias instead of the ARN for the KMS encryption key.
     /// 
-    /// 
     /// If an encryption key is not specified in KmsKeyId:
-    /// 
     /// 
     ///    * If the StorageEncrypted parameter is true, Amazon DocumentDB uses your
     ///    default encryption key.
-    /// 
     /// 
     /// KMS creates the default encryption key for your Amazon Web Services account.
     /// Your Amazon Web Services account has a different default encryption key for
@@ -135,7 +118,6 @@ pub struct DBClusterSpec {
     /// Ex:
     /// APIIDRef:
     /// 
-    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyRef")]
@@ -144,21 +126,16 @@ pub struct DBClusterSpec {
     /// printable ASCII character except forward slash (/), double quote ("), or
     /// the "at" symbol (@).
     /// 
-    /// 
     /// Constraints: Must contain from 8 to 100 characters.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "masterUserPassword")]
     pub master_user_password: Option<DBClusterMasterUserPassword>,
     /// The name of the master user for the cluster.
     /// 
-    /// 
     /// Constraints:
-    /// 
     /// 
     ///    * Must be from 1 to 63 letters or numbers.
     /// 
-    /// 
     ///    * The first character must be a letter.
-    /// 
     /// 
     ///    * Cannot be a reserved word for the chosen database engine.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "masterUsername")]
@@ -172,22 +149,16 @@ pub struct DBClusterSpec {
     /// The daily time range during which automated backups are created if automated
     /// backups are enabled using the BackupRetentionPeriod parameter.
     /// 
-    /// 
     /// The default is a 30-minute window selected at random from an 8-hour block
     /// of time for each Amazon Web Services Region.
     /// 
-    /// 
     /// Constraints:
-    /// 
     /// 
     ///    * Must be in the format hh24:mi-hh24:mi.
     /// 
-    /// 
     ///    * Must be in Universal Coordinated Time (UTC).
     /// 
-    /// 
     ///    * Must not conflict with the preferred maintenance window.
-    /// 
     /// 
     ///    * Must be at least 30 minutes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredBackupWindow")]
@@ -195,30 +166,23 @@ pub struct DBClusterSpec {
     /// The weekly time range during which system maintenance can occur, in Universal
     /// Coordinated Time (UTC).
     /// 
-    /// 
     /// Format: ddd:hh24:mi-ddd:hh24:mi
-    /// 
     /// 
     /// The default is a 30-minute window selected at random from an 8-hour block
     /// of time for each Amazon Web Services Region, occurring on a random day of
     /// the week.
     /// 
-    /// 
     /// Valid days: Mon, Tue, Wed, Thu, Fri, Sat, Sun
-    /// 
     /// 
     /// Constraints: Minimum 30-minute window.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredMaintenanceWindow")]
     pub preferred_maintenance_window: Option<String>,
     /// The identifier for the snapshot or cluster snapshot to restore from.
     /// 
-    /// 
     /// You can use either the name or the Amazon Resource Name (ARN) to specify
     /// a cluster snapshot. However, you can use only the ARN to specify a snapshot.
     /// 
-    /// 
     /// Constraints:
-    /// 
     /// 
     ///    * Must match the identifier of an existing snapshot.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotIdentifier")]
@@ -233,16 +197,12 @@ pub struct DBClusterSpec {
     pub storage_encrypted: Option<bool>,
     /// The storage type to associate with the DB cluster.
     /// 
-    /// 
     /// For information on storage types for Amazon DocumentDB clusters, see Cluster
     /// storage configurations in the Amazon DocumentDB Developer Guide.
     /// 
-    /// 
     /// Valid values for storage type - standard | iopt1
     /// 
-    /// 
     /// Default value is standard
-    /// 
     /// 
     /// When you create a DocumentDB DB cluster with the storage type set to iopt1,
     /// the storage type is returned in the response. The storage type isn't returned
@@ -263,7 +223,6 @@ pub struct DBClusterSpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -290,7 +249,6 @@ pub struct DBClusterDbSubnetGroupRefFrom {
 /// Ex:
 /// APIIDRef:
 /// 
-/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -314,7 +272,6 @@ pub struct DBClusterKmsKeyRefFrom {
 /// The password for the master database user. This password can contain any
 /// printable ASCII character except forward slash (/), double quote ("), or
 /// the "at" symbol (@).
-/// 
 /// 
 /// Constraints: Must contain from 8 to 100 characters.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -343,7 +300,6 @@ pub struct DBClusterTags {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -442,7 +398,6 @@ pub struct DBClusterStatus {
     /// replicas in the cluster. This functionality can help balance your read workload
     /// across multiple Amazon DocumentDB replicas in your cluster.
     /// 
-    /// 
     /// If a failover occurs, and the Amazon DocumentDB replica that you are connected
     /// to is promoted to be the primary instance, your connection is dropped. To
     /// continue sending your read workload to other Amazon DocumentDB replicas in
@@ -473,7 +428,6 @@ pub struct DBClusterStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

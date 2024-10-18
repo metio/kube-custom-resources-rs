@@ -13,16 +13,13 @@ use self::prelude::*;
 
 /// RuleGroupSpec defines the desired state of RuleGroup.
 /// 
-/// 
 /// The object that defines the rules in a rule group. This, along with RuleGroupResponse,
 /// define the rule group. You can retrieve all objects for a rule group by calling
 /// DescribeRuleGroup.
 /// 
-/// 
 /// Network Firewall uses a rule group to inspect and control network traffic.
 /// You define stateless rule groups to inspect individual packets and you define
 /// stateful rule groups to inspect packets in the context of their traffic flow.
-/// 
 /// 
 /// To use a rule group, you include it by reference in an Network Firewall firewall
 /// policy, then you use the policy in a firewall. You can reference a rule group
@@ -48,32 +45,24 @@ pub struct RuleGroupSpec {
     /// to this capacity. When you reference a rule group from a firewall policy,
     /// Network Firewall reserves this capacity for the rule group.
     /// 
-    /// 
     /// You can retrieve the capacity that would be required for a rule group before
     /// you create the rule group by calling CreateRuleGroup with DryRun set to TRUE.
-    /// 
     /// 
     /// You can't change or exceed this capacity when you update the rule group,
     /// so leave room for your rule group to grow.
     /// 
-    /// 
     /// Capacity for a stateless rule group
-    /// 
     /// 
     /// For a stateless rule group, the capacity required is the sum of the capacity
     /// requirements of the individual rules that you expect to have in the rule
     /// group.
     /// 
-    /// 
     /// To calculate the capacity requirement of a single rule, multiply the capacity
     /// requirement values of each of the rule's match settings:
     /// 
-    /// 
     ///    * A match setting with no criteria specified has a value of 1.
     /// 
-    /// 
     ///    * A match setting with Any specified has a value of 1.
-    /// 
     /// 
     ///    * All other match settings have a value equal to the number of elements
     ///    provided in the setting. For example, a protocol setting ["UDP"] and a
@@ -81,16 +70,13 @@ pub struct RuleGroupSpec {
     ///    ["UDP","TCP"] has a value of 2. A source setting ["10.0.0.0/24","10.0.0.1/24","10.0.0.2/24"]
     ///    has a value of 3.
     /// 
-    /// 
     /// A rule with no criteria specified in any of its match settings has a capacity
     /// requirement of 1. A rule with protocol setting ["UDP","TCP"], source setting
     /// ["10.0.0.0/24","10.0.0.1/24","10.0.0.2/24"], and a single specification or
     /// no specification for each of the other match settings has a capacity requirement
     /// of 6.
     /// 
-    /// 
     /// Capacity for a stateful rule group
-    /// 
     /// 
     /// For a stateful rule group, the minimum capacity required is the number of
     /// individual rules that you expect to have in the rule group.
@@ -101,14 +87,12 @@ pub struct RuleGroupSpec {
     /// Indicates whether you want Network Firewall to just check the validity of
     /// the request, rather than run the request.
     /// 
-    /// 
     /// If set to TRUE, Network Firewall checks whether the request can run successfully,
     /// but doesn't actually make the requested changes. The call returns the value
     /// that the request would return if you ran it with dry run set to FALSE, but
     /// doesn't make additions or changes to your resources. This option allows you
     /// to make sure that you have the required permissions to run the request and
     /// that your request parameters are valid.
-    /// 
     /// 
     /// If set to FALSE, Network Firewall makes the requested changes to your resources.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dryRun")]
@@ -117,7 +101,6 @@ pub struct RuleGroupSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptionConfiguration")]
     pub encryption_configuration: Option<RuleGroupEncryptionConfiguration>,
     /// An object that defines the rule group rules.
-    /// 
     /// 
     /// You must provide either this rule group setting or a Rules setting, but not
     /// both.
@@ -131,10 +114,8 @@ pub struct RuleGroupSpec {
     /// flat format, with one rule per line. Use this to import your existing Suricata
     /// compatible rule groups.
     /// 
-    /// 
     /// You must provide either this rules setting or a populated RuleGroup setting,
     /// but not both.
-    /// 
     /// 
     /// You can provide your rule group specification in Suricata flat format through
     /// this setting when you create or update your rule group. The call response
@@ -167,7 +148,6 @@ pub struct RuleGroupEncryptionConfiguration {
 }
 
 /// An object that defines the rule group rules.
-/// 
 /// 
 /// You must provide either this rule group setting or a Rules setting, but not
 /// both.
@@ -233,10 +213,8 @@ pub struct RuleGroupRuleGroupRuleVariablesPortSets {
 pub struct RuleGroupRuleGroupRulesSource {
     /// Stateful inspection criteria for a domain list rule group.
     /// 
-    /// 
     /// For HTTPS traffic, domain filtering is SNI-based. It uses the server name
     /// indicator extension of the TLS handshake.
-    /// 
     /// 
     /// By default, Network Firewall domain list inspection only includes traffic
     /// coming from the VPC where you deploy the firewall. To inspect traffic from
@@ -259,10 +237,8 @@ pub struct RuleGroupRuleGroupRulesSource {
 
 /// Stateful inspection criteria for a domain list rule group.
 /// 
-/// 
 /// For HTTPS traffic, domain filtering is SNI-based. It uses the server name
 /// indicator extension of the TLS handshake.
-/// 
 /// 
 /// By default, Network Firewall domain list inspection only includes traffic
 /// coming from the VPC where you deploy the firewall. To inspect traffic from
@@ -340,19 +316,15 @@ pub struct RuleGroupRuleGroupRulesSourceStatelessRulesAndCustomActions {
 /// An optional, non-standard action to use for stateless packet handling. You
 /// can define this in addition to the standard action that you must specify.
 /// 
-/// 
 /// You define and name the custom actions that you want to be able to use, and
 /// then you reference them by name in your actions settings.
 /// 
-/// 
 /// You can use custom actions in the following places:
-/// 
 /// 
 ///    * In a rule group's StatelessRulesAndCustomActions specification. The
 ///    custom actions are available for use by name inside the StatelessRulesAndCustomActions
 ///    where you define them. You can use them for your stateless rule actions
 ///    to specify what to do with a packet that matches the rule's match attributes.
-/// 
 /// 
 ///    * In a FirewallPolicy specification, in StatelessCustomActions. The custom
 ///    actions are available for use inside the policy where you define them.
@@ -393,10 +365,8 @@ pub struct RuleGroupRuleGroupRulesSourceStatelessRulesAndCustomActionsCustomActi
 /// used in the PublishMetrics CustomAction. A CloudWatch custom metric dimension
 /// is a name/value pair that's part of the identity of a metric.
 /// 
-/// 
 /// Network Firewall sets the dimension name to CustomAction and you provide
 /// the dimension value.
-/// 
 /// 
 /// For more information about CloudWatch custom metric dimensions, see Publishing
 /// Custom Metrics (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/publishingMetrics.html#usingDimensions)
@@ -555,7 +525,6 @@ pub struct RuleGroupStatus {
     /// your requests that access the rule group. The token marks the state of the
     /// rule group resource at the time of the request.
     /// 
-    /// 
     /// To make changes to the rule group, you provide the token in your request.
     /// Network Firewall uses the token to ensure that the rule group hasn't changed
     /// since you last retrieved it. If it has changed, the operation fails with
@@ -577,7 +546,6 @@ pub struct RuleGroupStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

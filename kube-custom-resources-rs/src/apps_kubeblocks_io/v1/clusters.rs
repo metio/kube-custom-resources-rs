@@ -52,7 +52,7 @@ pub struct ClusterSpec {
     /// This field allows for detailed configuration of each Component within the Cluster.
     /// 
     /// 
-    /// Note: `shardingSpecs` and `componentSpecs` cannot both be empty; at least one must be defined to configure a Cluster.
+    /// Note: `shardings` and `componentSpecs` cannot both be empty; at least one must be defined to configure a Cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentSpecs")]
     pub component_specs: Option<Vec<ClusterComponentSpecs>>,
     /// Specifies runtimeClassName for all Pods managed by this Cluster.
@@ -62,25 +62,25 @@ pub struct ClusterSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingPolicy")]
     pub scheduling_policy: Option<ClusterSchedulingPolicy>,
     /// Defines a list of additional Services that are exposed by a Cluster.
-    /// This field allows Services of selected Components, either from `componentSpecs` or `shardingSpecs` to be exposed,
+    /// This field allows Services of selected Components, either from `componentSpecs` or `shardings` to be exposed,
     /// alongside Services defined with ComponentService.
     /// 
     /// 
     /// Services defined here can be referenced by other clusters using the ServiceRefClusterSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<ClusterServices>>,
-    /// Specifies a list of ShardingSpec objects that manage the sharding topology for Cluster Components.
-    /// Each ShardingSpec organizes components into shards, with each shard corresponding to a Component.
+    /// Specifies a list of ClusterSharding objects that manage the sharding topology for Cluster Components.
+    /// Each ClusterSharding organizes components into shards, with each shard corresponding to a Component.
     /// Components within a shard are all based on a common ClusterComponentSpec template, ensuring uniform configurations.
     /// 
     /// 
     /// This field supports dynamic resharding by facilitating the addition or removal of shards
-    /// through the `shards` field in ShardingSpec.
+    /// through the `shards` field in ClusterSharding.
     /// 
     /// 
-    /// Note: `shardingSpecs` and `componentSpecs` cannot both be empty; at least one must be defined to configure a Cluster.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shardingSpecs")]
-    pub sharding_specs: Option<Vec<ClusterShardingSpecs>>,
+    /// Note: `shardings` and `componentSpecs` cannot both be empty; at least one must be defined to configure a Cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub shardings: Option<Vec<ClusterShardings>>,
     /// Specifies the behavior when a Cluster is deleted.
     /// It defines how resources, data, and backups associated with a Cluster are managed during termination.
     /// Choose a policy based on the desired level of resource cleanup and data preservation:
@@ -230,7 +230,7 @@ pub struct ClusterComponentSpecs {
     pub labels: Option<BTreeMap<String, String>>,
     /// Specifies the Component's name.
     /// It's part of the Service DNS name and must comply with the IANA service naming rule.
-    /// The name is optional when ClusterComponentSpec is used as a template (e.g., in `shardingSpec`),
+    /// The name is optional when ClusterComponentSpec is used as a template (e.g., in `clusterSharding`),
     /// but required otherwise.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -7483,62 +7483,76 @@ pub struct ClusterServicesSpecSessionAffinityConfigClientIp {
     pub timeout_seconds: Option<i32>,
 }
 
-/// ShardingSpec defines how KubeBlocks manage dynamic provisioned shards.
+/// ClusterSharding defines how KubeBlocks manage dynamic provisioned shards.
 /// A typical design pattern for distributed databases is to distribute data across multiple shards,
 /// with each shard consisting of multiple replicas.
 /// Therefore, KubeBlocks supports representing a shard with a Component and dynamically instantiating Components
 /// using a template when shards are added.
 /// When shards are removed, the corresponding Components are also deleted.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecs {
+pub struct ClusterShardings {
     /// Represents the common parent part of all shard names.
+    /// 
+    /// 
     /// This identifier is included as part of the Service DNS name and must comply with IANA service naming rules.
-    /// It is used to generate the names of underlying Components following the pattern `$(shardingSpec.name)-$(ShardID)`.
+    /// It is used to generate the names of underlying Components following the pattern `$(clusterSharding.name)-$(ShardID)`.
     /// ShardID is a random string that is appended to the Name to generate unique identifiers for each shard.
     /// For example, if the sharding specification name is "my-shard" and the ShardID is "abc", the resulting Component name
     /// would be "my-shard-abc".
     /// 
     /// 
-    /// Note that the name defined in Component template(`shardingSpec.template.name`) will be disregarded
-    /// when generating the Component names of the shards. The `shardingSpec.name` field takes precedence.
+    /// Note that the name defined in Component template(`clusterSharding.template.name`) will be disregarded
+    /// when generating the Component names of the shards. The `clusterSharding.name` field takes precedence.
     pub name: String,
+    /// Specifies the ShardingDefinition custom resource (CR) that defines the sharding's characteristics and behavior.
+    /// 
+    /// 
+    /// The full name or regular expression is supported to match the ShardingDefinition.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shardingDef")]
+    pub sharding_def: Option<String>,
     /// Specifies the desired number of shards.
+    /// 
+    /// 
     /// Users can declare the desired number of shards through this field.
     /// KubeBlocks dynamically creates and deletes Components based on the difference
     /// between the desired and actual number of shards.
     /// KubeBlocks provides lifecycle management for sharding, including:
     /// 
     /// 
-    /// - Executing the postProvision Action defined in the ComponentDefinition when the number of shards increases.
+    /// - Executing the shardProvision Action defined in the ShardingDefinition when the number of shards increases.
     ///   This allows for custom actions to be performed after a new shard is provisioned.
-    /// - Executing the preTerminate Action defined in the ComponentDefinition when the number of shards decreases.
+    /// - Executing the shardTerminate Action defined in the ShardingDefinition when the number of shards decreases.
     ///   This enables custom cleanup or data migration tasks to be executed before a shard is terminated.
     ///   Resources and data associated with the corresponding Component will also be deleted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub shards: Option<i32>,
     /// The template for generating Components for shards, where each shard consists of one Component.
+    /// 
+    /// 
     /// This field is of type ClusterComponentSpec, which encapsulates all the required details and
     /// definitions for creating and managing the Components.
-    /// KubeBlocks uses this template to generate a set of identical Components or shards.
+    /// KubeBlocks uses this template to generate a set of identical Components of shards.
     /// All the generated Components will have the same specifications and definitions as specified in the `template` field.
     /// 
     /// 
     /// This allows for the creation of multiple Components with consistent configurations,
     /// enabling sharding and distribution of workloads across Components.
-    pub template: ClusterShardingSpecsTemplate,
+    pub template: ClusterShardingsTemplate,
 }
 
 /// The template for generating Components for shards, where each shard consists of one Component.
+/// 
+/// 
 /// This field is of type ClusterComponentSpec, which encapsulates all the required details and
 /// definitions for creating and managing the Components.
-/// KubeBlocks uses this template to generate a set of identical Components or shards.
+/// KubeBlocks uses this template to generate a set of identical Components of shards.
 /// All the generated Components will have the same specifications and definitions as specified in the `template` field.
 /// 
 /// 
 /// This allows for the creation of multiple Components with consistent configurations,
 /// enabling sharding and distribution of workloads across Components.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplate {
+pub struct ClusterShardingsTemplate {
     /// Specifies Annotations to override or add for underlying Pods, PVCs, Account & TLS Secrets, Services Owned by Component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
@@ -7555,7 +7569,7 @@ pub struct ClusterShardingSpecsTemplate {
     pub component_def: Option<String>,
     /// Specifies the configuration content of a config template.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub configs: Option<Vec<ClusterShardingSpecsTemplateConfigs>>,
+    pub configs: Option<Vec<ClusterShardingsTemplateConfigs>>,
     /// Determines whether metrics exporter information is annotated on the Component's headless Service.
     /// 
     /// 
@@ -7573,7 +7587,7 @@ pub struct ClusterShardingSpecsTemplate {
     /// List of environment variables to add.
     /// These environment variables will be placed after the environment variables declared in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub env: Option<Vec<ClusterShardingSpecsTemplateEnv>>,
+    pub env: Option<Vec<ClusterShardingsTemplateEnv>>,
     /// Allows for the customization of configuration values for each instance within a Component.
     /// An instance represent a single replica (Pod and associated K8s resources like PVCs, Services, and ConfigMaps).
     /// While instances typically share a common configuration as defined in the ClusterComponentSpec,
@@ -7596,19 +7610,19 @@ pub struct ClusterShardingSpecsTemplate {
     /// The sum of replicas across all InstanceTemplates should not exceed the total number of replicas specified for the Component.
     /// Any remaining replicas will be generated using the default template and will follow the default naming rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub instances: Option<Vec<ClusterShardingSpecsTemplateInstances>>,
+    pub instances: Option<Vec<ClusterShardingsTemplateInstances>>,
     /// Specifies the configuration for the TLS certificates issuer.
     /// It allows defining the issuer name and the reference to the secret containing the TLS certificates and key.
     /// The secret should contain the CA certificate, TLS certificate, and private key in the specified keys.
     /// Required when TLS is enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub issuer: Option<ClusterShardingSpecsTemplateIssuer>,
+    pub issuer: Option<ClusterShardingsTemplateIssuer>,
     /// Specifies Labels to override or add for underlying Pods, PVCs, Account & TLS Secrets, Services Owned by Component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// Specifies the Component's name.
     /// It's part of the Service DNS name and must comply with the IANA service naming rule.
-    /// The name is optional when ClusterComponentSpec is used as a template (e.g., in `shardingSpec`),
+    /// The name is optional when ClusterComponentSpec is used as a template (e.g., in `clusterSharding`),
     /// but required otherwise.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -7644,16 +7658,16 @@ pub struct ClusterShardingSpecsTemplate {
     /// If that fails, it will fall back to the ReCreate, where pod will be recreated.
     /// Default value is "PreferInPlace"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podUpdatePolicy")]
-    pub pod_update_policy: Option<ClusterShardingSpecsTemplatePodUpdatePolicy>,
+    pub pod_update_policy: Option<ClusterShardingsTemplatePodUpdatePolicy>,
     /// Specifies the desired number of replicas in the Component for enhancing availability and durability, or load balancing.
     pub replicas: i32,
     /// Specifies the resources required by the Component.
     /// It allows defining the CPU, memory requirements and limits for the Component's containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<ClusterShardingSpecsTemplateResources>,
+    pub resources: Option<ClusterShardingsTemplateResources>,
     /// Specifies the scheduling policy for the Component.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingPolicy")]
-    pub scheduling_policy: Option<ClusterShardingSpecsTemplateSchedulingPolicy>,
+    pub scheduling_policy: Option<ClusterShardingsTemplateSchedulingPolicy>,
     /// Specifies the name of the ServiceAccount required by the running Component.
     /// This ServiceAccount is used to grant necessary permissions for the Component's Pods to interact
     /// with other Kubernetes resources, such as modifying Pod labels or sending events.
@@ -7704,7 +7718,7 @@ pub struct ClusterShardingSpecsTemplate {
     /// ```
     /// The example above includes ServiceRefs to an external Redis Sentinel service and a PostgreSQL Cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceRefs")]
-    pub service_refs: Option<Vec<ClusterShardingSpecsTemplateServiceRefs>>,
+    pub service_refs: Option<Vec<ClusterShardingsTemplateServiceRefs>>,
     /// ServiceVersion specifies the version of the Service expected to be provisioned by this Component.
     /// The version should follow the syntax and semantics of the "Semantic Versioning" specification (http://semver.org/).
     /// If no version is specified, the latest available version will be used.
@@ -7712,14 +7726,14 @@ pub struct ClusterShardingSpecsTemplate {
     pub service_version: Option<String>,
     /// Overrides services defined in referenced ComponentDefinition and expose endpoints that can be accessed by clients.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub services: Option<Vec<ClusterShardingSpecsTemplateServices>>,
+    pub services: Option<Vec<ClusterShardingsTemplateServices>>,
     /// Stop the Component.
     /// If set, all the computing resources will be released.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub stop: Option<bool>,
     /// Overrides system accounts defined in referenced ComponentDefinition.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemAccounts")]
-    pub system_accounts: Option<Vec<ClusterShardingSpecsTemplateSystemAccounts>>,
+    pub system_accounts: Option<Vec<ClusterShardingsTemplateSystemAccounts>>,
     /// A boolean flag that indicates whether the Component should use Transport Layer Security (TLS)
     /// for secure communication.
     /// When set to true, the Component will be configured to use TLS encryption for its network connections.
@@ -7734,18 +7748,18 @@ pub struct ClusterShardingSpecsTemplate {
     /// size, and access modes.
     /// These templates are used to dynamically provision persistent volumes for the Component.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplates")]
-    pub volume_claim_templates: Option<Vec<ClusterShardingSpecsTemplateVolumeClaimTemplates>>,
+    pub volume_claim_templates: Option<Vec<ClusterShardingsTemplateVolumeClaimTemplates>>,
     /// List of volumes to override.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub volumes: Option<Vec<ClusterShardingSpecsTemplateVolumes>>,
+    pub volumes: Option<Vec<ClusterShardingsTemplateVolumes>>,
 }
 
 /// ClusterComponentConfig represents a config with its source bound.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateConfigs {
+pub struct ClusterShardingsTemplateConfigs {
     /// ConfigMap source for the config.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map: Option<ClusterShardingSpecsTemplateConfigsConfigMap>,
+    pub config_map: Option<ClusterShardingsTemplateConfigsConfigMap>,
     /// The name of the config.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -7753,7 +7767,7 @@ pub struct ClusterShardingSpecsTemplateConfigs {
 
 /// ConfigMap source for the config.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateConfigsConfigMap {
+pub struct ClusterShardingsTemplateConfigsConfigMap {
     /// defaultMode is optional: mode bits used to set permissions on created files by default.
     /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
     /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
@@ -7771,7 +7785,7 @@ pub struct ClusterShardingSpecsTemplateConfigsConfigMap {
     /// the volume setup will error unless it is marked optional. Paths must be
     /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<ClusterShardingSpecsTemplateConfigsConfigMapItems>>,
+    pub items: Option<Vec<ClusterShardingsTemplateConfigsConfigMapItems>>,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -7784,7 +7798,7 @@ pub struct ClusterShardingSpecsTemplateConfigsConfigMap {
 
 /// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateConfigsConfigMapItems {
+pub struct ClusterShardingsTemplateConfigsConfigMapItems {
     /// key is the key to project.
     pub key: String,
     /// mode is Optional: mode bits used to set permissions on this file.
@@ -7804,7 +7818,7 @@ pub struct ClusterShardingSpecsTemplateConfigsConfigMapItems {
 
 /// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateEnv {
+pub struct ClusterShardingsTemplateEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
     /// Variable references $(VAR_NAME) are expanded
@@ -7820,31 +7834,31 @@ pub struct ClusterShardingSpecsTemplateEnv {
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from: Option<ClusterShardingSpecsTemplateEnvValueFrom>,
+    pub value_from: Option<ClusterShardingsTemplateEnvValueFrom>,
 }
 
 /// Source for the environment variable's value. Cannot be used if value is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateEnvValueFrom {
+pub struct ClusterShardingsTemplateEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
-    pub config_map_key_ref: Option<ClusterShardingSpecsTemplateEnvValueFromConfigMapKeyRef>,
+    pub config_map_key_ref: Option<ClusterShardingsTemplateEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<ClusterShardingSpecsTemplateEnvValueFromFieldRef>,
+    pub field_ref: Option<ClusterShardingsTemplateEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<ClusterShardingSpecsTemplateEnvValueFromResourceFieldRef>,
+    pub resource_field_ref: Option<ClusterShardingsTemplateEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
-    pub secret_key_ref: Option<ClusterShardingSpecsTemplateEnvValueFromSecretKeyRef>,
+    pub secret_key_ref: Option<ClusterShardingsTemplateEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateEnvValueFromConfigMapKeyRef {
+pub struct ClusterShardingsTemplateEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
@@ -7860,7 +7874,7 @@ pub struct ClusterShardingSpecsTemplateEnvValueFromConfigMapKeyRef {
 /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
 /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateEnvValueFromFieldRef {
+pub struct ClusterShardingsTemplateEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
@@ -7872,7 +7886,7 @@ pub struct ClusterShardingSpecsTemplateEnvValueFromFieldRef {
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateEnvValueFromResourceFieldRef {
+pub struct ClusterShardingsTemplateEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
@@ -7885,7 +7899,7 @@ pub struct ClusterShardingSpecsTemplateEnvValueFromResourceFieldRef {
 
 /// Selects a key of a secret in the pod's namespace
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateEnvValueFromSecretKeyRef {
+pub struct ClusterShardingsTemplateEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
@@ -7900,7 +7914,7 @@ pub struct ClusterShardingSpecsTemplateEnvValueFromSecretKeyRef {
 
 /// InstanceTemplate allows customization of individual replica configurations in a Component.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstances {
+pub struct ClusterShardingsTemplateInstances {
     /// Specifies a map of key-value pairs to be merged into the Pod's existing annotations.
     /// Existing keys will have their values overwritten, while new keys will be added to the annotations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7908,7 +7922,7 @@ pub struct ClusterShardingSpecsTemplateInstances {
     /// Defines Env to override.
     /// Add new or override existing envs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub env: Option<Vec<ClusterShardingSpecsTemplateInstancesEnv>>,
+    pub env: Option<Vec<ClusterShardingsTemplateInstancesEnv>>,
     /// Specifies an override for the first container's image in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
@@ -7930,27 +7944,27 @@ pub struct ClusterShardingSpecsTemplateInstances {
     /// Specifies an override for the resource requirements of the first container in the Pod.
     /// This field allows for customizing resource allocation (CPU, memory, etc.) for the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<ClusterShardingSpecsTemplateInstancesResources>,
+    pub resources: Option<ClusterShardingsTemplateInstancesResources>,
     /// Specifies the scheduling policy for the Component.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingPolicy")]
-    pub scheduling_policy: Option<ClusterShardingSpecsTemplateInstancesSchedulingPolicy>,
+    pub scheduling_policy: Option<ClusterShardingsTemplateInstancesSchedulingPolicy>,
     /// Defines VolumeClaimTemplates to override.
     /// Add new or override existing volume claim templates.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplates")]
-    pub volume_claim_templates: Option<Vec<ClusterShardingSpecsTemplateInstancesVolumeClaimTemplates>>,
+    pub volume_claim_templates: Option<Vec<ClusterShardingsTemplateInstancesVolumeClaimTemplates>>,
     /// Defines VolumeMounts to override.
     /// Add new or override existing volume mounts of the first container in the Pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
-    pub volume_mounts: Option<Vec<ClusterShardingSpecsTemplateInstancesVolumeMounts>>,
+    pub volume_mounts: Option<Vec<ClusterShardingsTemplateInstancesVolumeMounts>>,
     /// Defines Volumes to override.
     /// Add new or override existing volumes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub volumes: Option<Vec<ClusterShardingSpecsTemplateInstancesVolumes>>,
+    pub volumes: Option<Vec<ClusterShardingsTemplateInstancesVolumes>>,
 }
 
 /// EnvVar represents an environment variable present in a Container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesEnv {
+pub struct ClusterShardingsTemplateInstancesEnv {
     /// Name of the environment variable. Must be a C_IDENTIFIER.
     pub name: String,
     /// Variable references $(VAR_NAME) are expanded
@@ -7966,31 +7980,31 @@ pub struct ClusterShardingSpecsTemplateInstancesEnv {
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from: Option<ClusterShardingSpecsTemplateInstancesEnvValueFrom>,
+    pub value_from: Option<ClusterShardingsTemplateInstancesEnvValueFrom>,
 }
 
 /// Source for the environment variable's value. Cannot be used if value is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesEnvValueFrom {
+pub struct ClusterShardingsTemplateInstancesEnvValueFrom {
     /// Selects a key of a ConfigMap.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
-    pub config_map_key_ref: Option<ClusterShardingSpecsTemplateInstancesEnvValueFromConfigMapKeyRef>,
+    pub config_map_key_ref: Option<ClusterShardingsTemplateInstancesEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<ClusterShardingSpecsTemplateInstancesEnvValueFromFieldRef>,
+    pub field_ref: Option<ClusterShardingsTemplateInstancesEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<ClusterShardingSpecsTemplateInstancesEnvValueFromResourceFieldRef>,
+    pub resource_field_ref: Option<ClusterShardingsTemplateInstancesEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
-    pub secret_key_ref: Option<ClusterShardingSpecsTemplateInstancesEnvValueFromSecretKeyRef>,
+    pub secret_key_ref: Option<ClusterShardingsTemplateInstancesEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesEnvValueFromConfigMapKeyRef {
+pub struct ClusterShardingsTemplateInstancesEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
@@ -8006,7 +8020,7 @@ pub struct ClusterShardingSpecsTemplateInstancesEnvValueFromConfigMapKeyRef {
 /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
 /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesEnvValueFromFieldRef {
+pub struct ClusterShardingsTemplateInstancesEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
@@ -8018,7 +8032,7 @@ pub struct ClusterShardingSpecsTemplateInstancesEnvValueFromFieldRef {
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesEnvValueFromResourceFieldRef {
+pub struct ClusterShardingsTemplateInstancesEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
@@ -8031,7 +8045,7 @@ pub struct ClusterShardingSpecsTemplateInstancesEnvValueFromResourceFieldRef {
 
 /// Selects a key of a secret in the pod's namespace
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesEnvValueFromSecretKeyRef {
+pub struct ClusterShardingsTemplateInstancesEnvValueFromSecretKeyRef {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
@@ -8047,7 +8061,7 @@ pub struct ClusterShardingSpecsTemplateInstancesEnvValueFromSecretKeyRef {
 /// Specifies an override for the resource requirements of the first container in the Pod.
 /// This field allows for customizing resource allocation (CPU, memory, etc.) for the container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesResources {
+pub struct ClusterShardingsTemplateInstancesResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
@@ -8058,7 +8072,7 @@ pub struct ClusterShardingSpecsTemplateInstancesResources {
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<Vec<ClusterShardingSpecsTemplateInstancesResourcesClaims>>,
+    pub claims: Option<Vec<ClusterShardingsTemplateInstancesResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8073,7 +8087,7 @@ pub struct ClusterShardingSpecsTemplateInstancesResources {
 
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesResourcesClaims {
+pub struct ClusterShardingsTemplateInstancesResourcesClaims {
     /// Name must match the name of one entry in pod.spec.resourceClaims of
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
@@ -8082,10 +8096,10 @@ pub struct ClusterShardingSpecsTemplateInstancesResourcesClaims {
 
 /// Specifies the scheduling policy for the Component.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicy {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicy {
     /// Specifies a group of affinity scheduling rules of the Cluster, including NodeAffinity, PodAffinity, and PodAntiAffinity.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub affinity: Option<ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinity>,
+    pub affinity: Option<ClusterShardingsTemplateInstancesSchedulingPolicyAffinity>,
     /// NodeName is a request to schedule this Pod onto a specific node. If it is non-empty,
     /// the scheduler simply schedules this Pod onto that node, assuming that it fits resource
     /// requirements.
@@ -8111,31 +8125,31 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicy {
     /// 
     /// Pods with matching tolerations are allowed to be scheduled on tainted nodes, typically reserved for specific purposes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tolerations: Option<Vec<ClusterShardingSpecsTemplateInstancesSchedulingPolicyTolerations>>,
+    pub tolerations: Option<Vec<ClusterShardingsTemplateInstancesSchedulingPolicyTolerations>>,
     /// TopologySpreadConstraints describes how a group of Pods ought to spread across topology
     /// domains. Scheduler will schedule Pods in a way which abides by the constraints.
     /// All topologySpreadConstraints are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
-    pub topology_spread_constraints: Option<Vec<ClusterShardingSpecsTemplateInstancesSchedulingPolicyTopologySpreadConstraints>>,
+    pub topology_spread_constraints: Option<Vec<ClusterShardingsTemplateInstancesSchedulingPolicyTopologySpreadConstraints>>,
 }
 
 /// Specifies a group of affinity scheduling rules of the Cluster, including NodeAffinity, PodAffinity, and PodAntiAffinity.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinity {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyAffinity {
     /// Describes node affinity scheduling rules for the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
-    pub node_affinity: Option<ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityNodeAffinity>,
+    pub node_affinity: Option<ClusterShardingsTemplateInstancesSchedulingPolicyAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
-    pub pod_affinity: Option<ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffinity>,
+    pub pod_affinity: Option<ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
-    pub pod_anti_affinity: Option<ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinity>,
+    pub pod_anti_affinity: Option<ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinity>,
 }
 
 /// Describes node affinity scheduling rules for the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityNodeAffinity {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyAffinityNodeAffinity {
     /// The scheduler will prefer to schedule pods to nodes that satisfy
     /// the affinity expressions specified by this field, but it may choose
     /// a node that violates one or more of the expressions. The node that is
@@ -8146,41 +8160,41 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityNodeAffi
     /// "weight" to the sum if the node matches the corresponding matchExpressions; the
     /// node(s) with the highest sum are the most preferred.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
-    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<ClusterShardingsTemplateInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
     /// at some point during pod execution (e.g. due to an update), the system
     /// may or may not try to eventually evict the pod from its node.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
-    pub required_during_scheduling_ignored_during_execution: Option<ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+    pub required_during_scheduling_ignored_during_execution: Option<ClusterShardingsTemplateInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
 /// An empty preferred scheduling term matches all objects with implicit weight 0
 /// (i.e. it's a no-op). A null preferred scheduling term matches no objects (i.e. is also a no-op).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// A node selector term, associated with the corresponding weight.
-    pub preference: ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
+    pub preference: ClusterShardingsTemplateInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
     /// Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.
     pub weight: i32,
 }
 
 /// A node selector term, associated with the corresponding weight.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference {
     /// A list of node selector requirements by node's labels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions>>,
+    pub match_expressions: Option<Vec<ClusterShardingsTemplateInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions>>,
     /// A list of node selector requirements by node's fields.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
-    pub match_fields: Option<Vec<ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields>>,
+    pub match_fields: Option<Vec<ClusterShardingsTemplateInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields>>,
 }
 
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -8198,7 +8212,7 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityNodeAffi
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -8219,29 +8233,29 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityNodeAffi
 /// at some point during pod execution (e.g. due to an update), the system
 /// may or may not try to eventually evict the pod from its node.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// Required. A list of node selector terms. The terms are ORed.
     #[serde(rename = "nodeSelectorTerms")]
-    pub node_selector_terms: Vec<ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
+    pub node_selector_terms: Vec<ClusterShardingsTemplateInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
 }
 
 /// A null or empty node selector term matches no objects. The requirements of
 /// them are ANDed.
 /// The TopologySelectorTerm type implements a subset of the NodeSelectorTerm.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms {
     /// A list of node selector requirements by node's labels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions>>,
+    pub match_expressions: Option<Vec<ClusterShardingsTemplateInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions>>,
     /// A list of node selector requirements by node's fields.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
-    pub match_fields: Option<Vec<ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields>>,
+    pub match_fields: Option<Vec<ClusterShardingsTemplateInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields>>,
 }
 
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -8259,7 +8273,7 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityNodeAffi
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -8276,7 +8290,7 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityNodeAffi
 
 /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffinity {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAffinity {
     /// The scheduler will prefer to schedule pods to nodes that satisfy
     /// the affinity expressions specified by this field, but it may choose
     /// a node that violates one or more of the expressions. The node that is
@@ -8287,7 +8301,7 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffin
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
-    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
@@ -8296,15 +8310,15 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffin
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
-    pub required_during_scheduling_ignored_during_execution: Option<Vec<ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// Required. A pod affinity term, associated with the corresponding weight.
     #[serde(rename = "podAffinityTerm")]
-    pub pod_affinity_term: ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    pub pod_affinity_term: ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
     /// weight associated with matching the corresponding podAffinityTerm,
     /// in the range 1-100.
     pub weight: i32,
@@ -8312,11 +8326,11 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffin
 
 /// Required. A pod affinity term, associated with the corresponding weight.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
     /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
-    pub label_selector: Option<ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    pub label_selector: Option<ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
     /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
@@ -8345,7 +8359,7 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffin
     /// null selector and null or empty namespaces list means "this pod's namespace".
     /// An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
-    pub namespace_selector: Option<ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
+    pub namespace_selector: Option<ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
     /// namespaces specifies a static list of namespace names that the term applies to.
     /// The term is applied to the union of the namespaces listed in this field
     /// and the ones selected by namespaceSelector.
@@ -8364,10 +8378,10 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffin
 /// A label query over a set of resources, in this case pods.
 /// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -8378,7 +8392,7 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8398,10 +8412,10 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffin
 /// null selector and null or empty namespaces list means "this pod's namespace".
 /// An empty selector ({}) matches all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -8412,7 +8426,7 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8433,11 +8447,11 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffin
 /// the label with key <topologyKey> matches that of any node on which
 /// a pod of the set of pods is running
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
     /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
-    pub label_selector: Option<ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    pub label_selector: Option<ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
     /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
@@ -8466,7 +8480,7 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffin
     /// null selector and null or empty namespaces list means "this pod's namespace".
     /// An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
-    pub namespace_selector: Option<ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
+    pub namespace_selector: Option<ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     /// namespaces specifies a static list of namespace names that the term applies to.
     /// The term is applied to the union of the namespaces listed in this field
     /// and the ones selected by namespaceSelector.
@@ -8485,10 +8499,10 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffin
 /// A label query over a set of resources, in this case pods.
 /// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -8499,7 +8513,7 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8519,10 +8533,10 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffin
 /// null selector and null or empty namespaces list means "this pod's namespace".
 /// An empty selector ({}) matches all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -8533,7 +8547,7 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8549,7 +8563,7 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAffin
 
 /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinity {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinity {
     /// The scheduler will prefer to schedule pods to nodes that satisfy
     /// the anti-affinity expressions specified by this field, but it may choose
     /// a node that violates one or more of the expressions. The node that is
@@ -8560,7 +8574,7 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiA
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
-    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the anti-affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the anti-affinity requirements specified by this field cease to be met
@@ -8569,15 +8583,15 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiA
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
-    pub required_during_scheduling_ignored_during_execution: Option<Vec<ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// Required. A pod affinity term, associated with the corresponding weight.
     #[serde(rename = "podAffinityTerm")]
-    pub pod_affinity_term: ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    pub pod_affinity_term: ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
     /// weight associated with matching the corresponding podAffinityTerm,
     /// in the range 1-100.
     pub weight: i32,
@@ -8585,11 +8599,11 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiA
 
 /// Required. A pod affinity term, associated with the corresponding weight.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
     /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
-    pub label_selector: Option<ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    pub label_selector: Option<ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
     /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
@@ -8618,7 +8632,7 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiA
     /// null selector and null or empty namespaces list means "this pod's namespace".
     /// An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
-    pub namespace_selector: Option<ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
+    pub namespace_selector: Option<ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
     /// namespaces specifies a static list of namespace names that the term applies to.
     /// The term is applied to the union of the namespaces listed in this field
     /// and the ones selected by namespaceSelector.
@@ -8637,10 +8651,10 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiA
 /// A label query over a set of resources, in this case pods.
 /// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -8651,7 +8665,7 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8671,10 +8685,10 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiA
 /// null selector and null or empty namespaces list means "this pod's namespace".
 /// An empty selector ({}) matches all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -8685,7 +8699,7 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8706,11 +8720,11 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiA
 /// the label with key <topologyKey> matches that of any node on which
 /// a pod of the set of pods is running
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
     /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
-    pub label_selector: Option<ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    pub label_selector: Option<ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
     /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
@@ -8739,7 +8753,7 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiA
     /// null selector and null or empty namespaces list means "this pod's namespace".
     /// An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
-    pub namespace_selector: Option<ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
+    pub namespace_selector: Option<ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     /// namespaces specifies a static list of namespace names that the term applies to.
     /// The term is applied to the union of the namespaces listed in this field
     /// and the ones selected by namespaceSelector.
@@ -8758,10 +8772,10 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiA
 /// A label query over a set of resources, in this case pods.
 /// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -8772,7 +8786,7 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8792,10 +8806,10 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiA
 /// null selector and null or empty namespaces list means "this pod's namespace".
 /// An empty selector ({}) matches all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -8806,7 +8820,7 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8823,7 +8837,7 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyAffinityPodAntiA
 /// The pod this Toleration is attached to tolerates any taint that matches
 /// the triple <key,value,effect> using the matching operator <operator>.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyTolerations {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyTolerations {
     /// Effect indicates the taint effect to match. Empty means match all taint effects.
     /// When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8852,12 +8866,12 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyTolerations {
 
 /// TopologySpreadConstraint specifies how to spread matching pods among the given topology.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyTopologySpreadConstraints {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyTopologySpreadConstraints {
     /// LabelSelector is used to find matching pods.
     /// Pods that match this label selector are counted to determine the number of pods
     /// in their corresponding topology domain.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
-    pub label_selector: Option<ClusterShardingSpecsTemplateInstancesSchedulingPolicyTopologySpreadConstraintsLabelSelector>,
+    pub label_selector: Option<ClusterShardingsTemplateInstancesSchedulingPolicyTopologySpreadConstraintsLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select the pods over which
     /// spreading will be calculated. The keys are used to lookup values from the
     /// incoming pod labels, those key-value labels are ANDed with labelSelector
@@ -8974,10 +8988,10 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyTopologySpreadCo
 /// Pods that match this label selector are counted to determine the number of pods
 /// in their corresponding topology domain.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyTopologySpreadConstraintsLabelSelector {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyTopologySpreadConstraintsLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ClusterShardingSpecsTemplateInstancesSchedulingPolicyTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<ClusterShardingsTemplateInstancesSchedulingPolicyTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -8988,7 +9002,7 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyTopologySpreadCo
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyTopologySpreadConstraintsLabelSelectorMatchExpressions {
+pub struct ClusterShardingsTemplateInstancesSchedulingPolicyTopologySpreadConstraintsLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -9003,7 +9017,7 @@ pub struct ClusterShardingSpecsTemplateInstancesSchedulingPolicyTopologySpreadCo
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumeClaimTemplates {
+pub struct ClusterShardingsTemplateInstancesVolumeClaimTemplates {
     /// Refers to the name of a volumeMount defined in either:
     /// 
     /// 
@@ -9020,7 +9034,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumeClaimTemplates {
     /// When a Pod is created for this ClusterComponent, a new PVC will be created based on the specification
     /// defined in the `spec` field. The PVC will be associated with the volume mount specified by the `name` field.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub spec: Option<ClusterShardingSpecsTemplateInstancesVolumeClaimTemplatesSpec>,
+    pub spec: Option<ClusterShardingsTemplateInstancesVolumeClaimTemplatesSpec>,
 }
 
 /// Defines the desired characteristics of a PersistentVolumeClaim that will be created for the volume
@@ -9030,7 +9044,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumeClaimTemplates {
 /// When a Pod is created for this ClusterComponent, a new PVC will be created based on the specification
 /// defined in the `spec` field. The PVC will be associated with the volume mount specified by the `name` field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumeClaimTemplatesSpec {
+pub struct ClusterShardingsTemplateInstancesVolumeClaimTemplatesSpec {
     /// Contains the desired access modes the volume should have.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
@@ -9040,7 +9054,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumeClaimTemplatesSpec {
     /// are lower than the previous value but must still be higher than the capacity recorded in the status field of the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<ClusterShardingSpecsTemplateInstancesVolumeClaimTemplatesSpecResources>,
+    pub resources: Option<ClusterShardingsTemplateInstancesVolumeClaimTemplatesSpecResources>,
     /// The name of the StorageClass required by the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
@@ -9055,7 +9069,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumeClaimTemplatesSpec {
 /// are lower than the previous value but must still be higher than the capacity recorded in the status field of the claim.
 /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumeClaimTemplatesSpecResources {
+pub struct ClusterShardingsTemplateInstancesVolumeClaimTemplatesSpecResources {
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9070,7 +9084,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumeClaimTemplatesSpecResource
 
 /// VolumeMount describes a mounting of a Volume within a container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumeMounts {
+pub struct ClusterShardingsTemplateInstancesVolumeMounts {
     /// Path within the container at which the volume should be mounted.  Must
     /// not contain ':'.
     #[serde(rename = "mountPath")]
@@ -9101,38 +9115,38 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumeMounts {
 
 /// Volume represents a named volume in a pod that may be accessed by any container in the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumes {
+pub struct ClusterShardingsTemplateInstancesVolumes {
     /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
-    pub aws_elastic_block_store: Option<ClusterShardingSpecsTemplateInstancesVolumesAwsElasticBlockStore>,
+    pub aws_elastic_block_store: Option<ClusterShardingsTemplateInstancesVolumesAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
-    pub azure_disk: Option<ClusterShardingSpecsTemplateInstancesVolumesAzureDisk>,
+    pub azure_disk: Option<ClusterShardingsTemplateInstancesVolumesAzureDisk>,
     /// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureFile")]
-    pub azure_file: Option<ClusterShardingSpecsTemplateInstancesVolumesAzureFile>,
+    pub azure_file: Option<ClusterShardingsTemplateInstancesVolumesAzureFile>,
     /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cephfs: Option<ClusterShardingSpecsTemplateInstancesVolumesCephfs>,
+    pub cephfs: Option<ClusterShardingsTemplateInstancesVolumesCephfs>,
     /// cinder represents a cinder volume attached and mounted on kubelets host machine.
     /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cinder: Option<ClusterShardingSpecsTemplateInstancesVolumesCinder>,
+    pub cinder: Option<ClusterShardingsTemplateInstancesVolumesCinder>,
     /// configMap represents a configMap that should populate this volume
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map: Option<ClusterShardingSpecsTemplateInstancesVolumesConfigMap>,
+    pub config_map: Option<ClusterShardingsTemplateInstancesVolumesConfigMap>,
     /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub csi: Option<ClusterShardingSpecsTemplateInstancesVolumesCsi>,
+    pub csi: Option<ClusterShardingsTemplateInstancesVolumesCsi>,
     /// downwardAPI represents downward API about the pod that should populate this volume
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
-    pub downward_api: Option<ClusterShardingSpecsTemplateInstancesVolumesDownwardApi>,
+    pub downward_api: Option<ClusterShardingsTemplateInstancesVolumesDownwardApi>,
     /// emptyDir represents a temporary directory that shares a pod's lifetime.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
-    pub empty_dir: Option<ClusterShardingSpecsTemplateInstancesVolumesEmptyDir>,
+    pub empty_dir: Option<ClusterShardingsTemplateInstancesVolumesEmptyDir>,
     /// ephemeral represents a volume that is handled by a cluster storage driver.
     /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
     /// and deleted when the pod is removed.
@@ -9162,32 +9176,32 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumes {
     /// A pod can use both types of ephemeral volumes and
     /// persistent volumes at the same time.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ephemeral: Option<ClusterShardingSpecsTemplateInstancesVolumesEphemeral>,
+    pub ephemeral: Option<ClusterShardingsTemplateInstancesVolumesEphemeral>,
     /// fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub fc: Option<ClusterShardingSpecsTemplateInstancesVolumesFc>,
+    pub fc: Option<ClusterShardingsTemplateInstancesVolumesFc>,
     /// flexVolume represents a generic volume resource that is
     /// provisioned/attached using an exec based plugin.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
-    pub flex_volume: Option<ClusterShardingSpecsTemplateInstancesVolumesFlexVolume>,
+    pub flex_volume: Option<ClusterShardingsTemplateInstancesVolumesFlexVolume>,
     /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub flocker: Option<ClusterShardingSpecsTemplateInstancesVolumesFlocker>,
+    pub flocker: Option<ClusterShardingsTemplateInstancesVolumesFlocker>,
     /// gcePersistentDisk represents a GCE Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
-    pub gce_persistent_disk: Option<ClusterShardingSpecsTemplateInstancesVolumesGcePersistentDisk>,
+    pub gce_persistent_disk: Option<ClusterShardingsTemplateInstancesVolumesGcePersistentDisk>,
     /// gitRepo represents a git repository at a particular revision.
     /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
     /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
     /// into the Pod's container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepo")]
-    pub git_repo: Option<ClusterShardingSpecsTemplateInstancesVolumesGitRepo>,
+    pub git_repo: Option<ClusterShardingsTemplateInstancesVolumesGitRepo>,
     /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
     /// More info: https://examples.k8s.io/volumes/glusterfs/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub glusterfs: Option<ClusterShardingSpecsTemplateInstancesVolumesGlusterfs>,
+    pub glusterfs: Option<ClusterShardingsTemplateInstancesVolumesGlusterfs>,
     /// hostPath represents a pre-existing file or directory on the host
     /// machine that is directly exposed to the container. This is generally
     /// used for system agents or other privileged things that are allowed
@@ -9197,12 +9211,12 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumes {
     /// TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not
     /// mount host directories as read/write.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
-    pub host_path: Option<ClusterShardingSpecsTemplateInstancesVolumesHostPath>,
+    pub host_path: Option<ClusterShardingsTemplateInstancesVolumesHostPath>,
     /// iscsi represents an ISCSI Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://examples.k8s.io/volumes/iscsi/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub iscsi: Option<ClusterShardingSpecsTemplateInstancesVolumesIscsi>,
+    pub iscsi: Option<ClusterShardingsTemplateInstancesVolumesIscsi>,
     /// name of the volume.
     /// Must be a DNS_LABEL and unique within the pod.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
@@ -9210,48 +9224,48 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumes {
     /// nfs represents an NFS mount on the host that shares a pod's lifetime
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub nfs: Option<ClusterShardingSpecsTemplateInstancesVolumesNfs>,
+    pub nfs: Option<ClusterShardingsTemplateInstancesVolumesNfs>,
     /// persistentVolumeClaimVolumeSource represents a reference to a
     /// PersistentVolumeClaim in the same namespace.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
-    pub persistent_volume_claim: Option<ClusterShardingSpecsTemplateInstancesVolumesPersistentVolumeClaim>,
+    pub persistent_volume_claim: Option<ClusterShardingsTemplateInstancesVolumesPersistentVolumeClaim>,
     /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
-    pub photon_persistent_disk: Option<ClusterShardingSpecsTemplateInstancesVolumesPhotonPersistentDisk>,
+    pub photon_persistent_disk: Option<ClusterShardingsTemplateInstancesVolumesPhotonPersistentDisk>,
     /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
-    pub portworx_volume: Option<ClusterShardingSpecsTemplateInstancesVolumesPortworxVolume>,
+    pub portworx_volume: Option<ClusterShardingsTemplateInstancesVolumesPortworxVolume>,
     /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub projected: Option<ClusterShardingSpecsTemplateInstancesVolumesProjected>,
+    pub projected: Option<ClusterShardingsTemplateInstancesVolumesProjected>,
     /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub quobyte: Option<ClusterShardingSpecsTemplateInstancesVolumesQuobyte>,
+    pub quobyte: Option<ClusterShardingsTemplateInstancesVolumesQuobyte>,
     /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
     /// More info: https://examples.k8s.io/volumes/rbd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub rbd: Option<ClusterShardingSpecsTemplateInstancesVolumesRbd>,
+    pub rbd: Option<ClusterShardingsTemplateInstancesVolumesRbd>,
     /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleIO")]
-    pub scale_io: Option<ClusterShardingSpecsTemplateInstancesVolumesScaleIo>,
+    pub scale_io: Option<ClusterShardingsTemplateInstancesVolumesScaleIo>,
     /// secret represents a secret that should populate this volume.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret: Option<ClusterShardingSpecsTemplateInstancesVolumesSecret>,
+    pub secret: Option<ClusterShardingsTemplateInstancesVolumesSecret>,
     /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub storageos: Option<ClusterShardingSpecsTemplateInstancesVolumesStorageos>,
+    pub storageos: Option<ClusterShardingsTemplateInstancesVolumesStorageos>,
     /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
-    pub vsphere_volume: Option<ClusterShardingSpecsTemplateInstancesVolumesVsphereVolume>,
+    pub vsphere_volume: Option<ClusterShardingsTemplateInstancesVolumesVsphereVolume>,
 }
 
 /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
 /// kubelet's host machine and then exposed to the pod.
 /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesAwsElasticBlockStore {
+pub struct ClusterShardingsTemplateInstancesVolumesAwsElasticBlockStore {
     /// fsType is the filesystem type of the volume that you want to mount.
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
     /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
@@ -9277,7 +9291,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesAwsElasticBlockStore {
 
 /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesAzureDisk {
+pub struct ClusterShardingsTemplateInstancesVolumesAzureDisk {
     /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
     pub caching_mode: Option<String>,
@@ -9303,7 +9317,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesAzureDisk {
 
 /// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesAzureFile {
+pub struct ClusterShardingsTemplateInstancesVolumesAzureFile {
     /// readOnly defaults to false (read/write). ReadOnly here will force
     /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
@@ -9318,7 +9332,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesAzureFile {
 
 /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesCephfs {
+pub struct ClusterShardingsTemplateInstancesVolumesCephfs {
     /// monitors is Required: Monitors is a collection of Ceph monitors
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     pub monitors: Vec<String>,
@@ -9337,7 +9351,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesCephfs {
     /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<ClusterShardingSpecsTemplateInstancesVolumesCephfsSecretRef>,
+    pub secret_ref: Option<ClusterShardingsTemplateInstancesVolumesCephfsSecretRef>,
     /// user is optional: User is the rados user name, default is admin
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9347,7 +9361,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesCephfs {
 /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
 /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesCephfsSecretRef {
+pub struct ClusterShardingsTemplateInstancesVolumesCephfsSecretRef {
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -9358,7 +9372,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesCephfsSecretRef {
 /// cinder represents a cinder volume attached and mounted on kubelets host machine.
 /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesCinder {
+pub struct ClusterShardingsTemplateInstancesVolumesCinder {
     /// fsType is the filesystem type to mount.
     /// Must be a filesystem type supported by the host operating system.
     /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
@@ -9373,7 +9387,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesCinder {
     /// secretRef is optional: points to a secret object containing parameters used to connect
     /// to OpenStack.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<ClusterShardingSpecsTemplateInstancesVolumesCinderSecretRef>,
+    pub secret_ref: Option<ClusterShardingsTemplateInstancesVolumesCinderSecretRef>,
     /// volumeID used to identify the volume in cinder.
     /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(rename = "volumeID")]
@@ -9383,7 +9397,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesCinder {
 /// secretRef is optional: points to a secret object containing parameters used to connect
 /// to OpenStack.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesCinderSecretRef {
+pub struct ClusterShardingsTemplateInstancesVolumesCinderSecretRef {
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -9393,7 +9407,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesCinderSecretRef {
 
 /// configMap represents a configMap that should populate this volume
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesConfigMap {
+pub struct ClusterShardingsTemplateInstancesVolumesConfigMap {
     /// defaultMode is optional: mode bits used to set permissions on created files by default.
     /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
     /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
@@ -9411,7 +9425,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesConfigMap {
     /// the volume setup will error unless it is marked optional. Paths must be
     /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<ClusterShardingSpecsTemplateInstancesVolumesConfigMapItems>>,
+    pub items: Option<Vec<ClusterShardingsTemplateInstancesVolumesConfigMapItems>>,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -9424,7 +9438,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesConfigMap {
 
 /// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesConfigMapItems {
+pub struct ClusterShardingsTemplateInstancesVolumesConfigMapItems {
     /// key is the key to project.
     pub key: String,
     /// mode is Optional: mode bits used to set permissions on this file.
@@ -9444,7 +9458,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesConfigMapItems {
 
 /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesCsi {
+pub struct ClusterShardingsTemplateInstancesVolumesCsi {
     /// driver is the name of the CSI driver that handles this volume.
     /// Consult with your admin for the correct name as registered in the cluster.
     pub driver: String,
@@ -9459,7 +9473,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesCsi {
     /// This field is optional, and  may be empty if no secret is required. If the
     /// secret object contains more than one secret, all secret references are passed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
-    pub node_publish_secret_ref: Option<ClusterShardingSpecsTemplateInstancesVolumesCsiNodePublishSecretRef>,
+    pub node_publish_secret_ref: Option<ClusterShardingsTemplateInstancesVolumesCsiNodePublishSecretRef>,
     /// readOnly specifies a read-only configuration for the volume.
     /// Defaults to false (read/write).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
@@ -9476,7 +9490,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesCsi {
 /// This field is optional, and  may be empty if no secret is required. If the
 /// secret object contains more than one secret, all secret references are passed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesCsiNodePublishSecretRef {
+pub struct ClusterShardingsTemplateInstancesVolumesCsiNodePublishSecretRef {
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -9486,7 +9500,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesCsiNodePublishSecretRef {
 
 /// downwardAPI represents downward API about the pod that should populate this volume
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesDownwardApi {
+pub struct ClusterShardingsTemplateInstancesVolumesDownwardApi {
     /// Optional: mode bits to use on created files by default. Must be a
     /// Optional: mode bits used to set permissions on created files by default.
     /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
@@ -9499,15 +9513,15 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesDownwardApi {
     pub default_mode: Option<i32>,
     /// Items is a list of downward API volume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<ClusterShardingSpecsTemplateInstancesVolumesDownwardApiItems>>,
+    pub items: Option<Vec<ClusterShardingsTemplateInstancesVolumesDownwardApiItems>>,
 }
 
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesDownwardApiItems {
+pub struct ClusterShardingsTemplateInstancesVolumesDownwardApiItems {
     /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<ClusterShardingSpecsTemplateInstancesVolumesDownwardApiItemsFieldRef>,
+    pub field_ref: Option<ClusterShardingsTemplateInstancesVolumesDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
     /// between 0000 and 0777 or a decimal value between 0 and 511.
     /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
@@ -9521,12 +9535,12 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesDownwardApiItems {
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<ClusterShardingSpecsTemplateInstancesVolumesDownwardApiItemsResourceFieldRef>,
+    pub resource_field_ref: Option<ClusterShardingsTemplateInstancesVolumesDownwardApiItemsResourceFieldRef>,
 }
 
 /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesDownwardApiItemsFieldRef {
+pub struct ClusterShardingsTemplateInstancesVolumesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
@@ -9538,7 +9552,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesDownwardApiItemsFieldRef 
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesDownwardApiItemsResourceFieldRef {
+pub struct ClusterShardingsTemplateInstancesVolumesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
@@ -9552,7 +9566,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesDownwardApiItemsResourceF
 /// emptyDir represents a temporary directory that shares a pod's lifetime.
 /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesEmptyDir {
+pub struct ClusterShardingsTemplateInstancesVolumesEmptyDir {
     /// medium represents what type of storage medium should back this directory.
     /// The default is "" which means to use the node's default medium.
     /// Must be an empty string (default) or Memory.
@@ -9598,7 +9612,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesEmptyDir {
 /// A pod can use both types of ephemeral volumes and
 /// persistent volumes at the same time.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesEphemeral {
+pub struct ClusterShardingsTemplateInstancesVolumesEphemeral {
     /// Will be used to create a stand-alone PVC to provision the volume.
     /// The pod in which this EphemeralVolumeSource is embedded will be the
     /// owner of the PVC, i.e. the PVC will be deleted together with the
@@ -9624,7 +9638,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesEphemeral {
     /// 
     /// Required, must not be nil.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
-    pub volume_claim_template: Option<ClusterShardingSpecsTemplateInstancesVolumesEphemeralVolumeClaimTemplate>,
+    pub volume_claim_template: Option<ClusterShardingsTemplateInstancesVolumesEphemeralVolumeClaimTemplate>,
 }
 
 /// Will be used to create a stand-alone PVC to provision the volume.
@@ -9652,24 +9666,24 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesEphemeral {
 /// 
 /// Required, must not be nil.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesEphemeralVolumeClaimTemplate {
+pub struct ClusterShardingsTemplateInstancesVolumesEphemeralVolumeClaimTemplate {
     /// May contain labels and annotations that will be copied into the PVC
     /// when creating it. No other fields are allowed and will be rejected during
     /// validation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<ClusterShardingSpecsTemplateInstancesVolumesEphemeralVolumeClaimTemplateMetadata>,
+    pub metadata: Option<ClusterShardingsTemplateInstancesVolumesEphemeralVolumeClaimTemplateMetadata>,
     /// The specification for the PersistentVolumeClaim. The entire content is
     /// copied unchanged into the PVC that gets created from this
     /// template. The same fields as in a PersistentVolumeClaim
     /// are also valid here.
-    pub spec: ClusterShardingSpecsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpec,
+    pub spec: ClusterShardingsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpec,
 }
 
 /// May contain labels and annotations that will be copied into the PVC
 /// when creating it. No other fields are allowed and will be rejected during
 /// validation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesEphemeralVolumeClaimTemplateMetadata {
+pub struct ClusterShardingsTemplateInstancesVolumesEphemeralVolumeClaimTemplateMetadata {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9687,7 +9701,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesEphemeralVolumeClaimTempl
 /// template. The same fields as in a PersistentVolumeClaim
 /// are also valid here.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpec {
+pub struct ClusterShardingsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpec {
     /// accessModes contains the desired access modes the volume should have.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
@@ -9701,7 +9715,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesEphemeralVolumeClaimTempl
     /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
     /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
-    pub data_source: Option<ClusterShardingSpecsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
+    pub data_source: Option<ClusterShardingsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
     /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
     /// volume is desired. This may be any object from a non-empty API group (non
     /// core object) or a PersistentVolumeClaim object.
@@ -9726,17 +9740,17 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesEphemeralVolumeClaimTempl
     /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
     /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
-    pub data_source_ref: Option<ClusterShardingSpecsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
+    pub data_source_ref: Option<ClusterShardingsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
     /// resources represents the minimum resources the volume should have.
     /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
     /// that are lower than previous value but must still be higher than capacity recorded in the
     /// status field of the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<ClusterShardingSpecsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpecResources>,
+    pub resources: Option<ClusterShardingsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpecResources>,
     /// selector is a label query over volumes to consider for binding.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub selector: Option<ClusterShardingSpecsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpecSelector>,
+    pub selector: Option<ClusterShardingsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpecSelector>,
     /// storageClassName is the name of the StorageClass required by the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
@@ -9773,7 +9787,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesEphemeralVolumeClaimTempl
 /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
 /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpecDataSource {
+pub struct ClusterShardingsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpecDataSource {
     /// APIGroup is the group for the resource being referenced.
     /// If APIGroup is not specified, the specified Kind must be in the core API group.
     /// For any other third-party types, APIGroup is required.
@@ -9809,7 +9823,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesEphemeralVolumeClaimTempl
 /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
 /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef {
+pub struct ClusterShardingsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef {
     /// APIGroup is the group for the resource being referenced.
     /// If APIGroup is not specified, the specified Kind must be in the core API group.
     /// For any other third-party types, APIGroup is required.
@@ -9832,7 +9846,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesEphemeralVolumeClaimTempl
 /// status field of the claim.
 /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpecResources {
+pub struct ClusterShardingsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpecResources {
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9847,10 +9861,10 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesEphemeralVolumeClaimTempl
 
 /// selector is a label query over volumes to consider for binding.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpecSelector {
+pub struct ClusterShardingsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpecSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ClusterShardingSpecsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<ClusterShardingsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -9861,7 +9875,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesEphemeralVolumeClaimTempl
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
+pub struct ClusterShardingsTemplateInstancesVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -9877,7 +9891,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesEphemeralVolumeClaimTempl
 
 /// fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesFc {
+pub struct ClusterShardingsTemplateInstancesVolumesFc {
     /// fsType is the filesystem type to mount.
     /// Must be a filesystem type supported by the host operating system.
     /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
@@ -9903,7 +9917,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesFc {
 /// flexVolume represents a generic volume resource that is
 /// provisioned/attached using an exec based plugin.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesFlexVolume {
+pub struct ClusterShardingsTemplateInstancesVolumesFlexVolume {
     /// driver is the name of the driver to use for this volume.
     pub driver: String,
     /// fsType is the filesystem type to mount.
@@ -9924,7 +9938,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesFlexVolume {
     /// contains more than one secret, all secrets are passed to the plugin
     /// scripts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<ClusterShardingSpecsTemplateInstancesVolumesFlexVolumeSecretRef>,
+    pub secret_ref: Option<ClusterShardingsTemplateInstancesVolumesFlexVolumeSecretRef>,
 }
 
 /// secretRef is Optional: secretRef is reference to the secret object containing
@@ -9933,7 +9947,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesFlexVolume {
 /// contains more than one secret, all secrets are passed to the plugin
 /// scripts.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesFlexVolumeSecretRef {
+pub struct ClusterShardingsTemplateInstancesVolumesFlexVolumeSecretRef {
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -9943,7 +9957,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesFlexVolumeSecretRef {
 
 /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesFlocker {
+pub struct ClusterShardingsTemplateInstancesVolumesFlocker {
     /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
     /// should be considered as deprecated
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
@@ -9957,7 +9971,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesFlocker {
 /// kubelet's host machine and then exposed to the pod.
 /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesGcePersistentDisk {
+pub struct ClusterShardingsTemplateInstancesVolumesGcePersistentDisk {
     /// fsType is filesystem type of the volume that you want to mount.
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
     /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
@@ -9988,7 +10002,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesGcePersistentDisk {
 /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
 /// into the Pod's container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesGitRepo {
+pub struct ClusterShardingsTemplateInstancesVolumesGitRepo {
     /// directory is the target directory name.
     /// Must not contain or start with '..'.  If '.' is supplied, the volume directory will be the
     /// git repository.  Otherwise, if specified, the volume will contain the git repository in
@@ -10005,7 +10019,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesGitRepo {
 /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
 /// More info: https://examples.k8s.io/volumes/glusterfs/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesGlusterfs {
+pub struct ClusterShardingsTemplateInstancesVolumesGlusterfs {
     /// endpoints is the endpoint name that details Glusterfs topology.
     /// More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
     pub endpoints: String,
@@ -10028,7 +10042,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesGlusterfs {
 /// TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not
 /// mount host directories as read/write.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesHostPath {
+pub struct ClusterShardingsTemplateInstancesVolumesHostPath {
     /// path of the directory on the host.
     /// If the path is a symlink, it will follow the link to the real path.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
@@ -10044,7 +10058,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesHostPath {
 /// kubelet's host machine and then exposed to the pod.
 /// More info: https://examples.k8s.io/volumes/iscsi/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesIscsi {
+pub struct ClusterShardingsTemplateInstancesVolumesIscsi {
     /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
@@ -10081,7 +10095,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesIscsi {
     pub read_only: Option<bool>,
     /// secretRef is the CHAP Secret for iSCSI target and initiator authentication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<ClusterShardingSpecsTemplateInstancesVolumesIscsiSecretRef>,
+    pub secret_ref: Option<ClusterShardingsTemplateInstancesVolumesIscsiSecretRef>,
     /// targetPortal is iSCSI Target Portal. The Portal is either an IP or ip_addr:port if the port
     /// is other than default (typically TCP ports 860 and 3260).
     #[serde(rename = "targetPortal")]
@@ -10090,7 +10104,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesIscsi {
 
 /// secretRef is the CHAP Secret for iSCSI target and initiator authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesIscsiSecretRef {
+pub struct ClusterShardingsTemplateInstancesVolumesIscsiSecretRef {
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -10101,7 +10115,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesIscsiSecretRef {
 /// nfs represents an NFS mount on the host that shares a pod's lifetime
 /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesNfs {
+pub struct ClusterShardingsTemplateInstancesVolumesNfs {
     /// path that is exported by the NFS server.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
     pub path: String,
@@ -10119,7 +10133,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesNfs {
 /// PersistentVolumeClaim in the same namespace.
 /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesPersistentVolumeClaim {
+pub struct ClusterShardingsTemplateInstancesVolumesPersistentVolumeClaim {
     /// claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
     #[serde(rename = "claimName")]
@@ -10132,7 +10146,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesPersistentVolumeClaim {
 
 /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesPhotonPersistentDisk {
+pub struct ClusterShardingsTemplateInstancesVolumesPhotonPersistentDisk {
     /// fsType is the filesystem type to mount.
     /// Must be a filesystem type supported by the host operating system.
     /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
@@ -10145,7 +10159,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesPhotonPersistentDisk {
 
 /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesPortworxVolume {
+pub struct ClusterShardingsTemplateInstancesVolumesPortworxVolume {
     /// fSType represents the filesystem type to mount
     /// Must be a filesystem type supported by the host operating system.
     /// Ex. "ext4", "xfs". Implicitly inferred to be "ext4" if unspecified.
@@ -10162,7 +10176,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesPortworxVolume {
 
 /// projected items for all in one resources secrets, configmaps, and downward API
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesProjected {
+pub struct ClusterShardingsTemplateInstancesVolumesProjected {
     /// defaultMode are the mode bits used to set permissions on created files by default.
     /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
     /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
@@ -10173,12 +10187,12 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesProjected {
     pub default_mode: Option<i32>,
     /// sources is the list of volume projections
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sources: Option<Vec<ClusterShardingSpecsTemplateInstancesVolumesProjectedSources>>,
+    pub sources: Option<Vec<ClusterShardingsTemplateInstancesVolumesProjectedSources>>,
 }
 
 /// Projection that may be projected along with other supported volume types
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesProjectedSources {
+pub struct ClusterShardingsTemplateInstancesVolumesProjectedSources {
     /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
     /// of ClusterTrustBundle objects in an auto-updating file.
     /// 
@@ -10196,19 +10210,19 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesProjectedSources {
     /// The ordering of certificates within the file is arbitrary, and Kubelet
     /// may change the order over time.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
-    pub cluster_trust_bundle: Option<ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesClusterTrustBundle>,
+    pub cluster_trust_bundle: Option<ClusterShardingsTemplateInstancesVolumesProjectedSourcesClusterTrustBundle>,
     /// configMap information about the configMap data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map: Option<ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesConfigMap>,
+    pub config_map: Option<ClusterShardingsTemplateInstancesVolumesProjectedSourcesConfigMap>,
     /// downwardAPI information about the downwardAPI data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
-    pub downward_api: Option<ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesDownwardApi>,
+    pub downward_api: Option<ClusterShardingsTemplateInstancesVolumesProjectedSourcesDownwardApi>,
     /// secret information about the secret data to project
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret: Option<ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesSecret>,
+    pub secret: Option<ClusterShardingsTemplateInstancesVolumesProjectedSourcesSecret>,
     /// serviceAccountToken is information about the serviceAccountToken data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
-    pub service_account_token: Option<ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesServiceAccountToken>,
+    pub service_account_token: Option<ClusterShardingsTemplateInstancesVolumesProjectedSourcesServiceAccountToken>,
 }
 
 /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
@@ -10228,13 +10242,13 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesProjectedSources {
 /// The ordering of certificates within the file is arbitrary, and Kubelet
 /// may change the order over time.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesClusterTrustBundle {
+pub struct ClusterShardingsTemplateInstancesVolumesProjectedSourcesClusterTrustBundle {
     /// Select all ClusterTrustBundles that match this label selector.  Only has
     /// effect if signerName is set.  Mutually-exclusive with name.  If unset,
     /// interpreted as "match nothing".  If set but empty, interpreted as "match
     /// everything".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
-    pub label_selector: Option<ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
+    pub label_selector: Option<ClusterShardingsTemplateInstancesVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
     /// Select a single ClusterTrustBundle by object name.  Mutually-exclusive
     /// with signerName and labelSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10260,10 +10274,10 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesClusterTr
 /// interpreted as "match nothing".  If set but empty, interpreted as "match
 /// everything".
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesClusterTrustBundleLabelSelector {
+pub struct ClusterShardingsTemplateInstancesVolumesProjectedSourcesClusterTrustBundleLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<ClusterShardingsTemplateInstancesVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -10274,7 +10288,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesClusterTr
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
+pub struct ClusterShardingsTemplateInstancesVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -10290,7 +10304,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesClusterTr
 
 /// configMap information about the configMap data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesConfigMap {
+pub struct ClusterShardingsTemplateInstancesVolumesProjectedSourcesConfigMap {
     /// items if unspecified, each key-value pair in the Data field of the referenced
     /// ConfigMap will be projected into the volume as a file whose name is the
     /// key and content is the value. If specified, the listed keys will be
@@ -10299,7 +10313,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesConfigMap
     /// the volume setup will error unless it is marked optional. Paths must be
     /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesConfigMapItems>>,
+    pub items: Option<Vec<ClusterShardingsTemplateInstancesVolumesProjectedSourcesConfigMapItems>>,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -10312,7 +10326,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesConfigMap
 
 /// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesConfigMapItems {
+pub struct ClusterShardingsTemplateInstancesVolumesProjectedSourcesConfigMapItems {
     /// key is the key to project.
     pub key: String,
     /// mode is Optional: mode bits used to set permissions on this file.
@@ -10332,18 +10346,18 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesConfigMap
 
 /// downwardAPI information about the downwardAPI data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesDownwardApi {
+pub struct ClusterShardingsTemplateInstancesVolumesProjectedSourcesDownwardApi {
     /// Items is a list of DownwardAPIVolume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesDownwardApiItems>>,
+    pub items: Option<Vec<ClusterShardingsTemplateInstancesVolumesProjectedSourcesDownwardApiItems>>,
 }
 
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesDownwardApiItems {
+pub struct ClusterShardingsTemplateInstancesVolumesProjectedSourcesDownwardApiItems {
     /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesDownwardApiItemsFieldRef>,
+    pub field_ref: Option<ClusterShardingsTemplateInstancesVolumesProjectedSourcesDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
     /// between 0000 and 0777 or a decimal value between 0 and 511.
     /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
@@ -10357,12 +10371,12 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesDownwardA
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
+    pub resource_field_ref: Option<ClusterShardingsTemplateInstancesVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
 }
 
 /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesDownwardApiItemsFieldRef {
+pub struct ClusterShardingsTemplateInstancesVolumesProjectedSourcesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
@@ -10374,7 +10388,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesDownwardA
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
+pub struct ClusterShardingsTemplateInstancesVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
@@ -10387,7 +10401,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesDownwardA
 
 /// secret information about the secret data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesSecret {
+pub struct ClusterShardingsTemplateInstancesVolumesProjectedSourcesSecret {
     /// items if unspecified, each key-value pair in the Data field of the referenced
     /// Secret will be projected into the volume as a file whose name is the
     /// key and content is the value. If specified, the listed keys will be
@@ -10396,7 +10410,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesSecret {
     /// the volume setup will error unless it is marked optional. Paths must be
     /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesSecretItems>>,
+    pub items: Option<Vec<ClusterShardingsTemplateInstancesVolumesProjectedSourcesSecretItems>>,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -10409,7 +10423,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesSecret {
 
 /// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesSecretItems {
+pub struct ClusterShardingsTemplateInstancesVolumesProjectedSourcesSecretItems {
     /// key is the key to project.
     pub key: String,
     /// mode is Optional: mode bits used to set permissions on this file.
@@ -10429,7 +10443,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesSecretIte
 
 /// serviceAccountToken is information about the serviceAccountToken data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesServiceAccountToken {
+pub struct ClusterShardingsTemplateInstancesVolumesProjectedSourcesServiceAccountToken {
     /// audience is the intended audience of the token. A recipient of a token
     /// must identify itself with an identifier specified in the audience of the
     /// token, and otherwise should reject the token. The audience defaults to the
@@ -10451,7 +10465,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesProjectedSourcesServiceAc
 
 /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesQuobyte {
+pub struct ClusterShardingsTemplateInstancesVolumesQuobyte {
     /// group to map volume access to
     /// Default is no group
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10479,7 +10493,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesQuobyte {
 /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
 /// More info: https://examples.k8s.io/volumes/rbd/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesRbd {
+pub struct ClusterShardingsTemplateInstancesVolumesRbd {
     /// fsType is the filesystem type of the volume that you want to mount.
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
     /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
@@ -10513,7 +10527,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesRbd {
     /// Default is nil.
     /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<ClusterShardingSpecsTemplateInstancesVolumesRbdSecretRef>,
+    pub secret_ref: Option<ClusterShardingsTemplateInstancesVolumesRbdSecretRef>,
     /// user is the rados user name.
     /// Default is admin.
     /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
@@ -10526,7 +10540,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesRbd {
 /// Default is nil.
 /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesRbdSecretRef {
+pub struct ClusterShardingsTemplateInstancesVolumesRbdSecretRef {
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -10536,7 +10550,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesRbdSecretRef {
 
 /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesScaleIo {
+pub struct ClusterShardingsTemplateInstancesVolumesScaleIo {
     /// fsType is the filesystem type to mount.
     /// Must be a filesystem type supported by the host operating system.
     /// Ex. "ext4", "xfs", "ntfs".
@@ -10555,7 +10569,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesScaleIo {
     /// secretRef references to the secret for ScaleIO user and other
     /// sensitive information. If this is not provided, Login operation will fail.
     #[serde(rename = "secretRef")]
-    pub secret_ref: ClusterShardingSpecsTemplateInstancesVolumesScaleIoSecretRef,
+    pub secret_ref: ClusterShardingsTemplateInstancesVolumesScaleIoSecretRef,
     /// sslEnabled Flag enable/disable SSL communication with Gateway, default false
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
@@ -10577,7 +10591,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesScaleIo {
 /// secretRef references to the secret for ScaleIO user and other
 /// sensitive information. If this is not provided, Login operation will fail.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesScaleIoSecretRef {
+pub struct ClusterShardingsTemplateInstancesVolumesScaleIoSecretRef {
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -10588,7 +10602,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesScaleIoSecretRef {
 /// secret represents a secret that should populate this volume.
 /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesSecret {
+pub struct ClusterShardingsTemplateInstancesVolumesSecret {
     /// defaultMode is Optional: mode bits used to set permissions on created files by default.
     /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
     /// YAML accepts both octal and decimal values, JSON requires decimal values
@@ -10606,7 +10620,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesSecret {
     /// the volume setup will error unless it is marked optional. Paths must be
     /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<ClusterShardingSpecsTemplateInstancesVolumesSecretItems>>,
+    pub items: Option<Vec<ClusterShardingsTemplateInstancesVolumesSecretItems>>,
     /// optional field specify whether the Secret or its keys must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
@@ -10618,7 +10632,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesSecret {
 
 /// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesSecretItems {
+pub struct ClusterShardingsTemplateInstancesVolumesSecretItems {
     /// key is the key to project.
     pub key: String,
     /// mode is Optional: mode bits used to set permissions on this file.
@@ -10638,7 +10652,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesSecretItems {
 
 /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesStorageos {
+pub struct ClusterShardingsTemplateInstancesVolumesStorageos {
     /// fsType is the filesystem type to mount.
     /// Must be a filesystem type supported by the host operating system.
     /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
@@ -10651,7 +10665,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesStorageos {
     /// secretRef specifies the secret to use for obtaining the StorageOS API
     /// credentials.  If not specified, default values will be attempted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<ClusterShardingSpecsTemplateInstancesVolumesStorageosSecretRef>,
+    pub secret_ref: Option<ClusterShardingsTemplateInstancesVolumesStorageosSecretRef>,
     /// volumeName is the human-readable name of the StorageOS volume.  Volume
     /// names are only unique within a namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
@@ -10669,7 +10683,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesStorageos {
 /// secretRef specifies the secret to use for obtaining the StorageOS API
 /// credentials.  If not specified, default values will be attempted.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesStorageosSecretRef {
+pub struct ClusterShardingsTemplateInstancesVolumesStorageosSecretRef {
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -10679,7 +10693,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesStorageosSecretRef {
 
 /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateInstancesVolumesVsphereVolume {
+pub struct ClusterShardingsTemplateInstancesVolumesVsphereVolume {
     /// fsType is filesystem type to mount.
     /// Must be a filesystem type supported by the host operating system.
     /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
@@ -10701,7 +10715,7 @@ pub struct ClusterShardingSpecsTemplateInstancesVolumesVsphereVolume {
 /// The secret should contain the CA certificate, TLS certificate, and private key in the specified keys.
 /// Required when TLS is enabled.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateIssuer {
+pub struct ClusterShardingsTemplateIssuer {
     /// The issuer for TLS certificates.
     /// It only allows two enum values: `KubeBlocks` and `UserProvided`.
     /// 
@@ -10714,13 +10728,13 @@ pub struct ClusterShardingSpecsTemplateIssuer {
     /// SecretRef is the reference to the secret that contains user-provided certificates.
     /// It is required when the issuer is set to `UserProvided`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<ClusterShardingSpecsTemplateIssuerSecretRef>,
+    pub secret_ref: Option<ClusterShardingsTemplateIssuerSecretRef>,
 }
 
 /// SecretRef is the reference to the secret that contains user-provided certificates.
 /// It is required when the issuer is set to `UserProvided`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateIssuerSecretRef {
+pub struct ClusterShardingsTemplateIssuerSecretRef {
     /// Key of CA cert in Secret
     pub ca: String,
     /// Key of Cert in Secret
@@ -10732,16 +10746,18 @@ pub struct ClusterShardingSpecsTemplateIssuerSecretRef {
 }
 
 /// The template for generating Components for shards, where each shard consists of one Component.
+/// 
+/// 
 /// This field is of type ClusterComponentSpec, which encapsulates all the required details and
 /// definitions for creating and managing the Components.
-/// KubeBlocks uses this template to generate a set of identical Components or shards.
+/// KubeBlocks uses this template to generate a set of identical Components of shards.
 /// All the generated Components will have the same specifications and definitions as specified in the `template` field.
 /// 
 /// 
 /// This allows for the creation of multiple Components with consistent configurations,
 /// enabling sharding and distribution of workloads across Components.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ClusterShardingSpecsTemplatePodUpdatePolicy {
+pub enum ClusterShardingsTemplatePodUpdatePolicy {
     StrictInPlace,
     PreferInPlace,
 }
@@ -10749,7 +10765,7 @@ pub enum ClusterShardingSpecsTemplatePodUpdatePolicy {
 /// Specifies the resources required by the Component.
 /// It allows defining the CPU, memory requirements and limits for the Component's containers.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateResources {
+pub struct ClusterShardingsTemplateResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
     /// 
@@ -10760,7 +10776,7 @@ pub struct ClusterShardingSpecsTemplateResources {
     /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<Vec<ClusterShardingSpecsTemplateResourcesClaims>>,
+    pub claims: Option<Vec<ClusterShardingsTemplateResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10775,7 +10791,7 @@ pub struct ClusterShardingSpecsTemplateResources {
 
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateResourcesClaims {
+pub struct ClusterShardingsTemplateResourcesClaims {
     /// Name must match the name of one entry in pod.spec.resourceClaims of
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
@@ -10784,10 +10800,10 @@ pub struct ClusterShardingSpecsTemplateResourcesClaims {
 
 /// Specifies the scheduling policy for the Component.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicy {
+pub struct ClusterShardingsTemplateSchedulingPolicy {
     /// Specifies a group of affinity scheduling rules of the Cluster, including NodeAffinity, PodAffinity, and PodAntiAffinity.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub affinity: Option<ClusterShardingSpecsTemplateSchedulingPolicyAffinity>,
+    pub affinity: Option<ClusterShardingsTemplateSchedulingPolicyAffinity>,
     /// NodeName is a request to schedule this Pod onto a specific node. If it is non-empty,
     /// the scheduler simply schedules this Pod onto that node, assuming that it fits resource
     /// requirements.
@@ -10813,31 +10829,31 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicy {
     /// 
     /// Pods with matching tolerations are allowed to be scheduled on tainted nodes, typically reserved for specific purposes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tolerations: Option<Vec<ClusterShardingSpecsTemplateSchedulingPolicyTolerations>>,
+    pub tolerations: Option<Vec<ClusterShardingsTemplateSchedulingPolicyTolerations>>,
     /// TopologySpreadConstraints describes how a group of Pods ought to spread across topology
     /// domains. Scheduler will schedule Pods in a way which abides by the constraints.
     /// All topologySpreadConstraints are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
-    pub topology_spread_constraints: Option<Vec<ClusterShardingSpecsTemplateSchedulingPolicyTopologySpreadConstraints>>,
+    pub topology_spread_constraints: Option<Vec<ClusterShardingsTemplateSchedulingPolicyTopologySpreadConstraints>>,
 }
 
 /// Specifies a group of affinity scheduling rules of the Cluster, including NodeAffinity, PodAffinity, and PodAntiAffinity.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinity {
+pub struct ClusterShardingsTemplateSchedulingPolicyAffinity {
     /// Describes node affinity scheduling rules for the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
-    pub node_affinity: Option<ClusterShardingSpecsTemplateSchedulingPolicyAffinityNodeAffinity>,
+    pub node_affinity: Option<ClusterShardingsTemplateSchedulingPolicyAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
-    pub pod_affinity: Option<ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinity>,
+    pub pod_affinity: Option<ClusterShardingsTemplateSchedulingPolicyAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
-    pub pod_anti_affinity: Option<ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinity>,
+    pub pod_anti_affinity: Option<ClusterShardingsTemplateSchedulingPolicyAffinityPodAntiAffinity>,
 }
 
 /// Describes node affinity scheduling rules for the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityNodeAffinity {
+pub struct ClusterShardingsTemplateSchedulingPolicyAffinityNodeAffinity {
     /// The scheduler will prefer to schedule pods to nodes that satisfy
     /// the affinity expressions specified by this field, but it may choose
     /// a node that violates one or more of the expressions. The node that is
@@ -10848,41 +10864,41 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityNodeAffinity {
     /// "weight" to the sum if the node matches the corresponding matchExpressions; the
     /// node(s) with the highest sum are the most preferred.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
-    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<ClusterShardingSpecsTemplateSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<ClusterShardingsTemplateSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
     /// at some point during pod execution (e.g. due to an update), the system
     /// may or may not try to eventually evict the pod from its node.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
-    pub required_during_scheduling_ignored_during_execution: Option<ClusterShardingSpecsTemplateSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+    pub required_during_scheduling_ignored_during_execution: Option<ClusterShardingsTemplateSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
 /// An empty preferred scheduling term matches all objects with implicit weight 0
 /// (i.e. it's a no-op). A null preferred scheduling term matches no objects (i.e. is also a no-op).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+pub struct ClusterShardingsTemplateSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// A node selector term, associated with the corresponding weight.
-    pub preference: ClusterShardingSpecsTemplateSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
+    pub preference: ClusterShardingsTemplateSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
     /// Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.
     pub weight: i32,
 }
 
 /// A node selector term, associated with the corresponding weight.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference {
+pub struct ClusterShardingsTemplateSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference {
     /// A list of node selector requirements by node's labels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ClusterShardingSpecsTemplateSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions>>,
+    pub match_expressions: Option<Vec<ClusterShardingsTemplateSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions>>,
     /// A list of node selector requirements by node's fields.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
-    pub match_fields: Option<Vec<ClusterShardingSpecsTemplateSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields>>,
+    pub match_fields: Option<Vec<ClusterShardingsTemplateSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields>>,
 }
 
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
+pub struct ClusterShardingsTemplateSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -10900,7 +10916,7 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityNodeAffinityPrefe
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
+pub struct ClusterShardingsTemplateSchedulingPolicyAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -10921,29 +10937,29 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityNodeAffinityPrefe
 /// at some point during pod execution (e.g. due to an update), the system
 /// may or may not try to eventually evict the pod from its node.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+pub struct ClusterShardingsTemplateSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// Required. A list of node selector terms. The terms are ORed.
     #[serde(rename = "nodeSelectorTerms")]
-    pub node_selector_terms: Vec<ClusterShardingSpecsTemplateSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
+    pub node_selector_terms: Vec<ClusterShardingsTemplateSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
 }
 
 /// A null or empty node selector term matches no objects. The requirements of
 /// them are ANDed.
 /// The TopologySelectorTerm type implements a subset of the NodeSelectorTerm.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms {
+pub struct ClusterShardingsTemplateSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms {
     /// A list of node selector requirements by node's labels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ClusterShardingSpecsTemplateSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions>>,
+    pub match_expressions: Option<Vec<ClusterShardingsTemplateSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions>>,
     /// A list of node selector requirements by node's fields.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
-    pub match_fields: Option<Vec<ClusterShardingSpecsTemplateSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields>>,
+    pub match_fields: Option<Vec<ClusterShardingsTemplateSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields>>,
 }
 
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
+pub struct ClusterShardingsTemplateSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -10961,7 +10977,7 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityNodeAffinityRequi
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
+pub struct ClusterShardingsTemplateSchedulingPolicyAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -10978,7 +10994,7 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityNodeAffinityRequi
 
 /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinity {
+pub struct ClusterShardingsTemplateSchedulingPolicyAffinityPodAffinity {
     /// The scheduler will prefer to schedule pods to nodes that satisfy
     /// the affinity expressions specified by this field, but it may choose
     /// a node that violates one or more of the expressions. The node that is
@@ -10989,7 +11005,7 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinity {
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
-    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<ClusterShardingsTemplateSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
@@ -10998,15 +11014,15 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinity {
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
-    pub required_during_scheduling_ignored_during_execution: Option<Vec<ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<ClusterShardingsTemplateSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+pub struct ClusterShardingsTemplateSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// Required. A pod affinity term, associated with the corresponding weight.
     #[serde(rename = "podAffinityTerm")]
-    pub pod_affinity_term: ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    pub pod_affinity_term: ClusterShardingsTemplateSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
     /// weight associated with matching the corresponding podAffinityTerm,
     /// in the range 1-100.
     pub weight: i32,
@@ -11014,11 +11030,11 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityPrefer
 
 /// Required. A pod affinity term, associated with the corresponding weight.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
+pub struct ClusterShardingsTemplateSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
     /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
-    pub label_selector: Option<ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    pub label_selector: Option<ClusterShardingsTemplateSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
     /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
@@ -11047,7 +11063,7 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityPrefer
     /// null selector and null or empty namespaces list means "this pod's namespace".
     /// An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
-    pub namespace_selector: Option<ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
+    pub namespace_selector: Option<ClusterShardingsTemplateSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
     /// namespaces specifies a static list of namespace names that the term applies to.
     /// The term is applied to the union of the namespaces listed in this field
     /// and the ones selected by namespaceSelector.
@@ -11066,10 +11082,10 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityPrefer
 /// A label query over a set of resources, in this case pods.
 /// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
+pub struct ClusterShardingsTemplateSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<ClusterShardingsTemplateSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -11080,7 +11096,7 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityPrefer
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
+pub struct ClusterShardingsTemplateSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -11100,10 +11116,10 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityPrefer
 /// null selector and null or empty namespaces list means "this pod's namespace".
 /// An empty selector ({}) matches all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+pub struct ClusterShardingsTemplateSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<ClusterShardingsTemplateSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -11114,7 +11130,7 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityPrefer
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+pub struct ClusterShardingsTemplateSchedulingPolicyAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -11135,11 +11151,11 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityPrefer
 /// the label with key <topologyKey> matches that of any node on which
 /// a pod of the set of pods is running
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+pub struct ClusterShardingsTemplateSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
     /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
-    pub label_selector: Option<ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    pub label_selector: Option<ClusterShardingsTemplateSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
     /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
@@ -11168,7 +11184,7 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityRequir
     /// null selector and null or empty namespaces list means "this pod's namespace".
     /// An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
-    pub namespace_selector: Option<ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
+    pub namespace_selector: Option<ClusterShardingsTemplateSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     /// namespaces specifies a static list of namespace names that the term applies to.
     /// The term is applied to the union of the namespaces listed in this field
     /// and the ones selected by namespaceSelector.
@@ -11187,10 +11203,10 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityRequir
 /// A label query over a set of resources, in this case pods.
 /// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
+pub struct ClusterShardingsTemplateSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<ClusterShardingsTemplateSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -11201,7 +11217,7 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityRequir
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+pub struct ClusterShardingsTemplateSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -11221,10 +11237,10 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityRequir
 /// null selector and null or empty namespaces list means "this pod's namespace".
 /// An empty selector ({}) matches all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+pub struct ClusterShardingsTemplateSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<ClusterShardingsTemplateSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -11235,7 +11251,7 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityRequir
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
+pub struct ClusterShardingsTemplateSchedulingPolicyAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -11251,7 +11267,7 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAffinityRequir
 
 /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinity {
+pub struct ClusterShardingsTemplateSchedulingPolicyAffinityPodAntiAffinity {
     /// The scheduler will prefer to schedule pods to nodes that satisfy
     /// the anti-affinity expressions specified by this field, but it may choose
     /// a node that violates one or more of the expressions. The node that is
@@ -11262,7 +11278,7 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinity {
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
-    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<ClusterShardingsTemplateSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the anti-affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the anti-affinity requirements specified by this field cease to be met
@@ -11271,15 +11287,15 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinity {
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
-    pub required_during_scheduling_ignored_during_execution: Option<Vec<ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<ClusterShardingsTemplateSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution {
+pub struct ClusterShardingsTemplateSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// Required. A pod affinity term, associated with the corresponding weight.
     #[serde(rename = "podAffinityTerm")]
-    pub pod_affinity_term: ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    pub pod_affinity_term: ClusterShardingsTemplateSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
     /// weight associated with matching the corresponding podAffinityTerm,
     /// in the range 1-100.
     pub weight: i32,
@@ -11287,11 +11303,11 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityPr
 
 /// Required. A pod affinity term, associated with the corresponding weight.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
+pub struct ClusterShardingsTemplateSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
     /// A label query over a set of resources, in this case pods.
     /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
-    pub label_selector: Option<ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
+    pub label_selector: Option<ClusterShardingsTemplateSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
     /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
@@ -11320,7 +11336,7 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityPr
     /// null selector and null or empty namespaces list means "this pod's namespace".
     /// An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
-    pub namespace_selector: Option<ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
+    pub namespace_selector: Option<ClusterShardingsTemplateSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
     /// namespaces specifies a static list of namespace names that the term applies to.
     /// The term is applied to the union of the namespaces listed in this field
     /// and the ones selected by namespaceSelector.
@@ -11339,10 +11355,10 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityPr
 /// A label query over a set of resources, in this case pods.
 /// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
+pub struct ClusterShardingsTemplateSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<ClusterShardingsTemplateSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -11353,7 +11369,7 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityPr
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
+pub struct ClusterShardingsTemplateSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -11373,10 +11389,10 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityPr
 /// null selector and null or empty namespaces list means "this pod's namespace".
 /// An empty selector ({}) matches all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
+pub struct ClusterShardingsTemplateSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<ClusterShardingsTemplateSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -11387,7 +11403,7 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityPr
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
+pub struct ClusterShardingsTemplateSchedulingPolicyAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -11408,11 +11424,11 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityPr
 /// the label with key <topologyKey> matches that of any node on which
 /// a pod of the set of pods is running
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
+pub struct ClusterShardingsTemplateSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
     /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
-    pub label_selector: Option<ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
+    pub label_selector: Option<ClusterShardingsTemplateSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
     /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
@@ -11441,7 +11457,7 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityRe
     /// null selector and null or empty namespaces list means "this pod's namespace".
     /// An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
-    pub namespace_selector: Option<ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
+    pub namespace_selector: Option<ClusterShardingsTemplateSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     /// namespaces specifies a static list of namespace names that the term applies to.
     /// The term is applied to the union of the namespaces listed in this field
     /// and the ones selected by namespaceSelector.
@@ -11460,10 +11476,10 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityRe
 /// A label query over a set of resources, in this case pods.
 /// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
+pub struct ClusterShardingsTemplateSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<ClusterShardingsTemplateSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -11474,7 +11490,7 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityRe
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
+pub struct ClusterShardingsTemplateSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -11494,10 +11510,10 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityRe
 /// null selector and null or empty namespaces list means "this pod's namespace".
 /// An empty selector ({}) matches all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
+pub struct ClusterShardingsTemplateSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<ClusterShardingsTemplateSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -11508,7 +11524,7 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityRe
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
+pub struct ClusterShardingsTemplateSchedulingPolicyAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -11525,7 +11541,7 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyAffinityPodAntiAffinityRe
 /// The pod this Toleration is attached to tolerates any taint that matches
 /// the triple <key,value,effect> using the matching operator <operator>.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyTolerations {
+pub struct ClusterShardingsTemplateSchedulingPolicyTolerations {
     /// Effect indicates the taint effect to match. Empty means match all taint effects.
     /// When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -11554,12 +11570,12 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyTolerations {
 
 /// TopologySpreadConstraint specifies how to spread matching pods among the given topology.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyTopologySpreadConstraints {
+pub struct ClusterShardingsTemplateSchedulingPolicyTopologySpreadConstraints {
     /// LabelSelector is used to find matching pods.
     /// Pods that match this label selector are counted to determine the number of pods
     /// in their corresponding topology domain.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
-    pub label_selector: Option<ClusterShardingSpecsTemplateSchedulingPolicyTopologySpreadConstraintsLabelSelector>,
+    pub label_selector: Option<ClusterShardingsTemplateSchedulingPolicyTopologySpreadConstraintsLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select the pods over which
     /// spreading will be calculated. The keys are used to lookup values from the
     /// incoming pod labels, those key-value labels are ANDed with labelSelector
@@ -11676,10 +11692,10 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyTopologySpreadConstraints
 /// Pods that match this label selector are counted to determine the number of pods
 /// in their corresponding topology domain.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyTopologySpreadConstraintsLabelSelector {
+pub struct ClusterShardingsTemplateSchedulingPolicyTopologySpreadConstraintsLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ClusterShardingSpecsTemplateSchedulingPolicyTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<ClusterShardingsTemplateSchedulingPolicyTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -11690,7 +11706,7 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyTopologySpreadConstraints
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSchedulingPolicyTopologySpreadConstraintsLabelSelectorMatchExpressions {
+pub struct ClusterShardingsTemplateSchedulingPolicyTopologySpreadConstraintsLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -11705,7 +11721,7 @@ pub struct ClusterShardingSpecsTemplateSchedulingPolicyTopologySpreadConstraints
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateServiceRefs {
+pub struct ClusterShardingsTemplateServiceRefs {
     /// Specifies the name of the KubeBlocks Cluster being referenced.
     /// This is used when services from another KubeBlocks Cluster are consumed.
     /// 
@@ -11732,7 +11748,7 @@ pub struct ClusterShardingSpecsTemplateServiceRefs {
     /// References a service provided by another KubeBlocks Cluster.
     /// It specifies the ClusterService and the account credentials needed for access.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterServiceSelector")]
-    pub cluster_service_selector: Option<ClusterShardingSpecsTemplateServiceRefsClusterServiceSelector>,
+    pub cluster_service_selector: Option<ClusterShardingsTemplateServiceRefsClusterServiceSelector>,
     /// Specifies the identifier of the service reference declaration.
     /// It corresponds to the serviceRefDeclaration name defined in either:
     /// 
@@ -11762,26 +11778,26 @@ pub struct ClusterShardingSpecsTemplateServiceRefs {
 /// References a service provided by another KubeBlocks Cluster.
 /// It specifies the ClusterService and the account credentials needed for access.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateServiceRefsClusterServiceSelector {
+pub struct ClusterShardingsTemplateServiceRefsClusterServiceSelector {
     /// The name of the Cluster being referenced.
     pub cluster: String,
     /// Specifies the SystemAccount to authenticate and establish a connection with the referenced Cluster.
     /// The SystemAccount should be defined in `componentDefinition.spec.systemAccounts`
     /// of the Component providing the service in the referenced Cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub credential: Option<ClusterShardingSpecsTemplateServiceRefsClusterServiceSelectorCredential>,
+    pub credential: Option<ClusterShardingsTemplateServiceRefsClusterServiceSelectorCredential>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podFQDNs")]
-    pub pod_fqd_ns: Option<ClusterShardingSpecsTemplateServiceRefsClusterServiceSelectorPodFqdNs>,
+    pub pod_fqd_ns: Option<ClusterShardingsTemplateServiceRefsClusterServiceSelectorPodFqdNs>,
     /// Identifies a ClusterService from the list of Services defined in `cluster.spec.services` of the referenced Cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub service: Option<ClusterShardingSpecsTemplateServiceRefsClusterServiceSelectorService>,
+    pub service: Option<ClusterShardingsTemplateServiceRefsClusterServiceSelectorService>,
 }
 
 /// Specifies the SystemAccount to authenticate and establish a connection with the referenced Cluster.
 /// The SystemAccount should be defined in `componentDefinition.spec.systemAccounts`
 /// of the Component providing the service in the referenced Cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateServiceRefsClusterServiceSelectorCredential {
+pub struct ClusterShardingsTemplateServiceRefsClusterServiceSelectorCredential {
     /// The name of the Component where the credential resides in.
     pub component: String,
     /// The name of the credential (SystemAccount) to reference.
@@ -11789,7 +11805,7 @@ pub struct ClusterShardingSpecsTemplateServiceRefsClusterServiceSelectorCredenti
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateServiceRefsClusterServiceSelectorPodFqdNs {
+pub struct ClusterShardingsTemplateServiceRefsClusterServiceSelectorPodFqdNs {
     /// The name of the Component where the pods reside in.
     pub component: String,
     /// The role of the pods to reference.
@@ -11799,7 +11815,7 @@ pub struct ClusterShardingSpecsTemplateServiceRefsClusterServiceSelectorPodFqdNs
 
 /// Identifies a ClusterService from the list of Services defined in `cluster.spec.services` of the referenced Cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateServiceRefsClusterServiceSelectorService {
+pub struct ClusterShardingsTemplateServiceRefsClusterServiceSelectorService {
     /// The name of the Component where the Service resides in.
     /// 
     /// 
@@ -11828,7 +11844,7 @@ pub struct ClusterShardingSpecsTemplateServiceRefsClusterServiceSelectorService 
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateServices {
+pub struct ClusterShardingsTemplateServices {
     /// If ServiceType is LoadBalancer, cloud provider related parameters can be put here.
     /// More info: https://kubernetes.io/docs/concepts/services-networking/service/#loadbalancer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -11856,11 +11872,11 @@ pub struct ClusterShardingSpecsTemplateServices {
     /// For more info, see:
     /// https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceType")]
-    pub service_type: Option<ClusterShardingSpecsTemplateServicesServiceType>,
+    pub service_type: Option<ClusterShardingsTemplateServicesServiceType>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ClusterShardingSpecsTemplateServicesServiceType {
+pub enum ClusterShardingsTemplateServicesServiceType {
     #[serde(rename = "ClusterIP")]
     ClusterIp,
     NodePort,
@@ -11868,7 +11884,7 @@ pub enum ClusterShardingSpecsTemplateServicesServiceType {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSystemAccounts {
+pub struct ClusterShardingsTemplateSystemAccounts {
     /// The name of the system account.
     pub name: String,
     /// Specifies the policy for generating the account's password.
@@ -11876,13 +11892,13 @@ pub struct ClusterShardingSpecsTemplateSystemAccounts {
     /// 
     /// This field is immutable once set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordConfig")]
-    pub password_config: Option<ClusterShardingSpecsTemplateSystemAccountsPasswordConfig>,
+    pub password_config: Option<ClusterShardingsTemplateSystemAccountsPasswordConfig>,
     /// Refers to the secret from which data will be copied to create the new account.
     /// 
     /// 
     /// This field is immutable once set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<ClusterShardingSpecsTemplateSystemAccountsSecretRef>,
+    pub secret_ref: Option<ClusterShardingsTemplateSystemAccountsSecretRef>,
 }
 
 /// Specifies the policy for generating the account's password.
@@ -11890,13 +11906,13 @@ pub struct ClusterShardingSpecsTemplateSystemAccounts {
 /// 
 /// This field is immutable once set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSystemAccountsPasswordConfig {
+pub struct ClusterShardingsTemplateSystemAccountsPasswordConfig {
     /// The length of the password.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub length: Option<i32>,
     /// The case of the letters in the password.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "letterCase")]
-    pub letter_case: Option<ClusterShardingSpecsTemplateSystemAccountsPasswordConfigLetterCase>,
+    pub letter_case: Option<ClusterShardingsTemplateSystemAccountsPasswordConfigLetterCase>,
     /// The number of digits in the password.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "numDigits")]
     pub num_digits: Option<i32>,
@@ -11914,7 +11930,7 @@ pub struct ClusterShardingSpecsTemplateSystemAccountsPasswordConfig {
 /// 
 /// This field is immutable once set.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum ClusterShardingSpecsTemplateSystemAccountsPasswordConfigLetterCase {
+pub enum ClusterShardingsTemplateSystemAccountsPasswordConfigLetterCase {
     LowerCases,
     UpperCases,
     MixedCases,
@@ -11925,7 +11941,7 @@ pub enum ClusterShardingSpecsTemplateSystemAccountsPasswordConfigLetterCase {
 /// 
 /// This field is immutable once set.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateSystemAccountsSecretRef {
+pub struct ClusterShardingsTemplateSystemAccountsSecretRef {
     /// The unique identifier of the secret.
     pub name: String,
     /// The namespace where the secret is located.
@@ -11933,7 +11949,7 @@ pub struct ClusterShardingSpecsTemplateSystemAccountsSecretRef {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumeClaimTemplates {
+pub struct ClusterShardingsTemplateVolumeClaimTemplates {
     /// Refers to the name of a volumeMount defined in either:
     /// 
     /// 
@@ -11950,7 +11966,7 @@ pub struct ClusterShardingSpecsTemplateVolumeClaimTemplates {
     /// When a Pod is created for this ClusterComponent, a new PVC will be created based on the specification
     /// defined in the `spec` field. The PVC will be associated with the volume mount specified by the `name` field.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub spec: Option<ClusterShardingSpecsTemplateVolumeClaimTemplatesSpec>,
+    pub spec: Option<ClusterShardingsTemplateVolumeClaimTemplatesSpec>,
 }
 
 /// Defines the desired characteristics of a PersistentVolumeClaim that will be created for the volume
@@ -11960,7 +11976,7 @@ pub struct ClusterShardingSpecsTemplateVolumeClaimTemplates {
 /// When a Pod is created for this ClusterComponent, a new PVC will be created based on the specification
 /// defined in the `spec` field. The PVC will be associated with the volume mount specified by the `name` field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumeClaimTemplatesSpec {
+pub struct ClusterShardingsTemplateVolumeClaimTemplatesSpec {
     /// Contains the desired access modes the volume should have.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
@@ -11970,7 +11986,7 @@ pub struct ClusterShardingSpecsTemplateVolumeClaimTemplatesSpec {
     /// are lower than the previous value but must still be higher than the capacity recorded in the status field of the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<ClusterShardingSpecsTemplateVolumeClaimTemplatesSpecResources>,
+    pub resources: Option<ClusterShardingsTemplateVolumeClaimTemplatesSpecResources>,
     /// The name of the StorageClass required by the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
@@ -11985,7 +12001,7 @@ pub struct ClusterShardingSpecsTemplateVolumeClaimTemplatesSpec {
 /// are lower than the previous value but must still be higher than the capacity recorded in the status field of the claim.
 /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumeClaimTemplatesSpecResources {
+pub struct ClusterShardingsTemplateVolumeClaimTemplatesSpecResources {
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -12000,38 +12016,38 @@ pub struct ClusterShardingSpecsTemplateVolumeClaimTemplatesSpecResources {
 
 /// Volume represents a named volume in a pod that may be accessed by any container in the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumes {
+pub struct ClusterShardingsTemplateVolumes {
     /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
-    pub aws_elastic_block_store: Option<ClusterShardingSpecsTemplateVolumesAwsElasticBlockStore>,
+    pub aws_elastic_block_store: Option<ClusterShardingsTemplateVolumesAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
-    pub azure_disk: Option<ClusterShardingSpecsTemplateVolumesAzureDisk>,
+    pub azure_disk: Option<ClusterShardingsTemplateVolumesAzureDisk>,
     /// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureFile")]
-    pub azure_file: Option<ClusterShardingSpecsTemplateVolumesAzureFile>,
+    pub azure_file: Option<ClusterShardingsTemplateVolumesAzureFile>,
     /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cephfs: Option<ClusterShardingSpecsTemplateVolumesCephfs>,
+    pub cephfs: Option<ClusterShardingsTemplateVolumesCephfs>,
     /// cinder represents a cinder volume attached and mounted on kubelets host machine.
     /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub cinder: Option<ClusterShardingSpecsTemplateVolumesCinder>,
+    pub cinder: Option<ClusterShardingsTemplateVolumesCinder>,
     /// configMap represents a configMap that should populate this volume
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map: Option<ClusterShardingSpecsTemplateVolumesConfigMap>,
+    pub config_map: Option<ClusterShardingsTemplateVolumesConfigMap>,
     /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub csi: Option<ClusterShardingSpecsTemplateVolumesCsi>,
+    pub csi: Option<ClusterShardingsTemplateVolumesCsi>,
     /// downwardAPI represents downward API about the pod that should populate this volume
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
-    pub downward_api: Option<ClusterShardingSpecsTemplateVolumesDownwardApi>,
+    pub downward_api: Option<ClusterShardingsTemplateVolumesDownwardApi>,
     /// emptyDir represents a temporary directory that shares a pod's lifetime.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
-    pub empty_dir: Option<ClusterShardingSpecsTemplateVolumesEmptyDir>,
+    pub empty_dir: Option<ClusterShardingsTemplateVolumesEmptyDir>,
     /// ephemeral represents a volume that is handled by a cluster storage driver.
     /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
     /// and deleted when the pod is removed.
@@ -12061,32 +12077,32 @@ pub struct ClusterShardingSpecsTemplateVolumes {
     /// A pod can use both types of ephemeral volumes and
     /// persistent volumes at the same time.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ephemeral: Option<ClusterShardingSpecsTemplateVolumesEphemeral>,
+    pub ephemeral: Option<ClusterShardingsTemplateVolumesEphemeral>,
     /// fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub fc: Option<ClusterShardingSpecsTemplateVolumesFc>,
+    pub fc: Option<ClusterShardingsTemplateVolumesFc>,
     /// flexVolume represents a generic volume resource that is
     /// provisioned/attached using an exec based plugin.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
-    pub flex_volume: Option<ClusterShardingSpecsTemplateVolumesFlexVolume>,
+    pub flex_volume: Option<ClusterShardingsTemplateVolumesFlexVolume>,
     /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub flocker: Option<ClusterShardingSpecsTemplateVolumesFlocker>,
+    pub flocker: Option<ClusterShardingsTemplateVolumesFlocker>,
     /// gcePersistentDisk represents a GCE Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
-    pub gce_persistent_disk: Option<ClusterShardingSpecsTemplateVolumesGcePersistentDisk>,
+    pub gce_persistent_disk: Option<ClusterShardingsTemplateVolumesGcePersistentDisk>,
     /// gitRepo represents a git repository at a particular revision.
     /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
     /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
     /// into the Pod's container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepo")]
-    pub git_repo: Option<ClusterShardingSpecsTemplateVolumesGitRepo>,
+    pub git_repo: Option<ClusterShardingsTemplateVolumesGitRepo>,
     /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
     /// More info: https://examples.k8s.io/volumes/glusterfs/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub glusterfs: Option<ClusterShardingSpecsTemplateVolumesGlusterfs>,
+    pub glusterfs: Option<ClusterShardingsTemplateVolumesGlusterfs>,
     /// hostPath represents a pre-existing file or directory on the host
     /// machine that is directly exposed to the container. This is generally
     /// used for system agents or other privileged things that are allowed
@@ -12096,12 +12112,12 @@ pub struct ClusterShardingSpecsTemplateVolumes {
     /// TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not
     /// mount host directories as read/write.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
-    pub host_path: Option<ClusterShardingSpecsTemplateVolumesHostPath>,
+    pub host_path: Option<ClusterShardingsTemplateVolumesHostPath>,
     /// iscsi represents an ISCSI Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://examples.k8s.io/volumes/iscsi/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub iscsi: Option<ClusterShardingSpecsTemplateVolumesIscsi>,
+    pub iscsi: Option<ClusterShardingsTemplateVolumesIscsi>,
     /// name of the volume.
     /// Must be a DNS_LABEL and unique within the pod.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
@@ -12109,48 +12125,48 @@ pub struct ClusterShardingSpecsTemplateVolumes {
     /// nfs represents an NFS mount on the host that shares a pod's lifetime
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub nfs: Option<ClusterShardingSpecsTemplateVolumesNfs>,
+    pub nfs: Option<ClusterShardingsTemplateVolumesNfs>,
     /// persistentVolumeClaimVolumeSource represents a reference to a
     /// PersistentVolumeClaim in the same namespace.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
-    pub persistent_volume_claim: Option<ClusterShardingSpecsTemplateVolumesPersistentVolumeClaim>,
+    pub persistent_volume_claim: Option<ClusterShardingsTemplateVolumesPersistentVolumeClaim>,
     /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
-    pub photon_persistent_disk: Option<ClusterShardingSpecsTemplateVolumesPhotonPersistentDisk>,
+    pub photon_persistent_disk: Option<ClusterShardingsTemplateVolumesPhotonPersistentDisk>,
     /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
-    pub portworx_volume: Option<ClusterShardingSpecsTemplateVolumesPortworxVolume>,
+    pub portworx_volume: Option<ClusterShardingsTemplateVolumesPortworxVolume>,
     /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub projected: Option<ClusterShardingSpecsTemplateVolumesProjected>,
+    pub projected: Option<ClusterShardingsTemplateVolumesProjected>,
     /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub quobyte: Option<ClusterShardingSpecsTemplateVolumesQuobyte>,
+    pub quobyte: Option<ClusterShardingsTemplateVolumesQuobyte>,
     /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
     /// More info: https://examples.k8s.io/volumes/rbd/README.md
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub rbd: Option<ClusterShardingSpecsTemplateVolumesRbd>,
+    pub rbd: Option<ClusterShardingsTemplateVolumesRbd>,
     /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleIO")]
-    pub scale_io: Option<ClusterShardingSpecsTemplateVolumesScaleIo>,
+    pub scale_io: Option<ClusterShardingsTemplateVolumesScaleIo>,
     /// secret represents a secret that should populate this volume.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret: Option<ClusterShardingSpecsTemplateVolumesSecret>,
+    pub secret: Option<ClusterShardingsTemplateVolumesSecret>,
     /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub storageos: Option<ClusterShardingSpecsTemplateVolumesStorageos>,
+    pub storageos: Option<ClusterShardingsTemplateVolumesStorageos>,
     /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
-    pub vsphere_volume: Option<ClusterShardingSpecsTemplateVolumesVsphereVolume>,
+    pub vsphere_volume: Option<ClusterShardingsTemplateVolumesVsphereVolume>,
 }
 
 /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
 /// kubelet's host machine and then exposed to the pod.
 /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesAwsElasticBlockStore {
+pub struct ClusterShardingsTemplateVolumesAwsElasticBlockStore {
     /// fsType is the filesystem type of the volume that you want to mount.
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
     /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
@@ -12176,7 +12192,7 @@ pub struct ClusterShardingSpecsTemplateVolumesAwsElasticBlockStore {
 
 /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesAzureDisk {
+pub struct ClusterShardingsTemplateVolumesAzureDisk {
     /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
     pub caching_mode: Option<String>,
@@ -12202,7 +12218,7 @@ pub struct ClusterShardingSpecsTemplateVolumesAzureDisk {
 
 /// azureFile represents an Azure File Service mount on the host and bind mount to the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesAzureFile {
+pub struct ClusterShardingsTemplateVolumesAzureFile {
     /// readOnly defaults to false (read/write). ReadOnly here will force
     /// the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
@@ -12217,7 +12233,7 @@ pub struct ClusterShardingSpecsTemplateVolumesAzureFile {
 
 /// cephFS represents a Ceph FS mount on the host that shares a pod's lifetime
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesCephfs {
+pub struct ClusterShardingsTemplateVolumesCephfs {
     /// monitors is Required: Monitors is a collection of Ceph monitors
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     pub monitors: Vec<String>,
@@ -12236,7 +12252,7 @@ pub struct ClusterShardingSpecsTemplateVolumesCephfs {
     /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<ClusterShardingSpecsTemplateVolumesCephfsSecretRef>,
+    pub secret_ref: Option<ClusterShardingsTemplateVolumesCephfsSecretRef>,
     /// user is optional: User is the rados user name, default is admin
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -12246,7 +12262,7 @@ pub struct ClusterShardingSpecsTemplateVolumesCephfs {
 /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
 /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesCephfsSecretRef {
+pub struct ClusterShardingsTemplateVolumesCephfsSecretRef {
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -12257,7 +12273,7 @@ pub struct ClusterShardingSpecsTemplateVolumesCephfsSecretRef {
 /// cinder represents a cinder volume attached and mounted on kubelets host machine.
 /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesCinder {
+pub struct ClusterShardingsTemplateVolumesCinder {
     /// fsType is the filesystem type to mount.
     /// Must be a filesystem type supported by the host operating system.
     /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
@@ -12272,7 +12288,7 @@ pub struct ClusterShardingSpecsTemplateVolumesCinder {
     /// secretRef is optional: points to a secret object containing parameters used to connect
     /// to OpenStack.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<ClusterShardingSpecsTemplateVolumesCinderSecretRef>,
+    pub secret_ref: Option<ClusterShardingsTemplateVolumesCinderSecretRef>,
     /// volumeID used to identify the volume in cinder.
     /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(rename = "volumeID")]
@@ -12282,7 +12298,7 @@ pub struct ClusterShardingSpecsTemplateVolumesCinder {
 /// secretRef is optional: points to a secret object containing parameters used to connect
 /// to OpenStack.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesCinderSecretRef {
+pub struct ClusterShardingsTemplateVolumesCinderSecretRef {
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -12292,7 +12308,7 @@ pub struct ClusterShardingSpecsTemplateVolumesCinderSecretRef {
 
 /// configMap represents a configMap that should populate this volume
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesConfigMap {
+pub struct ClusterShardingsTemplateVolumesConfigMap {
     /// defaultMode is optional: mode bits used to set permissions on created files by default.
     /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
     /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
@@ -12310,7 +12326,7 @@ pub struct ClusterShardingSpecsTemplateVolumesConfigMap {
     /// the volume setup will error unless it is marked optional. Paths must be
     /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<ClusterShardingSpecsTemplateVolumesConfigMapItems>>,
+    pub items: Option<Vec<ClusterShardingsTemplateVolumesConfigMapItems>>,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -12323,7 +12339,7 @@ pub struct ClusterShardingSpecsTemplateVolumesConfigMap {
 
 /// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesConfigMapItems {
+pub struct ClusterShardingsTemplateVolumesConfigMapItems {
     /// key is the key to project.
     pub key: String,
     /// mode is Optional: mode bits used to set permissions on this file.
@@ -12343,7 +12359,7 @@ pub struct ClusterShardingSpecsTemplateVolumesConfigMapItems {
 
 /// csi (Container Storage Interface) represents ephemeral storage that is handled by certain external CSI drivers (Beta feature).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesCsi {
+pub struct ClusterShardingsTemplateVolumesCsi {
     /// driver is the name of the CSI driver that handles this volume.
     /// Consult with your admin for the correct name as registered in the cluster.
     pub driver: String,
@@ -12358,7 +12374,7 @@ pub struct ClusterShardingSpecsTemplateVolumesCsi {
     /// This field is optional, and  may be empty if no secret is required. If the
     /// secret object contains more than one secret, all secret references are passed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
-    pub node_publish_secret_ref: Option<ClusterShardingSpecsTemplateVolumesCsiNodePublishSecretRef>,
+    pub node_publish_secret_ref: Option<ClusterShardingsTemplateVolumesCsiNodePublishSecretRef>,
     /// readOnly specifies a read-only configuration for the volume.
     /// Defaults to false (read/write).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
@@ -12375,7 +12391,7 @@ pub struct ClusterShardingSpecsTemplateVolumesCsi {
 /// This field is optional, and  may be empty if no secret is required. If the
 /// secret object contains more than one secret, all secret references are passed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesCsiNodePublishSecretRef {
+pub struct ClusterShardingsTemplateVolumesCsiNodePublishSecretRef {
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -12385,7 +12401,7 @@ pub struct ClusterShardingSpecsTemplateVolumesCsiNodePublishSecretRef {
 
 /// downwardAPI represents downward API about the pod that should populate this volume
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesDownwardApi {
+pub struct ClusterShardingsTemplateVolumesDownwardApi {
     /// Optional: mode bits to use on created files by default. Must be a
     /// Optional: mode bits used to set permissions on created files by default.
     /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
@@ -12398,15 +12414,15 @@ pub struct ClusterShardingSpecsTemplateVolumesDownwardApi {
     pub default_mode: Option<i32>,
     /// Items is a list of downward API volume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<ClusterShardingSpecsTemplateVolumesDownwardApiItems>>,
+    pub items: Option<Vec<ClusterShardingsTemplateVolumesDownwardApiItems>>,
 }
 
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesDownwardApiItems {
+pub struct ClusterShardingsTemplateVolumesDownwardApiItems {
     /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<ClusterShardingSpecsTemplateVolumesDownwardApiItemsFieldRef>,
+    pub field_ref: Option<ClusterShardingsTemplateVolumesDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
     /// between 0000 and 0777 or a decimal value between 0 and 511.
     /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
@@ -12420,12 +12436,12 @@ pub struct ClusterShardingSpecsTemplateVolumesDownwardApiItems {
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<ClusterShardingSpecsTemplateVolumesDownwardApiItemsResourceFieldRef>,
+    pub resource_field_ref: Option<ClusterShardingsTemplateVolumesDownwardApiItemsResourceFieldRef>,
 }
 
 /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesDownwardApiItemsFieldRef {
+pub struct ClusterShardingsTemplateVolumesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
@@ -12437,7 +12453,7 @@ pub struct ClusterShardingSpecsTemplateVolumesDownwardApiItemsFieldRef {
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesDownwardApiItemsResourceFieldRef {
+pub struct ClusterShardingsTemplateVolumesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
@@ -12451,7 +12467,7 @@ pub struct ClusterShardingSpecsTemplateVolumesDownwardApiItemsResourceFieldRef {
 /// emptyDir represents a temporary directory that shares a pod's lifetime.
 /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesEmptyDir {
+pub struct ClusterShardingsTemplateVolumesEmptyDir {
     /// medium represents what type of storage medium should back this directory.
     /// The default is "" which means to use the node's default medium.
     /// Must be an empty string (default) or Memory.
@@ -12497,7 +12513,7 @@ pub struct ClusterShardingSpecsTemplateVolumesEmptyDir {
 /// A pod can use both types of ephemeral volumes and
 /// persistent volumes at the same time.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesEphemeral {
+pub struct ClusterShardingsTemplateVolumesEphemeral {
     /// Will be used to create a stand-alone PVC to provision the volume.
     /// The pod in which this EphemeralVolumeSource is embedded will be the
     /// owner of the PVC, i.e. the PVC will be deleted together with the
@@ -12523,7 +12539,7 @@ pub struct ClusterShardingSpecsTemplateVolumesEphemeral {
     /// 
     /// Required, must not be nil.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
-    pub volume_claim_template: Option<ClusterShardingSpecsTemplateVolumesEphemeralVolumeClaimTemplate>,
+    pub volume_claim_template: Option<ClusterShardingsTemplateVolumesEphemeralVolumeClaimTemplate>,
 }
 
 /// Will be used to create a stand-alone PVC to provision the volume.
@@ -12551,24 +12567,24 @@ pub struct ClusterShardingSpecsTemplateVolumesEphemeral {
 /// 
 /// Required, must not be nil.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesEphemeralVolumeClaimTemplate {
+pub struct ClusterShardingsTemplateVolumesEphemeralVolumeClaimTemplate {
     /// May contain labels and annotations that will be copied into the PVC
     /// when creating it. No other fields are allowed and will be rejected during
     /// validation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<ClusterShardingSpecsTemplateVolumesEphemeralVolumeClaimTemplateMetadata>,
+    pub metadata: Option<ClusterShardingsTemplateVolumesEphemeralVolumeClaimTemplateMetadata>,
     /// The specification for the PersistentVolumeClaim. The entire content is
     /// copied unchanged into the PVC that gets created from this
     /// template. The same fields as in a PersistentVolumeClaim
     /// are also valid here.
-    pub spec: ClusterShardingSpecsTemplateVolumesEphemeralVolumeClaimTemplateSpec,
+    pub spec: ClusterShardingsTemplateVolumesEphemeralVolumeClaimTemplateSpec,
 }
 
 /// May contain labels and annotations that will be copied into the PVC
 /// when creating it. No other fields are allowed and will be rejected during
 /// validation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesEphemeralVolumeClaimTemplateMetadata {
+pub struct ClusterShardingsTemplateVolumesEphemeralVolumeClaimTemplateMetadata {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -12586,7 +12602,7 @@ pub struct ClusterShardingSpecsTemplateVolumesEphemeralVolumeClaimTemplateMetada
 /// template. The same fields as in a PersistentVolumeClaim
 /// are also valid here.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesEphemeralVolumeClaimTemplateSpec {
+pub struct ClusterShardingsTemplateVolumesEphemeralVolumeClaimTemplateSpec {
     /// accessModes contains the desired access modes the volume should have.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
@@ -12600,7 +12616,7 @@ pub struct ClusterShardingSpecsTemplateVolumesEphemeralVolumeClaimTemplateSpec {
     /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
     /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
-    pub data_source: Option<ClusterShardingSpecsTemplateVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
+    pub data_source: Option<ClusterShardingsTemplateVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
     /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
     /// volume is desired. This may be any object from a non-empty API group (non
     /// core object) or a PersistentVolumeClaim object.
@@ -12625,17 +12641,17 @@ pub struct ClusterShardingSpecsTemplateVolumesEphemeralVolumeClaimTemplateSpec {
     /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
     /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
-    pub data_source_ref: Option<ClusterShardingSpecsTemplateVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
+    pub data_source_ref: Option<ClusterShardingsTemplateVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
     /// resources represents the minimum resources the volume should have.
     /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
     /// that are lower than previous value but must still be higher than capacity recorded in the
     /// status field of the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<ClusterShardingSpecsTemplateVolumesEphemeralVolumeClaimTemplateSpecResources>,
+    pub resources: Option<ClusterShardingsTemplateVolumesEphemeralVolumeClaimTemplateSpecResources>,
     /// selector is a label query over volumes to consider for binding.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub selector: Option<ClusterShardingSpecsTemplateVolumesEphemeralVolumeClaimTemplateSpecSelector>,
+    pub selector: Option<ClusterShardingsTemplateVolumesEphemeralVolumeClaimTemplateSpecSelector>,
     /// storageClassName is the name of the StorageClass required by the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
@@ -12672,7 +12688,7 @@ pub struct ClusterShardingSpecsTemplateVolumesEphemeralVolumeClaimTemplateSpec {
 /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
 /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesEphemeralVolumeClaimTemplateSpecDataSource {
+pub struct ClusterShardingsTemplateVolumesEphemeralVolumeClaimTemplateSpecDataSource {
     /// APIGroup is the group for the resource being referenced.
     /// If APIGroup is not specified, the specified Kind must be in the core API group.
     /// For any other third-party types, APIGroup is required.
@@ -12708,7 +12724,7 @@ pub struct ClusterShardingSpecsTemplateVolumesEphemeralVolumeClaimTemplateSpecDa
 /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
 /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef {
+pub struct ClusterShardingsTemplateVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef {
     /// APIGroup is the group for the resource being referenced.
     /// If APIGroup is not specified, the specified Kind must be in the core API group.
     /// For any other third-party types, APIGroup is required.
@@ -12731,7 +12747,7 @@ pub struct ClusterShardingSpecsTemplateVolumesEphemeralVolumeClaimTemplateSpecDa
 /// status field of the claim.
 /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesEphemeralVolumeClaimTemplateSpecResources {
+pub struct ClusterShardingsTemplateVolumesEphemeralVolumeClaimTemplateSpecResources {
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -12746,10 +12762,10 @@ pub struct ClusterShardingSpecsTemplateVolumesEphemeralVolumeClaimTemplateSpecRe
 
 /// selector is a label query over volumes to consider for binding.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesEphemeralVolumeClaimTemplateSpecSelector {
+pub struct ClusterShardingsTemplateVolumesEphemeralVolumeClaimTemplateSpecSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ClusterShardingSpecsTemplateVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<ClusterShardingsTemplateVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -12760,7 +12776,7 @@ pub struct ClusterShardingSpecsTemplateVolumesEphemeralVolumeClaimTemplateSpecSe
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
+pub struct ClusterShardingsTemplateVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -12776,7 +12792,7 @@ pub struct ClusterShardingSpecsTemplateVolumesEphemeralVolumeClaimTemplateSpecSe
 
 /// fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesFc {
+pub struct ClusterShardingsTemplateVolumesFc {
     /// fsType is the filesystem type to mount.
     /// Must be a filesystem type supported by the host operating system.
     /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
@@ -12802,7 +12818,7 @@ pub struct ClusterShardingSpecsTemplateVolumesFc {
 /// flexVolume represents a generic volume resource that is
 /// provisioned/attached using an exec based plugin.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesFlexVolume {
+pub struct ClusterShardingsTemplateVolumesFlexVolume {
     /// driver is the name of the driver to use for this volume.
     pub driver: String,
     /// fsType is the filesystem type to mount.
@@ -12823,7 +12839,7 @@ pub struct ClusterShardingSpecsTemplateVolumesFlexVolume {
     /// contains more than one secret, all secrets are passed to the plugin
     /// scripts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<ClusterShardingSpecsTemplateVolumesFlexVolumeSecretRef>,
+    pub secret_ref: Option<ClusterShardingsTemplateVolumesFlexVolumeSecretRef>,
 }
 
 /// secretRef is Optional: secretRef is reference to the secret object containing
@@ -12832,7 +12848,7 @@ pub struct ClusterShardingSpecsTemplateVolumesFlexVolume {
 /// contains more than one secret, all secrets are passed to the plugin
 /// scripts.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesFlexVolumeSecretRef {
+pub struct ClusterShardingsTemplateVolumesFlexVolumeSecretRef {
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -12842,7 +12858,7 @@ pub struct ClusterShardingSpecsTemplateVolumesFlexVolumeSecretRef {
 
 /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesFlocker {
+pub struct ClusterShardingsTemplateVolumesFlocker {
     /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
     /// should be considered as deprecated
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
@@ -12856,7 +12872,7 @@ pub struct ClusterShardingSpecsTemplateVolumesFlocker {
 /// kubelet's host machine and then exposed to the pod.
 /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesGcePersistentDisk {
+pub struct ClusterShardingsTemplateVolumesGcePersistentDisk {
     /// fsType is filesystem type of the volume that you want to mount.
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
     /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
@@ -12887,7 +12903,7 @@ pub struct ClusterShardingSpecsTemplateVolumesGcePersistentDisk {
 /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
 /// into the Pod's container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesGitRepo {
+pub struct ClusterShardingsTemplateVolumesGitRepo {
     /// directory is the target directory name.
     /// Must not contain or start with '..'.  If '.' is supplied, the volume directory will be the
     /// git repository.  Otherwise, if specified, the volume will contain the git repository in
@@ -12904,7 +12920,7 @@ pub struct ClusterShardingSpecsTemplateVolumesGitRepo {
 /// glusterfs represents a Glusterfs mount on the host that shares a pod's lifetime.
 /// More info: https://examples.k8s.io/volumes/glusterfs/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesGlusterfs {
+pub struct ClusterShardingsTemplateVolumesGlusterfs {
     /// endpoints is the endpoint name that details Glusterfs topology.
     /// More info: https://examples.k8s.io/volumes/glusterfs/README.md#create-a-pod
     pub endpoints: String,
@@ -12927,7 +12943,7 @@ pub struct ClusterShardingSpecsTemplateVolumesGlusterfs {
 /// TODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not
 /// mount host directories as read/write.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesHostPath {
+pub struct ClusterShardingsTemplateVolumesHostPath {
     /// path of the directory on the host.
     /// If the path is a symlink, it will follow the link to the real path.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath
@@ -12943,7 +12959,7 @@ pub struct ClusterShardingSpecsTemplateVolumesHostPath {
 /// kubelet's host machine and then exposed to the pod.
 /// More info: https://examples.k8s.io/volumes/iscsi/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesIscsi {
+pub struct ClusterShardingsTemplateVolumesIscsi {
     /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
@@ -12980,7 +12996,7 @@ pub struct ClusterShardingSpecsTemplateVolumesIscsi {
     pub read_only: Option<bool>,
     /// secretRef is the CHAP Secret for iSCSI target and initiator authentication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<ClusterShardingSpecsTemplateVolumesIscsiSecretRef>,
+    pub secret_ref: Option<ClusterShardingsTemplateVolumesIscsiSecretRef>,
     /// targetPortal is iSCSI Target Portal. The Portal is either an IP or ip_addr:port if the port
     /// is other than default (typically TCP ports 860 and 3260).
     #[serde(rename = "targetPortal")]
@@ -12989,7 +13005,7 @@ pub struct ClusterShardingSpecsTemplateVolumesIscsi {
 
 /// secretRef is the CHAP Secret for iSCSI target and initiator authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesIscsiSecretRef {
+pub struct ClusterShardingsTemplateVolumesIscsiSecretRef {
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -13000,7 +13016,7 @@ pub struct ClusterShardingSpecsTemplateVolumesIscsiSecretRef {
 /// nfs represents an NFS mount on the host that shares a pod's lifetime
 /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesNfs {
+pub struct ClusterShardingsTemplateVolumesNfs {
     /// path that is exported by the NFS server.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#nfs
     pub path: String,
@@ -13018,7 +13034,7 @@ pub struct ClusterShardingSpecsTemplateVolumesNfs {
 /// PersistentVolumeClaim in the same namespace.
 /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesPersistentVolumeClaim {
+pub struct ClusterShardingsTemplateVolumesPersistentVolumeClaim {
     /// claimName is the name of a PersistentVolumeClaim in the same namespace as the pod using this volume.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
     #[serde(rename = "claimName")]
@@ -13031,7 +13047,7 @@ pub struct ClusterShardingSpecsTemplateVolumesPersistentVolumeClaim {
 
 /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesPhotonPersistentDisk {
+pub struct ClusterShardingsTemplateVolumesPhotonPersistentDisk {
     /// fsType is the filesystem type to mount.
     /// Must be a filesystem type supported by the host operating system.
     /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
@@ -13044,7 +13060,7 @@ pub struct ClusterShardingSpecsTemplateVolumesPhotonPersistentDisk {
 
 /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesPortworxVolume {
+pub struct ClusterShardingsTemplateVolumesPortworxVolume {
     /// fSType represents the filesystem type to mount
     /// Must be a filesystem type supported by the host operating system.
     /// Ex. "ext4", "xfs". Implicitly inferred to be "ext4" if unspecified.
@@ -13061,7 +13077,7 @@ pub struct ClusterShardingSpecsTemplateVolumesPortworxVolume {
 
 /// projected items for all in one resources secrets, configmaps, and downward API
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesProjected {
+pub struct ClusterShardingsTemplateVolumesProjected {
     /// defaultMode are the mode bits used to set permissions on created files by default.
     /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
     /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
@@ -13072,12 +13088,12 @@ pub struct ClusterShardingSpecsTemplateVolumesProjected {
     pub default_mode: Option<i32>,
     /// sources is the list of volume projections
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sources: Option<Vec<ClusterShardingSpecsTemplateVolumesProjectedSources>>,
+    pub sources: Option<Vec<ClusterShardingsTemplateVolumesProjectedSources>>,
 }
 
 /// Projection that may be projected along with other supported volume types
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesProjectedSources {
+pub struct ClusterShardingsTemplateVolumesProjectedSources {
     /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
     /// of ClusterTrustBundle objects in an auto-updating file.
     /// 
@@ -13095,19 +13111,19 @@ pub struct ClusterShardingSpecsTemplateVolumesProjectedSources {
     /// The ordering of certificates within the file is arbitrary, and Kubelet
     /// may change the order over time.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
-    pub cluster_trust_bundle: Option<ClusterShardingSpecsTemplateVolumesProjectedSourcesClusterTrustBundle>,
+    pub cluster_trust_bundle: Option<ClusterShardingsTemplateVolumesProjectedSourcesClusterTrustBundle>,
     /// configMap information about the configMap data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map: Option<ClusterShardingSpecsTemplateVolumesProjectedSourcesConfigMap>,
+    pub config_map: Option<ClusterShardingsTemplateVolumesProjectedSourcesConfigMap>,
     /// downwardAPI information about the downwardAPI data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
-    pub downward_api: Option<ClusterShardingSpecsTemplateVolumesProjectedSourcesDownwardApi>,
+    pub downward_api: Option<ClusterShardingsTemplateVolumesProjectedSourcesDownwardApi>,
     /// secret information about the secret data to project
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret: Option<ClusterShardingSpecsTemplateVolumesProjectedSourcesSecret>,
+    pub secret: Option<ClusterShardingsTemplateVolumesProjectedSourcesSecret>,
     /// serviceAccountToken is information about the serviceAccountToken data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
-    pub service_account_token: Option<ClusterShardingSpecsTemplateVolumesProjectedSourcesServiceAccountToken>,
+    pub service_account_token: Option<ClusterShardingsTemplateVolumesProjectedSourcesServiceAccountToken>,
 }
 
 /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
@@ -13127,13 +13143,13 @@ pub struct ClusterShardingSpecsTemplateVolumesProjectedSources {
 /// The ordering of certificates within the file is arbitrary, and Kubelet
 /// may change the order over time.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesProjectedSourcesClusterTrustBundle {
+pub struct ClusterShardingsTemplateVolumesProjectedSourcesClusterTrustBundle {
     /// Select all ClusterTrustBundles that match this label selector.  Only has
     /// effect if signerName is set.  Mutually-exclusive with name.  If unset,
     /// interpreted as "match nothing".  If set but empty, interpreted as "match
     /// everything".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
-    pub label_selector: Option<ClusterShardingSpecsTemplateVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
+    pub label_selector: Option<ClusterShardingsTemplateVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
     /// Select a single ClusterTrustBundle by object name.  Mutually-exclusive
     /// with signerName and labelSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -13159,10 +13175,10 @@ pub struct ClusterShardingSpecsTemplateVolumesProjectedSourcesClusterTrustBundle
 /// interpreted as "match nothing".  If set but empty, interpreted as "match
 /// everything".
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesProjectedSourcesClusterTrustBundleLabelSelector {
+pub struct ClusterShardingsTemplateVolumesProjectedSourcesClusterTrustBundleLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
-    pub match_expressions: Option<Vec<ClusterShardingSpecsTemplateVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>>,
+    pub match_expressions: Option<Vec<ClusterShardingsTemplateVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
@@ -13173,7 +13189,7 @@ pub struct ClusterShardingSpecsTemplateVolumesProjectedSourcesClusterTrustBundle
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
+pub struct ClusterShardingsTemplateVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -13189,7 +13205,7 @@ pub struct ClusterShardingSpecsTemplateVolumesProjectedSourcesClusterTrustBundle
 
 /// configMap information about the configMap data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesProjectedSourcesConfigMap {
+pub struct ClusterShardingsTemplateVolumesProjectedSourcesConfigMap {
     /// items if unspecified, each key-value pair in the Data field of the referenced
     /// ConfigMap will be projected into the volume as a file whose name is the
     /// key and content is the value. If specified, the listed keys will be
@@ -13198,7 +13214,7 @@ pub struct ClusterShardingSpecsTemplateVolumesProjectedSourcesConfigMap {
     /// the volume setup will error unless it is marked optional. Paths must be
     /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<ClusterShardingSpecsTemplateVolumesProjectedSourcesConfigMapItems>>,
+    pub items: Option<Vec<ClusterShardingsTemplateVolumesProjectedSourcesConfigMapItems>>,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -13211,7 +13227,7 @@ pub struct ClusterShardingSpecsTemplateVolumesProjectedSourcesConfigMap {
 
 /// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesProjectedSourcesConfigMapItems {
+pub struct ClusterShardingsTemplateVolumesProjectedSourcesConfigMapItems {
     /// key is the key to project.
     pub key: String,
     /// mode is Optional: mode bits used to set permissions on this file.
@@ -13231,18 +13247,18 @@ pub struct ClusterShardingSpecsTemplateVolumesProjectedSourcesConfigMapItems {
 
 /// downwardAPI information about the downwardAPI data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesProjectedSourcesDownwardApi {
+pub struct ClusterShardingsTemplateVolumesProjectedSourcesDownwardApi {
     /// Items is a list of DownwardAPIVolume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<ClusterShardingSpecsTemplateVolumesProjectedSourcesDownwardApiItems>>,
+    pub items: Option<Vec<ClusterShardingsTemplateVolumesProjectedSourcesDownwardApiItems>>,
 }
 
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesProjectedSourcesDownwardApiItems {
+pub struct ClusterShardingsTemplateVolumesProjectedSourcesDownwardApiItems {
     /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref: Option<ClusterShardingSpecsTemplateVolumesProjectedSourcesDownwardApiItemsFieldRef>,
+    pub field_ref: Option<ClusterShardingsTemplateVolumesProjectedSourcesDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
     /// between 0000 and 0777 or a decimal value between 0 and 511.
     /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
@@ -13256,12 +13272,12 @@ pub struct ClusterShardingSpecsTemplateVolumesProjectedSourcesDownwardApiItems {
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
-    pub resource_field_ref: Option<ClusterShardingSpecsTemplateVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
+    pub resource_field_ref: Option<ClusterShardingsTemplateVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
 }
 
 /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesProjectedSourcesDownwardApiItemsFieldRef {
+pub struct ClusterShardingsTemplateVolumesProjectedSourcesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
@@ -13273,7 +13289,7 @@ pub struct ClusterShardingSpecsTemplateVolumesProjectedSourcesDownwardApiItemsFi
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
+pub struct ClusterShardingsTemplateVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
@@ -13286,7 +13302,7 @@ pub struct ClusterShardingSpecsTemplateVolumesProjectedSourcesDownwardApiItemsRe
 
 /// secret information about the secret data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesProjectedSourcesSecret {
+pub struct ClusterShardingsTemplateVolumesProjectedSourcesSecret {
     /// items if unspecified, each key-value pair in the Data field of the referenced
     /// Secret will be projected into the volume as a file whose name is the
     /// key and content is the value. If specified, the listed keys will be
@@ -13295,7 +13311,7 @@ pub struct ClusterShardingSpecsTemplateVolumesProjectedSourcesSecret {
     /// the volume setup will error unless it is marked optional. Paths must be
     /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<ClusterShardingSpecsTemplateVolumesProjectedSourcesSecretItems>>,
+    pub items: Option<Vec<ClusterShardingsTemplateVolumesProjectedSourcesSecretItems>>,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -13308,7 +13324,7 @@ pub struct ClusterShardingSpecsTemplateVolumesProjectedSourcesSecret {
 
 /// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesProjectedSourcesSecretItems {
+pub struct ClusterShardingsTemplateVolumesProjectedSourcesSecretItems {
     /// key is the key to project.
     pub key: String,
     /// mode is Optional: mode bits used to set permissions on this file.
@@ -13328,7 +13344,7 @@ pub struct ClusterShardingSpecsTemplateVolumesProjectedSourcesSecretItems {
 
 /// serviceAccountToken is information about the serviceAccountToken data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesProjectedSourcesServiceAccountToken {
+pub struct ClusterShardingsTemplateVolumesProjectedSourcesServiceAccountToken {
     /// audience is the intended audience of the token. A recipient of a token
     /// must identify itself with an identifier specified in the audience of the
     /// token, and otherwise should reject the token. The audience defaults to the
@@ -13350,7 +13366,7 @@ pub struct ClusterShardingSpecsTemplateVolumesProjectedSourcesServiceAccountToke
 
 /// quobyte represents a Quobyte mount on the host that shares a pod's lifetime
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesQuobyte {
+pub struct ClusterShardingsTemplateVolumesQuobyte {
     /// group to map volume access to
     /// Default is no group
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -13378,7 +13394,7 @@ pub struct ClusterShardingSpecsTemplateVolumesQuobyte {
 /// rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.
 /// More info: https://examples.k8s.io/volumes/rbd/README.md
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesRbd {
+pub struct ClusterShardingsTemplateVolumesRbd {
     /// fsType is the filesystem type of the volume that you want to mount.
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
     /// Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
@@ -13412,7 +13428,7 @@ pub struct ClusterShardingSpecsTemplateVolumesRbd {
     /// Default is nil.
     /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<ClusterShardingSpecsTemplateVolumesRbdSecretRef>,
+    pub secret_ref: Option<ClusterShardingsTemplateVolumesRbdSecretRef>,
     /// user is the rados user name.
     /// Default is admin.
     /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
@@ -13425,7 +13441,7 @@ pub struct ClusterShardingSpecsTemplateVolumesRbd {
 /// Default is nil.
 /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesRbdSecretRef {
+pub struct ClusterShardingsTemplateVolumesRbdSecretRef {
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -13435,7 +13451,7 @@ pub struct ClusterShardingSpecsTemplateVolumesRbdSecretRef {
 
 /// scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesScaleIo {
+pub struct ClusterShardingsTemplateVolumesScaleIo {
     /// fsType is the filesystem type to mount.
     /// Must be a filesystem type supported by the host operating system.
     /// Ex. "ext4", "xfs", "ntfs".
@@ -13454,7 +13470,7 @@ pub struct ClusterShardingSpecsTemplateVolumesScaleIo {
     /// secretRef references to the secret for ScaleIO user and other
     /// sensitive information. If this is not provided, Login operation will fail.
     #[serde(rename = "secretRef")]
-    pub secret_ref: ClusterShardingSpecsTemplateVolumesScaleIoSecretRef,
+    pub secret_ref: ClusterShardingsTemplateVolumesScaleIoSecretRef,
     /// sslEnabled Flag enable/disable SSL communication with Gateway, default false
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
@@ -13476,7 +13492,7 @@ pub struct ClusterShardingSpecsTemplateVolumesScaleIo {
 /// secretRef references to the secret for ScaleIO user and other
 /// sensitive information. If this is not provided, Login operation will fail.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesScaleIoSecretRef {
+pub struct ClusterShardingsTemplateVolumesScaleIoSecretRef {
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -13487,7 +13503,7 @@ pub struct ClusterShardingSpecsTemplateVolumesScaleIoSecretRef {
 /// secret represents a secret that should populate this volume.
 /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesSecret {
+pub struct ClusterShardingsTemplateVolumesSecret {
     /// defaultMode is Optional: mode bits used to set permissions on created files by default.
     /// Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511.
     /// YAML accepts both octal and decimal values, JSON requires decimal values
@@ -13505,7 +13521,7 @@ pub struct ClusterShardingSpecsTemplateVolumesSecret {
     /// the volume setup will error unless it is marked optional. Paths must be
     /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<Vec<ClusterShardingSpecsTemplateVolumesSecretItems>>,
+    pub items: Option<Vec<ClusterShardingsTemplateVolumesSecretItems>>,
     /// optional field specify whether the Secret or its keys must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
@@ -13517,7 +13533,7 @@ pub struct ClusterShardingSpecsTemplateVolumesSecret {
 
 /// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesSecretItems {
+pub struct ClusterShardingsTemplateVolumesSecretItems {
     /// key is the key to project.
     pub key: String,
     /// mode is Optional: mode bits used to set permissions on this file.
@@ -13537,7 +13553,7 @@ pub struct ClusterShardingSpecsTemplateVolumesSecretItems {
 
 /// storageOS represents a StorageOS volume attached and mounted on Kubernetes nodes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesStorageos {
+pub struct ClusterShardingsTemplateVolumesStorageos {
     /// fsType is the filesystem type to mount.
     /// Must be a filesystem type supported by the host operating system.
     /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
@@ -13550,7 +13566,7 @@ pub struct ClusterShardingSpecsTemplateVolumesStorageos {
     /// secretRef specifies the secret to use for obtaining the StorageOS API
     /// credentials.  If not specified, default values will be attempted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<ClusterShardingSpecsTemplateVolumesStorageosSecretRef>,
+    pub secret_ref: Option<ClusterShardingsTemplateVolumesStorageosSecretRef>,
     /// volumeName is the human-readable name of the StorageOS volume.  Volume
     /// names are only unique within a namespace.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
@@ -13568,7 +13584,7 @@ pub struct ClusterShardingSpecsTemplateVolumesStorageos {
 /// secretRef specifies the secret to use for obtaining the StorageOS API
 /// credentials.  If not specified, default values will be attempted.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesStorageosSecretRef {
+pub struct ClusterShardingsTemplateVolumesStorageosSecretRef {
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -13578,7 +13594,7 @@ pub struct ClusterShardingSpecsTemplateVolumesStorageosSecretRef {
 
 /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterShardingSpecsTemplateVolumesVsphereVolume {
+pub struct ClusterShardingsTemplateVolumesVsphereVolume {
     /// fsType is filesystem type to mount.
     /// Must be a filesystem type supported by the host operating system.
     /// Ex. "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified.
@@ -13606,9 +13622,6 @@ pub enum ClusterTerminationPolicy {
 /// ClusterStatus defines the observed state of the Cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterStatus {
-    /// Represents the generation number of the referenced ClusterDefinition.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterDefGeneration")]
-    pub cluster_def_generation: Option<i64>,
     /// Records the current status information of all Components within the Cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub components: Option<BTreeMap<String, ClusterStatusComponents>>,
@@ -13631,6 +13644,9 @@ pub struct ClusterStatus {
     /// `Creating`, `Running`, `Updating`, `Stopping`, `Stopped`, `Deleting`, `Failed`, `Abnormal`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<ClusterStatusPhase>,
+    /// Records the current status information of all shardings within the Cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub shardings: Option<BTreeMap<String, ClusterStatusShardings>>,
 }
 
 /// Records the current status information of all Components within the Cluster.
@@ -13661,6 +13677,31 @@ pub enum ClusterStatusComponentsPhase {
 /// ClusterStatus defines the observed state of the Cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterStatusPhase {
+    Creating,
+    Running,
+    Updating,
+    Stopping,
+    Stopped,
+    Deleting,
+    Failed,
+    Abnormal,
+}
+
+/// Records the current status information of all shardings within the Cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterStatusShardings {
+    /// Records detailed information about the Component in its current phase.
+    /// The keys are either podName, deployName, or statefulSetName, formatted as 'ObjectKind/Name'.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub message: Option<BTreeMap<String, String>>,
+    /// Specifies the current state of the Component.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub phase: Option<ClusterStatusShardingsPhase>,
+}
+
+/// Records the current status information of all shardings within the Cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterStatusShardingsPhase {
     Creating,
     Running,
     Updating,

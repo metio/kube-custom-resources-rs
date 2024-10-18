@@ -108,8 +108,10 @@ pub struct FlowCollectorAgentEbpf {
     /// If the `spec.agent.ebpf.privileged` parameter is not set, an error is reported.<br>
     /// - `DNSTracking`: enable the DNS tracking feature.<br>
     /// - `FlowRTT`: enable flow latency (sRTT) extraction in the eBPF agent from TCP traffic.<br>
-    /// - `NetworkEvents`: enable the Network events monitoring feature.  This feature requires mounting
+    /// - `NetworkEvents`: enable the Network events monitoring feature. This feature requires mounting
     /// the kernel debug filesystem, so the eBPF pod has to run as privileged.
+    /// It requires using the OVN-Kubernetes network plugin with the Observability feature.
+    /// IMPORTANT: this feature is available as a Developer Preview.<br>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub features: Option<Vec<String>>,
     /// `flowFilter` defines the eBPF agent configuration regarding flow filtering.
@@ -1225,7 +1227,7 @@ pub struct FlowCollectorAgentIpfix {
     /// When it is set to `true`, the value of `sampling` is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceSampleAll")]
     pub force_sample_all: Option<bool>,
-    /// `ovnKubernetes` defines the settings of the OVN-Kubernetes CNI, when available. This configuration is used when using OVN's IPFIX exports, without OpenShift. When using OpenShift, refer to the `clusterNetworkOperator` property instead.
+    /// `ovnKubernetes` defines the settings of the OVN-Kubernetes network plugin, when available. This configuration is used when using OVN's IPFIX exports, without OpenShift. When using OpenShift, refer to the `clusterNetworkOperator` property instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ovnKubernetes")]
     pub ovn_kubernetes: Option<FlowCollectorAgentIpfixOvnKubernetes>,
     /// `sampling` is the sampling rate on the reporter. 100 means one flow on 100 is sent.
@@ -1244,7 +1246,7 @@ pub struct FlowCollectorAgentIpfixClusterNetworkOperator {
     pub namespace: Option<String>,
 }
 
-/// `ovnKubernetes` defines the settings of the OVN-Kubernetes CNI, when available. This configuration is used when using OVN's IPFIX exports, without OpenShift. When using OpenShift, refer to the `clusterNetworkOperator` property instead.
+/// `ovnKubernetes` defines the settings of the OVN-Kubernetes network plugin, when available. This configuration is used when using OVN's IPFIX exports, without OpenShift. When using OpenShift, refer to the `clusterNetworkOperator` property instead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorAgentIpfixOvnKubernetes {
     /// `containerName` defines the name of the container to configure for IPFIX.

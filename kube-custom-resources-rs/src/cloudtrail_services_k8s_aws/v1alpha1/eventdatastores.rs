@@ -12,7 +12,6 @@ use self::prelude::*;
 
 /// EventDataStoreSpec defines the desired state of EventDataStore.
 /// 
-/// 
 /// A storage lake of event data against which you can run complex SQL-based
 /// queries. An event data store can include events that you have logged on your
 /// account from the last 90 to 2555 days (about three months to up to seven
@@ -61,24 +60,17 @@ pub struct EventDataStoreSpec {
 /// event selectors, see Logging data events for trails (https://docs.aws.amazon.com/awscloudtrail/latest/userguide/logging-data-events-with-cloudtrail.html)
 /// in the CloudTrail User Guide.
 /// 
-/// 
 ///    * readOnly
-/// 
 /// 
 ///    * eventSource
 /// 
-/// 
 ///    * eventName
-/// 
 /// 
 ///    * eventCategory
 /// 
-/// 
 ///    * resources.type
 /// 
-/// 
 ///    * resources.ARN
-/// 
 /// 
 /// You cannot apply both event selectors and advanced event selectors to a trail.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -155,7 +147,6 @@ pub struct EventDataStoreStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

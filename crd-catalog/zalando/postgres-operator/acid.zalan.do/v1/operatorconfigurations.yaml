@@ -504,28 +504,28 @@ spec:
                 postgres_pod_resources:
                   properties:
                     default_cpu_limit:
-                      pattern: "^(\\d+m|\\d+(\\.\\d{1,3})?)$"
+                      pattern: "^(\\d+m|\\d+(\\.\\d{1,3})?)$|^$"
                       type: "string"
                     default_cpu_request:
-                      pattern: "^(\\d+m|\\d+(\\.\\d{1,3})?)$"
+                      pattern: "^(\\d+m|\\d+(\\.\\d{1,3})?)$|^$"
                       type: "string"
                     default_memory_limit:
-                      pattern: "^(\\d+(e\\d+)?|\\d+(\\.\\d+)?(e\\d+)?[EPTGMK]i?)$"
+                      pattern: "^(\\d+(e\\d+)?|\\d+(\\.\\d+)?(e\\d+)?[EPTGMK]i?)$|^$"
                       type: "string"
                     default_memory_request:
-                      pattern: "^(\\d+(e\\d+)?|\\d+(\\.\\d+)?(e\\d+)?[EPTGMK]i?)$"
+                      pattern: "^(\\d+(e\\d+)?|\\d+(\\.\\d+)?(e\\d+)?[EPTGMK]i?)$|^$"
                       type: "string"
                     max_cpu_request:
-                      pattern: "^(\\d+m|\\d+(\\.\\d{1,3})?)$"
+                      pattern: "^(\\d+m|\\d+(\\.\\d{1,3})?)$|^$"
                       type: "string"
                     max_memory_request:
-                      pattern: "^(\\d+(e\\d+)?|\\d+(\\.\\d+)?(e\\d+)?[EPTGMK]i?)$"
+                      pattern: "^(\\d+(e\\d+)?|\\d+(\\.\\d+)?(e\\d+)?[EPTGMK]i?)$|^$"
                       type: "string"
                     min_cpu_limit:
-                      pattern: "^(\\d+m|\\d+(\\.\\d{1,3})?)$"
+                      pattern: "^(\\d+m|\\d+(\\.\\d{1,3})?)$|^$"
                       type: "string"
                     min_memory_limit:
-                      pattern: "^(\\d+(e\\d+)?|\\d+(\\.\\d+)?(e\\d+)?[EPTGMK]i?)$"
+                      pattern: "^(\\d+(e\\d+)?|\\d+(\\.\\d+)?(e\\d+)?[EPTGMK]i?)$|^$"
                       type: "string"
                   type: "object"
                 repair_period:

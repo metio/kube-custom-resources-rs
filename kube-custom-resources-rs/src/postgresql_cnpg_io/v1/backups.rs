@@ -182,6 +182,9 @@ pub struct BackupStatus {
     /// The last backup status
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
+    /// A map containing the plugin metadata
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pluginMetadata")]
+    pub plugin_metadata: Option<BTreeMap<String, String>>,
     /// The credentials to use to upload data to S3
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3Credentials")]
     pub s3_credentials: Option<BackupStatusS3Credentials>,

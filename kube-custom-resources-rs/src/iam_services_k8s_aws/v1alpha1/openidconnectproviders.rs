@@ -24,11 +24,9 @@ pub struct OpenIDConnectProviderSpec {
     /// that identifies the application. This is the value that's sent as the client_id
     /// parameter on OAuth requests.
     /// 
-    /// 
     /// You can register multiple client IDs with the same provider. For example,
     /// you might have multiple applications that use the same OIDC provider. You
     /// cannot register more than 100 client IDs with a single IAM OIDC provider.
-    /// 
     /// 
     /// There is no defined format for a client ID. The CreateOpenIDConnectProviderRequest
     /// operation accepts client IDs up to 255 characters long.
@@ -38,7 +36,6 @@ pub struct OpenIDConnectProviderSpec {
     /// provider. Each tag consists of a key name and an associated value. For more
     /// information about tagging, see Tagging IAM resources (https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html)
     /// in the IAM User Guide.
-    /// 
     /// 
     /// If any one of the tags is invalid or if you exceed the allowed maximum number
     /// of tags, then the entire request fails and the resource is not created.
@@ -50,18 +47,15 @@ pub struct OpenIDConnectProviderSpec {
     /// lets you maintain multiple thumbprints if the identity provider is rotating
     /// certificates.
     /// 
-    /// 
     /// The server certificate thumbprint is the hex-encoded SHA-1 hash value of
     /// the X.509 certificate used by the domain where the OpenID Connect provider
     /// makes its keys available. It is always a 40-character string.
-    /// 
     /// 
     /// You must provide at least one thumbprint when creating an IAM OIDC provider.
     /// For example, assume that the OIDC provider is server.example.com and the
     /// provider stores its keys at https://keys.server.example.com/openid-connect.
     /// In that case, the thumbprint string would be the hex-encoded SHA-1 hash value
     /// of the certificate used by https://keys.server.example.com.
-    /// 
     /// 
     /// For more information about obtaining the OIDC provider thumbprint, see Obtaining
     /// the thumbprint for an OpenID Connect provider (https://docs.aws.amazon.com/IAM/latest/UserGuide/identity-providers-oidc-obtain-thumbprint.html)
@@ -72,7 +66,6 @@ pub struct OpenIDConnectProviderSpec {
     /// the OIDC standard, path components are allowed but query parameters are not.
     /// Typically the URL consists of only a hostname, like https://server.example.org
     /// or https://example.com. The URL should not contain a port number.
-    /// 
     /// 
     /// You cannot register the same provider multiple times in a single Amazon Web
     /// Services account. If you try to submit a URL that has already been used for
@@ -120,7 +113,6 @@ pub struct OpenIDConnectProviderStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

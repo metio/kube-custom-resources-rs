@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.2"
   name: "buckets.s3.services.k8s.aws"
 spec:
   group: "s3.services.k8s.aws"
@@ -27,7 +27,7 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "BucketSpec defines the desired state of Bucket.\n\n\nIn terms of implementation, a Bucket is a resource. An Amazon S3 bucket name\nis globally unique, and the namespace is shared by all Amazon Web Services\naccounts."
+              description: "BucketSpec defines the desired state of Bucket.\n\nIn terms of implementation, a Bucket is a resource. An Amazon S3 bucket name\nis globally unique, and the namespace is shared by all Amazon Web Services\naccounts."
               properties:
                 accelerate:
                   description: "Container for setting the transfer acceleration state."
@@ -169,14 +169,14 @@ spec:
                   description: "Allows grantee to read the bucket ACL."
                   type: "string"
                 grantWrite:
-                  description: "Allows grantee to create new objects in the bucket.\n\n\nFor the bucket and object owners of existing objects, also allows deletions\nand overwrites of those objects."
+                  description: "Allows grantee to create new objects in the bucket.\n\nFor the bucket and object owners of existing objects, also allows deletions\nand overwrites of those objects."
                   type: "string"
                 grantWriteACP:
                   description: "Allows grantee to write the ACL for the applicable bucket."
                   type: "string"
                 intelligentTiering:
                   items:
-                    description: "Specifies the S3 Intelligent-Tiering configuration for an Amazon S3 bucket.\n\n\nFor information about the S3 Intelligent-Tiering storage class, see Storage\nclass for automatically optimizing frequently and infrequently accessed objects\n(https://docs.aws.amazon.com/AmazonS3/latest/dev/storage-class-intro.html#sc-dynamic-data-access)."
+                    description: "Specifies the S3 Intelligent-Tiering configuration for an Amazon S3 bucket.\n\nFor information about the S3 Intelligent-Tiering storage class, see Storage\nclass for automatically optimizing frequently and infrequently accessed objects\n(https://docs.aws.amazon.com/AmazonS3/latest/dev/storage-class-intro.html#sc-dynamic-data-access)."
                     properties:
                       filter:
                         description: "The Filter is used to identify objects that the S3 Intelligent-Tiering configuration\napplies to."
@@ -404,7 +404,7 @@ spec:
                           type: "string"
                         targetGrants:
                           items:
-                            description: "Container for granting information.\n\n\nBuckets that use the bucket owner enforced setting for Object Ownership don't\nsupport target grants. For more information, see Permissions server access\nlog delivery (https://docs.aws.amazon.com/AmazonS3/latest/userguide/enable-server-access-logging.html#grant-log-delivery-permissions-general)\nin the Amazon S3 User Guide."
+                            description: "Container for granting information.\n\nBuckets that use the bucket owner enforced setting for Object Ownership don't\nsupport target grants. For more information, see Permissions server access\nlog delivery (https://docs.aws.amazon.com/AmazonS3/latest/userguide/enable-server-access-logging.html#grant-log-delivery-permissions-general)\nin the Amazon S3 User Guide."
                             properties:
                               grantee:
                                 description: "Container for the person being granted permissions."
@@ -592,7 +592,7 @@ spec:
                         description: "The container element for an ownership control rule."
                         properties:
                           objectOwnership:
-                            description: "The container element for object ownership for a bucket's ownership controls.\n\n\nBucketOwnerPreferred - Objects uploaded to the bucket change ownership to\nthe bucket owner if the objects are uploaded with the bucket-owner-full-control\ncanned ACL.\n\n\nObjectWriter - The uploading account will own the object if the object is\nuploaded with the bucket-owner-full-control canned ACL.\n\n\nBucketOwnerEnforced - Access control lists (ACLs) are disabled and no longer\naffect permissions. The bucket owner automatically owns and has full control\nover every object in the bucket. The bucket only accepts PUT requests that\ndon't specify an ACL or bucket owner full control ACLs, such as the bucket-owner-full-control\ncanned ACL or an equivalent form of this ACL expressed in the XML format."
+                            description: "The container element for object ownership for a bucket's ownership controls.\n\nBucketOwnerPreferred - Objects uploaded to the bucket change ownership to\nthe bucket owner if the objects are uploaded with the bucket-owner-full-control\ncanned ACL.\n\nObjectWriter - The uploading account will own the object if the object is\nuploaded with the bucket-owner-full-control canned ACL.\n\nBucketOwnerEnforced - Access control lists (ACLs) are disabled and no longer\naffect permissions. The bucket owner automatically owns and has full control\nover every object in the bucket. The bucket only accepts PUT requests that\ndon't specify an ACL or bucket owner full control ACLs, such as the bucket-owner-full-control\ncanned ACL or an equivalent form of this ACL expressed in the XML format."
                             type: "string"
                         type: "object"
                       type: "array"
@@ -622,7 +622,7 @@ spec:
                         description: "Specifies which Amazon S3 objects to replicate and where to store the replicas."
                         properties:
                           deleteMarkerReplication:
-                            description: "Specifies whether Amazon S3 replicates delete markers. If you specify a Filter\nin your replication configuration, you must also include a DeleteMarkerReplication\nelement. If your Filter includes a Tag element, the DeleteMarkerReplication\nStatus must be set to Disabled, because Amazon S3 does not support replicating\ndelete markers for tag-based rules. For an example configuration, see Basic\nRule Configuration (https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-add-config.html#replication-config-min-rule-config).\n\n\nFor more information about delete marker replication, see Basic Rule Configuration\n(https://docs.aws.amazon.com/AmazonS3/latest/dev/delete-marker-replication.html).\n\n\nIf you are using an earlier version of the replication configuration, Amazon\nS3 handles replication of delete markers differently. For more information,\nsee Backward Compatibility (https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-add-config.html#replication-backward-compat-considerations)."
+                            description: "Specifies whether Amazon S3 replicates delete markers. If you specify a Filter\nin your replication configuration, you must also include a DeleteMarkerReplication\nelement. If your Filter includes a Tag element, the DeleteMarkerReplication\nStatus must be set to Disabled, because Amazon S3 does not support replicating\ndelete markers for tag-based rules. For an example configuration, see Basic\nRule Configuration (https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-add-config.html#replication-config-min-rule-config).\n\nFor more information about delete marker replication, see Basic Rule Configuration\n(https://docs.aws.amazon.com/AmazonS3/latest/dev/delete-marker-replication.html).\n\nIf you are using an earlier version of the replication configuration, Amazon\nS3 handles replication of delete markers differently. For more information,\nsee Backward Compatibility (https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-add-config.html#replication-backward-compat-considerations)."
                             properties:
                               status:
                                 type: "string"
@@ -685,7 +685,7 @@ spec:
                             description: "A filter that identifies the subset of objects to which the replication rule\napplies. A Filter must specify exactly one Prefix, Tag, or an And child element."
                             properties:
                               and:
-                                description: "A container for specifying rule filters. The filters determine the subset\nof objects to which the rule applies. This element is required only if you\nspecify more than one filter.\n\n\nFor example:\n\n\n   * If you specify both a Prefix and a Tag filter, wrap these filters in\n   an And tag.\n\n\n   * If you specify a filter based on multiple tags, wrap the Tag elements\n   in an And tag."
+                                description: "A container for specifying rule filters. The filters determine the subset\nof objects to which the rule applies. This element is required only if you\nspecify more than one filter.\n\nFor example:\n\n   * If you specify both a Prefix and a Tag filter, wrap these filters in\n   an And tag.\n\n   * If you specify a filter based on multiple tags, wrap the Tag elements\n   in an And tag."
                                 properties:
                                   prefix:
                                     type: "string"
@@ -722,7 +722,7 @@ spec:
                             description: "A container that describes additional filters for identifying the source\nobjects that you want to replicate. You can choose to enable or disable the\nreplication of these objects. Currently, Amazon S3 supports only the filter\nthat you can specify for objects created with server-side encryption using\na customer managed key stored in Amazon Web Services Key Management Service\n(SSE-KMS)."
                             properties:
                               replicaModifications:
-                                description: "A filter that you can specify for selection for modifications on replicas.\nAmazon S3 doesn't replicate replica modifications by default. In the latest\nversion of replication configuration (when Filter is specified), you can\nspecify this element and set the status to Enabled to replicate modifications\non replicas.\n\n\nIf you don't specify the Filter element, Amazon S3 assumes that the replication\nconfiguration is the earlier version, V1. In the earlier version, this element\nis not allowed."
+                                description: "A filter that you can specify for selection for modifications on replicas.\nAmazon S3 doesn't replicate replica modifications by default. In the latest\nversion of replication configuration (when Filter is specified), you can\nspecify this element and set the status to Enabled to replicate modifications\non replicas.\n\nIf you don't specify the Filter element, Amazon S3 assumes that the replication\nconfiguration is the earlier version, V1. In the earlier version, this element\nis not allowed."
                                 properties:
                                   status:
                                     type: "string"
@@ -827,7 +827,7 @@ spec:
                   description: "All CRs managed by ACK have a common `Status.ACKResourceMetadata` member\nthat is used to contain resource sync state, account ownership,\nconstructed ARN for the resource"
                   properties:
                     arn:
-                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nTODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
+                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."

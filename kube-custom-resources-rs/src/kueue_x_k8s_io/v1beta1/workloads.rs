@@ -95,6 +95,9 @@ pub struct WorkloadPodSets {
     /// Workload are used to filter the ResourceFlavors that can be assigned to
     /// this podSet.
     pub template: WorkloadPodSetsTemplate,
+    /// topologyRequest defines the topology request for the PodSet.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologyRequest")]
+    pub topology_request: Option<WorkloadPodSetsTopologyRequest>,
 }
 
 /// template is the Pod template.
@@ -6878,6 +6881,21 @@ pub struct WorkloadPodSetsTemplateSpecVolumesVsphereVolume {
     pub volume_path: String,
 }
 
+/// topologyRequest defines the topology request for the PodSet.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct WorkloadPodSetsTopologyRequest {
+    /// preferred indicates the topology level preferred by the PodSet, as
+    /// indicated by the `kueue.x-k8s.io/podset-preferred-topology` PodSet
+    /// annotation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub preferred: Option<String>,
+    /// required indicates the topology level required by the PodSet, as
+    /// indicated by the `kueue.x-k8s.io/podset-required-topology` PodSet
+    /// annotation.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub required: Option<String>,
+}
+
 /// WorkloadSpec defines the desired state of Workload
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum WorkloadPriorityClassSource {
@@ -6919,6 +6937,12 @@ pub struct WorkloadStatus {
     /// when a workload meets Eviction with PodsReadyTimeout reason.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requeueState")]
     pub requeue_state: Option<WorkloadStatusRequeueState>,
+    /// resourceRequests provides a detailed view of the resources that were
+    /// requested by a non-admitted workload when it was considered for admission.
+    /// If admission is non-null, resourceRequests will be empty because
+    /// admission.resourceUsage contains the detailed information.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceRequests")]
+    pub resource_requests: Option<Vec<WorkloadStatusResourceRequests>>,
 }
 
 /// admission holds the parameters of the admission of the workload by a
@@ -6954,6 +6978,84 @@ pub struct WorkloadStatusAdmissionPodSetAssignments {
     /// This field will not change in case of quota reclaim.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceUsage")]
     pub resource_usage: Option<BTreeMap<String, IntOrString>>,
+    /// topologyAssignment indicates the topology assignment divided into
+    /// topology domains corresponding to the lowest level of the topology.
+    /// The assignment specifies the number of Pods to be scheduled per topology
+    /// domain and specifies the node selectors for each topology domain, in the
+    /// following way: the node selector keys are specified by the levels field
+    /// (same for all domains), and the corresponding node selector value is
+    /// specified by the domains.values subfield.
+    /// 
+    /// Example:
+    /// 
+    /// topologyAssignment:
+    ///   levels:
+    ///   - cloud.provider.com/topology-block
+    ///   - cloud.provider.com/topology-rack
+    ///   domains:
+    ///   - values: [block-1, rack-1]
+    ///     count: 4
+    ///   - values: [block-1, rack-2]
+    ///     count: 2
+    /// 
+    /// Here:
+    /// - 4 Pods are to be scheduled on nodes matching the node selector:
+    ///   cloud.provider.com/topology-block: block-1
+    ///   cloud.provider.com/topology-rack: rack-1
+    /// - 2 Pods are to be scheduled on nodes matching the node selector:
+    ///   cloud.provider.com/topology-block: block-1
+    ///   cloud.provider.com/topology-rack: rack-2
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologyAssignment")]
+    pub topology_assignment: Option<WorkloadStatusAdmissionPodSetAssignmentsTopologyAssignment>,
+}
+
+/// topologyAssignment indicates the topology assignment divided into
+/// topology domains corresponding to the lowest level of the topology.
+/// The assignment specifies the number of Pods to be scheduled per topology
+/// domain and specifies the node selectors for each topology domain, in the
+/// following way: the node selector keys are specified by the levels field
+/// (same for all domains), and the corresponding node selector value is
+/// specified by the domains.values subfield.
+/// 
+/// Example:
+/// 
+/// topologyAssignment:
+///   levels:
+///   - cloud.provider.com/topology-block
+///   - cloud.provider.com/topology-rack
+///   domains:
+///   - values: [block-1, rack-1]
+///     count: 4
+///   - values: [block-1, rack-2]
+///     count: 2
+/// 
+/// Here:
+/// - 4 Pods are to be scheduled on nodes matching the node selector:
+///   cloud.provider.com/topology-block: block-1
+///   cloud.provider.com/topology-rack: rack-1
+/// - 2 Pods are to be scheduled on nodes matching the node selector:
+///   cloud.provider.com/topology-block: block-1
+///   cloud.provider.com/topology-rack: rack-2
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct WorkloadStatusAdmissionPodSetAssignmentsTopologyAssignment {
+    /// domains is a list of topology assignments split by topology domains at
+    /// the lowest level of the topology.
+    pub domains: Vec<WorkloadStatusAdmissionPodSetAssignmentsTopologyAssignmentDomains>,
+    /// levels is an ordered list of keys denoting the levels of the assigned
+    /// topology (i.e. node label keys), from the highest to the lowest level of
+    /// the topology.
+    pub levels: Vec<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct WorkloadStatusAdmissionPodSetAssignmentsTopologyAssignmentDomains {
+    /// count indicates the number of Pods to be scheduled in the topology
+    /// domain indicated by the values field.
+    pub count: i32,
+    /// values is an ordered list of node selector values describing a topology
+    /// domain. The values correspond to the consecutive topology levels, from
+    /// the highest to the lowest.
+    pub values: Vec<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -7051,5 +7153,18 @@ pub struct WorkloadStatusRequeueState {
     /// this time would be reset to null.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requeueAt")]
     pub requeue_at: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct WorkloadStatusResourceRequests {
+    /// name is the name of the podSet. It should match one of the names in .spec.podSets.
+    pub name: String,
+    /// resources is the total resources all the pods in the podset need to run.
+    /// 
+    /// Beside what is provided in podSet's specs, this value also takes into account
+    /// the LimitRange defaults and RuntimeClass overheads at the moment of consideration
+    /// and the application of resource.excludeResourcePrefixes and resource.transformations.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<BTreeMap<String, IntOrString>>,
 }
 

@@ -13,7 +13,6 @@ use self::prelude::*;
 
 /// VirtualClusterSpec defines the desired state of VirtualCluster.
 /// 
-/// 
 /// This entity describes a virtual cluster. A virtual cluster is a Kubernetes
 /// namespace that Amazon EMR is registered with. Amazon EMR uses virtual clusters
 /// to run jobs and host endpoints. Multiple virtual clusters can be backed by
@@ -96,7 +95,6 @@ pub struct VirtualClusterStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

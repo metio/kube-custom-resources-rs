@@ -5579,6 +5579,9 @@ pub struct ArgoCDServer {
     /// Autoscale defines the autoscale options for the Argo CD Server component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub autoscale: Option<ArgoCDServerAutoscale>,
+    /// EnableRolloutsUI will add the Argo Rollouts UI extension in ArgoCD Dashboard.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableRolloutsUI")]
+    pub enable_rollouts_ui: Option<bool>,
     /// Env lets you specify environment for API server pods
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ArgoCDServerEnv>>,

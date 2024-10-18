@@ -21,19 +21,15 @@ use self::prelude::*;
 pub struct KeySpec {
     /// A flag to indicate whether to bypass the key policy lockout safety check.
     /// 
-    /// 
     /// Setting this value to true increases the risk that the KMS key becomes unmanageable.
     /// Do not set this value to true indiscriminately.
-    /// 
     /// 
     /// For more information, refer to the scenario in the Default Key Policy (https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html#key-policy-default-allow-root-enable-iam)
     /// section in the Key Management Service Developer Guide .
     /// 
-    /// 
     /// Use this parameter only when you include a policy in the request and you
     /// intend to prevent the principal that is making the request from making a
     /// subsequent PutKeyPolicy request on the KMS key.
-    /// 
     /// 
     /// The default value is false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bypassPolicyLockoutSafetyCheck")]
@@ -45,17 +41,13 @@ pub struct KeySpec {
     /// custom key store must have at least two active HSMs, each in a different
     /// Availability Zone in the Region.
     /// 
-    /// 
     /// This parameter is valid only for symmetric encryption KMS keys in a single
     /// Region. You cannot create any other type of KMS key in a custom key store.
     /// 
-    /// 
     /// To find the ID of a custom key store, use the DescribeCustomKeyStores operation.
-    /// 
     /// 
     /// The response includes the custom key store ID and the ID of the CloudHSM
     /// cluster.
-    /// 
     /// 
     /// This operation is part of the custom key store feature (https://docs.aws.amazon.com/kms/latest/developerguide/custom-key-store-overview.html)
     /// feature in KMS, which combines the convenience and extensive integration
@@ -64,10 +56,8 @@ pub struct KeySpec {
     pub custom_key_store_id: Option<String>,
     /// A description of the KMS key.
     /// 
-    /// 
     /// Use a description that helps you decide whether the KMS key is appropriate
     /// for a task. The default value is an empty string (no description).
-    /// 
     /// 
     /// To set or change the description after the key is created, use UpdateKeyDescription.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -81,7 +71,6 @@ pub struct KeySpec {
     /// see Choosing a KMS key type (https://docs.aws.amazon.com/kms/latest/developerguide/key-types.html#symm-asymm-choose)
     /// in the Key Management Service Developer Guide .
     /// 
-    /// 
     /// The KeySpec determines whether the KMS key contains a symmetric key or an
     /// asymmetric key pair. It also determines the cryptographic algorithms that
     /// the KMS key supports. You can't change the KeySpec after the KMS key is created.
@@ -92,31 +81,23 @@ pub struct KeySpec {
     /// or kms:Signing Algorithm (https://docs.aws.amazon.com/kms/latest/developerguide/policy-conditions.html#conditions-kms-signing-algorithm)
     /// in the Key Management Service Developer Guide .
     /// 
-    /// 
     /// Amazon Web Services services that are integrated with KMS (http://aws.amazon.com/kms/features/#AWS_Service_Integration)
     /// use symmetric encryption KMS keys to protect your data. These services do
     /// not support asymmetric KMS keys or HMAC KMS keys.
     /// 
-    /// 
     /// KMS supports the following key specs for KMS keys:
-    /// 
     /// 
     ///    * Symmetric encryption key (default) SYMMETRIC_DEFAULT
     /// 
-    /// 
     ///    * HMAC keys (symmetric) HMAC_224 HMAC_256 HMAC_384 HMAC_512
     /// 
-    /// 
     ///    * Asymmetric RSA key pairs RSA_2048 RSA_3072 RSA_4096
-    /// 
     /// 
     ///    * Asymmetric NIST-recommended elliptic curve key pairs ECC_NIST_P256 (secp256r1)
     ///    ECC_NIST_P384 (secp384r1) ECC_NIST_P521 (secp521r1)
     /// 
-    /// 
     ///    * Other asymmetric elliptic curve key pairs ECC_SECG_P256K1 (secp256k1),
     ///    commonly used for cryptocurrencies.
-    /// 
     /// 
     ///    * SM2 key pairs (China Regions only) SM2
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySpec")]
@@ -127,22 +108,16 @@ pub struct KeySpec {
     /// key; otherwise, it is required. You can't change the KeyUsage value after
     /// the KMS key is created.
     /// 
-    /// 
     /// Select only one valid value.
-    /// 
     /// 
     ///    * For symmetric encryption KMS keys, omit the parameter or specify ENCRYPT_DECRYPT.
     /// 
-    /// 
     ///    * For HMAC KMS keys (symmetric), specify GENERATE_VERIFY_MAC.
-    /// 
     /// 
     ///    * For asymmetric KMS keys with RSA key material, specify ENCRYPT_DECRYPT
     ///    or SIGN_VERIFY.
     /// 
-    /// 
     ///    * For asymmetric KMS keys with ECC key material, specify SIGN_VERIFY.
-    /// 
     /// 
     ///    * For asymmetric KMS keys with SM2 key material (China Regions only),
     ///    specify ENCRYPT_DECRYPT or SIGN_VERIFY.
@@ -152,10 +127,8 @@ pub struct KeySpec {
     /// Web Services Regions. You cannot change this value after you create the KMS
     /// key.
     /// 
-    /// 
     /// For a multi-Region key, set this parameter to True. For a single-Region KMS
     /// key, omit this parameter or set it to False. The default value is False.
-    /// 
     /// 
     /// This operation supports multi-Region keys, an KMS feature that lets you create
     /// multiple interoperable KMS keys in different Amazon Web Services Regions.
@@ -166,10 +139,8 @@ pub struct KeySpec {
     /// keys, see Multi-Region keys in KMS (https://docs.aws.amazon.com/kms/latest/developerguide/multi-region-keys-overview.html)
     /// in the Key Management Service Developer Guide.
     /// 
-    /// 
     /// This value creates a primary key, not a replica. To create a replica key,
     /// use the ReplicateKey operation.
-    /// 
     /// 
     /// You can create a multi-Region version of a symmetric encryption KMS key,
     /// an HMAC KMS key, an asymmetric KMS key, or a KMS key with imported key material.
@@ -180,13 +151,11 @@ pub struct KeySpec {
     /// after you create the KMS key. The default is AWS_KMS, which means that KMS
     /// creates the key material.
     /// 
-    /// 
     /// To create a KMS key with no key material (for imported key material), set
     /// the value to EXTERNAL. For more information about importing key material
     /// into KMS, see Importing Key Material (https://docs.aws.amazon.com/kms/latest/developerguide/importing-keys.html)
     /// in the Key Management Service Developer Guide. This value is valid only for
     /// symmetric encryption KMS keys.
-    /// 
     /// 
     /// To create a KMS key in an KMS custom key store (https://docs.aws.amazon.com/kms/latest/developerguide/custom-key-store-overview.html)
     /// and create its key material in the associated CloudHSM cluster, set this
@@ -200,9 +169,7 @@ pub struct KeySpec {
     /// Default key policy (https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html#key-policy-default)
     /// in the Key Management Service Developer Guide.
     /// 
-    /// 
     /// If you provide a key policy, it must meet the following criteria:
-    /// 
     /// 
     ///    * If you don't set BypassPolicyLockoutSafetyCheck to True, the key policy
     ///    must allow the principal that is making the CreateKey request to make
@@ -210,7 +177,6 @@ pub struct KeySpec {
     ///    that the KMS key becomes unmanageable. For more information, refer to
     ///    the scenario in the Default Key Policy (https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html#key-policy-default-allow-root-enable-iam)
     ///    section of the Key Management Service Developer Guide .
-    /// 
     /// 
     ///    * Each statement in the key policy must contain one or more principals.
     ///    The principals in the key policy must exist and be visible to KMS. When
@@ -221,21 +187,16 @@ pub struct KeySpec {
     ///    visible (https://docs.aws.amazon.com/IAM/latest/UserGuide/troubleshoot_general.html#troubleshoot_general_eventual-consistency)
     ///    in the Amazon Web Services Identity and Access Management User Guide.
     /// 
-    /// 
     /// A key policy document can include only the following characters:
-    /// 
     /// 
     ///    * Printable ASCII characters from the space character (\u0020) through
     ///    the end of the ASCII character range.
     /// 
-    /// 
     ///    * Printable characters in the Basic Latin and Latin-1 Supplement character
     ///    set (through \u00FF).
     /// 
-    /// 
     ///    * The tab (\u0009), line feed (\u000A), and carriage return (\u000D) special
     ///    characters
-    /// 
     /// 
     /// For information about key policies, see Key policies in KMS (https://docs.aws.amazon.com/kms/latest/developerguide/key-policies.html)
     /// in the Key Management Service Developer Guide. For help writing and formatting
@@ -246,22 +207,18 @@ pub struct KeySpec {
     /// Assigns one or more tags to the KMS key. Use this parameter to tag the KMS
     /// key when it is created. To tag an existing KMS key, use the TagResource operation.
     /// 
-    /// 
     /// Tagging or untagging a KMS key can allow or deny permission to the KMS key.
     /// For details, see ABAC in KMS (https://docs.aws.amazon.com/kms/latest/developerguide/abac.html)
     /// in the Key Management Service Developer Guide.
     /// 
-    /// 
     /// To use this parameter, you must have kms:TagResource (https://docs.aws.amazon.com/kms/latest/developerguide/kms-api-permissions-reference.html)
     /// permission in an IAM policy.
-    /// 
     /// 
     /// Each tag consists of a tag key and a tag value. Both the tag key and the
     /// tag value are required, but the tag value can be an empty (null) string.
     /// You cannot have more than one tag on a KMS key with the same tag key. If
     /// you specify an existing tag key with a different tag value, KMS replaces
     /// the current tag value with the specified one.
-    /// 
     /// 
     /// When you add tags to an Amazon Web Services resource, Amazon Web Services
     /// generates a cost allocation report with usage and costs aggregated by tags.
@@ -273,7 +230,6 @@ pub struct KeySpec {
 
 /// A key-value pair. A tag consists of a tag key and a tag value. Tag keys and
 /// tag values are both required, but tag values can be empty (null) strings.
-/// 
 /// 
 /// For information about the rules that apply to tag keys and tag values, see
 /// User-Defined Tag Restrictions (https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/allocation-tag-restrictions.html)
@@ -317,7 +273,6 @@ pub struct KeyStatus {
     /// only when the KMS key is scheduled for deletion, that is, when its KeyState
     /// is PendingDeletion.
     /// 
-    /// 
     /// When the primary key in a multi-Region key is scheduled for deletion but
     /// still has replica keys, its key state is PendingReplicaDeletion and the length
     /// of its waiting period is displayed in the PendingDeletionWindowInDays field.
@@ -329,7 +284,6 @@ pub struct KeyStatus {
     pub enabled: Option<bool>,
     /// The encryption algorithms that the KMS key supports. You cannot use the KMS
     /// key with other encryption algorithms within KMS.
-    /// 
     /// 
     /// This value is present only when the KeyUsage of the KMS key is ENCRYPT_DECRYPT.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptionAlgorithms")]
@@ -349,7 +303,6 @@ pub struct KeyStatus {
     pub key_manager: Option<String>,
     /// The current status of the KMS key.
     /// 
-    /// 
     /// For more information about how key state affects the use of a KMS key, see
     /// Key states of KMS keys (https://docs.aws.amazon.com/kms/latest/developerguide/key-state.html)
     /// in the Key Management Service Developer Guide.
@@ -357,24 +310,19 @@ pub struct KeyStatus {
     pub key_state: Option<String>,
     /// The message authentication code (MAC) algorithm that the HMAC KMS key supports.
     /// 
-    /// 
     /// This value is present only when the KeyUsage of the KMS key is GENERATE_VERIFY_MAC.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "macAlgorithms")]
     pub mac_algorithms: Option<Vec<String>>,
     /// Lists the primary and replica keys in same multi-Region key. This field is
     /// present only when the value of the MultiRegion field is True.
     /// 
-    /// 
     /// For more information about any listed KMS key, use the DescribeKey operation.
-    /// 
     /// 
     ///    * MultiRegionKeyType indicates whether the KMS key is a PRIMARY or REPLICA
     ///    key.
     /// 
-    /// 
     ///    * PrimaryKey displays the key ARN and Region of the primary key. This
     ///    field displays the current KMS key if it is the primary key.
-    /// 
     /// 
     ///    * ReplicaKeys displays the key ARNs and Regions of all replica keys. This
     ///    field includes the current KMS key if it is a replica key.
@@ -385,7 +333,6 @@ pub struct KeyStatus {
     /// This value is present only when the KeyState of the KMS key is PendingReplicaDeletion.
     /// That indicates that the KMS key is the primary key in a multi-Region key,
     /// it is scheduled for deletion, and it still has existing replica keys.
-    /// 
     /// 
     /// When a single-Region KMS key or a multi-Region replica key is scheduled for
     /// deletion, its deletion date is displayed in the DeletionDate field. However,
@@ -398,7 +345,6 @@ pub struct KeyStatus {
     pub pending_deletion_window_in_days: Option<i64>,
     /// The signing algorithms that the KMS key supports. You cannot use the KMS
     /// key with other signing algorithms within KMS.
-    /// 
     /// 
     /// This field appears only when the KeyUsage of the KMS key is SIGN_VERIFY.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "signingAlgorithms")]
@@ -422,7 +368,6 @@ pub struct KeyStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,
@@ -437,17 +382,13 @@ pub struct KeyStatusAckResourceMetadata {
 /// Lists the primary and replica keys in same multi-Region key. This field is
 /// present only when the value of the MultiRegion field is True.
 /// 
-/// 
 /// For more information about any listed KMS key, use the DescribeKey operation.
-/// 
 /// 
 ///    * MultiRegionKeyType indicates whether the KMS key is a PRIMARY or REPLICA
 ///    key.
 /// 
-/// 
 ///    * PrimaryKey displays the key ARN and Region of the primary key. This
 ///    field displays the current KMS key if it is the primary key.
-/// 
 /// 
 ///    * ReplicaKeys displays the key ARNs and Regions of all replica keys. This
 ///    field includes the current KMS key if it is a replica key.

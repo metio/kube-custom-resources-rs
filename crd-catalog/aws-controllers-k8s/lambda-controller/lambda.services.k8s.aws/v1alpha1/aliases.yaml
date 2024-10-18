@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.2"
   name: "aliases.lambda.services.k8s.aws"
 spec:
   group: "lambda.services.k8s.aws"
@@ -32,7 +32,7 @@ spec:
                   description: "A description of the alias."
                   type: "string"
                 functionEventInvokeConfig:
-                  description: "Configures options for asynchronous invocation on an alias.\n\n\n- DestinationConfig\nA destination for events after they have been sent to a function for processing.\n\n\nTypes of Destinations:\nFunction - The Amazon Resource Name (ARN) of a Lambda function.\nQueue - The ARN of a standard SQS queue.\nTopic - The ARN of a standard SNS topic.\nEvent Bus - The ARN of an Amazon EventBridge event bus.\n\n\n- MaximumEventAgeInSeconds\nThe maximum age of a request that Lambda sends to a function for processing.\n\n\n- MaximumRetryAttempts\nThe maximum number of times to retry when the function returns an error."
+                  description: "Configures options for asynchronous invocation on an alias.\n\n- DestinationConfig\nA destination for events after they have been sent to a function for processing.\n\nTypes of Destinations:\nFunction - The Amazon Resource Name (ARN) of a Lambda function.\nQueue - The ARN of a standard SQS queue.\nTopic - The ARN of a standard SNS topic.\nEvent Bus - The ARN of an Amazon EventBridge event bus.\n\n- MaximumEventAgeInSeconds\nThe maximum age of a request that Lambda sends to a function for processing.\n\n- MaximumRetryAttempts\nThe maximum number of times to retry when the function returns an error."
                   properties:
                     destinationConfig:
                       description: "A configuration object that specifies the destination of an event after Lambda\nprocesses it."
@@ -62,10 +62,10 @@ spec:
                       type: "string"
                   type: "object"
                 functionName:
-                  description: "The name of the Lambda function.\n\n\nName formats\n\n\n   * Function name - MyFunction.\n\n\n   * Function ARN - arn:aws:lambda:us-west-2:123456789012:function:MyFunction.\n\n\n   * Partial ARN - 123456789012:function:MyFunction.\n\n\nThe length constraint applies only to the full ARN. If you specify only the\nfunction name, it is limited to 64 characters in length."
+                  description: "The name of the Lambda function.\n\nName formats\n\n   * Function name - MyFunction.\n\n   * Function ARN - arn:aws:lambda:us-west-2:123456789012:function:MyFunction.\n\n   * Partial ARN - 123456789012:function:MyFunction.\n\nThe length constraint applies only to the full ARN. If you specify only the\nfunction name, it is limited to 64 characters in length."
                   type: "string"
                 functionRef:
-                  description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\n\tfrom:\n\t  name: my-api"
+                  description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
                   properties:
                     from:
                       description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
@@ -83,7 +83,7 @@ spec:
                   description: "The name of the alias."
                   type: "string"
                 provisionedConcurrencyConfig:
-                  description: "Configures provisioned concurrency to a function's alias\n\n\n- ProvisionedConcurrentExecutions\nThe amount of provisioned concurrency to allocate for the version or alias.\nMinimum value of 1 is required"
+                  description: "Configures provisioned concurrency to a function's alias\n\n- ProvisionedConcurrentExecutions\nThe amount of provisioned concurrency to allocate for the version or alias.\nMinimum value of 1 is required"
                   properties:
                     functionName:
                       type: "string"
@@ -112,7 +112,7 @@ spec:
                   description: "All CRs managed by ACK have a common `Status.ACKResourceMetadata` member\nthat is used to contain resource sync state, account ownership,\nconstructed ARN for the resource"
                   properties:
                     arn:
-                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nTODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
+                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."

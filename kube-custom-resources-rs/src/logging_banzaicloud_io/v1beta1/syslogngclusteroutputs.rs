@@ -45,6 +45,8 @@ pub struct SyslogNGClusterOutputSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub opentelemetry: Option<SyslogNGClusterOutputOpentelemetry>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub protected: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub redis: Option<SyslogNGClusterOutputRedis>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub s3: Option<SyslogNGClusterOutputS3>,

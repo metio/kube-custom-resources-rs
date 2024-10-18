@@ -72,6 +72,8 @@ pub struct TenantSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podManagementPolicy")]
     pub pod_management_policy: Option<String>,
     pub pools: Vec<TenantPools>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "poolsMetadata")]
+    pub pools_metadata: Option<TenantPoolsMetadata>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusOperator")]
@@ -2996,6 +2998,14 @@ pub struct TenantPoolsVolumeClaimTemplateStatusModifyVolumeStatus {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TenantPoolsMetadata {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TenantReadiness {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<TenantReadinessExec>,
@@ -3064,6 +3074,10 @@ pub struct TenantServiceMetadata {
     pub console_service_annotations: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "consoleServiceLabels")]
     pub console_service_labels: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kesServiceAnnotations")]
+    pub kes_service_annotations: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kesServiceLabels")]
+    pub kes_service_labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minioServiceAnnotations")]
     pub minio_service_annotations: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minioServiceLabels")]

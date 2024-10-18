@@ -35,7 +35,6 @@ pub struct QueueSpec {
     /// Ex:
     /// APIIDRef:
     /// 
-    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsMasterKeyRef")]
@@ -51,7 +50,6 @@ pub struct QueueSpec {
     /// Ex:
     /// APIIDRef:
     /// 
-    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "policyRef")]
@@ -64,35 +62,29 @@ pub struct QueueSpec {
     pub redrive_allow_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "redrivePolicy")]
     pub redrive_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sqsManagedSSEEnabled")]
+    pub sqs_managed_sse_enabled: Option<String>,
     /// Add cost allocation tags to the specified Amazon SQS queue. For an overview,
     /// see Tagging Your Amazon SQS Queues (https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-queue-tags.html)
     /// in the Amazon SQS Developer Guide.
     /// 
-    /// 
     /// When you use queue tags, keep the following guidelines in mind:
     /// 
-    /// 
     ///    * Adding more than 50 tags to a queue isn't recommended.
-    /// 
     /// 
     ///    * Tags don't have any semantic meaning. Amazon SQS interprets tags as
     ///    character strings.
     /// 
-    /// 
     ///    * Tags are case-sensitive.
-    /// 
     /// 
     ///    * A new tag with a key identical to that of an existing tag overwrites
     ///    the existing tag.
     /// 
-    /// 
     /// For a full list of tag restrictions, see Quotas related to queues (https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-limits.html#limits-queues)
     /// in the Amazon SQS Developer Guide.
     /// 
-    /// 
     /// To be able to tag a queue on creation, you must have the sqs:CreateQueue
     /// and sqs:TagQueue permissions.
-    /// 
     /// 
     /// Cross-account permissions don't apply to this action. For more information,
     /// see Grant cross-account permissions to a role and a username (https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-customer-managed-policy-examples.html#grant-cross-account-permissions-to-role-and-user-name)
@@ -107,7 +99,6 @@ pub struct QueueSpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -133,7 +124,6 @@ pub struct QueueKmsMasterKeyRefFrom {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -187,7 +177,6 @@ pub struct QueueStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

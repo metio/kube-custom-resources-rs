@@ -13,12 +13,10 @@ use self::prelude::*;
 
 /// FirewallSpec defines the desired state of Firewall.
 /// 
-/// 
 /// The firewall defines the configuration settings for an Network Firewall firewall.
 /// These settings include the firewall policy, the subnets in your VPC to use
 /// for the firewall endpoints, and any tags that are attached to the firewall
 /// Amazon Web Services resource.
-/// 
 /// 
 /// The status of the firewall, for example whether it's ready to filter network
 /// traffic, is provided in the corresponding FirewallStatus. You can retrieve
@@ -73,7 +71,6 @@ pub struct FirewallSpec {
     pub tags: Option<Vec<FirewallTags>>,
     /// The unique identifier of the VPC where Network Firewall should create the
     /// firewall.
-    /// 
     /// 
     /// You can't change this setting after you create the firewall.
     #[serde(rename = "vpcID")]
@@ -150,7 +147,6 @@ pub struct FirewallStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

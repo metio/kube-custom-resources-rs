@@ -1850,6 +1850,9 @@ pub struct ClusterPolicyRulesMutateTargets {
     /// See: https://kyverno.io/docs/writing-policies/preconditions/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub preconditions: Option<serde_json::Value>,
+    /// Selector allows you to select target resources with their labels.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<ClusterPolicyRulesMutateTargetsSelector>,
     /// UID specifies the resource uid.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
@@ -2032,6 +2035,36 @@ pub struct ClusterPolicyRulesMutateTargetsContextVariable {
     /// Value is any arbitrary JSON object representable in YAML or JSON form.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<serde_json::Value>,
+}
+
+/// Selector allows you to select target resources with their labels.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterPolicyRulesMutateTargetsSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterPolicyRulesMutateTargetsSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterPolicyRulesMutateTargetsSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// Preconditions are used to determine if a policy rule should be applied by evaluating a
@@ -6259,6 +6292,9 @@ pub struct ClusterPolicyStatusAutogenRulesMutateTargets {
     /// See: https://kyverno.io/docs/writing-policies/preconditions/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub preconditions: Option<serde_json::Value>,
+    /// Selector allows you to select target resources with their labels.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<ClusterPolicyStatusAutogenRulesMutateTargetsSelector>,
     /// UID specifies the resource uid.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
@@ -6441,6 +6477,36 @@ pub struct ClusterPolicyStatusAutogenRulesMutateTargetsContextVariable {
     /// Value is any arbitrary JSON object representable in YAML or JSON form.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<serde_json::Value>,
+}
+
+/// Selector allows you to select target resources with their labels.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterPolicyStatusAutogenRulesMutateTargetsSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<ClusterPolicyStatusAutogenRulesMutateTargetsSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ClusterPolicyStatusAutogenRulesMutateTargetsSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
 }
 
 /// Validation is used to validate matching resources.

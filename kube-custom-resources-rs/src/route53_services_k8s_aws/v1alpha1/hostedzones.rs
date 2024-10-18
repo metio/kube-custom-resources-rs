@@ -12,7 +12,6 @@ use self::prelude::*;
 
 /// HostedZoneSpec defines the desired state of HostedZone.
 /// 
-/// 
 /// A complex type that contains general information about the hosted zone.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "route53.services.k8s.aws", version = "v1alpha1", kind = "HostedZone", plural = "hostedzones")]
@@ -27,7 +26,6 @@ pub struct HostedZoneSpec {
     /// you created it. For more information about reusable delegation sets, see
     /// CreateReusableDelegationSet (https://docs.aws.amazon.com/Route53/latest/APIReference/API_CreateReusableDelegationSet.html).
     /// 
-    /// 
     /// If you are using a reusable delegation set to create a public hosted zone
     /// for a subdomain, make sure that the parent hosted zone doesn't use one or
     /// more of the same name servers. If you have overlapping nameservers, the operation
@@ -36,12 +34,9 @@ pub struct HostedZoneSpec {
     pub delegation_set_id: Option<String>,
     /// (Optional) A complex type that contains the following optional values:
     /// 
-    /// 
     ///    * For public and private hosted zones, an optional comment
     /// 
-    /// 
     ///    * For private hosted zones, an optional PrivateZone element
-    /// 
     /// 
     /// If you don't specify a comment or the PrivateZone element, omit HostedZoneConfig
     /// and the other elements.
@@ -52,7 +47,6 @@ pub struct HostedZoneSpec {
     /// the domain name is fully qualified. This means that Route 53 treats www.example.com
     /// (without a trailing dot) and www.example.com. (with a trailing dot) as identical.
     /// 
-    /// 
     /// If you're creating a public hosted zone, this is the name you have registered
     /// with your DNS registrar. If your domain name is registered with a registrar
     /// other than Route 53, change the name servers for your domain to the set of
@@ -62,18 +56,15 @@ pub struct HostedZoneSpec {
     /// specified health check or hosted zone and/or the tags that you want to edit
     /// Value for.
     /// 
-    /// 
     /// You can add a maximum of 10 tags to a health check or a hosted zone.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<HostedZoneTags>>,
     /// (Private hosted zones only) A complex type that contains information about
     /// the Amazon VPC that you're associating with this hosted zone.
     /// 
-    /// 
     /// You can specify only one Amazon VPC when you create a private hosted zone.
     /// If you are associating a VPC with a hosted zone with this request, the paramaters
     /// VPCId and VPCRegion are also required.
-    /// 
     /// 
     /// To associate additional Amazon VPCs with the hosted zone, use AssociateVPCWithHostedZone
     /// (https://docs.aws.amazon.com/Route53/latest/APIReference/API_AssociateVPCWithHostedZone.html)
@@ -84,12 +75,9 @@ pub struct HostedZoneSpec {
 
 /// (Optional) A complex type that contains the following optional values:
 /// 
-/// 
 ///    * For public and private hosted zones, an optional comment
 /// 
-/// 
 ///    * For private hosted zones, an optional PrivateZone element
-/// 
 /// 
 /// If you don't specify a comment or the PrivateZone element, omit HostedZoneConfig
 /// and the other elements.
@@ -114,11 +102,9 @@ pub struct HostedZoneTags {
 /// (Private hosted zones only) A complex type that contains information about
 /// the Amazon VPC that you're associating with this hosted zone.
 /// 
-/// 
 /// You can specify only one Amazon VPC when you create a private hosted zone.
 /// If you are associating a VPC with a hosted zone with this request, the paramaters
 /// VPCId and VPCRegion are also required.
-/// 
 /// 
 /// To associate additional Amazon VPCs with the hosted zone, use AssociateVPCWithHostedZone
 /// (https://docs.aws.amazon.com/Route53/latest/APIReference/API_AssociateVPCWithHostedZone.html)
@@ -180,7 +166,6 @@ pub struct HostedZoneStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

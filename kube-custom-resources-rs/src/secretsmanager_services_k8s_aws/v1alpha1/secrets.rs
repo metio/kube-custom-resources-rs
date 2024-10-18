@@ -31,14 +31,11 @@ pub struct SecretSpec {
     /// example alias/aws/secretsmanager. For more information, see About aliases
     /// (https://docs.aws.amazon.com/kms/latest/developerguide/alias-about.html).
     /// 
-    /// 
     /// To use a KMS key in a different account, use the key ARN or the alias ARN.
-    /// 
     /// 
     /// If you don't specify this value, then Secrets Manager uses the key aws/secretsmanager.
     /// If that key doesn't yet exist, then Secrets Manager creates it for you automatically
     /// the first time it encrypts the secret value.
-    /// 
     /// 
     /// If the secret is in a different Amazon Web Services account from the credentials
     /// calling the API, then you can't use aws/secretsmanager to encrypt the secret,
@@ -47,10 +44,8 @@ pub struct SecretSpec {
     pub kms_key_id: Option<String>,
     /// The name of the new secret.
     /// 
-    /// 
     /// The secret name can contain ASCII letters, numbers, and the following characters:
     /// /_+=.@-
-    /// 
     /// 
     /// Do not end your secret name with a hyphen followed by six characters. If
     /// you do so, you risk confusion and unexpected results when searching for a
@@ -63,9 +58,7 @@ pub struct SecretSpec {
     /// The text data to encrypt and store in this new version of the secret. We
     /// recommend you use a JSON structure of key/value pairs for your secret value.
     /// 
-    /// 
     /// Either SecretString or SecretBinary must have a value, but not both.
-    /// 
     /// 
     /// If you create a secret by using the Secrets Manager console then Secrets
     /// Manager puts the protected secret text in only the SecretString parameter.
@@ -76,13 +69,10 @@ pub struct SecretSpec {
     /// A list of tags to attach to the secret. Each tag is a key and value pair
     /// of strings in a JSON text string, for example:
     /// 
-    /// 
     /// [{"Key":"CostCenter","Value":"12345"},{"Key":"environment","Value":"production"}]
-    /// 
     /// 
     /// Secrets Manager tag key names are case sensitive. A tag with the key "ABC"
     /// is a different tag from one with key "abc".
-    /// 
     /// 
     /// If you check tags in permissions policies as part of your security strategy,
     /// then adding or removing a tag can change permissions. If the completion of
@@ -91,13 +81,11 @@ pub struct SecretSpec {
     /// For more information, see Control access to secrets using tags (https://docs.aws.amazon.com/secretsmanager/latest/userguide/auth-and-access_examples.html#tag-secrets-abac)
     /// and Limit access to identities with tags that match secrets' tags (https://docs.aws.amazon.com/secretsmanager/latest/userguide/auth-and-access_examples.html#auth-and-access_tags2).
     /// 
-    /// 
     /// For information about how to format a JSON parameter for the various command
     /// line tool environments, see Using JSON for Parameters (https://docs.aws.amazon.com/cli/latest/userguide/cli-using-param.html#cli-using-param-json).
     /// If your command-line tool or SDK requires quotation marks around the parameter,
     /// you should use single quotes to avoid confusion with the double quotes required
     /// in the JSON text.
-    /// 
     /// 
     /// For tag quotas and naming restrictions, see Service quotas for Tagging (https://docs.aws.amazon.com/general/latest/gr/arg.html#taged-reference-quotas)
     /// in the Amazon Web Services General Reference guide.
@@ -117,9 +105,7 @@ pub struct SecretReplicaRegions {
 /// The text data to encrypt and store in this new version of the secret. We
 /// recommend you use a JSON structure of key/value pairs for your secret value.
 /// 
-/// 
 /// Either SecretString or SecretBinary must have a value, but not both.
-/// 
 /// 
 /// If you create a secret by using the Secrets Manager console then Secrets
 /// Manager puts the protected secret text in only the SecretString parameter.
@@ -165,13 +151,10 @@ pub struct SecretStatus {
     pub id: Option<String>,
     /// A list of the replicas of this secret and their status:
     /// 
-    /// 
     ///    * Failed, which indicates that the replica was not created.
-    /// 
     /// 
     ///    * InProgress, which indicates that Secrets Manager is in the process of
     ///    creating the replica.
-    /// 
     /// 
     ///    * InSync, which indicates that the replica was created.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicationStatus")]
@@ -192,7 +175,6 @@ pub struct SecretStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

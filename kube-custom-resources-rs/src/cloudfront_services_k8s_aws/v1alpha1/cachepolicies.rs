@@ -12,22 +12,17 @@ use self::prelude::*;
 
 /// CachePolicySpec defines the desired state of CachePolicy.
 /// 
-/// 
 /// A cache policy.
 /// 
-/// 
 /// When it's attached to a cache behavior, the cache policy determines the following:
-/// 
 /// 
 ///    * The values that CloudFront includes in the cache key. These values can
 ///    include HTTP headers, cookies, and URL query strings. CloudFront uses
 ///    the cache key to find an object in its cache that it can return to the
 ///    viewer.
 /// 
-/// 
 ///    * The default, minimum, and maximum time to live (TTL) values that you
 ///    want objects to stay in the CloudFront cache.
-/// 
 /// 
 /// The headers, cookies, and query strings that are included in the cache key
 /// are also included in requests that CloudFront sends to the origin. CloudFront
@@ -65,7 +60,6 @@ pub struct CachePolicyCachePolicyConfig {
     /// uses the cache key to find an object in its cache that it can return to the
     /// viewer.
     /// 
-    /// 
     /// The headers, cookies, and query strings that are included in the cache key
     /// are also included in requests that CloudFront sends to the origin. CloudFront
     /// sends a request when it can't find an object in its cache that matches the
@@ -79,7 +73,6 @@ pub struct CachePolicyCachePolicyConfig {
 /// These values can include HTTP headers, cookies, and URL query strings. CloudFront
 /// uses the cache key to find an object in its cache that it can return to the
 /// viewer.
-/// 
 /// 
 /// The headers, cookies, and query strings that are included in the cache key
 /// are also included in requests that CloudFront sends to the origin. CloudFront
@@ -202,7 +195,6 @@ pub struct CachePolicyStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

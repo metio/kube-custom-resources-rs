@@ -23,6 +23,13 @@ spec:
             spec:
               description: "Defines a policy for how [Listeners](https://docs.stackable.tech/home/nightly/listener-operator/listener) should be exposed. Read the [ListenerClass documentation](https://docs.stackable.tech/home/nightly/listener-operator/listenerclass) for more information."
               properties:
+                preferredAddressType:
+                  default: "Hostname"
+                  description: "Whether addresses should prefer using the IP address (`IP`) or the hostname (`Hostname`).\n\nThe other type will be used if the preferred type is not available. By default `Hostname` is used."
+                  enum:
+                    - "Hostname"
+                    - "IP"
+                  type: "string"
                 serviceAnnotations:
                   additionalProperties:
                     type: "string"

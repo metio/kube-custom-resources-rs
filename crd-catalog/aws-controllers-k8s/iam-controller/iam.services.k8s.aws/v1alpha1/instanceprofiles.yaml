@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.2"
   name: "instanceprofiles.iam.services.k8s.aws"
 spec:
   group: "iam.services.k8s.aws"
@@ -27,18 +27,18 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "InstanceProfileSpec defines the desired state of InstanceProfile.\n\n\nContains information about an instance profile.\n\n\nThis data type is used as a response element in the following operations:\n\n\n   * CreateInstanceProfile\n\n\n   * GetInstanceProfile\n\n\n   * ListInstanceProfiles\n\n\n   * ListInstanceProfilesForRole"
+              description: "InstanceProfileSpec defines the desired state of InstanceProfile.\n\nContains information about an instance profile.\n\nThis data type is used as a response element in the following operations:\n\n   * CreateInstanceProfile\n\n   * GetInstanceProfile\n\n   * ListInstanceProfiles\n\n   * ListInstanceProfilesForRole"
               properties:
                 name:
-                  description: "The name of the instance profile to create.\n\n\nThis parameter allows (through its regex pattern (http://wikipedia.org/wiki/regex))\na string of characters consisting of upper and lowercase alphanumeric characters\nwith no spaces. You can also include any of the following characters: _+=,.@-"
+                  description: "The name of the instance profile to create.\n\nThis parameter allows (through its regex pattern (http://wikipedia.org/wiki/regex))\na string of characters consisting of upper and lowercase alphanumeric characters\nwith no spaces. You can also include any of the following characters: _+=,.@-"
                   type: "string"
                 path:
-                  description: "The path to the instance profile. For more information about paths, see IAM\nIdentifiers (https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html)\nin the IAM User Guide.\n\n\nThis parameter is optional. If it is not included, it defaults to a slash\n(/).\n\n\nThis parameter allows (through its regex pattern (http://wikipedia.org/wiki/regex))\na string of characters consisting of either a forward slash (/) by itself\nor a string that must begin and end with forward slashes. In addition, it\ncan contain any ASCII character from the ! (\\u0021) through the DEL character\n(\\u007F), including most punctuation characters, digits, and upper and lowercased\nletters."
+                  description: "The path to the instance profile. For more information about paths, see IAM\nIdentifiers (https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html)\nin the IAM User Guide.\n\nThis parameter is optional. If it is not included, it defaults to a slash\n(/).\n\nThis parameter allows (through its regex pattern (http://wikipedia.org/wiki/regex))\na string of characters consisting of either a forward slash (/) by itself\nor a string that must begin and end with forward slashes. In addition, it\ncan contain any ASCII character from the ! (\\u0021) through the DEL character\n(\\u007F), including most punctuation characters, digits, and upper and lowercased\nletters."
                   type: "string"
                 role:
                   type: "string"
                 roleRef:
-                  description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\n\tfrom:\n\t  name: my-api"
+                  description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
                   properties:
                     from:
                       description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
@@ -50,7 +50,7 @@ spec:
                       type: "object"
                   type: "object"
                 tags:
-                  description: "A list of tags that you want to attach to the newly created IAM instance\nprofile. Each tag consists of a key name and an associated value. For more\ninformation about tagging, see Tagging IAM resources (https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html)\nin the IAM User Guide.\n\n\nIf any one of the tags is invalid or if you exceed the allowed maximum number\nof tags, then the entire request fails and the resource is not created."
+                  description: "A list of tags that you want to attach to the newly created IAM instance\nprofile. Each tag consists of a key name and an associated value. For more\ninformation about tagging, see Tagging IAM resources (https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html)\nin the IAM User Guide.\n\nIf any one of the tags is invalid or if you exceed the allowed maximum number\nof tags, then the entire request fails and the resource is not created."
                   items:
                     description: "A structure that represents user-provided metadata that can be associated\nwith an IAM resource. For more information about tagging, see Tagging IAM\nresources (https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html)\nin the IAM User Guide."
                     properties:
@@ -70,7 +70,7 @@ spec:
                   description: "All CRs managed by ACK have a common `Status.ACKResourceMetadata` member\nthat is used to contain resource sync state, account ownership,\nconstructed ARN for the resource"
                   properties:
                     arn:
-                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nTODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
+                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."

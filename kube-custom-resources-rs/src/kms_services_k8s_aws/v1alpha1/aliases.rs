@@ -22,7 +22,6 @@ pub struct AliasSpec {
     /// Specifies the alias name. This value must begin with alias/ followed by a
     /// name, such as alias/ExampleAlias.
     /// 
-    /// 
     /// The AliasName value must be string of 1-256 characters. It can contain only
     /// alphanumeric characters, forward slashes (/), underscores (_), and dashes
     /// (-). The alias name cannot begin with alias/aws/. The alias/aws/ prefix is
@@ -31,26 +30,19 @@ pub struct AliasSpec {
     /// Associates the alias with the specified customer managed key (https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#customer-cmk).
     /// The KMS key must be in the same Amazon Web Services Region.
     /// 
-    /// 
     /// A valid key ID is required. If you supply a null or empty string value, this
     /// operation returns an error.
-    /// 
     /// 
     /// For help finding the key ID and ARN, see Finding the Key ID and ARN (https://docs.aws.amazon.com/kms/latest/developerguide/viewing-keys.html#find-cmk-id-arn)
     /// in the Key Management Service Developer Guide .
     /// 
-    /// 
     /// Specify the key ID or key ARN of the KMS key.
-    /// 
     /// 
     /// For example:
     /// 
-    /// 
     ///    * Key ID: 1234abcd-12ab-34cd-56ef-1234567890ab
     /// 
-    /// 
     ///    * Key ARN: arn:aws:kms:us-east-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab
-    /// 
     /// 
     /// To get the key ID and key ARN for a KMS key, use ListKeys or DescribeKey.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetKeyID")]
@@ -59,7 +51,6 @@ pub struct AliasSpec {
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    /// 
     /// 
     /// 	from:
     /// 	  name: my-api
@@ -71,7 +62,6 @@ pub struct AliasSpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -120,7 +110,6 @@ pub struct AliasStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

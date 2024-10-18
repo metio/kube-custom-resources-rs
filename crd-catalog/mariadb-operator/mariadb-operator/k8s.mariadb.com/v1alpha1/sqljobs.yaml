@@ -50,6 +50,120 @@ spec:
                     antiAffinityEnabled:
                       description: "AntiAffinityEnabled configures PodAntiAffinity so each Pod is scheduled in a different Node, enabling HA.\nMake sure you have at least as many Nodes available as the replicas to not end up with unscheduled Pods."
                       type: "boolean"
+                    nodeAffinity:
+                      description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeaffinity-v1-core"
+                      properties:
+                        preferredDuringSchedulingIgnoredDuringExecution:
+                          items:
+                            description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#preferredschedulingterm-v1-core"
+                            properties:
+                              preference:
+                                description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorterm-v1-core"
+                                properties:
+                                  matchExpressions:
+                                    items:
+                                      description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core"
+                                      properties:
+                                        key:
+                                          type: "string"
+                                        operator:
+                                          description: "A node selector operator is the set of operators that can be used in\na node selector requirement."
+                                          type: "string"
+                                        values:
+                                          items:
+                                            type: "string"
+                                          type: "array"
+                                          x-kubernetes-list-type: "atomic"
+                                      required:
+                                        - "key"
+                                        - "operator"
+                                      type: "object"
+                                    type: "array"
+                                    x-kubernetes-list-type: "atomic"
+                                  matchFields:
+                                    items:
+                                      description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core"
+                                      properties:
+                                        key:
+                                          type: "string"
+                                        operator:
+                                          description: "A node selector operator is the set of operators that can be used in\na node selector requirement."
+                                          type: "string"
+                                        values:
+                                          items:
+                                            type: "string"
+                                          type: "array"
+                                          x-kubernetes-list-type: "atomic"
+                                      required:
+                                        - "key"
+                                        - "operator"
+                                      type: "object"
+                                    type: "array"
+                                    x-kubernetes-list-type: "atomic"
+                                type: "object"
+                              weight:
+                                format: "int32"
+                                type: "integer"
+                            required:
+                              - "preference"
+                              - "weight"
+                            type: "object"
+                          type: "array"
+                          x-kubernetes-list-type: "atomic"
+                        requiredDuringSchedulingIgnoredDuringExecution:
+                          description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselector-v1-core"
+                          properties:
+                            nodeSelectorTerms:
+                              items:
+                                description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorterm-v1-core"
+                                properties:
+                                  matchExpressions:
+                                    items:
+                                      description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core"
+                                      properties:
+                                        key:
+                                          type: "string"
+                                        operator:
+                                          description: "A node selector operator is the set of operators that can be used in\na node selector requirement."
+                                          type: "string"
+                                        values:
+                                          items:
+                                            type: "string"
+                                          type: "array"
+                                          x-kubernetes-list-type: "atomic"
+                                      required:
+                                        - "key"
+                                        - "operator"
+                                      type: "object"
+                                    type: "array"
+                                    x-kubernetes-list-type: "atomic"
+                                  matchFields:
+                                    items:
+                                      description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nodeselectorrequirement-v1-core"
+                                      properties:
+                                        key:
+                                          type: "string"
+                                        operator:
+                                          description: "A node selector operator is the set of operators that can be used in\na node selector requirement."
+                                          type: "string"
+                                        values:
+                                          items:
+                                            type: "string"
+                                          type: "array"
+                                          x-kubernetes-list-type: "atomic"
+                                      required:
+                                        - "key"
+                                        - "operator"
+                                      type: "object"
+                                    type: "array"
+                                    x-kubernetes-list-type: "atomic"
+                                type: "object"
+                              type: "array"
+                              x-kubernetes-list-type: "atomic"
+                          required:
+                            - "nodeSelectorTerms"
+                          type: "object"
+                      type: "object"
                     podAntiAffinity:
                       description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#podantiaffinity-v1-core."
                       properties:
@@ -61,21 +175,18 @@ spec:
                                 description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#podaffinityterm-v1-core."
                                 properties:
                                   labelSelector:
-                                    description: "A label selector is a label query over a set of resources. The result of matchLabels and\nmatchExpressions are ANDed. An empty label selector matches all objects. A null\nlabel selector matches no objects."
+                                    description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselector-v1-meta"
                                     properties:
                                       matchExpressions:
-                                        description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                         items:
-                                          description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                                          description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselectorrequirement-v1-meta"
                                           properties:
                                             key:
-                                              description: "key is the label key that the selector applies to."
                                               type: "string"
                                             operator:
-                                              description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                              description: "A label selector operator is the set of operators that can be used in a selector requirement."
                                               type: "string"
                                             values:
-                                              description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                               items:
                                                 type: "string"
                                               type: "array"
@@ -89,10 +200,8 @@ spec:
                                       matchLabels:
                                         additionalProperties:
                                           type: "string"
-                                        description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                         type: "object"
                                     type: "object"
-                                    x-kubernetes-map-type: "atomic"
                                   topologyKey:
                                     type: "string"
                                 required:
@@ -112,21 +221,18 @@ spec:
                             description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#podaffinityterm-v1-core."
                             properties:
                               labelSelector:
-                                description: "A label selector is a label query over a set of resources. The result of matchLabels and\nmatchExpressions are ANDed. An empty label selector matches all objects. A null\nlabel selector matches no objects."
+                                description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselector-v1-meta"
                                 properties:
                                   matchExpressions:
-                                    description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
                                     items:
-                                      description: "A label selector requirement is a selector that contains values, a key, and an operator that\nrelates the key and values."
+                                      description: "Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselectorrequirement-v1-meta"
                                       properties:
                                         key:
-                                          description: "key is the label key that the selector applies to."
                                           type: "string"
                                         operator:
-                                          description: "operator represents a key's relationship to a set of values.\nValid operators are In, NotIn, Exists and DoesNotExist."
+                                          description: "A label selector operator is the set of operators that can be used in a selector requirement."
                                           type: "string"
                                         values:
-                                          description: "values is an array of string values. If the operator is In or NotIn,\nthe values array must be non-empty. If the operator is Exists or DoesNotExist,\nthe values array must be empty. This array is replaced during a strategic\nmerge patch."
                                           items:
                                             type: "string"
                                           type: "array"
@@ -140,10 +246,8 @@ spec:
                                   matchLabels:
                                     additionalProperties:
                                       type: "string"
-                                    description: "matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels\nmap is equivalent to an element of matchExpressions, whose key field is \"key\", the\noperator is \"In\", and the values array contains only \"value\". The requirements are ANDed."
                                     type: "object"
                                 type: "object"
-                                x-kubernetes-map-type: "atomic"
                               topologyKey:
                                 type: "string"
                             required:

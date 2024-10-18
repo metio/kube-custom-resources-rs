@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.2"
   name: "platformendpoints.sns.services.k8s.aws"
 spec:
   group: "sns.services.k8s.aws"
@@ -30,6 +30,7 @@ spec:
               description: "PlatformEndpointSpec defines the desired state of PlatformEndpoint."
               properties:
                 customUserData:
+                  description: "Arbitrary user data to associate with the endpoint. Amazon SNS does not use\nthis data. The data must be in UTF-8 format and less than 2KB."
                   type: "string"
                 enabled:
                   type: "string"
@@ -37,6 +38,7 @@ spec:
                   description: "PlatformApplicationArn returned from CreatePlatformApplication is used to\ncreate a an endpoint."
                   type: "string"
                 token:
+                  description: "Unique identifier created by the notification service for an app on a device.\nThe specific name for Token will vary, depending on which notification service\nis being used. For example, when using APNS as the notification service,\nyou need the device token. Alternatively, when using GCM (Firebase Cloud\nMessaging) or ADM, the device token equivalent is called the registration\nID."
                   type: "string"
               required:
                 - "platformApplicationARN"
@@ -49,7 +51,7 @@ spec:
                   description: "All CRs managed by ACK have a common `Status.ACKResourceMetadata` member\nthat is used to contain resource sync state, account ownership,\nconstructed ARN for the resource"
                   properties:
                     arn:
-                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nTODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
+                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."

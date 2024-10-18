@@ -22,6 +22,9 @@ use self::prelude::*;
 pub struct AppWrapperSpec {
     /// Components lists the components contained in the AppWrapper
     pub components: Vec<AppWrapperComponents>,
+    /// ManagedBy is used to indicate the controller or entity that manages the AppWrapper.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedBy")]
+    pub managed_by: Option<String>,
     /// Suspend suspends the AppWrapper when set to true
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub suspend: Option<bool>,

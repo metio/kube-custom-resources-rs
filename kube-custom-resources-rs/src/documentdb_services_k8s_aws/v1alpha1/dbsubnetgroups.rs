@@ -12,7 +12,6 @@ use self::prelude::*;
 
 /// DBSubnetGroupSpec defines the desired state of DBSubnetGroup.
 /// 
-/// 
 /// Detailed information about a subnet group.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "documentdb.services.k8s.aws", version = "v1alpha1", kind = "DBSubnetGroup", plural = "dbsubnetgroups")]
@@ -26,10 +25,8 @@ pub struct DBSubnetGroupSpec {
     pub description: String,
     /// The name for the subnet group. This value is stored as a lowercase string.
     /// 
-    /// 
     /// Constraints: Must contain no more than 255 letters, numbers, periods, underscores,
     /// spaces, or hyphens. Must not be default.
-    /// 
     /// 
     /// Example: mySubnetgroup
     pub name: String,
@@ -47,7 +44,6 @@ pub struct DBSubnetGroupSpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -115,7 +111,6 @@ pub struct DBSubnetGroupStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,
