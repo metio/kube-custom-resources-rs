@@ -10273,8 +10273,7 @@ pub struct ScrapeConfigStaticConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// List of targets for this static configuration.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub targets: Option<Vec<String>>,
+    pub targets: Vec<String>,
 }
 
 /// TLS configuration to use on every scrape request

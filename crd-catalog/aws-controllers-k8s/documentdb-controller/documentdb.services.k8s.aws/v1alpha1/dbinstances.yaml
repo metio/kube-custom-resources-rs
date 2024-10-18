@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.2"
   name: "dbinstances.documentdb.services.k8s.aws"
 spec:
   group: "documentdb.services.k8s.aws"
@@ -31,16 +31,16 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "DBInstanceSpec defines the desired state of DBInstance.\n\n\nDetailed information about an instance."
+              description: "DBInstanceSpec defines the desired state of DBInstance.\n\nDetailed information about an instance."
               properties:
                 autoMinorVersionUpgrade:
-                  description: "This parameter does not apply to Amazon DocumentDB. Amazon DocumentDB does\nnot perform minor version upgrades regardless of the value set.\n\n\nDefault: false"
+                  description: "This parameter does not apply to Amazon DocumentDB. Amazon DocumentDB does\nnot perform minor version upgrades regardless of the value set.\n\nDefault: false"
                   type: "boolean"
                 availabilityZone:
-                  description: "The Amazon EC2 Availability Zone that the instance is created in.\n\n\nDefault: A random, system-chosen Availability Zone in the endpoint's Amazon\nWeb Services Region.\n\n\nExample: us-east-1d"
+                  description: "The Amazon EC2 Availability Zone that the instance is created in.\n\nDefault: A random, system-chosen Availability Zone in the endpoint's Amazon\nWeb Services Region.\n\nExample: us-east-1d"
                   type: "string"
                 caCertificateIdentifier:
-                  description: "The CA certificate identifier to use for the DB instance's server certificate.\n\n\nFor more information, see Updating Your Amazon DocumentDB TLS Certificates\n(https://docs.aws.amazon.com/documentdb/latest/developerguide/ca_cert_rotation.html)\nand Encrypting Data in Transit (https://docs.aws.amazon.com/documentdb/latest/developerguide/security.encryption.ssl.html)\nin the Amazon DocumentDB Developer Guide."
+                  description: "The CA certificate identifier to use for the DB instance's server certificate.\n\nFor more information, see Updating Your Amazon DocumentDB TLS Certificates\n(https://docs.aws.amazon.com/documentdb/latest/developerguide/ca_cert_rotation.html)\nand Encrypting Data in Transit (https://docs.aws.amazon.com/documentdb/latest/developerguide/security.encryption.ssl.html)\nin the Amazon DocumentDB Developer Guide."
                   type: "string"
                 copyTagsToSnapshot:
                   description: "A value that indicates whether to copy tags from the DB instance to snapshots\nof the DB instance. By default, tags are not copied."
@@ -52,19 +52,19 @@ spec:
                   description: "The compute and memory capacity of the instance; for example, db.r5.large."
                   type: "string"
                 dbInstanceIdentifier:
-                  description: "The instance identifier. This parameter is stored as a lowercase string.\n\n\nConstraints:\n\n\n   * Must contain from 1 to 63 letters, numbers, or hyphens.\n\n\n   * The first character must be a letter.\n\n\n   * Cannot end with a hyphen or contain two consecutive hyphens.\n\n\nExample: mydbinstance"
+                  description: "The instance identifier. This parameter is stored as a lowercase string.\n\nConstraints:\n\n   * Must contain from 1 to 63 letters, numbers, or hyphens.\n\n   * The first character must be a letter.\n\n   * Cannot end with a hyphen or contain two consecutive hyphens.\n\nExample: mydbinstance"
                   type: "string"
                 engine:
-                  description: "The name of the database engine to be used for this instance.\n\n\nValid value: docdb"
+                  description: "The name of the database engine to be used for this instance.\n\nValid value: docdb"
                   type: "string"
                 performanceInsightsEnabled:
                   description: "A value that indicates whether to enable Performance Insights for the DB\nInstance. For more information, see Using Amazon Performance Insights (https://docs.aws.amazon.com/documentdb/latest/developerguide/performance-insights.html)."
                   type: "boolean"
                 performanceInsightsKMSKeyID:
-                  description: "The KMS key identifier for encryption of Performance Insights data.\n\n\nThe KMS key identifier is the key ARN, key ID, alias ARN, or alias name for\nthe KMS key.\n\n\nIf you do not specify a value for PerformanceInsightsKMSKeyId, then Amazon\nDocumentDB uses your default KMS key. There is a default KMS key for your\nAmazon Web Services account. Your Amazon Web Services account has a different\ndefault KMS key for each Amazon Web Services region."
+                  description: "The KMS key identifier for encryption of Performance Insights data.\n\nThe KMS key identifier is the key ARN, key ID, alias ARN, or alias name for\nthe KMS key.\n\nIf you do not specify a value for PerformanceInsightsKMSKeyId, then Amazon\nDocumentDB uses your default KMS key. There is a default KMS key for your\nAmazon Web Services account. Your Amazon Web Services account has a different\ndefault KMS key for each Amazon Web Services region."
                   type: "string"
                 performanceInsightsKMSKeyRef:
-                  description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\n\tfrom:\n\t  name: my-api"
+                  description: "AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference\ntype to provide more user friendly syntax for references using 'from' field\nEx:\nAPIIDRef:\n\n\tfrom:\n\t  name: my-api"
                   properties:
                     from:
                       description: "AWSResourceReference provides all the values necessary to reference another\nk8s resource for finding the identifier(Id/ARN/Name)"
@@ -76,10 +76,10 @@ spec:
                       type: "object"
                   type: "object"
                 preferredMaintenanceWindow:
-                  description: "The time range each week during which system maintenance can occur, in Universal\nCoordinated Time (UTC).\n\n\nFormat: ddd:hh24:mi-ddd:hh24:mi\n\n\nThe default is a 30-minute window selected at random from an 8-hour block\nof time for each Amazon Web Services Region, occurring on a random day of\nthe week.\n\n\nValid days: Mon, Tue, Wed, Thu, Fri, Sat, Sun\n\n\nConstraints: Minimum 30-minute window."
+                  description: "The time range each week during which system maintenance can occur, in Universal\nCoordinated Time (UTC).\n\nFormat: ddd:hh24:mi-ddd:hh24:mi\n\nThe default is a 30-minute window selected at random from an 8-hour block\nof time for each Amazon Web Services Region, occurring on a random day of\nthe week.\n\nValid days: Mon, Tue, Wed, Thu, Fri, Sat, Sun\n\nConstraints: Minimum 30-minute window."
                   type: "string"
                 promotionTier:
-                  description: "A value that specifies the order in which an Amazon DocumentDB replica is\npromoted to the primary instance after a failure of the existing primary\ninstance.\n\n\nDefault: 1\n\n\nValid values: 0-15"
+                  description: "A value that specifies the order in which an Amazon DocumentDB replica is\npromoted to the primary instance after a failure of the existing primary\ninstance.\n\nDefault: 1\n\nValid values: 0-15"
                   format: "int64"
                   type: "integer"
                 tags:
@@ -106,7 +106,7 @@ spec:
                   description: "All CRs managed by ACK have a common `Status.ACKResourceMetadata` member\nthat is used to contain resource sync state, account ownership,\nconstructed ARN for the resource"
                   properties:
                     arn:
-                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nTODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
+                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."

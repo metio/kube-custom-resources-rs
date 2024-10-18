@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.3"
+    controller-gen.kubebuilder.io/version: "v0.16.4"
   name: "workloads.kueue.x-k8s.io"
 spec:
   group: "kueue.x-k8s.io"
@@ -4807,6 +4807,16 @@ spec:
                               - "containers"
                             type: "object"
                         type: "object"
+                      topologyRequest:
+                        description: "topologyRequest defines the topology request for the PodSet."
+                        properties:
+                          preferred:
+                            description: "preferred indicates the topology level preferred by the PodSet, as\nindicated by the `kueue.x-k8s.io/podset-preferred-topology` PodSet\nannotation."
+                            type: "string"
+                          required:
+                            description: "required indicates the topology level required by the PodSet, as\nindicated by the `kueue.x-k8s.io/podset-required-topology` PodSet\nannotation."
+                            type: "string"
+                        type: "object"
                     required:
                       - "count"
                       - "template"
@@ -4890,6 +4900,43 @@ spec:
                               pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
                               x-kubernetes-int-or-string: true
                             description: "resourceUsage keeps track of the total resources all the pods in the podset need to run.\n\nBeside what is provided in podSet's specs, this calculation takes into account\nthe LimitRange defaults and RuntimeClass overheads at the moment of admission.\nThis field will not change in case of quota reclaim."
+                            type: "object"
+                          topologyAssignment:
+                            description: "topologyAssignment indicates the topology assignment divided into\ntopology domains corresponding to the lowest level of the topology.\nThe assignment specifies the number of Pods to be scheduled per topology\ndomain and specifies the node selectors for each topology domain, in the\nfollowing way: the node selector keys are specified by the levels field\n(same for all domains), and the corresponding node selector value is\nspecified by the domains.values subfield.\n\nExample:\n\ntopologyAssignment:\n  levels:\n  - cloud.provider.com/topology-block\n  - cloud.provider.com/topology-rack\n  domains:\n  - values: [block-1, rack-1]\n    count: 4\n  - values: [block-1, rack-2]\n    count: 2\n\nHere:\n- 4 Pods are to be scheduled on nodes matching the node selector:\n  cloud.provider.com/topology-block: block-1\n  cloud.provider.com/topology-rack: rack-1\n- 2 Pods are to be scheduled on nodes matching the node selector:\n  cloud.provider.com/topology-block: block-1\n  cloud.provider.com/topology-rack: rack-2"
+                            properties:
+                              domains:
+                                description: "domains is a list of topology assignments split by topology domains at\nthe lowest level of the topology."
+                                items:
+                                  properties:
+                                    count:
+                                      description: "count indicates the number of Pods to be scheduled in the topology\ndomain indicated by the values field."
+                                      format: "int32"
+                                      minimum: 1.0
+                                      type: "integer"
+                                    values:
+                                      description: "values is an ordered list of node selector values describing a topology\ndomain. The values correspond to the consecutive topology levels, from\nthe highest to the lowest."
+                                      items:
+                                        type: "string"
+                                      maxItems: 8
+                                      minItems: 1
+                                      type: "array"
+                                      x-kubernetes-list-type: "atomic"
+                                  required:
+                                    - "count"
+                                    - "values"
+                                  type: "object"
+                                type: "array"
+                              levels:
+                                description: "levels is an ordered list of keys denoting the levels of the assigned\ntopology (i.e. node label keys), from the highest to the lowest level of\nthe topology."
+                                items:
+                                  type: "string"
+                                maxItems: 8
+                                minItems: 1
+                                type: "array"
+                                x-kubernetes-list-type: "atomic"
+                            required:
+                              - "domains"
+                              - "levels"
                             type: "object"
                         required:
                           - "name"
@@ -5078,6 +5125,33 @@ spec:
                       format: "date-time"
                       type: "string"
                   type: "object"
+                resourceRequests:
+                  description: "resourceRequests provides a detailed view of the resources that were\nrequested by a non-admitted workload when it was considered for admission.\nIf admission is non-null, resourceRequests will be empty because\nadmission.resourceUsage contains the detailed information."
+                  items:
+                    properties:
+                      name:
+                        default: "main"
+                        description: "name is the name of the podSet. It should match one of the names in .spec.podSets."
+                        maxLength: 63
+                        pattern: "^(?i)[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
+                        type: "string"
+                      resources:
+                        additionalProperties:
+                          anyOf:
+                            - type: "integer"
+                            - type: "string"
+                          pattern: "^(\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\\+|-)?(([0-9]+(\\.[0-9]*)?)|(\\.[0-9]+))))?$"
+                          x-kubernetes-int-or-string: true
+                        description: "resources is the total resources all the pods in the podset need to run.\n\nBeside what is provided in podSet's specs, this value also takes into account\nthe LimitRange defaults and RuntimeClass overheads at the moment of consideration\nand the application of resource.excludeResourcePrefixes and resource.transformations."
+                        type: "object"
+                    required:
+                      - "name"
+                    type: "object"
+                  maxItems: 8
+                  type: "array"
+                  x-kubernetes-list-map-keys:
+                    - "name"
+                  x-kubernetes-list-type: "map"
               type: "object"
           type: "object"
           x-kubernetes-validations:

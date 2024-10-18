@@ -12,7 +12,6 @@ use self::prelude::*;
 
 /// MetricAlarmSpec defines the desired state of MetricAlarm.
 /// 
-/// 
 /// The details about a metric alarm.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "cloudwatch.services.k8s.aws", version = "v1alpha1", kind = "MetricAlarm", plural = "metricalarms")]
@@ -30,51 +29,35 @@ pub struct MetricAlarmSpec {
     /// any other state. Each action is specified as an Amazon Resource Name (ARN).
     /// Valid values:
     /// 
-    /// 
     /// EC2 actions:
-    /// 
     /// 
     ///    * arn:aws:automate:region:ec2:stop
     /// 
-    /// 
     ///    * arn:aws:automate:region:ec2:terminate
-    /// 
     /// 
     ///    * arn:aws:automate:region:ec2:reboot
     /// 
-    /// 
     ///    * arn:aws:automate:region:ec2:recover
-    /// 
     /// 
     ///    * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Stop/1.0
     /// 
-    /// 
     ///    * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Terminate/1.0
-    /// 
     /// 
     ///    * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Reboot/1.0
     /// 
-    /// 
     ///    * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Recover/1.0
-    /// 
     /// 
     /// Autoscaling action:
     /// 
-    /// 
     ///    * arn:aws:autoscaling:region:account-id:scalingPolicy:policy-id:autoScalingGroupName/group-friendly-name:policyName/policy-friendly-name
-    /// 
     /// 
     /// SNS notification action:
     /// 
-    /// 
     ///    * arn:aws:sns:region:account-id:sns-topic-name:autoScalingGroupName/group-friendly-name:policyName/policy-friendly-name
-    /// 
     /// 
     /// SSM integration actions:
     /// 
-    /// 
     ///    * arn:aws:ssm:region:account-id:opsitem:severity#CATEGORY=category-name
-    /// 
     /// 
     ///    * arn:aws:ssm-incidents::account-id:responseplan/response-plan-name
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "alarmActions")]
@@ -84,7 +67,6 @@ pub struct MetricAlarmSpec {
     pub alarm_description: Option<String>,
     /// The arithmetic operation to use when comparing the specified statistic and
     /// threshold. The specified statistic value is used as the first operand.
-    /// 
     /// 
     /// The values LessThanLowerOrGreaterThanUpperThreshold, LessThanLowerThreshold,
     /// and GreaterThanUpperThreshold are used only for alarms based on anomaly detection
@@ -107,7 +89,6 @@ pub struct MetricAlarmSpec {
     /// are available. For more information, see Percentile-Based CloudWatch Alarms
     /// and Low Data Samples (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html#percentiles-with-low-samples).
     /// 
-    /// 
     /// Valid Values: evaluate | ignore
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "evaluateLowSampleCountPercentile")]
     pub evaluate_low_sample_count_percentile: Option<String>,
@@ -115,7 +96,6 @@ pub struct MetricAlarmSpec {
     /// If you are setting an alarm that requires that a number of consecutive data
     /// points be breaching to trigger the alarm, this value specifies that number.
     /// If you are setting an "M out of N" alarm, this value is the N.
-    /// 
     /// 
     /// An alarm's total current evaluation period can be no longer than one day,
     /// so this number multiplied by Period cannot be more than 86,400 seconds.
@@ -125,42 +105,29 @@ pub struct MetricAlarmSpec {
     /// PutMetricAlarm and specify a MetricName, you must specify either Statistic
     /// or ExtendedStatistic but not both.
     /// 
-    /// 
     /// If you specify ExtendedStatistic, the following are valid values:
-    /// 
     /// 
     ///    * p90
     /// 
-    /// 
     ///    * tm90
-    /// 
     /// 
     ///    * tc90
     /// 
-    /// 
     ///    * ts90
-    /// 
     /// 
     ///    * wm90
     /// 
-    /// 
     ///    * IQM
-    /// 
     /// 
     ///    * PR(n:m) where n and m are values of the metric
     /// 
-    /// 
     ///    * TC(X%:X%) where X is between 10 and 90 inclusive.
-    /// 
     /// 
     ///    * TM(X%:X%) where X is between 10 and 90 inclusive.
     /// 
-    /// 
     ///    * TS(X%:X%) where X is between 10 and 90 inclusive.
     /// 
-    /// 
     ///    * WM(X%:X%) where X is between 10 and 90 inclusive.
-    /// 
     /// 
     /// For more information about these extended statistics, see CloudWatch statistics
     /// definitions (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/Statistics-definitions.html).
@@ -170,58 +137,41 @@ pub struct MetricAlarmSpec {
     /// state from any other state. Each action is specified as an Amazon Resource
     /// Name (ARN). Valid values:
     /// 
-    /// 
     /// EC2 actions:
-    /// 
     /// 
     ///    * arn:aws:automate:region:ec2:stop
     /// 
-    /// 
     ///    * arn:aws:automate:region:ec2:terminate
-    /// 
     /// 
     ///    * arn:aws:automate:region:ec2:reboot
     /// 
-    /// 
     ///    * arn:aws:automate:region:ec2:recover
-    /// 
     /// 
     ///    * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Stop/1.0
     /// 
-    /// 
     ///    * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Terminate/1.0
-    /// 
     /// 
     ///    * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Reboot/1.0
     /// 
-    /// 
     ///    * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Recover/1.0
-    /// 
     /// 
     /// Autoscaling action:
     /// 
-    /// 
     ///    * arn:aws:autoscaling:region:account-id:scalingPolicy:policy-id:autoScalingGroupName/group-friendly-name:policyName/policy-friendly-name
-    /// 
     /// 
     /// SNS notification action:
     /// 
-    /// 
     ///    * arn:aws:sns:region:account-id:sns-topic-name:autoScalingGroupName/group-friendly-name:policyName/policy-friendly-name
-    /// 
     /// 
     /// SSM integration actions:
     /// 
-    /// 
     ///    * arn:aws:ssm:region:account-id:opsitem:severity#CATEGORY=category-name
-    /// 
     /// 
     ///    * arn:aws:ssm-incidents::account-id:responseplan/response-plan-name
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insufficientDataActions")]
     pub insufficient_data_actions: Option<Vec<String>>,
     /// The name for the metric associated with the alarm. For each PutMetricAlarm
     /// operation, you must specify either MetricName or a Metrics array.
-    /// 
     /// 
     /// If you are creating an alarm based on a math expression, you cannot specify
     /// this parameter, or any of the Namespace, Dimensions, Period, Unit, Statistic,
@@ -233,15 +183,12 @@ pub struct MetricAlarmSpec {
     /// based on the result of a metric math expression. For each PutMetricAlarm
     /// operation, you must specify either MetricName or a Metrics array.
     /// 
-    /// 
     /// Each item in the Metrics array either retrieves a metric or performs a math
     /// expression.
-    /// 
     /// 
     /// One item in the Metrics array is the expression that the alarm watches. You
     /// designate this expression by setting ReturnData to true for this object in
     /// the array. For more information, see MetricDataQuery (https://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/API_MetricDataQuery.html).
-    /// 
     /// 
     /// If you use the Metrics parameter, you cannot include the Namespace, MetricName,
     /// Dimensions, Period, Unit, Statistic, or ExtendedStatistic parameters of PutMetricAlarm
@@ -250,7 +197,6 @@ pub struct MetricAlarmSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metrics: Option<Vec<MetricAlarmMetrics>>,
     /// The name for the alarm. This name must be unique within the Region.
-    /// 
     /// 
     /// The name must contain only UTF-8 characters, and can't contain ASCII control
     /// characters
@@ -262,51 +208,35 @@ pub struct MetricAlarmSpec {
     /// other state. Each action is specified as an Amazon Resource Name (ARN). Valid
     /// values:
     /// 
-    /// 
     /// EC2 actions:
-    /// 
     /// 
     ///    * arn:aws:automate:region:ec2:stop
     /// 
-    /// 
     ///    * arn:aws:automate:region:ec2:terminate
-    /// 
     /// 
     ///    * arn:aws:automate:region:ec2:reboot
     /// 
-    /// 
     ///    * arn:aws:automate:region:ec2:recover
-    /// 
     /// 
     ///    * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Stop/1.0
     /// 
-    /// 
     ///    * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Terminate/1.0
-    /// 
     /// 
     ///    * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Reboot/1.0
     /// 
-    /// 
     ///    * arn:aws:swf:region:account-id:action/actions/AWS_EC2.InstanceId.Recover/1.0
-    /// 
     /// 
     /// Autoscaling action:
     /// 
-    /// 
     ///    * arn:aws:autoscaling:region:account-id:scalingPolicy:policy-id:autoScalingGroupName/group-friendly-name:policyName/policy-friendly-name
-    /// 
     /// 
     /// SNS notification action:
     /// 
-    /// 
     ///    * arn:aws:sns:region:account-id:sns-topic-name:autoScalingGroupName/group-friendly-name:policyName/policy-friendly-name
-    /// 
     /// 
     /// SSM integration actions:
     /// 
-    /// 
     ///    * arn:aws:ssm:region:account-id:opsitem:severity#CATEGORY=category-name
-    /// 
     /// 
     ///    * arn:aws:ssm-incidents::account-id:responseplan/response-plan-name
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "oKActions")]
@@ -314,11 +244,9 @@ pub struct MetricAlarmSpec {
     /// The length, in seconds, used each time the metric specified in MetricName
     /// is evaluated. Valid values are 10, 30, and any multiple of 60.
     /// 
-    /// 
     /// Period is required for alarms based on static thresholds. If you are creating
     /// an alarm based on a metric math expression, you specify the period for each
     /// metric within the objects in the Metrics array.
-    /// 
     /// 
     /// Be sure to specify 10 or 30 only for metrics that are stored by a PutMetricData
     /// call with a StorageResolution of 1. If you specify a period of 10 or 30 for
@@ -329,7 +257,6 @@ pub struct MetricAlarmSpec {
     /// Specifying 10 or 30 also sets this alarm as a high-resolution alarm, which
     /// has a higher charge than other alarms. For more information about pricing,
     /// see Amazon CloudWatch Pricing (https://aws.amazon.com/cloudwatch/pricing/).
-    /// 
     /// 
     /// An alarm's total current evaluation period can be no longer than one day,
     /// so Period multiplied by EvaluationPeriods cannot be more than 86,400 seconds.
@@ -345,11 +272,9 @@ pub struct MetricAlarmSpec {
     /// as many as 50 tags with an alarm. To be able to associate tags with the alarm
     /// when you create the alarm, you must have the cloudwatch:TagResource permission.
     /// 
-    /// 
     /// Tags can help you organize and categorize your resources. You can also use
     /// them to scope user permissions by granting a user permission to access or
     /// change only resources with certain tag values.
-    /// 
     /// 
     /// If you are using this operation to update an existing alarm, any tags you
     /// specify in this parameter are ignored. To change the tags of an existing
@@ -359,7 +284,6 @@ pub struct MetricAlarmSpec {
     pub tags: Option<Vec<MetricAlarmTags>>,
     /// The value against which the specified statistic is compared.
     /// 
-    /// 
     /// This parameter is required for alarms based on static thresholds, but should
     /// not be used for alarms based on anomaly detection models.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -367,10 +291,8 @@ pub struct MetricAlarmSpec {
     /// If this is an alarm based on an anomaly detection model, make this value
     /// match the ID of the ANOMALY_DETECTION_BAND function.
     /// 
-    /// 
     /// For an example of how to use this parameter, see the Anomaly Detection Model
     /// Alarm example on this page.
-    /// 
     /// 
     /// If your alarm uses this parameter, it cannot have Auto Scaling actions.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "thresholdMetricID")]
@@ -379,9 +301,7 @@ pub struct MetricAlarmSpec {
     /// is omitted, the default behavior of missing is used. For more information,
     /// see Configuring How CloudWatch Alarms Treats Missing Data (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/AlarmThatSendsEmail.html#alarms-and-missing-data).
     /// 
-    /// 
     /// Valid Values: breaching | notBreaching | ignore | missing
-    /// 
     /// 
     /// Alarms that evaluate metrics in the AWS/DynamoDB namespace always ignore
     /// missing data even if you choose a different option for TreatMissingData.
@@ -398,16 +318,13 @@ pub struct MetricAlarmSpec {
     /// a metric math expression, you can specify the unit for each metric (if needed)
     /// within the objects in the Metrics array.
     /// 
-    /// 
     /// If you don't specify Unit, CloudWatch retrieves all unit types that have
     /// been published for the metric and attempts to evaluate the alarm. Usually,
     /// metrics are published with only one unit, so the alarm works as intended.
     /// 
-    /// 
     /// However, if the metric is published with multiple types of units and you
     /// don't specify a unit, the alarm's behavior is not defined and it behaves
     /// unpredictably.
-    /// 
     /// 
     /// We recommend omitting Unit so that you don't inadvertently specify an incorrect
     /// unit that is not published for this metric. Doing so causes the alarm to
@@ -423,7 +340,6 @@ pub struct MetricAlarmSpec {
 /// InstanceId as a dimension name, and the actual instance ID as the value for
 /// that dimension.
 /// 
-/// 
 /// You can assign up to 30 dimensions to a metric.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MetricAlarmDimensions {
@@ -436,12 +352,10 @@ pub struct MetricAlarmDimensions {
 /// This structure is used in both GetMetricData and PutMetricAlarm. The supported
 /// use of this structure is different for those two operations.
 /// 
-/// 
 /// When used in GetMetricData, it indicates the metric data to return, and whether
 /// this call is just retrieving a batch set of data for one metric, or is performing
 /// a Metrics Insights query or a math expression. A single GetMetricData call
 /// can include up to 500 MetricDataQuery structures.
-/// 
 /// 
 /// When used in PutMetricAlarm, it enables you to create an alarm based on a
 /// metric math expression. Each MetricDataQuery in the array specifies either
@@ -453,11 +367,9 @@ pub struct MetricAlarmDimensions {
 /// Expression structures, one must have true as the value for ReturnData. The
 /// result of this expression is the value the alarm watches.
 /// 
-/// 
 /// Any expression used in a PutMetricAlarm operation must return a single time
 /// series. For more information, see Metric Math Syntax and Functions (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/using-metric-math.html#metric-math-syntax)
 /// in the Amazon CloudWatch User Guide.
-/// 
 /// 
 /// Some of the parameters of this structure also have different uses whether
 /// you are using this structure in a GetMetricData operation or a PutMetricAlarm
@@ -515,7 +427,6 @@ pub struct MetricAlarmMetricsMetricStatMetric {
 /// InstanceId as a dimension name, and the actual instance ID as the value for
 /// that dimension.
 /// 
-/// 
 /// You can assign up to 30 dimensions to a metric.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MetricAlarmMetricsMetricStatMetricDimensions {
@@ -561,7 +472,6 @@ pub struct MetricAlarmStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.2"
   name: "resolverrules.route53resolver.services.k8s.aws"
 spec:
   group: "route53resolver.services.k8s.aws"
@@ -31,7 +31,7 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "ResolverRuleSpec defines the desired state of ResolverRule.\n\n\nFor queries that originate in your VPC, detailed information about a Resolver\nrule, which specifies how to route DNS queries out of the VPC. The ResolverRule\nparameter appears in the response to a CreateResolverRule (https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_CreateResolverRule.html),\nDeleteResolverRule (https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_DeleteResolverRule.html),\nGetResolverRule (https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverRule.html),\nListResolverRules (https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverRules.html),\nor UpdateResolverRule (https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_UpdateResolverRule.html)\nrequest."
+              description: "ResolverRuleSpec defines the desired state of ResolverRule.\n\nFor queries that originate in your VPC, detailed information about a Resolver\nrule, which specifies how to route DNS queries out of the VPC. The ResolverRule\nparameter appears in the response to a CreateResolverRule (https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_CreateResolverRule.html),\nDeleteResolverRule (https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_DeleteResolverRule.html),\nGetResolverRule (https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverRule.html),\nListResolverRules (https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_ListResolverRules.html),\nor UpdateResolverRule (https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_UpdateResolverRule.html)\nrequest."
               properties:
                 associations:
                   items:
@@ -61,7 +61,7 @@ spec:
                   description: "The ID of the outbound Resolver endpoint that you want to use to route DNS\nqueries to the IP addresses that you specify in TargetIps."
                   type: "string"
                 ruleType:
-                  description: "When you want to forward DNS queries for specified domain name to resolvers\non your network, specify FORWARD.\n\n\nWhen you have a forwarding rule to forward DNS queries for a domain to your\nnetwork and you want Resolver to process queries for a subdomain of that\ndomain, specify SYSTEM.\n\n\nFor example, to forward DNS queries for example.com to resolvers on your\nnetwork, you create a rule and specify FORWARD for RuleType. To then have\nResolver process queries for apex.example.com, you create a rule and specify\nSYSTEM for RuleType.\n\n\nCurrently, only Resolver can create rules that have a value of RECURSIVE\nfor RuleType."
+                  description: "When you want to forward DNS queries for specified domain name to resolvers\non your network, specify FORWARD.\n\nWhen you have a forwarding rule to forward DNS queries for a domain to your\nnetwork and you want Resolver to process queries for a subdomain of that\ndomain, specify SYSTEM.\n\nFor example, to forward DNS queries for example.com to resolvers on your\nnetwork, you create a rule and specify FORWARD for RuleType. To then have\nResolver process queries for apex.example.com, you create a rule and specify\nSYSTEM for RuleType.\n\nCurrently, only Resolver can create rules that have a value of RECURSIVE\nfor RuleType."
                   type: "string"
                 tags:
                   description: "A list of the tag keys and values that you want to associate with the endpoint."
@@ -75,7 +75,7 @@ spec:
                     type: "object"
                   type: "array"
                 targetIPs:
-                  description: "The IPs that you want Resolver to forward DNS queries to. You can specify\nonly IPv4 addresses. Separate IP addresses with a space.\n\n\nTargetIps is available only when the value of Rule type is FORWARD."
+                  description: "The IPs that you want Resolver to forward DNS queries to. You can specify\nonly IPv4 addresses. Separate IP addresses with a space.\n\nTargetIps is available only when the value of Rule type is FORWARD."
                   items:
                     description: "In a CreateResolverRule (https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_CreateResolverRule.html)\nrequest, an array of the IPs that you want to forward DNS queries to."
                     properties:
@@ -99,7 +99,7 @@ spec:
                   description: "All CRs managed by ACK have a common `Status.ACKResourceMetadata` member\nthat is used to contain resource sync state, account ownership,\nconstructed ARN for the resource"
                   properties:
                     arn:
-                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nTODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
+                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."

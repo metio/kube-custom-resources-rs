@@ -96,7 +96,7 @@ spec:
                     - message: "clusterDef is immutable"
                       rule: "self == oldSelf"
                 componentSpecs:
-                  description: "Specifies a list of ClusterComponentSpec objects used to define the individual Components that make up a Cluster.\nThis field allows for detailed configuration of each Component within the Cluster.\n\n\nNote: `shardingSpecs` and `componentSpecs` cannot both be empty; at least one must be defined to configure a Cluster."
+                  description: "Specifies a list of ClusterComponentSpec objects used to define the individual Components that make up a Cluster.\nThis field allows for detailed configuration of each Component within the Cluster.\n\n\nNote: `shardings` and `componentSpecs` cannot both be empty; at least one must be defined to configure a Cluster."
                   items:
                     description: "ClusterComponentSpec defines the specification of a Component within a Cluster."
                     properties:
@@ -2153,7 +2153,7 @@ spec:
                         description: "Specifies Labels to override or add for underlying Pods, PVCs, Account & TLS Secrets, Services Owned by Component."
                         type: "object"
                       name:
-                        description: "Specifies the Component's name.\nIt's part of the Service DNS name and must comply with the IANA service naming rule.\nThe name is optional when ClusterComponentSpec is used as a template (e.g., in `shardingSpec`),\nbut required otherwise."
+                        description: "Specifies the Component's name.\nIt's part of the Service DNS name and must comply with the IANA service naming rule.\nThe name is optional when ClusterComponentSpec is used as a template (e.g., in `clusterSharding`),\nbut required otherwise."
                         maxLength: 22
                         pattern: "^[a-z]([a-z0-9\\-]*[a-z0-9])?$"
                         type: "string"
@@ -4712,7 +4712,7 @@ spec:
                       type: "array"
                   type: "object"
                 services:
-                  description: "Defines a list of additional Services that are exposed by a Cluster.\nThis field allows Services of selected Components, either from `componentSpecs` or `shardingSpecs` to be exposed,\nalongside Services defined with ComponentService.\n\n\nServices defined here can be referenced by other clusters using the ServiceRefClusterSelector."
+                  description: "Defines a list of additional Services that are exposed by a Cluster.\nThis field allows Services of selected Components, either from `componentSpecs` or `shardings` to be exposed,\nalongside Services defined with ComponentService.\n\n\nServices defined here can be referenced by other clusters using the ServiceRefClusterSelector."
                   items:
                     description: "ClusterService defines a service that is exposed externally, allowing entities outside the cluster to access it.\nFor example, external applications, or other Clusters.\nAnd another Cluster managed by the same KubeBlocks operator can resolve the address exposed by a ClusterService\nusing the `serviceRef` field.\n\n\nWhen a Component needs to access another Cluster's ClusterService using the `serviceRef` field,\nit must also define the service type and version information in the `componentDefinition.spec.serviceRefDeclarations`\nsection."
                     properties:
@@ -4860,27 +4860,31 @@ spec:
                     type: "object"
                   type: "array"
                   x-kubernetes-preserve-unknown-fields: true
-                shardingSpecs:
-                  description: "Specifies a list of ShardingSpec objects that manage the sharding topology for Cluster Components.\nEach ShardingSpec organizes components into shards, with each shard corresponding to a Component.\nComponents within a shard are all based on a common ClusterComponentSpec template, ensuring uniform configurations.\n\n\nThis field supports dynamic resharding by facilitating the addition or removal of shards\nthrough the `shards` field in ShardingSpec.\n\n\nNote: `shardingSpecs` and `componentSpecs` cannot both be empty; at least one must be defined to configure a Cluster."
+                shardings:
+                  description: "Specifies a list of ClusterSharding objects that manage the sharding topology for Cluster Components.\nEach ClusterSharding organizes components into shards, with each shard corresponding to a Component.\nComponents within a shard are all based on a common ClusterComponentSpec template, ensuring uniform configurations.\n\n\nThis field supports dynamic resharding by facilitating the addition or removal of shards\nthrough the `shards` field in ClusterSharding.\n\n\nNote: `shardings` and `componentSpecs` cannot both be empty; at least one must be defined to configure a Cluster."
                   items:
-                    description: "ShardingSpec defines how KubeBlocks manage dynamic provisioned shards.\nA typical design pattern for distributed databases is to distribute data across multiple shards,\nwith each shard consisting of multiple replicas.\nTherefore, KubeBlocks supports representing a shard with a Component and dynamically instantiating Components\nusing a template when shards are added.\nWhen shards are removed, the corresponding Components are also deleted."
+                    description: "ClusterSharding defines how KubeBlocks manage dynamic provisioned shards.\nA typical design pattern for distributed databases is to distribute data across multiple shards,\nwith each shard consisting of multiple replicas.\nTherefore, KubeBlocks supports representing a shard with a Component and dynamically instantiating Components\nusing a template when shards are added.\nWhen shards are removed, the corresponding Components are also deleted."
                     properties:
                       name:
-                        description: "Represents the common parent part of all shard names.\nThis identifier is included as part of the Service DNS name and must comply with IANA service naming rules.\nIt is used to generate the names of underlying Components following the pattern `$(shardingSpec.name)-$(ShardID)`.\nShardID is a random string that is appended to the Name to generate unique identifiers for each shard.\nFor example, if the sharding specification name is \"my-shard\" and the ShardID is \"abc\", the resulting Component name\nwould be \"my-shard-abc\".\n\n\nNote that the name defined in Component template(`shardingSpec.template.name`) will be disregarded\nwhen generating the Component names of the shards. The `shardingSpec.name` field takes precedence."
+                        description: "Represents the common parent part of all shard names.\n\n\nThis identifier is included as part of the Service DNS name and must comply with IANA service naming rules.\nIt is used to generate the names of underlying Components following the pattern `$(clusterSharding.name)-$(ShardID)`.\nShardID is a random string that is appended to the Name to generate unique identifiers for each shard.\nFor example, if the sharding specification name is \"my-shard\" and the ShardID is \"abc\", the resulting Component name\nwould be \"my-shard-abc\".\n\n\nNote that the name defined in Component template(`clusterSharding.template.name`) will be disregarded\nwhen generating the Component names of the shards. The `clusterSharding.name` field takes precedence."
                         maxLength: 15
                         pattern: "^[a-z0-9]([a-z0-9\\.\\-]*[a-z0-9])?$"
                         type: "string"
                         x-kubernetes-validations:
                           - message: "name is immutable"
                             rule: "self == oldSelf"
+                      shardingDef:
+                        description: "Specifies the ShardingDefinition custom resource (CR) that defines the sharding's characteristics and behavior.\n\n\nThe full name or regular expression is supported to match the ShardingDefinition."
+                        maxLength: 64
+                        type: "string"
                       shards:
-                        description: "Specifies the desired number of shards.\nUsers can declare the desired number of shards through this field.\nKubeBlocks dynamically creates and deletes Components based on the difference\nbetween the desired and actual number of shards.\nKubeBlocks provides lifecycle management for sharding, including:\n\n\n- Executing the postProvision Action defined in the ComponentDefinition when the number of shards increases.\n  This allows for custom actions to be performed after a new shard is provisioned.\n- Executing the preTerminate Action defined in the ComponentDefinition when the number of shards decreases.\n  This enables custom cleanup or data migration tasks to be executed before a shard is terminated.\n  Resources and data associated with the corresponding Component will also be deleted."
+                        description: "Specifies the desired number of shards.\n\n\nUsers can declare the desired number of shards through this field.\nKubeBlocks dynamically creates and deletes Components based on the difference\nbetween the desired and actual number of shards.\nKubeBlocks provides lifecycle management for sharding, including:\n\n\n- Executing the shardProvision Action defined in the ShardingDefinition when the number of shards increases.\n  This allows for custom actions to be performed after a new shard is provisioned.\n- Executing the shardTerminate Action defined in the ShardingDefinition when the number of shards decreases.\n  This enables custom cleanup or data migration tasks to be executed before a shard is terminated.\n  Resources and data associated with the corresponding Component will also be deleted."
                         format: "int32"
                         maximum: 2048.0
                         minimum: 0.0
                         type: "integer"
                       template:
-                        description: "The template for generating Components for shards, where each shard consists of one Component.\nThis field is of type ClusterComponentSpec, which encapsulates all the required details and\ndefinitions for creating and managing the Components.\nKubeBlocks uses this template to generate a set of identical Components or shards.\nAll the generated Components will have the same specifications and definitions as specified in the `template` field.\n\n\nThis allows for the creation of multiple Components with consistent configurations,\nenabling sharding and distribution of workloads across Components."
+                        description: "The template for generating Components for shards, where each shard consists of one Component.\n\n\nThis field is of type ClusterComponentSpec, which encapsulates all the required details and\ndefinitions for creating and managing the Components.\nKubeBlocks uses this template to generate a set of identical Components of shards.\nAll the generated Components will have the same specifications and definitions as specified in the `template` field.\n\n\nThis allows for the creation of multiple Components with consistent configurations,\nenabling sharding and distribution of workloads across Components."
                         properties:
                           annotations:
                             additionalProperties:
@@ -6935,7 +6939,7 @@ spec:
                             description: "Specifies Labels to override or add for underlying Pods, PVCs, Account & TLS Secrets, Services Owned by Component."
                             type: "object"
                           name:
-                            description: "Specifies the Component's name.\nIt's part of the Service DNS name and must comply with the IANA service naming rule.\nThe name is optional when ClusterComponentSpec is used as a template (e.g., in `shardingSpec`),\nbut required otherwise."
+                            description: "Specifies the Component's name.\nIt's part of the Service DNS name and must comply with the IANA service naming rule.\nThe name is optional when ClusterComponentSpec is used as a template (e.g., in `clusterSharding`),\nbut required otherwise."
                             maxLength: 22
                             pattern: "^[a-z]([a-z0-9\\-]*[a-z0-9])?$"
                             type: "string"
@@ -8882,10 +8886,6 @@ spec:
             status:
               description: "ClusterStatus defines the observed state of the Cluster."
               properties:
-                clusterDefGeneration:
-                  description: "Represents the generation number of the referenced ClusterDefinition."
-                  format: "int64"
-                  type: "integer"
                 components:
                   additionalProperties:
                     description: "ClusterComponentStatus records Component status."
@@ -8973,6 +8973,30 @@ spec:
                     - "Failed"
                     - "Abnormal"
                   type: "string"
+                shardings:
+                  additionalProperties:
+                    description: "ClusterComponentStatus records Component status."
+                    properties:
+                      message:
+                        additionalProperties:
+                          type: "string"
+                        description: "Records detailed information about the Component in its current phase.\nThe keys are either podName, deployName, or statefulSetName, formatted as 'ObjectKind/Name'."
+                        type: "object"
+                      phase:
+                        description: "Specifies the current state of the Component."
+                        enum:
+                          - "Creating"
+                          - "Running"
+                          - "Updating"
+                          - "Stopping"
+                          - "Stopped"
+                          - "Deleting"
+                          - "Failed"
+                          - "Abnormal"
+                        type: "string"
+                    type: "object"
+                  description: "Records the current status information of all shardings within the Cluster."
+                  type: "object"
               type: "object"
           type: "object"
       served: true

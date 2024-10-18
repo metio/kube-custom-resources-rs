@@ -51,15 +51,12 @@ pub struct BackupStatus {
     pub backup_status: Option<String>,
     /// BackupType:
     /// 
-    /// 
     ///    * USER - You create and manage these using the on-demand backup feature.
-    /// 
     /// 
     ///    * SYSTEM - If you delete a table with point-in-time recovery enabled,
     ///    a SYSTEM backup is automatically created and is retained for 35 days (at
     ///    no additional cost). System backups allow you to restore the deleted table
     ///    to the state it was in just before the point of deletion.
-    /// 
     /// 
     ///    * AWS_BACKUP - On-demand backup created by you from Backup service.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupType")]
@@ -83,7 +80,6 @@ pub struct BackupStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

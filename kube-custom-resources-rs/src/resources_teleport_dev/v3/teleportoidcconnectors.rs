@@ -114,6 +114,9 @@ pub struct TeleportOIDCConnectorMfa {
     /// Enabled specified whether this OIDC connector supports MFA checks. Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
+    /// MaxAge is the amount of time in nanoseconds that an IdP session is valid for. Defaults to 0 to always force re-authentication for MFA checks. This should only be set to a non-zero value if the IdP is setup to perform MFA checks on top of active user sessions.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub max_age: Option<String>,
     /// Prompt is an optional OIDC prompt. An empty string omits prompt. If not specified, it defaults to select_account for backwards compatibility.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prompt: Option<String>,

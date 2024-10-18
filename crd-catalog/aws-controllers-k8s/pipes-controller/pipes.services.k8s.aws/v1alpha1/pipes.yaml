@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.2"
   name: "pipes.pipes.services.k8s.aws"
 spec:
   group: "pipes.services.k8s.aws"
@@ -49,7 +49,7 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "PipeSpec defines the desired state of Pipe.\n\n\nAn object that represents a pipe. Amazon EventBridgePipes connect event sources\nto targets and reduces the need for specialized knowledge and integration\ncode."
+              description: "PipeSpec defines the desired state of Pipe.\n\nAn object that represents a pipe. Amazon EventBridgePipes connect event sources\nto targets and reduces the need for specialized knowledge and integration\ncode."
               properties:
                 description:
                   description: "A description of the pipe."
@@ -327,7 +327,7 @@ spec:
                               type: "array"
                             environment:
                               items:
-                                description: "The environment variables to send to the container. You can add new environment\nvariables, which are added to the container at launch, or you can override\nthe existing environment variables from the Docker image or the task definition.\n\n\nEnvironment variables cannot start with \"Batch\". This naming convention is\nreserved for variables that Batch sets."
+                                description: "The environment variables to send to the container. You can add new environment\nvariables, which are added to the container at launch, or you can override\nthe existing environment variables from the Docker image or the task definition.\n\nEnvironment variables cannot start with \"Batch\". This naming convention is\nreserved for variables that Batch sets."
                                 properties:
                                   name:
                                     type: "string"
@@ -451,7 +451,7 @@ spec:
                                     type: "array"
                                   environmentFiles:
                                     items:
-                                      description: "A list of files containing the environment variables to pass to a container.\nYou can specify up to ten environment files. The file must have a .env file\nextension. Each line in an environment file should contain an environment\nvariable in VARIABLE=VALUE format. Lines beginning with # are treated as\ncomments and are ignored. For more information about the environment variable\nfile syntax, see Declare default environment variables in file (https://docs.docker.com/compose/env-file/).\n\n\nIf there are environment variables specified using the environment parameter\nin a container definition, they take precedence over the variables contained\nwithin an environment file. If multiple environment files are specified that\ncontain the same variable, they're processed from the top down. We recommend\nthat you use unique variable names. For more information, see Specifying\nenvironment variables (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/taskdef-envfiles.html)\nin the Amazon Elastic Container Service Developer Guide.\n\n\nThis parameter is only supported for tasks hosted on Fargate using the following\nplatform versions:\n\n\n   * Linux platform version 1.4.0 or later.\n\n\n   * Windows platform version 1.0.0 or later."
+                                      description: "A list of files containing the environment variables to pass to a container.\nYou can specify up to ten environment files. The file must have a .env file\nextension. Each line in an environment file should contain an environment\nvariable in VARIABLE=VALUE format. Lines beginning with # are treated as\ncomments and are ignored. For more information about the environment variable\nfile syntax, see Declare default environment variables in file (https://docs.docker.com/compose/env-file/).\n\nIf there are environment variables specified using the environment parameter\nin a container definition, they take precedence over the variables contained\nwithin an environment file. If multiple environment files are specified that\ncontain the same variable, they're processed from the top down. We recommend\nthat you use unique variable names. For more information, see Specifying\nenvironment variables (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/taskdef-envfiles.html)\nin the Amazon Elastic Container Service Developer Guide.\n\nThis parameter is only supported for tasks hosted on Fargate using the following\nplatform versions:\n\n   * Linux platform version 1.4.0 or later.\n\n   * Windows platform version 1.0.0 or later."
                                       properties:
                                         type_:
                                           type: "string"
@@ -482,7 +482,7 @@ spec:
                             cpu:
                               type: "string"
                             ephemeralStorage:
-                              description: "The amount of ephemeral storage to allocate for the task. This parameter\nis used to expand the total amount of ephemeral storage available, beyond\nthe default amount, for tasks hosted on Fargate. For more information, see\nFargate task storage (https://docs.aws.amazon.com/AmazonECS/latest/userguide/using_data_volumes.html)\nin the Amazon ECS User Guide for Fargate.\n\n\nThis parameter is only supported for tasks hosted on Fargate using Linux\nplatform version 1.4.0 or later. This parameter is not supported for Windows\ncontainers on Fargate."
+                              description: "The amount of ephemeral storage to allocate for the task. This parameter\nis used to expand the total amount of ephemeral storage available, beyond\nthe default amount, for tasks hosted on Fargate. For more information, see\nFargate task storage (https://docs.aws.amazon.com/AmazonECS/latest/userguide/using_data_volumes.html)\nin the Amazon ECS User Guide for Fargate.\n\nThis parameter is only supported for tasks hosted on Fargate using Linux\nplatform version 1.4.0 or later. This parameter is not supported for Windows\ncontainers on Fargate."
                               properties:
                                 sizeInGiB:
                                   format: "int64"
@@ -658,7 +658,7 @@ spec:
                   description: "All CRs managed by ACK have a common `Status.ACKResourceMetadata` member\nthat is used to contain resource sync state, account ownership,\nconstructed ARN for the resource"
                   properties:
                     arn:
-                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nTODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
+                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."

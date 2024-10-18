@@ -12,7 +12,6 @@ use self::prelude::*;
 
 /// UserSpec defines the desired state of User.
 /// 
-/// 
 /// You create users and assign them specific permissions by using an access
 /// string. You assign the users to Access Control Lists aligned with a specific
 /// role (administrators, human resources) that are then deployed to one or more
@@ -121,7 +120,6 @@ pub struct UserStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

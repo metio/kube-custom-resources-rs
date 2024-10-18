@@ -13,9 +13,7 @@ use self::prelude::*;
 
 /// DBParameterGroupSpec defines the desired state of DBParameterGroup.
 /// 
-/// 
 /// Contains the details of an Amazon RDS DB parameter group.
-/// 
 /// 
 /// This data type is used as a response element in the DescribeDBParameterGroups
 /// action.
@@ -34,84 +32,59 @@ pub struct DBParameterGroupSpec {
     /// to a DB instance running a database engine and engine version compatible
     /// with that DB parameter group family.
     /// 
-    /// 
     /// To list all of the available parameter group families for a DB engine, use
     /// the following command:
-    /// 
     /// 
     /// aws rds describe-db-engine-versions --query "DBEngineVersions[].DBParameterGroupFamily"
     /// --engine <engine>
     /// 
-    /// 
     /// For example, to list all of the available parameter group families for the
     /// MySQL DB engine, use the following command:
-    /// 
     /// 
     /// aws rds describe-db-engine-versions --query "DBEngineVersions[].DBParameterGroupFamily"
     /// --engine mysql
     /// 
-    /// 
     /// The output contains duplicates.
-    /// 
     /// 
     /// The following are the valid DB engine values:
     /// 
-    /// 
     ///    * aurora (for MySQL 5.6-compatible Aurora)
-    /// 
     /// 
     ///    * aurora-mysql (for MySQL 5.7-compatible and MySQL 8.0-compatible Aurora)
     /// 
-    /// 
     ///    * aurora-postgresql
-    /// 
     /// 
     ///    * mariadb
     /// 
-    /// 
     ///    * mysql
-    /// 
     /// 
     ///    * oracle-ee
     /// 
-    /// 
     ///    * oracle-ee-cdb
-    /// 
     /// 
     ///    * oracle-se2
     /// 
-    /// 
     ///    * oracle-se2-cdb
-    /// 
     /// 
     ///    * postgres
     /// 
-    /// 
     ///    * sqlserver-ee
-    /// 
     /// 
     ///    * sqlserver-se
     /// 
-    /// 
     ///    * sqlserver-ex
-    /// 
     /// 
     ///    * sqlserver-web
     pub family: String,
     /// The name of the DB parameter group.
     /// 
-    /// 
     /// Constraints:
-    /// 
     /// 
     ///    * Must be 1 to 255 letters, numbers, or hyphens.
     /// 
-    /// 
     ///    * First character must be a letter
     /// 
-    /// 
     ///    * Can't end with a hyphen or contain two consecutive hyphens
-    /// 
     /// 
     /// This value is stored as a lowercase string.
     pub name: String,
@@ -123,7 +96,6 @@ pub struct DBParameterGroupSpec {
 }
 
 /// Metadata assigned to an Amazon RDS resource consisting of a key-value pair.
-/// 
 /// 
 /// For more information, see Tagging Amazon RDS Resources (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html)
 /// in the Amazon RDS User Guide.
@@ -165,7 +137,6 @@ pub struct DBParameterGroupStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,
@@ -179,7 +150,6 @@ pub struct DBParameterGroupStatusAckResourceMetadata {
 
 /// This data type is used as a request parameter in the ModifyDBParameterGroup
 /// and ResetDBParameterGroup actions.
-/// 
 /// 
 /// This data type is used as a response element in the DescribeEngineDefaultParameters
 /// and DescribeDBParameters actions.

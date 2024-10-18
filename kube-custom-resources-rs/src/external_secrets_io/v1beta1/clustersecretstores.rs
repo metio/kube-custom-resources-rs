@@ -1700,6 +1700,8 @@ pub struct ClusterSecretStoreProviderInfisicalSecretsScope {
     pub environment_slug: String,
     #[serde(rename = "projectSlug")]
     pub project_slug: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub recursive: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretsPath")]
     pub secrets_path: Option<String>,
 }

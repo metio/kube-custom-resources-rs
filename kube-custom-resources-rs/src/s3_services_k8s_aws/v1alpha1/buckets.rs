@@ -12,7 +12,6 @@ use self::prelude::*;
 
 /// BucketSpec defines the desired state of Bucket.
 /// 
-/// 
 /// In terms of implementation, a Bucket is a resource. An Amazon S3 bucket name
 /// is globally unique, and the namespace is shared by all Amazon Web Services
 /// accounts.
@@ -55,7 +54,6 @@ pub struct BucketSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "grantReadACP")]
     pub grant_read_acp: Option<String>,
     /// Allows grantee to create new objects in the bucket.
-    /// 
     /// 
     /// For the bucket and object owners of existing objects, also allows deletions
     /// and overwrites of those objects.
@@ -310,7 +308,6 @@ pub struct BucketEncryptionRulesApplyServerSideEncryptionByDefault {
 }
 
 /// Specifies the S3 Intelligent-Tiering configuration for an Amazon S3 bucket.
-/// 
 /// 
 /// For information about the S3 Intelligent-Tiering storage class, see Storage
 /// class for automatically optimizing frequently and infrequently accessed objects
@@ -655,7 +652,6 @@ pub struct BucketLoggingLoggingEnabled {
 
 /// Container for granting information.
 /// 
-/// 
 /// Buckets that use the bucket owner enforced setting for Object Ownership don't
 /// support target grants. For more information, see Permissions server access
 /// log delivery (https://docs.aws.amazon.com/AmazonS3/latest/userguide/enable-server-access-logging.html#grant-log-delivery-permissions-general)
@@ -922,15 +918,12 @@ pub struct BucketOwnershipControls {
 pub struct BucketOwnershipControlsRules {
     /// The container element for object ownership for a bucket's ownership controls.
     /// 
-    /// 
     /// BucketOwnerPreferred - Objects uploaded to the bucket change ownership to
     /// the bucket owner if the objects are uploaded with the bucket-owner-full-control
     /// canned ACL.
     /// 
-    /// 
     /// ObjectWriter - The uploading account will own the object if the object is
     /// uploaded with the bucket-owner-full-control canned ACL.
-    /// 
     /// 
     /// BucketOwnerEnforced - Access control lists (ACLs) are disabled and no longer
     /// affect permissions. The bucket owner automatically owns and has full control
@@ -978,10 +971,8 @@ pub struct BucketReplicationRules {
     /// delete markers for tag-based rules. For an example configuration, see Basic
     /// Rule Configuration (https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-add-config.html#replication-config-min-rule-config).
     /// 
-    /// 
     /// For more information about delete marker replication, see Basic Rule Configuration
     /// (https://docs.aws.amazon.com/AmazonS3/latest/dev/delete-marker-replication.html).
-    /// 
     /// 
     /// If you are using an earlier version of the replication configuration, Amazon
     /// S3 handles replication of delete markers differently. For more information,
@@ -1026,10 +1017,8 @@ pub struct BucketReplicationRules {
 /// delete markers for tag-based rules. For an example configuration, see Basic
 /// Rule Configuration (https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-add-config.html#replication-config-min-rule-config).
 /// 
-/// 
 /// For more information about delete marker replication, see Basic Rule Configuration
 /// (https://docs.aws.amazon.com/AmazonS3/latest/dev/delete-marker-replication.html).
-/// 
 /// 
 /// If you are using an earlier version of the replication configuration, Amazon
 /// S3 handles replication of delete markers differently. For more information,
@@ -1143,13 +1132,10 @@ pub struct BucketReplicationRulesFilter {
     /// of objects to which the rule applies. This element is required only if you
     /// specify more than one filter.
     /// 
-    /// 
     /// For example:
-    /// 
     /// 
     ///    * If you specify both a Prefix and a Tag filter, wrap these filters in
     ///    an And tag.
-    /// 
     /// 
     ///    * If you specify a filter based on multiple tags, wrap the Tag elements
     ///    in an And tag.
@@ -1166,13 +1152,10 @@ pub struct BucketReplicationRulesFilter {
 /// of objects to which the rule applies. This element is required only if you
 /// specify more than one filter.
 /// 
-/// 
 /// For example:
-/// 
 /// 
 ///    * If you specify both a Prefix and a Tag filter, wrap these filters in
 ///    an And tag.
-/// 
 /// 
 ///    * If you specify a filter based on multiple tags, wrap the Tag elements
 ///    in an And tag.
@@ -1216,7 +1199,6 @@ pub struct BucketReplicationRulesSourceSelectionCriteria {
     /// specify this element and set the status to Enabled to replicate modifications
     /// on replicas.
     /// 
-    /// 
     /// If you don't specify the Filter element, Amazon S3 assumes that the replication
     /// configuration is the earlier version, V1. In the earlier version, this element
     /// is not allowed.
@@ -1233,7 +1215,6 @@ pub struct BucketReplicationRulesSourceSelectionCriteria {
 /// version of replication configuration (when Filter is specified), you can
 /// specify this element and set the status to Enabled to replicate modifications
 /// on replicas.
-/// 
 /// 
 /// If you don't specify the Filter element, Amazon S3 assumes that the replication
 /// configuration is the earlier version, V1. In the earlier version, this element
@@ -1399,7 +1380,6 @@ pub struct BucketStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

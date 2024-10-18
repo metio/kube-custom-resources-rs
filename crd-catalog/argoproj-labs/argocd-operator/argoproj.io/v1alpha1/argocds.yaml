@@ -4117,6 +4117,9 @@ spec:
                       required:
                         - "enabled"
                       type: "object"
+                    enableRolloutsUI:
+                      description: "EnableRolloutsUI will add the Argo Rollouts UI extension in ArgoCD Dashboard."
+                      type: "boolean"
                     env:
                       description: "Env lets you specify environment for API server pods"
                       items:

@@ -13,7 +13,6 @@ use self::prelude::*;
 
 /// VpcLinkSpec defines the desired state of VpcLink.
 /// 
-/// 
 /// Represents a VPC link.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "apigatewayv2.services.k8s.aws", version = "v1alpha1", kind = "VPCLink", plural = "vpclinks")]
@@ -69,7 +68,6 @@ pub struct VPCLinkStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

@@ -76,6 +76,11 @@ pub struct TerraformSpec {
     pub health_checks: Option<Vec<TerraformHealthChecks>>,
     /// The interval at which to reconcile the Terraform.
     pub interval: String,
+    /// The maximum requeue duration after  a previously failed reconciliation.
+    /// Only applicable when RetryStrategy is set to ExponentialBackoff.
+    /// The default value is 24 hours when not specified.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetryInterval")]
+    pub max_retry_interval: Option<String>,
     /// Parallelism limits the number of concurrent operations of Terraform apply step. Zero (0) means using the default value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parallelism: Option<i32>,
@@ -100,6 +105,12 @@ pub struct TerraformSpec {
     /// The default value is 15 when not specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<String>,
+    /// The strategy to use when retrying a previously failed reconciliation.
+    /// The default strategy is StaticInterval and the retry interval is based on the RetryInterval value.
+    /// The ExponentialBackoff strategy uses the formula: 2^reconciliationFailures * RetryInterval with a
+    /// maximum requeue duration of MaxRetryInterval.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryStrategy")]
+    pub retry_strategy: Option<TerraformRetryStrategy>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runnerPodTemplate")]
     pub runner_pod_template: Option<TerraformRunnerPodTemplate>,
     /// Configure the termination grace period for the runner pod. Use this parameter
@@ -327,6 +338,13 @@ pub struct TerraformRemediation {
     /// retries.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retries: Option<i64>,
+}
+
+/// TerraformSpec defines the desired state of Terraform
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum TerraformRetryStrategy {
+    StaticInterval,
+    ExponentialBackoff,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

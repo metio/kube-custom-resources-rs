@@ -12,7 +12,6 @@ use self::prelude::*;
 
 /// ACLSpec defines the desired state of ACL.
 /// 
-/// 
 /// An Access Control List. You can authenticate users with Access Contol Lists.
 /// ACLs enable you to control cluster access by grouping users. These Access
 /// control lists are designed as a way to organize access to clusters.
@@ -54,7 +53,6 @@ pub struct ACLTags {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -119,7 +117,6 @@ pub struct ACLStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

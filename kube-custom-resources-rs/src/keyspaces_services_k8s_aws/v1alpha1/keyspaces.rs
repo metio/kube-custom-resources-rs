@@ -24,9 +24,7 @@ pub struct KeyspaceSpec {
     pub keyspace_name: String,
     /// The replication specification of the keyspace includes:
     /// 
-    /// 
     ///    * replicationStrategy - the required value is SINGLE_REGION or MULTI_REGION.
-    /// 
     /// 
     ///    * regionList - if the replicationStrategy is MULTI_REGION, the regionList
     ///    requires the current Region and at least one additional Amazon Web Services
@@ -35,7 +33,6 @@ pub struct KeyspaceSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicationSpecification")]
     pub replication_specification: Option<KeyspaceReplicationSpecification>,
     /// A list of key-value pair tags to be attached to the keyspace.
-    /// 
     /// 
     /// For more information, see Adding tags and labels to Amazon Keyspaces resources
     /// (https://docs.aws.amazon.com/keyspaces/latest/devguide/tagging-keyspaces.html)
@@ -46,9 +43,7 @@ pub struct KeyspaceSpec {
 
 /// The replication specification of the keyspace includes:
 /// 
-/// 
 ///    * replicationStrategy - the required value is SINGLE_REGION or MULTI_REGION.
-/// 
 /// 
 ///    * regionList - if the replicationStrategy is MULTI_REGION, the regionList
 ///    requires the current Region and at least one additional Amazon Web Services
@@ -65,13 +60,11 @@ pub struct KeyspaceReplicationSpecification {
 /// Describes a tag. A tag is a key-value pair. You can add up to 50 tags to
 /// a single Amazon Keyspaces resource.
 /// 
-/// 
 /// Amazon Web Services-assigned tag names and values are automatically assigned
 /// the aws: prefix, which the user cannot assign. Amazon Web Services-assigned
 /// tag names do not count towards the tag limit of 50. User-assigned tag names
 /// have the prefix user: in the Cost Allocation Report. You cannot backdate
 /// the application of a tag.
-/// 
 /// 
 /// For more information, see Adding tags and labels to Amazon Keyspaces resources
 /// (https://docs.aws.amazon.com/keyspaces/latest/devguide/tagging-keyspaces.html)
@@ -115,7 +108,6 @@ pub struct KeyspaceStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

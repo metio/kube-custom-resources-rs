@@ -775,11 +775,21 @@ spec:
                                         type: "integer"
                                     type: "object"
                                   tls:
+                                    nullable: true
+                                    oneOf:
+                                      - required:
+                                          - "mode"
+                                          - "credentialName"
+                                      - required:
+                                          - "httpsRedirect"
                                     properties:
                                       credentialName:
                                         description: "TLS certificate name."
                                         format: "string"
                                         type: "string"
+                                      httpsRedirect:
+                                        description: "If set to true, the load balancer will send a 301 redirect to HTTPS for all HTTP requests. Should be used only for HTTP listener, is mutually exclusive with all other TLS options."
+                                        type: "boolean"
                                       mode:
                                         description: "TLS mode can be SIMPLE, MUTUAL, ISTIO_MUTUAL."
                                         format: "string"
@@ -824,11 +834,21 @@ spec:
                                         type: "integer"
                                     type: "object"
                                   tls:
+                                    nullable: true
+                                    oneOf:
+                                      - required:
+                                          - "mode"
+                                          - "credentialName"
+                                      - required:
+                                          - "httpsRedirect"
                                     properties:
                                       credentialName:
                                         description: "TLS certificate name."
                                         format: "string"
                                         type: "string"
+                                      httpsRedirect:
+                                        description: "If set to true, the load balancer will send a 301 redirect to HTTPS for all HTTP requests. Should be used only for HTTP listener, is mutually exclusive with all other TLS options."
+                                        type: "boolean"
                                       mode:
                                         description: "TLS mode can be SIMPLE, MUTUAL, ISTIO_MUTUAL."
                                         format: "string"

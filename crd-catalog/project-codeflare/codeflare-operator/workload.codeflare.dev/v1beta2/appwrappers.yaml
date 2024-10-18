@@ -125,6 +125,9 @@ spec:
                       - "template"
                     type: "object"
                   type: "array"
+                managedBy:
+                  description: "ManagedBy is used to indicate the controller or entity that manages the AppWrapper."
+                  type: "string"
                 suspend:
                   description: "Suspend suspends the AppWrapper when set to true"
                   type: "boolean"

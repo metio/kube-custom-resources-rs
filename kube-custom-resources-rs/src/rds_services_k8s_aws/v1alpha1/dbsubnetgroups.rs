@@ -12,9 +12,7 @@ use self::prelude::*;
 
 /// DBSubnetGroupSpec defines the desired state of DBSubnetGroup.
 /// 
-/// 
 /// Contains the details of an Amazon RDS DB subnet group.
-/// 
 /// 
 /// This data type is used as a response element in the DescribeDBSubnetGroups
 /// action.
@@ -30,19 +28,14 @@ pub struct DBSubnetGroupSpec {
     pub description: String,
     /// The name for the DB subnet group. This value is stored as a lowercase string.
     /// 
-    /// 
     /// Constraints:
-    /// 
     /// 
     ///    * Must contain no more than 255 letters, numbers, periods, underscores,
     ///    spaces, or hyphens.
     /// 
-    /// 
     ///    * Must not be default.
     /// 
-    /// 
     ///    * First character must be a letter.
-    /// 
     /// 
     /// Example: mydbsubnetgroup
     pub name: String,
@@ -60,7 +53,6 @@ pub struct DBSubnetGroupSpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -83,7 +75,6 @@ pub struct DBSubnetGroupSubnetRefsFrom {
 }
 
 /// Metadata assigned to an Amazon RDS resource consisting of a key-value pair.
-/// 
 /// 
 /// For more information, see Tagging Amazon RDS Resources (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html)
 /// in the Amazon RDS User Guide.
@@ -117,19 +108,14 @@ pub struct DBSubnetGroupStatus {
     pub subnets: Option<Vec<DBSubnetGroupStatusSubnets>>,
     /// The network type of the DB subnet group.
     /// 
-    /// 
     /// Valid values:
-    /// 
     /// 
     ///    * IPV4
     /// 
-    /// 
     ///    * DUAL
-    /// 
     /// 
     /// A DBSubnetGroup can support only the IPv4 protocol or the IPv4 and the IPv6
     /// protocols (DUAL).
-    /// 
     /// 
     /// For more information, see Working with a DB instance in a VPC (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html)
     /// in the Amazon RDS User Guide.
@@ -151,7 +137,6 @@ pub struct DBSubnetGroupStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,
@@ -169,7 +154,6 @@ pub struct DBSubnetGroupStatusAckResourceMetadata {
 pub struct DBSubnetGroupStatusSubnets {
     /// Contains Availability Zone information.
     /// 
-    /// 
     /// This data type is used as an element in the OrderableDBInstanceOption data
     /// type.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetAvailabilityZone")]
@@ -177,7 +161,6 @@ pub struct DBSubnetGroupStatusSubnets {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetIdentifier")]
     pub subnet_identifier: Option<String>,
     /// A data type that represents an Outpost.
-    /// 
     /// 
     /// For more information about RDS on Outposts, see Amazon RDS on Amazon Web
     /// Services Outposts (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-on-outposts.html)
@@ -190,7 +173,6 @@ pub struct DBSubnetGroupStatusSubnets {
 
 /// Contains Availability Zone information.
 /// 
-/// 
 /// This data type is used as an element in the OrderableDBInstanceOption data
 /// type.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -200,7 +182,6 @@ pub struct DBSubnetGroupStatusSubnetsSubnetAvailabilityZone {
 }
 
 /// A data type that represents an Outpost.
-/// 
 /// 
 /// For more information about RDS on Outposts, see Amazon RDS on Amazon Web
 /// Services Outposts (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-on-outposts.html)

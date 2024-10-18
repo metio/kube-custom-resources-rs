@@ -12,7 +12,6 @@ use self::prelude::*;
 
 /// OrganizationalUnitSpec defines the desired state of OrganizationalUnit.
 /// 
-/// 
 /// Contains details about an organizational unit (OU). An OU is a container
 /// of Amazon Web Services accounts within a root of an organization. Policies
 /// that are attached to an OU apply to all accounts contained in that OU and
@@ -30,14 +29,11 @@ pub struct OrganizationalUnitSpec {
     /// The unique identifier (ID) of the parent root or OU that you want to create
     /// the new OU in.
     /// 
-    /// 
     /// The regex pattern (http://wikipedia.org/wiki/regex) for a parent ID string
     /// requires one of the following:
     /// 
-    /// 
     ///    * Root - A string that begins with "r-" followed by from 4 to 32 lowercase
     ///    letters or digits.
-    /// 
     /// 
     ///    * Organizational unit (OU) - A string that begins with "ou-" followed
     ///    by from 4 to 32 lowercase letters or digits (the ID of the root that the
@@ -51,7 +47,6 @@ pub struct OrganizationalUnitSpec {
     /// about tagging, see Tagging Organizations resources (https://docs.aws.amazon.com/organizations/latest/userguide/orgs_tagging.html)
     /// in the Organizations User Guide.
     /// 
-    /// 
     /// If any one of the tags is invalid or if you exceed the allowed number of
     /// tags for an OU, then the entire request fails and the OU is not created.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -60,18 +55,13 @@ pub struct OrganizationalUnitSpec {
 
 /// A custom key-value pair associated with a resource within your organization.
 /// 
-/// 
 /// You can attach tags to any of the following organization resources.
-/// 
 /// 
 ///    * Amazon Web Services account
 /// 
-/// 
 ///    * Organizational unit (OU)
 /// 
-/// 
 ///    * Organization root
-/// 
 /// 
 ///    * Policy
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -98,7 +88,6 @@ pub struct OrganizationalUnitStatus {
     pub conditions: Option<Vec<Condition>>,
     /// The unique identifier (ID) associated with this OU.
     /// 
-    /// 
     /// The regex pattern (http://wikipedia.org/wiki/regex) for an organizational
     /// unit ID string requires "ou-" followed by from 4 to 32 lowercase letters
     /// or digits (the ID of the root that contains the OU). This string is followed
@@ -118,7 +107,6 @@ pub struct OrganizationalUnitStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

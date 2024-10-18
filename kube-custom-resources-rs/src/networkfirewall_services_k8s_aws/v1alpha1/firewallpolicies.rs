@@ -13,11 +13,9 @@ use self::prelude::*;
 
 /// FirewallPolicySpec defines the desired state of FirewallPolicy.
 /// 
-/// 
 /// The firewall policy defines the behavior of a firewall using a collection
 /// of stateless and stateful rule groups and other settings. You can use one
 /// firewall policy for multiple firewalls.
-/// 
 /// 
 /// This, along with FirewallPolicyResponse, define the policy. You can retrieve
 /// all objects for a firewall policy by calling DescribeFirewallPolicy.
@@ -134,19 +132,15 @@ pub struct FirewallPolicyFirewallPolicyStatefulRuleGroupReferencesOverride {
 /// An optional, non-standard action to use for stateless packet handling. You
 /// can define this in addition to the standard action that you must specify.
 /// 
-/// 
 /// You define and name the custom actions that you want to be able to use, and
 /// then you reference them by name in your actions settings.
 /// 
-/// 
 /// You can use custom actions in the following places:
-/// 
 /// 
 ///    * In a rule group's StatelessRulesAndCustomActions specification. The
 ///    custom actions are available for use by name inside the StatelessRulesAndCustomActions
 ///    where you define them. You can use them for your stateless rule actions
 ///    to specify what to do with a packet that matches the rule's match attributes.
-/// 
 /// 
 ///    * In a FirewallPolicy specification, in StatelessCustomActions. The custom
 ///    actions are available for use inside the policy where you define them.
@@ -187,10 +181,8 @@ pub struct FirewallPolicyFirewallPolicyStatelessCustomActionsActionDefinitionPub
 /// used in the PublishMetrics CustomAction. A CloudWatch custom metric dimension
 /// is a name/value pair that's part of the identity of a metric.
 /// 
-/// 
 /// Network Firewall sets the dimension name to CustomAction and you provide
 /// the dimension value.
-/// 
 /// 
 /// For more information about CloudWatch custom metric dimensions, see Publishing
 /// Custom Metrics (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/publishingMetrics.html#usingDimensions)
@@ -247,7 +239,6 @@ pub struct FirewallPolicyStatus {
     /// your requests that access the firewall policy. The token marks the state
     /// of the policy resource at the time of the request.
     /// 
-    /// 
     /// To make changes to the policy, you provide the token in your request. Network
     /// Firewall uses the token to ensure that the policy hasn't changed since you
     /// last retrieved it. If it has changed, the operation fails with an InvalidTokenException.
@@ -269,7 +260,6 @@ pub struct FirewallPolicyStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

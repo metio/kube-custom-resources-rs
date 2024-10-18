@@ -27,7 +27,6 @@ pub struct AccessPointSpec {
     /// Ex:
     /// APIIDRef:
     /// 
-    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemRef")]
@@ -43,7 +42,6 @@ pub struct AccessPointSpec {
     /// creates it and applies the CreationInfo settings when a client connects to
     /// an access point. When specifying a RootDirectory, you must provide the Path,
     /// and the CreationInfo.
-    /// 
     /// 
     /// Amazon EFS creates a root directory only if you have provided the CreationInfo:
     /// OwnUid, OwnGID, and permissions for the directory. If you do not provide
@@ -63,7 +61,6 @@ pub struct AccessPointSpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -105,7 +102,6 @@ pub struct AccessPointPosixUser {
 /// an access point. When specifying a RootDirectory, you must provide the Path,
 /// and the CreationInfo.
 /// 
-/// 
 /// Amazon EFS creates a root directory only if you have provided the CreationInfo:
 /// OwnUid, OwnGID, and permissions for the directory. If you do not provide
 /// this information, Amazon EFS does not create the root directory. If the root
@@ -118,12 +114,10 @@ pub struct AccessPointRootDirectory {
     /// with these settings when a client connects to the access point. When specifying
     /// CreationInfo, you must include values for all properties.
     /// 
-    /// 
     /// Amazon EFS creates a root directory only if you have provided the CreationInfo:
     /// OwnUid, OwnGID, and permissions for the directory. If you do not provide
     /// this information, Amazon EFS does not create the root directory. If the root
     /// directory does not exist, attempts to mount using the access point will fail.
-    /// 
     /// 
     /// If you do not provide CreationInfo and the specified RootDirectory does not
     /// exist, attempts to mount the file system using the access point will fail.
@@ -139,12 +133,10 @@ pub struct AccessPointRootDirectory {
 /// with these settings when a client connects to the access point. When specifying
 /// CreationInfo, you must include values for all properties.
 /// 
-/// 
 /// Amazon EFS creates a root directory only if you have provided the CreationInfo:
 /// OwnUid, OwnGID, and permissions for the directory. If you do not provide
 /// this information, Amazon EFS does not create the root directory. If the root
 /// directory does not exist, attempts to mount using the access point will fail.
-/// 
 /// 
 /// If you do not provide CreationInfo and the specified RootDirectory does not
 /// exist, attempts to mount the file system using the access point will fail.
@@ -208,7 +200,6 @@ pub struct AccessPointStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

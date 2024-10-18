@@ -174,6 +174,21 @@ spec:
                       description: "Custom annotations to be created on the Kiali ConfigMap."
                       type: "object"
                       x-kubernetes-preserve-unknown-fields: true
+                    custom_envs:
+                      description: "Defines additional environment variables to be set in the Kiali server pod. This is typically used for (but not limited to) setting proxy environment variables such as HTTP_PROXY, HTTPS_PROXY, and/or NO_PROXY."
+                      items:
+                        properties:
+                          name:
+                            description: "The name of the custom environment variable."
+                            type: "string"
+                          value:
+                            description: "The value of the custom environment variable."
+                            type: "string"
+                        required:
+                          - "name"
+                          - "value"
+                        type: "object"
+                      type: "array"
                     custom_secrets:
                       description: "Defines additional secrets that are to be mounted in the Kiali pod.\n\nThese are useful to contain certs that are used by Kiali to securely connect to third party systems\n(for example, see `external_services.tracing.auth.ca_file`).\n\nThese secrets must be created by an external mechanism. Kiali will not generate these secrets; it\nis assumed these secrets are externally managed. You can define 0, 1, or more secrets.\nAn example configuration is,\n```\ncustom_secrets:\n- name: mysecret\n  mount: /mysecret-path\n- name: my-other-secret\n  mount: /my-other-secret-location\n  optional: true\n```\n"
                       items:
@@ -833,6 +848,9 @@ spec:
                               type: "string"
                             org_id:
                               description: "The Id of the organization that the dashboard is in. Default to 1 (the first and default organization)."
+                              type: "string"
+                            url_format:
+                              description: "The URL format for the external url. Can be 'jaeger' or 'grafana'. Default to 'grafana'. Grafana will need a Grafana url in the Grafana settings."
                               type: "string"
                           type: "object"
                         use_grpc:

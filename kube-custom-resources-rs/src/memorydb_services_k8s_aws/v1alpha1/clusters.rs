@@ -12,7 +12,6 @@ use self::prelude::*;
 
 /// ClusterSpec defines the desired state of Cluster.
 /// 
-/// 
 /// Contains all of the attributes of a specific cluster.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "memorydb.services.k8s.aws", version = "v1alpha1", kind = "Cluster", plural = "clusters")]
@@ -29,7 +28,6 @@ pub struct ClusterSpec {
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    /// 
     /// 
     /// 	from:
     /// 	  name: my-api
@@ -74,7 +72,6 @@ pub struct ClusterSpec {
     /// Ex:
     /// APIIDRef:
     /// 
-    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "parameterGroupRef")]
@@ -101,7 +98,6 @@ pub struct ClusterSpec {
     /// Ex:
     /// APIIDRef:
     /// 
-    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotRef")]
@@ -114,9 +110,7 @@ pub struct ClusterSpec {
     /// The daily time range (in UTC) during which MemoryDB begins taking a daily
     /// snapshot of your shard.
     /// 
-    /// 
     /// Example: 05:00-09:00
-    /// 
     /// 
     /// If you do not specify this parameter, MemoryDB automatically chooses an appropriate
     /// time range.
@@ -131,7 +125,6 @@ pub struct ClusterSpec {
     /// Ex:
     /// APIIDRef:
     /// 
-    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "snsTopicRef")]
@@ -143,7 +136,6 @@ pub struct ClusterSpec {
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    /// 
     /// 
     /// 	from:
     /// 	  name: my-api
@@ -163,7 +155,6 @@ pub struct ClusterSpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -190,7 +181,6 @@ pub struct ClusterAclRefFrom {
 /// Ex:
 /// APIIDRef:
 /// 
-/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -215,7 +205,6 @@ pub struct ClusterParameterGroupRefFrom {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -242,7 +231,6 @@ pub struct ClusterSecurityGroupRefsFrom {
 /// Ex:
 /// APIIDRef:
 /// 
-/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -268,7 +256,6 @@ pub struct ClusterSnapshotRefFrom {
 /// Ex:
 /// APIIDRef:
 /// 
-/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -293,7 +280,6 @@ pub struct ClusterSnsTopicRefFrom {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -396,7 +382,6 @@ pub struct ClusterStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

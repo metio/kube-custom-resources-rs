@@ -2095,6 +2095,9 @@ pub struct ScyllaClusterStatusBackups {
     /// keyspace reflects a list of keyspace/tables glob patterns, e.g. 'keyspace,!keyspace.table_prefix_*' used to include or exclude keyspaces from repair.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keyspace: Option<Vec<String>>,
+    /// labels reflects the labels of a task.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     /// location reflects a list of backup locations in the format [<dc>:]<provider>:<name> ex. s3:my-bucket.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub location: Option<Vec<String>>,
@@ -2193,6 +2196,9 @@ pub struct ScyllaClusterStatusRepairs {
     /// keyspace reflects a list of keyspace/tables glob patterns, e.g. 'keyspace,!keyspace.table_prefix_*' used to include or exclude keyspaces from repair.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keyspace: Option<Vec<String>>,
+    /// labels reflects the labels of a task.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     /// name reflects the name of a task.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,

@@ -52,10 +52,8 @@ pub struct FunctionSpec {
     pub file_system_configs: Option<Vec<FunctionFileSystemConfigs>>,
     /// Configures options for asynchronous invocation on a function.
     /// 
-    /// 
     /// - DestinationConfig
     /// A destination for events after they have been sent to a function for processing.
-    /// 
     /// 
     /// Types of Destinations:
     /// Function - The Amazon Resource Name (ARN) of a Lambda function.
@@ -63,10 +61,8 @@ pub struct FunctionSpec {
     /// Topic - The ARN of a standard SNS topic.
     /// Event Bus - The ARN of an Amazon EventBridge event bus.
     /// 
-    /// 
     /// - MaximumEventAgeInSeconds
     /// The maximum age of a request that Lambda sends to a function for processing.
-    /// 
     /// 
     /// - MaximumRetryAttempts
     /// The maximum number of times to retry when the function returns an error.
@@ -93,7 +89,6 @@ pub struct FunctionSpec {
     /// Ex:
     /// APIIDRef:
     /// 
-    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyRef")]
@@ -110,18 +105,13 @@ pub struct FunctionSpec {
     pub memory_size: Option<i64>,
     /// The name of the Lambda function.
     /// 
-    /// 
     /// Name formats
-    /// 
     /// 
     ///    * Function name – my-function.
     /// 
-    /// 
     ///    * Function ARN – arn:aws:lambda:us-west-2:123456789012:function:my-function.
     /// 
-    /// 
     ///    * Partial ARN – 123456789012:function:my-function.
-    /// 
     /// 
     /// The length constraint applies only to the full ARN. If you specify only the
     /// function name, it is limited to 64 characters in length.
@@ -143,7 +133,6 @@ pub struct FunctionSpec {
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    /// 
     /// 
     /// 	from:
     /// 	  name: my-api
@@ -254,10 +243,8 @@ pub struct FunctionFileSystemConfigs {
 
 /// Configures options for asynchronous invocation on a function.
 /// 
-/// 
 /// - DestinationConfig
 /// A destination for events after they have been sent to a function for processing.
-/// 
 /// 
 /// Types of Destinations:
 /// Function - The Amazon Resource Name (ARN) of a Lambda function.
@@ -265,10 +252,8 @@ pub struct FunctionFileSystemConfigs {
 /// Topic - The ARN of a standard SNS topic.
 /// Event Bus - The ARN of an Amazon EventBridge event bus.
 /// 
-/// 
 /// - MaximumEventAgeInSeconds
 /// The maximum age of a request that Lambda sends to a function for processing.
-/// 
 /// 
 /// - MaximumRetryAttempts
 /// The maximum number of times to retry when the function returns an error.
@@ -331,7 +316,6 @@ pub struct FunctionImageConfig {
 /// Ex:
 /// APIIDRef:
 /// 
-/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -356,7 +340,6 @@ pub struct FunctionKmsKeyRefFrom {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -418,7 +401,6 @@ pub struct FunctionVpcConfig {
 /// Ex:
 /// APIIDRef:
 /// 
-/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -443,7 +425,6 @@ pub struct FunctionVpcConfigSecurityGroupRefsFrom {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -544,7 +525,6 @@ pub struct FunctionStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

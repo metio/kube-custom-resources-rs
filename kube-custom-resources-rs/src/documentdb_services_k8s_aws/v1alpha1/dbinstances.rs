@@ -12,7 +12,6 @@ use self::prelude::*;
 
 /// DBInstanceSpec defines the desired state of DBInstance.
 /// 
-/// 
 /// Detailed information about an instance.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "documentdb.services.k8s.aws", version = "v1alpha1", kind = "DBInstance", plural = "dbinstances")]
@@ -25,22 +24,18 @@ pub struct DBInstanceSpec {
     /// This parameter does not apply to Amazon DocumentDB. Amazon DocumentDB does
     /// not perform minor version upgrades regardless of the value set.
     /// 
-    /// 
     /// Default: false
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoMinorVersionUpgrade")]
     pub auto_minor_version_upgrade: Option<bool>,
     /// The Amazon EC2 Availability Zone that the instance is created in.
     /// 
-    /// 
     /// Default: A random, system-chosen Availability Zone in the endpoint's Amazon
     /// Web Services Region.
-    /// 
     /// 
     /// Example: us-east-1d
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "availabilityZone")]
     pub availability_zone: Option<String>,
     /// The CA certificate identifier to use for the DB instance's server certificate.
-    /// 
     /// 
     /// For more information, see Updating Your Amazon DocumentDB TLS Certificates
     /// (https://docs.aws.amazon.com/documentdb/latest/developerguide/ca_cert_rotation.html)
@@ -60,24 +55,18 @@ pub struct DBInstanceSpec {
     pub db_instance_class: String,
     /// The instance identifier. This parameter is stored as a lowercase string.
     /// 
-    /// 
     /// Constraints:
-    /// 
     /// 
     ///    * Must contain from 1 to 63 letters, numbers, or hyphens.
     /// 
-    /// 
     ///    * The first character must be a letter.
     /// 
-    /// 
     ///    * Cannot end with a hyphen or contain two consecutive hyphens.
-    /// 
     /// 
     /// Example: mydbinstance
     #[serde(rename = "dbInstanceIdentifier")]
     pub db_instance_identifier: String,
     /// The name of the database engine to be used for this instance.
-    /// 
     /// 
     /// Valid value: docdb
     pub engine: String,
@@ -87,10 +76,8 @@ pub struct DBInstanceSpec {
     pub performance_insights_enabled: Option<bool>,
     /// The KMS key identifier for encryption of Performance Insights data.
     /// 
-    /// 
     /// The KMS key identifier is the key ARN, key ID, alias ARN, or alias name for
     /// the KMS key.
-    /// 
     /// 
     /// If you do not specify a value for PerformanceInsightsKMSKeyId, then Amazon
     /// DocumentDB uses your default KMS key. There is a default KMS key for your
@@ -103,7 +90,6 @@ pub struct DBInstanceSpec {
     /// Ex:
     /// APIIDRef:
     /// 
-    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "performanceInsightsKMSKeyRef")]
@@ -111,17 +97,13 @@ pub struct DBInstanceSpec {
     /// The time range each week during which system maintenance can occur, in Universal
     /// Coordinated Time (UTC).
     /// 
-    /// 
     /// Format: ddd:hh24:mi-ddd:hh24:mi
-    /// 
     /// 
     /// The default is a 30-minute window selected at random from an 8-hour block
     /// of time for each Amazon Web Services Region, occurring on a random day of
     /// the week.
     /// 
-    /// 
     /// Valid days: Mon, Tue, Wed, Thu, Fri, Sat, Sun
-    /// 
     /// 
     /// Constraints: Minimum 30-minute window.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredMaintenanceWindow")]
@@ -130,9 +112,7 @@ pub struct DBInstanceSpec {
     /// promoted to the primary instance after a failure of the existing primary
     /// instance.
     /// 
-    /// 
     /// Default: 1
-    /// 
     /// 
     /// Valid values: 0-15
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "promotionTier")]
@@ -147,7 +127,6 @@ pub struct DBInstanceSpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -267,7 +246,6 @@ pub struct DBInstanceStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

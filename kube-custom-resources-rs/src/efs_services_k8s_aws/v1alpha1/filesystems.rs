@@ -25,7 +25,6 @@ pub struct FileSystemSpec {
     /// systems, see Using EFS storage classes (https://docs.aws.amazon.com/efs/latest/ug/storage-classes.html)
     /// in the Amazon EFS User Guide.
     /// 
-    /// 
     /// One Zone file systems are not available in all Availability Zones in Amazon
     /// Web Services Regions where Amazon EFS is available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "availabilityZoneName")]
@@ -36,10 +35,8 @@ pub struct FileSystemSpec {
     /// For more information, see Automatic backups (https://docs.aws.amazon.com/efs/latest/ug/awsbackup.html#automatic-backups)
     /// in the Amazon EFS User Guide.
     /// 
-    /// 
     /// Default is false. However, if you specify an AvailabilityZoneName, the default
     /// is true.
-    /// 
     /// 
     /// Backup is not available in all Amazon Web Services Regions where Amazon EFS
     /// is available.
@@ -62,23 +59,17 @@ pub struct FileSystemSpec {
     /// KMS key. If this parameter is not specified, the default KMS key for Amazon
     /// EFS is used. You can specify a KMS key ID using the following formats:
     /// 
-    /// 
     ///    * Key ID - A unique identifier of the key, for example 1234abcd-12ab-34cd-56ef-1234567890ab.
     /// 
-    /// 
     ///    * ARN - An Amazon Resource Name (ARN) for the key, for example arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab.
-    /// 
     /// 
     ///    * Key alias - A previously created display name for a key, for example
     ///    alias/projectKey1.
     /// 
-    /// 
     ///    * Key alias ARN - An ARN for a key alias, for example arn:aws:kms:us-west-2:444455556666:alias/projectKey1.
-    /// 
     /// 
     /// If you use KmsKeyId, you must set the CreateFileSystemRequest$Encrypted parameter
     /// to true.
-    /// 
     /// 
     /// EFS accepts only symmetric KMS keys. You cannot use asymmetric KMS keys with
     /// Amazon EFS file systems.
@@ -89,7 +80,6 @@ pub struct FileSystemSpec {
     /// Ex:
     /// APIIDRef:
     /// 
-    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyRef")]
@@ -98,10 +88,8 @@ pub struct FileSystemSpec {
     /// object. A LifecycleConfiguration object informs EFS Lifecycle management
     /// of the following:
     /// 
-    /// 
     ///    * TransitionToIA – When to move files in the file system from primary
     ///    storage (Standard storage class) into the Infrequent Access (IA) storage.
-    /// 
     /// 
     ///    * TransitionToArchive – When to move files in the file system from their
     ///    current storage class (either IA or Standard storage) into the Archive
@@ -111,11 +99,9 @@ pub struct FileSystemSpec {
     ///    only for file systems that use the Elastic Throughput mode and the General
     ///    Purpose Performance mode.
     /// 
-    /// 
     ///    * TransitionToPrimaryStorageClass – Whether to move files in the file
     ///    system back to primary storage (Standard storage class) after they are
     ///    accessed in IA or Archive storage.
-    /// 
     /// 
     /// When using the put-lifecycle-configuration CLI command or the PutLifecycleConfiguration
     /// API action, Amazon EFS requires that each LifecyclePolicy object have only
@@ -132,10 +118,8 @@ pub struct FileSystemSpec {
     /// performance mode can't be changed after the file system has been created.
     /// The maxIO mode is not supported on One Zone file systems.
     /// 
-    /// 
     /// Due to the higher per-operation latencies with Max I/O, we recommend using
     /// General Purpose performance mode for all file systems.
-    /// 
     /// 
     /// Default is generalPurpose.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "performanceMode")]
@@ -170,7 +154,6 @@ pub struct FileSystemSpec {
     /// see Specifying throughput with provisioned mode (https://docs.aws.amazon.com/efs/latest/ug/performance.html#provisioned-throughput)
     /// in the Amazon EFS User Guide.
     /// 
-    /// 
     /// Default is bursting.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "throughputMode")]
     pub throughput_mode: Option<String>,
@@ -193,7 +176,6 @@ pub struct FileSystemFileSystemProtection {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -218,7 +200,6 @@ pub struct FileSystemKmsKeyRefFrom {
 /// Describes a policy used by Lifecycle management that specifies when to transition
 /// files into and out of storage classes. For more information, see Managing
 /// file system storage (https://docs.aws.amazon.com/efs/latest/ug/lifecycle-management-efs.html).
-/// 
 /// 
 /// When using the put-lifecycle-configuration CLI command or the PutLifecycleConfiguration
 /// API action, Amazon EFS requires that each LifecyclePolicy object have only
@@ -312,7 +293,6 @@ pub struct FileSystemStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

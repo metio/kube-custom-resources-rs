@@ -12,13 +12,10 @@ use self::prelude::*;
 
 /// ResponseHeadersPolicySpec defines the desired state of ResponseHeadersPolicy.
 /// 
-/// 
 /// A response headers policy.
-/// 
 /// 
 /// A response headers policy contains information about a set of HTTP response
 /// headers.
-/// 
 /// 
 /// After you create a response headers policy, you can use its ID to attach
 /// it to one or more cache behaviors in a CloudFront distribution. When it's
@@ -26,7 +23,6 @@ use self::prelude::*;
 /// headers that CloudFront includes in HTTP responses to requests that match
 /// the cache behavior. CloudFront adds or removes response headers according
 /// to the configuration of the response headers policy.
-/// 
 /// 
 /// For more information, see Adding or removing HTTP headers in CloudFront responses
 /// (https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/modifying-response-headers.html)
@@ -56,7 +52,6 @@ pub struct ResponseHeadersPolicyResponseHeadersPolicyConfig {
     /// that it sends for CORS requests that match a cache behavior associated with
     /// this response headers policy.
     /// 
-    /// 
     /// For more information about CORS, see Cross-Origin Resource Sharing (CORS)
     /// (https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) in the MDN Web Docs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "corsConfig")]
@@ -83,7 +78,6 @@ pub struct ResponseHeadersPolicyResponseHeadersPolicyConfig {
     /// in response to requests that match a cache behavior that's associated with
     /// this response headers policy.
     /// 
-    /// 
     /// You can use the Server-Timing header to view metrics that can help you gain
     /// insights about the behavior and performance of CloudFront. For example, you
     /// can see which cache layer served a cache hit, or the first byte latency from
@@ -100,7 +94,6 @@ pub struct ResponseHeadersPolicyResponseHeadersPolicyConfig {
 /// that it sends for CORS requests that match a cache behavior associated with
 /// this response headers policy.
 /// 
-/// 
 /// For more information about CORS, see Cross-Origin Resource Sharing (CORS)
 /// (https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) in the MDN Web Docs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -110,7 +103,6 @@ pub struct ResponseHeadersPolicyResponseHeadersPolicyConfigCorsConfig {
     /// A list of HTTP header names that CloudFront includes as values for the Access-Control-Allow-Headers
     /// HTTP response header.
     /// 
-    /// 
     /// For more information about the Access-Control-Allow-Headers HTTP response
     /// header, see Access-Control-Allow-Headers (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers)
     /// in the MDN Web Docs.
@@ -118,7 +110,6 @@ pub struct ResponseHeadersPolicyResponseHeadersPolicyConfigCorsConfig {
     pub access_control_allow_headers: Option<ResponseHeadersPolicyResponseHeadersPolicyConfigCorsConfigAccessControlAllowHeaders>,
     /// A list of HTTP methods that CloudFront includes as values for the Access-Control-Allow-Methods
     /// HTTP response header.
-    /// 
     /// 
     /// For more information about the Access-Control-Allow-Methods HTTP response
     /// header, see Access-Control-Allow-Methods (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Methods)
@@ -128,7 +119,6 @@ pub struct ResponseHeadersPolicyResponseHeadersPolicyConfigCorsConfig {
     /// A list of origins (domain names) that CloudFront can use as the value for
     /// the Access-Control-Allow-Origin HTTP response header.
     /// 
-    /// 
     /// For more information about the Access-Control-Allow-Origin HTTP response
     /// header, see Access-Control-Allow-Origin (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin)
     /// in the MDN Web Docs.
@@ -136,7 +126,6 @@ pub struct ResponseHeadersPolicyResponseHeadersPolicyConfigCorsConfig {
     pub access_control_allow_origins: Option<ResponseHeadersPolicyResponseHeadersPolicyConfigCorsConfigAccessControlAllowOrigins>,
     /// A list of HTTP headers that CloudFront includes as values for the Access-Control-Expose-Headers
     /// HTTP response header.
-    /// 
     /// 
     /// For more information about the Access-Control-Expose-Headers HTTP response
     /// header, see Access-Control-Expose-Headers (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Expose-Headers)
@@ -152,7 +141,6 @@ pub struct ResponseHeadersPolicyResponseHeadersPolicyConfigCorsConfig {
 /// A list of HTTP header names that CloudFront includes as values for the Access-Control-Allow-Headers
 /// HTTP response header.
 /// 
-/// 
 /// For more information about the Access-Control-Allow-Headers HTTP response
 /// header, see Access-Control-Allow-Headers (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers)
 /// in the MDN Web Docs.
@@ -164,7 +152,6 @@ pub struct ResponseHeadersPolicyResponseHeadersPolicyConfigCorsConfigAccessContr
 
 /// A list of HTTP methods that CloudFront includes as values for the Access-Control-Allow-Methods
 /// HTTP response header.
-/// 
 /// 
 /// For more information about the Access-Control-Allow-Methods HTTP response
 /// header, see Access-Control-Allow-Methods (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Methods)
@@ -178,7 +165,6 @@ pub struct ResponseHeadersPolicyResponseHeadersPolicyConfigCorsConfigAccessContr
 /// A list of origins (domain names) that CloudFront can use as the value for
 /// the Access-Control-Allow-Origin HTTP response header.
 /// 
-/// 
 /// For more information about the Access-Control-Allow-Origin HTTP response
 /// header, see Access-Control-Allow-Origin (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin)
 /// in the MDN Web Docs.
@@ -190,7 +176,6 @@ pub struct ResponseHeadersPolicyResponseHeadersPolicyConfigCorsConfigAccessContr
 
 /// A list of HTTP headers that CloudFront includes as values for the Access-Control-Expose-Headers
 /// HTTP response header.
-/// 
 /// 
 /// For more information about the Access-Control-Expose-Headers HTTP response
 /// header, see Access-Control-Expose-Headers (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Expose-Headers)
@@ -249,7 +234,6 @@ pub struct ResponseHeadersPolicyResponseHeadersPolicyConfigSecurityHeadersConfig
     /// The policy directives and their values that CloudFront includes as values
     /// for the Content-Security-Policy HTTP response header.
     /// 
-    /// 
     /// For more information about the Content-Security-Policy HTTP response header,
     /// see Content-Security-Policy (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy)
     /// in the MDN Web Docs.
@@ -257,7 +241,6 @@ pub struct ResponseHeadersPolicyResponseHeadersPolicyConfigSecurityHeadersConfig
     pub content_security_policy: Option<ResponseHeadersPolicyResponseHeadersPolicyConfigSecurityHeadersConfigContentSecurityPolicy>,
     /// Determines whether CloudFront includes the X-Content-Type-Options HTTP response
     /// header with its value set to nosniff.
-    /// 
     /// 
     /// For more information about the X-Content-Type-Options HTTP response header,
     /// see X-Content-Type-Options (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options)
@@ -267,7 +250,6 @@ pub struct ResponseHeadersPolicyResponseHeadersPolicyConfigSecurityHeadersConfig
     /// Determines whether CloudFront includes the X-Frame-Options HTTP response
     /// header and the header's value.
     /// 
-    /// 
     /// For more information about the X-Frame-Options HTTP response header, see
     /// X-Frame-Options (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options)
     /// in the MDN Web Docs.
@@ -275,7 +257,6 @@ pub struct ResponseHeadersPolicyResponseHeadersPolicyConfigSecurityHeadersConfig
     pub frame_options: Option<ResponseHeadersPolicyResponseHeadersPolicyConfigSecurityHeadersConfigFrameOptions>,
     /// Determines whether CloudFront includes the Referrer-Policy HTTP response
     /// header and the header's value.
-    /// 
     /// 
     /// For more information about the Referrer-Policy HTTP response header, see
     /// Referrer-Policy (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy)
@@ -285,7 +266,6 @@ pub struct ResponseHeadersPolicyResponseHeadersPolicyConfigSecurityHeadersConfig
     /// Determines whether CloudFront includes the Strict-Transport-Security HTTP
     /// response header and the header's value.
     /// 
-    /// 
     /// For more information about the Strict-Transport-Security HTTP response header,
     /// see Strict-Transport-Security (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security)
     /// in the MDN Web Docs.
@@ -293,7 +273,6 @@ pub struct ResponseHeadersPolicyResponseHeadersPolicyConfigSecurityHeadersConfig
     pub strict_transport_security: Option<ResponseHeadersPolicyResponseHeadersPolicyConfigSecurityHeadersConfigStrictTransportSecurity>,
     /// Determines whether CloudFront includes the X-XSS-Protection HTTP response
     /// header and the header's value.
-    /// 
     /// 
     /// For more information about the X-XSS-Protection HTTP response header, see
     /// X-XSS-Protection (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection)
@@ -304,7 +283,6 @@ pub struct ResponseHeadersPolicyResponseHeadersPolicyConfigSecurityHeadersConfig
 
 /// The policy directives and their values that CloudFront includes as values
 /// for the Content-Security-Policy HTTP response header.
-/// 
 /// 
 /// For more information about the Content-Security-Policy HTTP response header,
 /// see Content-Security-Policy (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy)
@@ -320,7 +298,6 @@ pub struct ResponseHeadersPolicyResponseHeadersPolicyConfigSecurityHeadersConfig
 /// Determines whether CloudFront includes the X-Content-Type-Options HTTP response
 /// header with its value set to nosniff.
 /// 
-/// 
 /// For more information about the X-Content-Type-Options HTTP response header,
 /// see X-Content-Type-Options (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options)
 /// in the MDN Web Docs.
@@ -332,7 +309,6 @@ pub struct ResponseHeadersPolicyResponseHeadersPolicyConfigSecurityHeadersConfig
 
 /// Determines whether CloudFront includes the X-Frame-Options HTTP response
 /// header and the header's value.
-/// 
 /// 
 /// For more information about the X-Frame-Options HTTP response header, see
 /// X-Frame-Options (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options)
@@ -348,7 +324,6 @@ pub struct ResponseHeadersPolicyResponseHeadersPolicyConfigSecurityHeadersConfig
 /// Determines whether CloudFront includes the Referrer-Policy HTTP response
 /// header and the header's value.
 /// 
-/// 
 /// For more information about the Referrer-Policy HTTP response header, see
 /// Referrer-Policy (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy)
 /// in the MDN Web Docs.
@@ -362,7 +337,6 @@ pub struct ResponseHeadersPolicyResponseHeadersPolicyConfigSecurityHeadersConfig
 
 /// Determines whether CloudFront includes the Strict-Transport-Security HTTP
 /// response header and the header's value.
-/// 
 /// 
 /// For more information about the Strict-Transport-Security HTTP response header,
 /// see Strict-Transport-Security (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security)
@@ -381,7 +355,6 @@ pub struct ResponseHeadersPolicyResponseHeadersPolicyConfigSecurityHeadersConfig
 
 /// Determines whether CloudFront includes the X-XSS-Protection HTTP response
 /// header and the header's value.
-/// 
 /// 
 /// For more information about the X-XSS-Protection HTTP response header, see
 /// X-XSS-Protection (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-XSS-Protection)
@@ -402,7 +375,6 @@ pub struct ResponseHeadersPolicyResponseHeadersPolicyConfigSecurityHeadersConfig
 /// from CloudFront. CloudFront adds this header to HTTP responses that it sends
 /// in response to requests that match a cache behavior that's associated with
 /// this response headers policy.
-/// 
 /// 
 /// You can use the Server-Timing header to view metrics that can help you gain
 /// insights about the behavior and performance of CloudFront. For example, you
@@ -454,7 +426,6 @@ pub struct ResponseHeadersPolicyStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

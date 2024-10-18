@@ -24,36 +24,27 @@ pub struct ActivitySpec {
     /// to State Machine Executions (https://docs.aws.amazon.com/step-functions/latest/dg/limits.html#service-limits-state-machine-executions)
     /// in the AWS Step Functions Developer Guide.
     /// 
-    /// 
     /// A name must not contain:
-    /// 
     /// 
     ///    * white space
     /// 
-    /// 
     ///    * brackets < > { } [ ]
-    /// 
     /// 
     ///    * wildcard characters ? *
     /// 
-    /// 
     ///    * special characters " # % \ ^ | ~ ` $ & , ; : /
     /// 
-    /// 
     ///    * control characters (U+0000-001F, U+007F-009F)
-    /// 
     /// 
     /// To enable logging with CloudWatch Logs, the name should only contain 0-9,
     /// A-Z, a-z, - and _.
     pub name: String,
     /// The list of tags to add to a resource.
     /// 
-    /// 
     /// An array of key-value pairs. For more information, see Using Cost Allocation
     /// Tags (https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html)
     /// in the AWS Billing and Cost Management User Guide, and Controlling Access
     /// Using IAM Tags (https://docs.aws.amazon.com/IAM/latest/UserGuide/access_iam-tags.html).
-    /// 
     /// 
     /// Tags may only contain Unicode letters, digits, white space, or these symbols:
     /// _ . : / = + - @.
@@ -64,12 +55,10 @@ pub struct ActivitySpec {
 /// Tags are key-value pairs that can be associated with Step Functions state
 /// machines and activities.
 /// 
-/// 
 /// An array of key-value pairs. For more information, see Using Cost Allocation
 /// Tags (https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html)
 /// in the AWS Billing and Cost Management User Guide, and Controlling Access
 /// Using IAM Tags (https://docs.aws.amazon.com/IAM/latest/UserGuide/access_iam-tags.html).
-/// 
 /// 
 /// Tags may only contain Unicode letters, digits, white space, or these symbols:
 /// _ . : / = + - @.
@@ -111,7 +100,6 @@ pub struct ActivityStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

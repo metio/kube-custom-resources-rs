@@ -1821,6 +1821,9 @@ pub struct AWXStatus {
     /// Secret key secret name of the deployed instance
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeySecret")]
     pub secret_key_secret: Option<String>,
+    /// Last gated version
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradedFrom")]
+    pub upgraded_from: Option<String>,
     /// Status to indicate that the database has been upgraded to the version in the status
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradedPostgresVersion")]
     pub upgraded_postgres_version: Option<String>,

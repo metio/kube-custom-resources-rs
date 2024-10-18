@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.2"
   name: "globaltables.dynamodb.services.k8s.aws"
 spec:
   group: "dynamodb.services.k8s.aws"
@@ -27,7 +27,7 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "GlobalTableSpec defines the desired state of GlobalTable.\n\n\nRepresents the properties of a global table."
+              description: "GlobalTableSpec defines the desired state of GlobalTable.\n\nRepresents the properties of a global table."
               properties:
                 globalTableName:
                   description: "The global table name."
@@ -52,7 +52,7 @@ spec:
                   description: "All CRs managed by ACK have a common `Status.ACKResourceMetadata` member\nthat is used to contain resource sync state, account ownership,\nconstructed ARN for the resource"
                   properties:
                     arn:
-                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nTODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
+                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."
@@ -95,7 +95,7 @@ spec:
                   format: "date-time"
                   type: "string"
                 globalTableStatus:
-                  description: "The current state of the global table:\n\n\n   * CREATING - The global table is being created.\n\n\n   * UPDATING - The global table is being updated.\n\n\n   * DELETING - The global table is being deleted.\n\n\n   * ACTIVE - The global table is ready for use."
+                  description: "The current state of the global table:\n\n   * CREATING - The global table is being created.\n\n   * UPDATING - The global table is being updated.\n\n   * DELETING - The global table is being deleted.\n\n   * ACTIVE - The global table is ready for use."
                   type: "string"
               type: "object"
           type: "object"

@@ -126,7 +126,7 @@ pub struct ModuleStatus {
     ///   - https://developer.hashicorp.com/terraform/cloud-docs/run/api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configurationVersion")]
     pub configuration_version: Option<ModuleStatusConfigurationVersion>,
-    /// Workspace Destroy Run status.
+    /// Workspace Destroy Run ID.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "destroyRunID")]
     pub destroy_run_id: Option<String>,
     /// Real world state generation.

@@ -20,10 +20,10 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct GrafanaFolderSpec {
-    /// allow to import this resources from an operator in a different namespace
+    /// Enable matching Grafana instances outside the current namespace
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowCrossNamespaceImport")]
     pub allow_cross_namespace_import: Option<bool>,
-    /// selects Grafanas for import
+    /// Selects Grafanas for import
     #[serde(rename = "instanceSelector")]
     pub instance_selector: GrafanaFolderInstanceSelector,
     /// Reference to an existing GrafanaFolder CR in the same namespace
@@ -32,17 +32,21 @@ pub struct GrafanaFolderSpec {
     /// UID of the folder in which the current folder should be created
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentFolderUID")]
     pub parent_folder_uid: Option<String>,
-    /// raw json with folder permissions
+    /// Raw json with folder permissions, potentially exported from Grafana
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub permissions: Option<String>,
-    /// how often the folder is synced, defaults to 5m if not set
+    /// How often the folder is synced, defaults to 5m if not set
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resyncPeriod")]
     pub resync_period: Option<String>,
+    /// Display name of the folder in Grafana
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub title: Option<String>,
+    /// Manually specify the UID the Folder is created with
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uid: Option<String>,
 }
 
-/// selects Grafanas for import
+/// Selects Grafanas for import
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrafanaFolderInstanceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.

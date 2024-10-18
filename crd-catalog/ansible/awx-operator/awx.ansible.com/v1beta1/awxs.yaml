@@ -2039,6 +2039,9 @@ spec:
                 secretKeySecret:
                   description: "Secret key secret name of the deployed instance"
                   type: "string"
+                upgradedFrom:
+                  description: "Last gated version"
+                  type: "string"
                 upgradedPostgresVersion:
                   description: "Status to indicate that the database has been upgraded to the version in the status"
                   type: "string"

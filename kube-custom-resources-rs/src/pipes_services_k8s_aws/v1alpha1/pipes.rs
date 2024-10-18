@@ -13,7 +13,6 @@ use self::prelude::*;
 
 /// PipeSpec defines the desired state of Pipe.
 /// 
-/// 
 /// An object that represents a pipe. Amazon EventBridgePipes connect event sources
 /// to targets and reduces the need for specialized knowledge and integration
 /// code.
@@ -433,7 +432,6 @@ pub struct PipeTargetParametersBatchJobParametersContainerOverrides {
 /// variables, which are added to the container at launch, or you can override
 /// the existing environment variables from the Docker image or the task definition.
 /// 
-/// 
 /// Environment variables cannot start with "Batch". This naming convention is
 /// reserved for variables that Batch sets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -567,7 +565,6 @@ pub struct PipeTargetParametersEcsTaskParametersOverrides {
     /// Fargate task storage (https://docs.aws.amazon.com/AmazonECS/latest/userguide/using_data_volumes.html)
     /// in the Amazon ECS User Guide for Fargate.
     /// 
-    /// 
     /// This parameter is only supported for tasks hosted on Fargate using Linux
     /// platform version 1.4.0 or later. This parameter is not supported for Windows
     /// containers on Fargate.
@@ -626,7 +623,6 @@ pub struct PipeTargetParametersEcsTaskParametersOverridesContainerOverridesEnvir
 /// comments and are ignored. For more information about the environment variable
 /// file syntax, see Declare default environment variables in file (https://docs.docker.com/compose/env-file/).
 /// 
-/// 
 /// If there are environment variables specified using the environment parameter
 /// in a container definition, they take precedence over the variables contained
 /// within an environment file. If multiple environment files are specified that
@@ -635,13 +631,10 @@ pub struct PipeTargetParametersEcsTaskParametersOverridesContainerOverridesEnvir
 /// environment variables (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/taskdef-envfiles.html)
 /// in the Amazon Elastic Container Service Developer Guide.
 /// 
-/// 
 /// This parameter is only supported for tasks hosted on Fargate using the following
 /// platform versions:
 /// 
-/// 
 ///    * Linux platform version 1.4.0 or later.
-/// 
 /// 
 ///    * Windows platform version 1.0.0 or later.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -670,7 +663,6 @@ pub struct PipeTargetParametersEcsTaskParametersOverridesContainerOverridesResou
 /// the default amount, for tasks hosted on Fargate. For more information, see
 /// Fargate task storage (https://docs.aws.amazon.com/AmazonECS/latest/userguide/using_data_volumes.html)
 /// in the Amazon ECS User Guide for Fargate.
-/// 
 /// 
 /// This parameter is only supported for tasks hosted on Fargate using Linux
 /// platform version 1.4.0 or later. This parameter is not supported for Windows
@@ -864,7 +856,6 @@ pub struct PipeStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

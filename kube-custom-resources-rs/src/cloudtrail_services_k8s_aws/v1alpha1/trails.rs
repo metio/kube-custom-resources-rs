@@ -12,7 +12,6 @@ use self::prelude::*;
 
 /// TrailSpec defines the desired state of Trail.
 /// 
-/// 
 /// The settings for a trail.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "cloudtrail.services.k8s.aws", version = "v1alpha1", kind = "Trail", plural = "trails")]
@@ -33,7 +32,6 @@ pub struct TrailSpec {
     pub cloud_watch_logs_role_arn: Option<String>,
     /// Specifies whether log file integrity validation is enabled. The default is
     /// false.
-    /// 
     /// 
     /// When you disable log file integrity validation, the chain of digest files
     /// is broken after one hour. CloudTrail does not create digest files for log
@@ -66,43 +64,32 @@ pub struct TrailSpec {
     /// The value can be an alias name prefixed by "alias/", a fully specified ARN
     /// to an alias, a fully specified ARN to a key, or a globally unique identifier.
     /// 
-    /// 
     /// CloudTrail also supports KMS multi-Region keys. For more information about
     /// multi-Region keys, see Using multi-Region keys (https://docs.aws.amazon.com/kms/latest/developerguide/multi-region-keys-overview.html)
     /// in the Key Management Service Developer Guide.
     /// 
-    /// 
     /// Examples:
-    /// 
     /// 
     ///    * alias/MyAliasName
     /// 
-    /// 
     ///    * arn:aws:kms:us-east-2:123456789012:alias/MyAliasName
     /// 
-    /// 
     ///    * arn:aws:kms:us-east-2:123456789012:key/12345678-1234-1234-1234-123456789012
-    /// 
     /// 
     ///    * 12345678-1234-1234-1234-123456789012
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyID")]
     pub kms_key_id: Option<String>,
     /// Specifies the name of the trail. The name must meet the following requirements:
     /// 
-    /// 
     ///    * Contain only ASCII letters (a-z, A-Z), numbers (0-9), periods (.), underscores
     ///    (_), or dashes (-)
     /// 
-    /// 
     ///    * Start with a letter or number, and end with a letter or number
-    /// 
     /// 
     ///    * Be between 3 and 128 characters
     /// 
-    /// 
     ///    * Have no adjacent periods, underscores or dashes. Names like my-_namespace
     ///    and my--namespace are not valid.
-    /// 
     /// 
     ///    * Not be in IP address format (for example, 192.168.5.4)
     pub name: String,
@@ -153,7 +140,6 @@ pub struct TrailStatus {
     /// Specifies the ARN of the Amazon SNS topic that CloudTrail uses to send notifications
     /// when log files are delivered. The format of a topic ARN is:
     /// 
-    /// 
     /// arn:aws:sns:us-east-2:123456789012:MyTopic
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "snsTopicARN")]
     pub sns_topic_arn: Option<String>,
@@ -170,7 +156,6 @@ pub struct TrailStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

@@ -13,18 +13,13 @@ use self::prelude::*;
 
 /// UserSpec defines the desired state of User.
 /// 
-/// 
 /// Contains information about an IAM user entity.
-/// 
 /// 
 /// This data type is used as a response element in the following operations:
 /// 
-/// 
 ///    * CreateUser
 /// 
-/// 
 ///    * GetUser
-/// 
 /// 
 ///    * ListUsers
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -39,7 +34,6 @@ pub struct UserSpec {
     pub inline_policies: Option<BTreeMap<String, String>>,
     /// The name of the user to create.
     /// 
-    /// 
     /// IAM user, group, role, and policy names must be unique within the account.
     /// Names are not distinguished by case. For example, you cannot create resources
     /// named both "MyResource" and "myresource".
@@ -48,10 +42,8 @@ pub struct UserSpec {
     /// (https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html)
     /// in the IAM User Guide.
     /// 
-    /// 
     /// This parameter is optional. If it is not included, it defaults to a slash
     /// (/).
-    /// 
     /// 
     /// This parameter allows (through its regex pattern (http://wikipedia.org/wiki/regex))
     /// a string of characters consisting of either a forward slash (/) by itself
@@ -64,14 +56,12 @@ pub struct UserSpec {
     /// The ARN of the managed policy that is used to set the permissions boundary
     /// for the user.
     /// 
-    /// 
     /// A permissions boundary policy defines the maximum permissions that identity-based
     /// policies can grant to an entity, but does not grant permissions. Permissions
     /// boundaries do not define the maximum permissions that a resource-based policy
     /// can grant to an entity. To learn more, see Permissions boundaries for IAM
     /// entities (https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html)
     /// in the IAM User Guide.
-    /// 
     /// 
     /// For more information about policy types, see Policy types (https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html#access_policy-types)
     /// in the IAM User Guide.
@@ -81,7 +71,6 @@ pub struct UserSpec {
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    /// 
     /// 
     /// 	from:
     /// 	  name: my-api
@@ -96,7 +85,6 @@ pub struct UserSpec {
     /// see Tagging IAM resources (https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html)
     /// in the IAM User Guide.
     /// 
-    /// 
     /// If any one of the tags is invalid or if you exceed the allowed maximum number
     /// of tags, then the entire request fails and the resource is not created.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -107,7 +95,6 @@ pub struct UserSpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -133,7 +120,6 @@ pub struct UserPermissionsBoundaryRefFrom {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -194,18 +180,14 @@ pub struct UserStatus {
     /// (no value), then it indicates that they never signed in with a password.
     /// This can be because:
     /// 
-    /// 
     ///    * The user never had a password.
-    /// 
     /// 
     ///    * A password exists but has not been used since IAM started tracking this
     ///    information on October 20, 2014.
     /// 
-    /// 
     /// A null value does not mean that the user never had a password. Also, if the
     /// user does not currently have a password but had one in the past, then this
     /// field contains the date and time the most recent password was used.
-    /// 
     /// 
     /// This value is returned only in the GetUser and ListUsers operations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordLastUsed")]
@@ -228,7 +210,6 @@ pub struct UserStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

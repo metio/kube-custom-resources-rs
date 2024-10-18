@@ -12,7 +12,6 @@ use self::prelude::*;
 
 /// ResolverRuleSpec defines the desired state of ResolverRule.
 /// 
-/// 
 /// For queries that originate in your VPC, detailed information about a Resolver
 /// rule, which specifies how to route DNS queries out of the VPC. The ResolverRule
 /// parameter appears in the response to a CreateResolverRule (https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_CreateResolverRule.html),
@@ -48,17 +47,14 @@ pub struct ResolverRuleSpec {
     /// When you want to forward DNS queries for specified domain name to resolvers
     /// on your network, specify FORWARD.
     /// 
-    /// 
     /// When you have a forwarding rule to forward DNS queries for a domain to your
     /// network and you want Resolver to process queries for a subdomain of that
     /// domain, specify SYSTEM.
-    /// 
     /// 
     /// For example, to forward DNS queries for example.com to resolvers on your
     /// network, you create a rule and specify FORWARD for RuleType. To then have
     /// Resolver process queries for apex.example.com, you create a rule and specify
     /// SYSTEM for RuleType.
-    /// 
     /// 
     /// Currently, only Resolver can create rules that have a value of RECURSIVE
     /// for RuleType.
@@ -69,7 +65,6 @@ pub struct ResolverRuleSpec {
     pub tags: Option<Vec<ResolverRuleTags>>,
     /// The IPs that you want Resolver to forward DNS queries to. You can specify
     /// only IPv4 addresses. Separate IP addresses with a space.
-    /// 
     /// 
     /// TargetIps is available only when the value of Rule type is FORWARD.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetIPs")]
@@ -178,7 +173,6 @@ pub struct ResolverRuleStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

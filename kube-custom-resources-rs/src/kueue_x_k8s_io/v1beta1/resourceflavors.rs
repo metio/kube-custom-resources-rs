@@ -49,6 +49,11 @@ pub struct ResourceFlavorSpec {
     /// tolerations can be up to 8 elements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<ResourceFlavorTolerations>>,
+    /// topologyName indicates topology for the TAS ResourceFlavor.
+    /// When specified, it enables scraping of the topology information from the
+    /// nodes matching to the Resource Flavor node labels.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologyName")]
+    pub topology_name: Option<String>,
 }
 
 /// The node this Taint is attached to has the "effect" on

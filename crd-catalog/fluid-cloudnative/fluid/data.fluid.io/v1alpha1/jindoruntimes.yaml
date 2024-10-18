@@ -109,6 +109,17 @@ spec:
                     imagePullPolicy:
                       description: "One of the three policies: `Always`, `IfNotPresent`, `Never`"
                       type: "string"
+                    imagePullSecrets:
+                      description: "ImagePullSecrets that will be used to pull images"
+                      items:
+                        description: "LocalObjectReference contains enough information to let you locate the\nreferenced object inside the same namespace."
+                        properties:
+                          name:
+                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                            type: "string"
+                        type: "object"
+                        x-kubernetes-map-type: "atomic"
+                      type: "array"
                     imageTag:
                       description: "Image Tag for Jindo Fuse(e.g. 2.3.0-SNAPSHOT)"
                       type: "string"
@@ -219,6 +230,17 @@ spec:
                 hadoopConfig:
                   description: "Name of the configMap used to support HDFS configurations when using HDFS as Jindo's UFS. The configMap\nmust be in the same namespace with the JindoRuntime. The configMap should contain user-specific HDFS conf files in it.\nFor now, only \"hdfs-site.xml\" and \"core-site.xml\" are supported. It must take the filename of the conf file as the key and content\nof the file as the value."
                   type: "string"
+                imagePullSecrets:
+                  description: "ImagePullSecrets that will be used to pull images"
+                  items:
+                    description: "LocalObjectReference contains enough information to let you locate the\nreferenced object inside the same namespace."
+                    properties:
+                      name:
+                        description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                        type: "string"
+                    type: "object"
+                    x-kubernetes-map-type: "atomic"
+                  type: "array"
                 jindoVersion:
                   description: "The version information that instructs fluid to orchestrate a particular version of Jindo."
                   properties:
@@ -252,6 +274,17 @@ spec:
                         type: "string"
                       description: "Environment variables that will be used by Jindo component. <br>"
                       type: "object"
+                    imagePullSecrets:
+                      description: "ImagePullSecrets that will be used to pull images"
+                      items:
+                        description: "LocalObjectReference contains enough information to let you locate the\nreferenced object inside the same namespace."
+                        properties:
+                          name:
+                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                            type: "string"
+                        type: "object"
+                        x-kubernetes-map-type: "atomic"
+                      type: "array"
                     labels:
                       additionalProperties:
                         type: "string"
@@ -2463,6 +2496,17 @@ spec:
                         type: "string"
                       description: "Environment variables that will be used by Jindo component. <br>"
                       type: "object"
+                    imagePullSecrets:
+                      description: "ImagePullSecrets that will be used to pull images"
+                      items:
+                        description: "LocalObjectReference contains enough information to let you locate the\nreferenced object inside the same namespace."
+                        properties:
+                          name:
+                            description: "Name of the referent.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Add other useful fields. apiVersion, kind, uid?"
+                            type: "string"
+                        type: "object"
+                        x-kubernetes-map-type: "atomic"
+                      type: "array"
                     labels:
                       additionalProperties:
                         type: "string"

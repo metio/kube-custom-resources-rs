@@ -17,7 +17,62 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct AppArmorProfileSpec {
-    pub policy: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "abstract")]
+    pub r#abstract: Option<AppArmorProfileAbstract>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub policy: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AppArmorProfileAbstract {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub capability: Option<AppArmorProfileAbstractCapability>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub executable: Option<AppArmorProfileAbstractExecutable>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub filesystem: Option<AppArmorProfileAbstractFilesystem>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub network: Option<AppArmorProfileAbstractNetwork>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AppArmorProfileAbstractCapability {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedCapabilities")]
+    pub allowed_capabilities: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AppArmorProfileAbstractExecutable {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedExecutables")]
+    pub allowed_executables: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedLibraries")]
+    pub allowed_libraries: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AppArmorProfileAbstractFilesystem {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyPaths")]
+    pub read_only_paths: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readWritePaths")]
+    pub read_write_paths: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeOnlyPaths")]
+    pub write_only_paths: Option<Vec<String>>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AppArmorProfileAbstractNetwork {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowRaw")]
+    pub allow_raw: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedProtocols")]
+    pub allowed_protocols: Option<AppArmorProfileAbstractNetworkAllowedProtocols>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct AppArmorProfileAbstractNetworkAllowedProtocols {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowTcp")]
+    pub allow_tcp: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowUdp")]
+    pub allow_udp: Option<bool>,
 }
 
 /// AppArmorProfileStatus defines the observed state of AppArmorProfile

@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.2"
   name: "cachepolicies.cloudfront.services.k8s.aws"
 spec:
   group: "cloudfront.services.k8s.aws"
@@ -27,7 +27,7 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "CachePolicySpec defines the desired state of CachePolicy.\n\n\nA cache policy.\n\n\nWhen it's attached to a cache behavior, the cache policy determines the following:\n\n\n   * The values that CloudFront includes in the cache key. These values can\n   include HTTP headers, cookies, and URL query strings. CloudFront uses\n   the cache key to find an object in its cache that it can return to the\n   viewer.\n\n\n   * The default, minimum, and maximum time to live (TTL) values that you\n   want objects to stay in the CloudFront cache.\n\n\nThe headers, cookies, and query strings that are included in the cache key\nare also included in requests that CloudFront sends to the origin. CloudFront\nsends a request when it can't find a valid object in its cache that matches\nthe request's cache key. If you want to send values to the origin but not\ninclude them in the cache key, use OriginRequestPolicy."
+              description: "CachePolicySpec defines the desired state of CachePolicy.\n\nA cache policy.\n\nWhen it's attached to a cache behavior, the cache policy determines the following:\n\n   * The values that CloudFront includes in the cache key. These values can\n   include HTTP headers, cookies, and URL query strings. CloudFront uses\n   the cache key to find an object in its cache that it can return to the\n   viewer.\n\n   * The default, minimum, and maximum time to live (TTL) values that you\n   want objects to stay in the CloudFront cache.\n\nThe headers, cookies, and query strings that are included in the cache key\nare also included in requests that CloudFront sends to the origin. CloudFront\nsends a request when it can't find a valid object in its cache that matches\nthe request's cache key. If you want to send values to the origin but not\ninclude them in the cache key, use OriginRequestPolicy."
               properties:
                 cachePolicyConfig:
                   description: "A cache policy configuration."
@@ -46,7 +46,7 @@ spec:
                     name:
                       type: "string"
                     parametersInCacheKeyAndForwardedToOrigin:
-                      description: "This object determines the values that CloudFront includes in the cache key.\nThese values can include HTTP headers, cookies, and URL query strings. CloudFront\nuses the cache key to find an object in its cache that it can return to the\nviewer.\n\n\nThe headers, cookies, and query strings that are included in the cache key\nare also included in requests that CloudFront sends to the origin. CloudFront\nsends a request when it can't find an object in its cache that matches the\nrequest's cache key. If you want to send values to the origin but not include\nthem in the cache key, use OriginRequestPolicy."
+                      description: "This object determines the values that CloudFront includes in the cache key.\nThese values can include HTTP headers, cookies, and URL query strings. CloudFront\nuses the cache key to find an object in its cache that it can return to the\nviewer.\n\nThe headers, cookies, and query strings that are included in the cache key\nare also included in requests that CloudFront sends to the origin. CloudFront\nsends a request when it can't find an object in its cache that matches the\nrequest's cache key. If you want to send values to the origin but not include\nthem in the cache key, use OriginRequestPolicy."
                       properties:
                         cookiesConfig:
                           description: "An object that determines whether any cookies in viewer requests (and if\nso, which cookies) are included in the cache key and in requests that CloudFront\nsends to the origin."
@@ -106,7 +106,7 @@ spec:
                   description: "All CRs managed by ACK have a common `Status.ACKResourceMetadata` member\nthat is used to contain resource sync state, account ownership,\nconstructed ARN for the resource"
                   properties:
                     arn:
-                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nTODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
+                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."

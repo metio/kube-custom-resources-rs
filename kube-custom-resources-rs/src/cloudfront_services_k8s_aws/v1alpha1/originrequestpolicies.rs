@@ -12,28 +12,22 @@ use self::prelude::*;
 
 /// OriginRequestPolicySpec defines the desired state of OriginRequestPolicy.
 /// 
-/// 
 /// An origin request policy.
-/// 
 /// 
 /// When it's attached to a cache behavior, the origin request policy determines
 /// the values that CloudFront includes in requests that it sends to the origin.
 /// Each request that CloudFront sends to the origin includes the following:
 /// 
-/// 
 ///    * The request body and the URL path (without the domain name) from the
 ///    viewer request.
 /// 
-/// 
 ///    * The headers that CloudFront automatically includes in every origin request,
 ///    including Host, User-Agent, and X-Amz-Cf-Id.
-/// 
 /// 
 ///    * All HTTP headers, cookies, and URL query strings that are specified
 ///    in the cache policy or the origin request policy. These can include items
 ///    from the viewer request and, in the case of headers, additional ones that
 ///    are added by CloudFront.
-/// 
 /// 
 /// CloudFront sends a request when it can't find an object in its cache that
 /// matches the request. If you want to send values to the origin and also include
@@ -167,7 +161,6 @@ pub struct OriginRequestPolicyStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

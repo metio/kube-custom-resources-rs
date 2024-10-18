@@ -26,7 +26,6 @@ pub struct BrokerSpec {
     pub auto_minor_version_upgrade: bool,
     /// A list of information about the configuration.
     /// 
-    /// 
     /// Does not apply to RabbitMQ brokers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BrokerConfiguration>,
@@ -35,7 +34,6 @@ pub struct BrokerSpec {
     #[serde(rename = "deploymentMode")]
     pub deployment_mode: String,
     /// Does not apply to RabbitMQ brokers.
-    /// 
     /// 
     /// Encryption options for the broker.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptionOptions")]
@@ -48,7 +46,6 @@ pub struct BrokerSpec {
     pub host_instance_type: String,
     /// Optional. The metadata of the LDAP server used to authenticate and authorize
     /// connections to the broker.
-    /// 
     /// 
     /// Does not apply to RabbitMQ brokers.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ldapServerMetadata")]
@@ -80,7 +77,6 @@ pub struct BrokerSpec {
 
 /// A list of information about the configuration.
 /// 
-/// 
 /// Does not apply to RabbitMQ brokers.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BrokerConfiguration {
@@ -91,7 +87,6 @@ pub struct BrokerConfiguration {
 }
 
 /// Does not apply to RabbitMQ brokers.
-/// 
 /// 
 /// Encryption options for the broker.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -104,7 +99,6 @@ pub struct BrokerEncryptionOptions {
 
 /// Optional. The metadata of the LDAP server used to authenticate and authorize
 /// connections to the broker.
-/// 
 /// 
 /// Does not apply to RabbitMQ brokers.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -159,7 +153,6 @@ pub struct BrokerMaintenanceWindowStartTime {
 /// Ex:
 /// APIIDRef:
 /// 
-/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -184,7 +177,6 @@ pub struct BrokerSecurityGroupRefsFrom {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-/// 
 /// 
 /// 	from:
 /// 	  name: my-api
@@ -271,7 +263,6 @@ pub struct BrokerStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

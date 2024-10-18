@@ -36,13 +36,10 @@ pub struct LayerVersionSpec {
     pub layer_name: String,
     /// The layer's software license. It can be any of the following:
     /// 
-    /// 
     ///    * An SPDX license identifier (https://spdx.org/licenses/). For example,
     ///    MIT.
     /// 
-    /// 
     ///    * The URL of a license hosted on the internet. For example, https://opensource.org/licenses/MIT.
-    /// 
     /// 
     ///    * The full text of the license.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "licenseInfo")]
@@ -99,7 +96,6 @@ pub struct LayerVersionStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

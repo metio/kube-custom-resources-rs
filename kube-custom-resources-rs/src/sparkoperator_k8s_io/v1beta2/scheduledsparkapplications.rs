@@ -172,6 +172,9 @@ pub struct ScheduledSparkApplicationTemplateBatchSchedulerOptions {
 /// Deps captures all possible types of dependencies of a Spark application.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScheduledSparkApplicationTemplateDeps {
+    /// Archives is a list of archives to be extracted into the working directory of each executor.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub archives: Option<Vec<String>>,
     /// ExcludePackages is a list of "groupId:artifactId", to exclude while resolving the
     /// dependencies provided in Packages to avoid dependency conflicts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludePackages")]

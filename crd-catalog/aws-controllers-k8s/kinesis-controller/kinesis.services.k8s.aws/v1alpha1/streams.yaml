@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.2"
   name: "streams.kinesis.services.k8s.aws"
 spec:
   group: "kinesis.services.k8s.aws"
@@ -52,7 +52,7 @@ spec:
                   description: "All CRs managed by ACK have a common `Status.ACKResourceMetadata` member\nthat is used to contain resource sync state, account ownership,\nconstructed ARN for the resource"
                   properties:
                     arn:
-                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nTODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
+                      description: "ARN is the Amazon Resource Name for the resource. This is a\nglobally-unique identifier and is set only by the ACK service controller\nonce the controller has orchestrated the creation of the resource OR\nwhen it has verified that an \"adopted\" resource (a resource where the\nARN annotation was set by the Kubernetes user on the CR) exists and\nmatches the supplied CR's Spec field values.\nhttps://github.com/aws/aws-controllers-k8s/issues/270"
                       type: "string"
                     ownerAccountID:
                       description: "OwnerAccountID is the AWS Account ID of the account that owns the\nbackend AWS service API resource."
@@ -95,7 +95,7 @@ spec:
                   format: "int64"
                   type: "integer"
                 encryptionType:
-                  description: "The encryption type used. This value is one of the following:\n\n\n   * KMS\n\n\n   * NONE"
+                  description: "The encryption type used. This value is one of the following:\n\n   * KMS\n\n   * NONE"
                   type: "string"
                 enhancedMonitoring:
                   description: "Represents the current enhanced monitoring settings of the stream."
@@ -109,7 +109,7 @@ spec:
                     type: "object"
                   type: "array"
                 keyID:
-                  description: "The GUID for the customer-managed Amazon Web Services KMS key to use for\nencryption. This value can be a globally unique identifier, a fully specified\nARN to either an alias or a key, or an alias name prefixed by \"alias/\".You\ncan also use a master key owned by Kinesis Data Streams by specifying the\nalias aws/kinesis.\n\n\n   * Key ARN example: arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012\n\n\n   * Alias ARN example: arn:aws:kms:us-east-1:123456789012:alias/MyAliasName\n\n\n   * Globally unique key ID example: 12345678-1234-1234-1234-123456789012\n\n\n   * Alias name example: alias/MyAliasName\n\n\n   * Master key owned by Kinesis Data Streams: alias/aws/kinesis"
+                  description: "The GUID for the customer-managed Amazon Web Services KMS key to use for\nencryption. This value can be a globally unique identifier, a fully specified\nARN to either an alias or a key, or an alias name prefixed by \"alias/\".You\ncan also use a master key owned by Kinesis Data Streams by specifying the\nalias aws/kinesis.\n\n   * Key ARN example: arn:aws:kms:us-east-1:123456789012:key/12345678-1234-1234-1234-123456789012\n\n   * Alias ARN example: arn:aws:kms:us-east-1:123456789012:alias/MyAliasName\n\n   * Globally unique key ID example: 12345678-1234-1234-1234-123456789012\n\n   * Alias name example: alias/MyAliasName\n\n   * Master key owned by Kinesis Data Streams: alias/aws/kinesis"
                   type: "string"
                 openShardCount:
                   description: "The number of open shards in the stream."
@@ -124,7 +124,7 @@ spec:
                   format: "date-time"
                   type: "string"
                 streamStatus:
-                  description: "The current status of the stream being described. The stream status is one\nof the following states:\n\n\n   * CREATING - The stream is being created. Kinesis Data Streams immediately\n   returns and sets StreamStatus to CREATING.\n\n\n   * DELETING - The stream is being deleted. The specified stream is in the\n   DELETING state until Kinesis Data Streams completes the deletion.\n\n\n   * ACTIVE - The stream exists and is ready for read and write operations\n   or deletion. You should perform read and write operations only on an ACTIVE\n   stream.\n\n\n   * UPDATING - Shards in the stream are being merged or split. Read and\n   write operations continue to work while the stream is in the UPDATING\n   state."
+                  description: "The current status of the stream being described. The stream status is one\nof the following states:\n\n   * CREATING - The stream is being created. Kinesis Data Streams immediately\n   returns and sets StreamStatus to CREATING.\n\n   * DELETING - The stream is being deleted. The specified stream is in the\n   DELETING state until Kinesis Data Streams completes the deletion.\n\n   * ACTIVE - The stream exists and is ready for read and write operations\n   or deletion. You should perform read and write operations only on an ACTIVE\n   stream.\n\n   * UPDATING - Shards in the stream are being merged or split. Read and\n   write operations continue to work while the stream is in the UPDATING\n   state."
                   type: "string"
               type: "object"
           type: "object"

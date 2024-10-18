@@ -22,16 +22,12 @@ pub struct TableSpec {
     /// Specifies the read/write throughput capacity mode for the table. The options
     /// are:
     /// 
-    /// 
     ///    * throughputMode:PAY_PER_REQUEST and
-    /// 
     /// 
     ///    * throughputMode:PROVISIONED - Provisioned capacity mode requires readCapacityUnits
     ///    and writeCapacityUnits as input.
     /// 
-    /// 
     /// The default is throughput_mode:PAY_PER_REQUEST.
-    /// 
     /// 
     /// For more information, see Read/write capacity modes (https://docs.aws.amazon.com/keyspaces/latest/devguide/ReadWriteCapacityMode.html)
     /// in the Amazon Keyspaces Developer Guide.
@@ -40,9 +36,7 @@ pub struct TableSpec {
     /// Enables client-side timestamps for the table. By default, the setting is
     /// disabled. You can enable client-side timestamps with the following option:
     /// 
-    /// 
     ///    * status: "enabled"
-    /// 
     /// 
     /// Once client-side timestamps are enabled for a table, this setting cannot
     /// be disabled.
@@ -53,7 +47,6 @@ pub struct TableSpec {
     pub comment: Option<TableComment>,
     /// The default Time to Live setting in seconds for the table.
     /// 
-    /// 
     /// For more information, see Setting the default TTL value for a table (https://docs.aws.amazon.com/keyspaces/latest/devguide/TTL-how-it-works.html#ttl-howitworks_default_ttl)
     /// in the Amazon Keyspaces Developer Guide.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultTimeToLive")]
@@ -61,17 +54,13 @@ pub struct TableSpec {
     /// Specifies how the encryption key for encryption at rest is managed for the
     /// table. You can choose one of the following KMS key (KMS key):
     /// 
-    /// 
     ///    * type:AWS_OWNED_KMS_KEY - This key is owned by Amazon Keyspaces.
-    /// 
     /// 
     ///    * type:CUSTOMER_MANAGED_KMS_KEY - This key is stored in your account and
     ///    is created, owned, and managed by you. This option requires the kms_key_identifier
     ///    of the KMS key in Amazon Resource Name (ARN) format as input.
     /// 
-    /// 
     /// The default is type:AWS_OWNED_KMS_KEY.
-    /// 
     /// 
     /// For more information, see Encryption at rest (https://docs.aws.amazon.com/keyspaces/latest/devguide/EncryptionAtRest.html)
     /// in the Amazon Keyspaces Developer Guide.
@@ -83,15 +72,11 @@ pub struct TableSpec {
     /// Specifies if pointInTimeRecovery is enabled or disabled for the table. The
     /// options are:
     /// 
-    /// 
     ///    * status=ENABLED
-    /// 
     /// 
     ///    * status=DISABLED
     /// 
-    /// 
     /// If it's not specified, the default is status=DISABLED.
-    /// 
     /// 
     /// For more information, see Point-in-time recovery (https://docs.aws.amazon.com/keyspaces/latest/devguide/PointInTimeRecovery.html)
     /// in the Amazon Keyspaces Developer Guide.
@@ -99,44 +84,33 @@ pub struct TableSpec {
     pub point_in_time_recovery: Option<TablePointInTimeRecovery>,
     /// The schemaDefinition consists of the following parameters.
     /// 
-    /// 
     /// For each column to be created:
     /// 
-    /// 
     ///    * name - The name of the column.
-    /// 
     /// 
     ///    * type - An Amazon Keyspaces data type. For more information, see Data
     ///    types (https://docs.aws.amazon.com/keyspaces/latest/devguide/cql.elements.html#cql.data-types)
     ///    in the Amazon Keyspaces Developer Guide.
     /// 
-    /// 
     /// The primary key of the table consists of the following columns:
-    /// 
     /// 
     ///    * partitionKeys - The partition key can be a single column, or it can
     ///    be a compound value composed of two or more columns. The partition key
     ///    portion of the primary key is required and determines how Amazon Keyspaces
     ///    stores your data.
     /// 
-    /// 
     ///    * name - The name of each partition key column.
-    /// 
     /// 
     ///    * clusteringKeys - The optional clustering column portion of your primary
     ///    key determines how the data is clustered and sorted within each partition.
     /// 
-    /// 
     ///    * name - The name of the clustering column.
-    /// 
     /// 
     ///    * orderBy - Sets the ascendant (ASC) or descendant (DESC) order modifier.
     ///    To define a column as static use staticColumns - Static columns store
     ///    values that are shared by all rows in the same partition:
     /// 
-    /// 
     ///    * name - The name of the column.
-    /// 
     /// 
     ///    * type - An Amazon Keyspaces data type.
     #[serde(rename = "schemaDefinition")]
@@ -146,7 +120,6 @@ pub struct TableSpec {
     pub table_name: String,
     /// A list of key-value pair tags to be attached to the resource.
     /// 
-    /// 
     /// For more information, see Adding tags and labels to Amazon Keyspaces resources
     /// (https://docs.aws.amazon.com/keyspaces/latest/devguide/tagging-keyspaces.html)
     /// in the Amazon Keyspaces Developer Guide.
@@ -154,16 +127,12 @@ pub struct TableSpec {
     pub tags: Option<Vec<TableTags>>,
     /// Enables Time to Live custom settings for the table. The options are:
     /// 
-    /// 
     ///    * status:enabled
-    /// 
     /// 
     ///    * status:disabled
     /// 
-    /// 
     /// The default is status:disabled. After ttl is enabled, you can't disable it
     /// for the table.
-    /// 
     /// 
     /// For more information, see Expiring data by using Amazon Keyspaces Time to
     /// Live (TTL) (https://docs.aws.amazon.com/keyspaces/latest/devguide/TTL.html)
@@ -175,16 +144,12 @@ pub struct TableSpec {
 /// Specifies the read/write throughput capacity mode for the table. The options
 /// are:
 /// 
-/// 
 ///    * throughputMode:PAY_PER_REQUEST and
-/// 
 /// 
 ///    * throughputMode:PROVISIONED - Provisioned capacity mode requires readCapacityUnits
 ///    and writeCapacityUnits as input.
 /// 
-/// 
 /// The default is throughput_mode:PAY_PER_REQUEST.
-/// 
 /// 
 /// For more information, see Read/write capacity modes (https://docs.aws.amazon.com/keyspaces/latest/devguide/ReadWriteCapacityMode.html)
 /// in the Amazon Keyspaces Developer Guide.
@@ -201,9 +166,7 @@ pub struct TableCapacitySpecification {
 /// Enables client-side timestamps for the table. By default, the setting is
 /// disabled. You can enable client-side timestamps with the following option:
 /// 
-/// 
 ///    * status: "enabled"
-/// 
 /// 
 /// Once client-side timestamps are enabled for a table, this setting cannot
 /// be disabled.
@@ -223,17 +186,13 @@ pub struct TableComment {
 /// Specifies how the encryption key for encryption at rest is managed for the
 /// table. You can choose one of the following KMS key (KMS key):
 /// 
-/// 
 ///    * type:AWS_OWNED_KMS_KEY - This key is owned by Amazon Keyspaces.
-/// 
 /// 
 ///    * type:CUSTOMER_MANAGED_KMS_KEY - This key is stored in your account and
 ///    is created, owned, and managed by you. This option requires the kms_key_identifier
 ///    of the KMS key in Amazon Resource Name (ARN) format as input.
 /// 
-/// 
 /// The default is type:AWS_OWNED_KMS_KEY.
-/// 
 /// 
 /// For more information, see Encryption at rest (https://docs.aws.amazon.com/keyspaces/latest/devguide/EncryptionAtRest.html)
 /// in the Amazon Keyspaces Developer Guide.
@@ -248,15 +207,11 @@ pub struct TableEncryptionSpecification {
 /// Specifies if pointInTimeRecovery is enabled or disabled for the table. The
 /// options are:
 /// 
-/// 
 ///    * status=ENABLED
-/// 
 /// 
 ///    * status=DISABLED
 /// 
-/// 
 /// If it's not specified, the default is status=DISABLED.
-/// 
 /// 
 /// For more information, see Point-in-time recovery (https://docs.aws.amazon.com/keyspaces/latest/devguide/PointInTimeRecovery.html)
 /// in the Amazon Keyspaces Developer Guide.
@@ -268,44 +223,33 @@ pub struct TablePointInTimeRecovery {
 
 /// The schemaDefinition consists of the following parameters.
 /// 
-/// 
 /// For each column to be created:
 /// 
-/// 
 ///    * name - The name of the column.
-/// 
 /// 
 ///    * type - An Amazon Keyspaces data type. For more information, see Data
 ///    types (https://docs.aws.amazon.com/keyspaces/latest/devguide/cql.elements.html#cql.data-types)
 ///    in the Amazon Keyspaces Developer Guide.
 /// 
-/// 
 /// The primary key of the table consists of the following columns:
-/// 
 /// 
 ///    * partitionKeys - The partition key can be a single column, or it can
 ///    be a compound value composed of two or more columns. The partition key
 ///    portion of the primary key is required and determines how Amazon Keyspaces
 ///    stores your data.
 /// 
-/// 
 ///    * name - The name of each partition key column.
-/// 
 /// 
 ///    * clusteringKeys - The optional clustering column portion of your primary
 ///    key determines how the data is clustered and sorted within each partition.
 /// 
-/// 
 ///    * name - The name of the clustering column.
-/// 
 /// 
 ///    * orderBy - Sets the ascendant (ASC) or descendant (DESC) order modifier.
 ///    To define a column as static use staticColumns - Static columns store
 ///    values that are shared by all rows in the same partition:
 /// 
-/// 
 ///    * name - The name of the column.
-/// 
 /// 
 ///    * type - An Amazon Keyspaces data type.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -359,13 +303,11 @@ pub struct TableSchemaDefinitionStaticColumns {
 /// Describes a tag. A tag is a key-value pair. You can add up to 50 tags to
 /// a single Amazon Keyspaces resource.
 /// 
-/// 
 /// Amazon Web Services-assigned tag names and values are automatically assigned
 /// the aws: prefix, which the user cannot assign. Amazon Web Services-assigned
 /// tag names do not count towards the tag limit of 50. User-assigned tag names
 /// have the prefix user: in the Cost Allocation Report. You cannot backdate
 /// the application of a tag.
-/// 
 /// 
 /// For more information, see Adding tags and labels to Amazon Keyspaces resources
 /// (https://docs.aws.amazon.com/keyspaces/latest/devguide/tagging-keyspaces.html)
@@ -380,16 +322,12 @@ pub struct TableTags {
 
 /// Enables Time to Live custom settings for the table. The options are:
 /// 
-/// 
 ///    * status:enabled
-/// 
 /// 
 ///    * status:disabled
 /// 
-/// 
 /// The default is status:disabled. After ttl is enabled, you can't disable it
 /// for the table.
-/// 
 /// 
 /// For more information, see Expiring data by using Amazon Keyspaces Time to
 /// Live (TTL) (https://docs.aws.amazon.com/keyspaces/latest/devguide/TTL.html)
@@ -429,7 +367,6 @@ pub struct TableStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

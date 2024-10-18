@@ -12,7 +12,6 @@ use self::prelude::*;
 
 /// ResolverEndpointSpec defines the desired state of ResolverEndpoint.
 /// 
-/// 
 /// In the response to a CreateResolverEndpoint (https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_CreateResolverEndpoint.html),
 /// DeleteResolverEndpoint (https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_DeleteResolverEndpoint.html),
 /// GetResolverEndpoint (https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_GetResolverEndpoint.html),
@@ -30,10 +29,8 @@ use self::prelude::*;
 pub struct ResolverEndpointSpec {
     /// Specify the applicable value:
     /// 
-    /// 
     ///    * INBOUND: Resolver forwards DNS queries to the DNS service for a VPC
     ///    from your network
-    /// 
     /// 
     ///    * OUTBOUND: Resolver forwards DNS queries from the DNS service for a VPC
     ///    to your network
@@ -108,7 +105,6 @@ pub struct ResolverEndpointIpAddressesSubnetRefFrom {
 /// Ex:
 /// APIIDRef:
 /// 
-/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -178,26 +174,21 @@ pub struct ResolverEndpointStatus {
     /// A code that specifies the current status of the Resolver endpoint. Valid
     /// values include the following:
     /// 
-    /// 
     ///    * CREATING: Resolver is creating and configuring one or more Amazon VPC
     ///    network interfaces for this endpoint.
-    /// 
     /// 
     ///    * OPERATIONAL: The Amazon VPC network interfaces for this endpoint are
     ///    correctly configured and able to pass inbound or outbound DNS queries
     ///    between your network and Resolver.
     /// 
-    /// 
     ///    * UPDATING: Resolver is associating or disassociating one or more network
     ///    interfaces with this endpoint.
-    /// 
     /// 
     ///    * AUTO_RECOVERING: Resolver is trying to recover one or more of the network
     ///    interfaces that are associated with this endpoint. During the recovery
     ///    process, the endpoint functions with limited capacity because of the limit
     ///    on the number of DNS queries per IP address (per network interface). For
     ///    the current limit, see Limits on Route 53 Resolver (https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/DNSLimitations.html#limits-api-entities-resolver).
-    /// 
     /// 
     ///    * ACTION_NEEDED: This endpoint is unhealthy, and Resolver can't automatically
     ///    recover it. To resolve the problem, we recommend that you check each IP
@@ -209,7 +200,6 @@ pub struct ResolverEndpointStatus {
     ///    associated with the endpoint were deleted using Amazon VPC. The network
     ///    interface couldn't be created for some reason that's outside the control
     ///    of Resolver.
-    /// 
     /// 
     ///    * DELETING: Resolver is deleting this endpoint and the associated network
     ///    interfaces.
@@ -231,7 +221,6 @@ pub struct ResolverEndpointStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

@@ -666,9 +666,9 @@ spec:
                             type: "string"
                           type: "array"
                         features:
-                          description: "List of additional features to enable. They are all disabled by default. Enabling additional features might have performance impacts. Possible values are:<br>\n- `PacketDrop`: enable the packets drop flows logging feature. This feature requires mounting\nthe kernel debug filesystem, so the eBPF pod has to run as privileged.\nIf the `spec.agent.ebpf.privileged` parameter is not set, an error is reported.<br>\n- `DNSTracking`: enable the DNS tracking feature.<br>\n- `FlowRTT`: enable flow latency (sRTT) extraction in the eBPF agent from TCP traffic.<br>\n- `NetworkEvents`: enable the Network events monitoring feature.  This feature requires mounting\nthe kernel debug filesystem, so the eBPF pod has to run as privileged."
+                          description: "List of additional features to enable. They are all disabled by default. Enabling additional features might have performance impacts. Possible values are:<br>\n- `PacketDrop`: enable the packets drop flows logging feature. This feature requires mounting\nthe kernel debug filesystem, so the eBPF pod has to run as privileged.\nIf the `spec.agent.ebpf.privileged` parameter is not set, an error is reported.<br>\n- `DNSTracking`: enable the DNS tracking feature.<br>\n- `FlowRTT`: enable flow latency (sRTT) extraction in the eBPF agent from TCP traffic.<br>\n- `NetworkEvents`: enable the Network events monitoring feature. This feature requires mounting\nthe kernel debug filesystem, so the eBPF pod has to run as privileged.\nIt requires using the OVN-Kubernetes network plugin with the Observability feature.\nIMPORTANT: this feature is available as a Developer Preview.<br>"
                           items:
-                            description: "Agent feature, can be one of:<br>\n- `PacketDrop`, to track packet drops.<br>\n- `DNSTracking`, to track specific information on DNS traffic.<br>\n- `FlowRTT`, to track TCP latency.<br>\n- `NetworkEvents`, to track Network events.<br>"
+                            description: "Agent feature, can be one of:<br>\n- `PacketDrop`, to track packet drops.<br>\n- `DNSTracking`, to track specific information on DNS traffic.<br>\n- `FlowRTT`, to track TCP latency.<br>\n- `NetworkEvents`, to track Network events [Developer Preview].<br>"
                             enum:
                               - "PacketDrop"
                               - "DNSTracking"
@@ -949,7 +949,7 @@ spec:
                           description: "`forceSampleAll` allows disabling sampling in the IPFIX-based flow reporter.\nIt is not recommended to sample all the traffic with IPFIX, as it might generate cluster instability.\nIf you REALLY want to do that, set this flag to `true`. Use at your own risk.\nWhen it is set to `true`, the value of `sampling` is ignored."
                           type: "boolean"
                         ovnKubernetes:
-                          description: "`ovnKubernetes` defines the settings of the OVN-Kubernetes CNI, when available. This configuration is used when using OVN's IPFIX exports, without OpenShift. When using OpenShift, refer to the `clusterNetworkOperator` property instead."
+                          description: "`ovnKubernetes` defines the settings of the OVN-Kubernetes network plugin, when available. This configuration is used when using OVN's IPFIX exports, without OpenShift. When using OpenShift, refer to the `clusterNetworkOperator` property instead."
                           properties:
                             containerName:
                               default: "ovnkube-node"
@@ -2793,9 +2793,6 @@ spec:
                   description: "`networkPolicy` defines ingress network policy settings for NetObserv components isolation."
                   properties:
                     additionalNamespaces:
-                      default:
-                        - "openshift-console"
-                        - "openshift-monitoring"
                       description: "`additionalNamespaces` contains additional namespaces allowed to connect to the NetObserv namespace.\nIt gives some flexibility in the network policy configuration, however should you need a more specific\nconfiguration, you can disable it and install your own instead."
                       items:
                         type: "string"

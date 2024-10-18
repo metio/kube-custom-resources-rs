@@ -342,7 +342,8 @@ pub struct PrometheusSpec {
     /// it (https://kubernetes.io/docs/concepts/configuration/overview/).
     /// 
     /// When hostNetwork is enabled, this will set the DNS policy to
-    /// `ClusterFirstWithHostNet` automatically.
+    /// `ClusterFirstWithHostNet` automatically (unless `.spec.DNSPolicy` is set
+    /// to a different value).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
     pub host_network: Option<bool>,
     /// When true, `spec.namespaceSelector` from all PodMonitor, ServiceMonitor
@@ -444,7 +445,7 @@ pub struct PrometheusSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Settings related to the OTLP receiver feature.
-    /// It requires Prometheus >= v2.54.0.
+    /// It requires Prometheus >= v2.55.0.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub otlp: Option<PrometheusOtlp>,
     /// When true, Prometheus resolves label conflicts by renaming the labels in the scraped data
@@ -5074,7 +5075,7 @@ pub enum PrometheusLogLevel {
 }
 
 /// Settings related to the OTLP receiver feature.
-/// It requires Prometheus >= v2.54.0.
+/// It requires Prometheus >= v2.55.0.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusOtlp {
     /// List of OpenTelemetry Attributes that should be promoted to metric labels, defaults to none.

@@ -101,6 +101,7 @@ spec:
                               type: "object"
                           type: "object"
                         maxItems: 100
+                        minItems: 1
                         type: "array"
                       to:
                         description: "To is the list of destinations whose traffic this rule applies to.\nIf any BaselineAdminNetworkPolicyEgressPeer matches the destination of outgoing\ntraffic then the specified action is applied.\nThis field must be defined and contain at least one item.\n\n\nSupport: Core"
@@ -406,6 +407,7 @@ spec:
                               type: "object"
                           type: "object"
                         maxItems: 100
+                        minItems: 1
                         type: "array"
                     required:
                       - "action"

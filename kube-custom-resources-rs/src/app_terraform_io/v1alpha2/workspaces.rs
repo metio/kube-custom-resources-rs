@@ -36,6 +36,14 @@ pub struct WorkspaceSpec {
     ///   - https://developer.hashicorp.com/terraform/cloud-docs/workspaces/settings#auto-apply-and-manual-apply
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "applyMethod")]
     pub apply_method: Option<String>,
+    /// The Deletion Policy specifies the behavior of the custom resource and its associated workspace when the custom resource is deleted.
+    /// - `retain`: When the custom resource is deleted, the associated workspace is retained.
+    /// - `soft`: Attempts to delete the associated workspace only if it does not contain any managed resources.
+    /// - `destroy`: Executes a destroy operation to remove all resources managed by the associated workspace. Once the destruction of these resources is successful, the workspace itself is deleted, followed by the removal of the custom resource.
+    /// - `force`: Forcefully and immediately deletes the workspace and the custom resource.
+    /// Default: `retain`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletionPolicy")]
+    pub deletion_policy: Option<WorkspaceDeletionPolicy>,
     /// Workspace description.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
@@ -146,6 +154,19 @@ pub struct WorkspaceAgentPool {
     /// Agent Pool name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+}
+
+/// WorkspaceSpec defines the desired state of Workspace.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum WorkspaceDeletionPolicy {
+    #[serde(rename = "retain")]
+    Retain,
+    #[serde(rename = "soft")]
+    Soft,
+    #[serde(rename = "destroy")]
+    Destroy,
+    #[serde(rename = "force")]
+    Force,
 }
 
 /// Variables let you customize configurations, modify Terraform's behavior, and store information like provider credentials.
@@ -588,6 +609,9 @@ pub struct WorkspaceStatus {
     /// Default organization project ID.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultProjectID")]
     pub default_project_id: Option<String>,
+    /// Workspace Destroy Run ID.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "destroyRunID")]
+    pub destroy_run_id: Option<String>,
     /// Real world state generation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,

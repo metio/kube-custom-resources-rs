@@ -12,9 +12,7 @@ use self::prelude::*;
 
 /// DBProxySpec defines the desired state of DBProxy.
 /// 
-/// 
 /// The data structure representing a proxy managed by the RDS Proxy.
-/// 
 /// 
 /// This data type is used as a response element in the DescribeDBProxies action.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -96,7 +94,6 @@ pub struct DBProxyAuth {
 
 /// Metadata assigned to an Amazon RDS resource consisting of a key-value pair.
 /// 
-/// 
 /// For more information, see Tagging Amazon RDS Resources (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html)
 /// in the Amazon RDS User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -152,7 +149,6 @@ pub struct DBProxyStatusAckResourceMetadata {
     /// when it has verified that an "adopted" resource (a resource where the
     /// ARN annotation was set by the Kubernetes user on the CR) exists and
     /// matches the supplied CR's Spec field values.
-    /// TODO(vijat@): Find a better strategy for resources that do not have ARN in CreateOutputResponse
     /// https://github.com/aws/aws-controllers-k8s/issues/270
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arn: Option<String>,

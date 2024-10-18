@@ -16,6 +16,11 @@ use self::prelude::*;
 #[kube(schema = "disabled")]
 #[kube(derive="PartialEq")]
 pub struct ListenerClassSpec {
+    /// Whether addresses should prefer using the IP address (`IP`) or the hostname (`Hostname`).
+    /// 
+    /// The other type will be used if the preferred type is not available. By default `Hostname` is used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredAddressType")]
+    pub preferred_address_type: Option<ListenerClassPreferredAddressType>,
     /// Annotations that should be added to the Service object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAnnotations")]
     pub service_annotations: Option<BTreeMap<String, String>>,
@@ -27,6 +32,14 @@ pub struct ListenerClassSpec {
     /// The method used to access the services.
     #[serde(rename = "serviceType")]
     pub service_type: ListenerClassServiceType,
+}
+
+/// Defines a policy for how [Listeners](https://docs.stackable.tech/home/nightly/listener-operator/listener) should be exposed. Read the [ListenerClass documentation](https://docs.stackable.tech/home/nightly/listener-operator/listenerclass) for more information.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ListenerClassPreferredAddressType {
+    Hostname,
+    #[serde(rename = "IP")]
+    Ip,
 }
 
 /// Defines a policy for how [Listeners](https://docs.stackable.tech/home/nightly/listener-operator/listener) should be exposed. Read the [ListenerClass documentation](https://docs.stackable.tech/home/nightly/listener-operator/listenerclass) for more information.

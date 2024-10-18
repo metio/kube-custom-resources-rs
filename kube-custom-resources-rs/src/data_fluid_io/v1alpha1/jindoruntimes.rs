@@ -33,6 +33,9 @@ pub struct JindoRuntimeSpec {
     /// of the file as the value.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hadoopConfig")]
     pub hadoop_config: Option<String>,
+    /// ImagePullSecrets that will be used to pull images
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
+    pub image_pull_secrets: Option<Vec<JindoRuntimeImagePullSecrets>>,
     /// The version information that instructs fluid to orchestrate a particular version of Jindo.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jindoVersion")]
     pub jindo_version: Option<JindoRuntimeJindoVersion>,
@@ -120,6 +123,9 @@ pub struct JindoRuntimeFuse {
     /// One of the three policies: `Always`, `IfNotPresent`, `Never`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
+    /// ImagePullSecrets that will be used to pull images
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
+    pub image_pull_secrets: Option<Vec<JindoRuntimeFuseImagePullSecrets>>,
     /// Image Tag for Jindo Fuse(e.g. 2.3.0-SNAPSHOT)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageTag")]
     pub image_tag: Option<String>,
@@ -152,6 +158,17 @@ pub struct JindoRuntimeFuse {
     /// If specified, the pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<JindoRuntimeFuseTolerations>>,
+}
+
+/// LocalObjectReference contains enough information to let you locate the
+/// referenced object inside the same namespace.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JindoRuntimeFuseImagePullSecrets {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// Define whether fuse metrics will be enabled.
@@ -246,6 +263,17 @@ pub struct JindoRuntimeFuseTolerations {
     pub value: Option<String>,
 }
 
+/// LocalObjectReference contains enough information to let you locate the
+/// referenced object inside the same namespace.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JindoRuntimeImagePullSecrets {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
 /// The version information that instructs fluid to orchestrate a particular version of Jindo.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JindoRuntimeJindoVersion {
@@ -269,6 +297,9 @@ pub struct JindoRuntimeMaster {
     /// Environment variables that will be used by Jindo component. <br>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<BTreeMap<String, String>>,
+    /// ImagePullSecrets that will be used to pull images
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
+    pub image_pull_secrets: Option<Vec<JindoRuntimeMasterImagePullSecrets>>,
     /// Labels will be added on JindoFS Master or Worker pods.
     /// DEPRECATED: This is a deprecated field. Please use PodMetadata instead.
     /// Note: this field is set to be exclusive with PodMetadata.Labels
@@ -302,6 +333,17 @@ pub struct JindoRuntimeMaster {
     /// VolumeMounts specifies the volumes listed in ".spec.volumes" to mount into the jindo runtime component's filesystem.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<JindoRuntimeMasterVolumeMounts>>,
+}
+
+/// LocalObjectReference contains enough information to let you locate the
+/// referenced object inside the same namespace.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JindoRuntimeMasterImagePullSecrets {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// PodMetadata defines labels and annotations that will be propagated to Jindo's pods
@@ -3696,6 +3738,9 @@ pub struct JindoRuntimeWorker {
     /// Environment variables that will be used by Jindo component. <br>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<BTreeMap<String, String>>,
+    /// ImagePullSecrets that will be used to pull images
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
+    pub image_pull_secrets: Option<Vec<JindoRuntimeWorkerImagePullSecrets>>,
     /// Labels will be added on JindoFS Master or Worker pods.
     /// DEPRECATED: This is a deprecated field. Please use PodMetadata instead.
     /// Note: this field is set to be exclusive with PodMetadata.Labels
@@ -3729,6 +3774,17 @@ pub struct JindoRuntimeWorker {
     /// VolumeMounts specifies the volumes listed in ".spec.volumes" to mount into the jindo runtime component's filesystem.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<JindoRuntimeWorkerVolumeMounts>>,
+}
+
+/// LocalObjectReference contains enough information to let you locate the
+/// referenced object inside the same namespace.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JindoRuntimeWorkerImagePullSecrets {
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// PodMetadata defines labels and annotations that will be propagated to Jindo's pods

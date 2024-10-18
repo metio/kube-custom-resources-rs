@@ -301,7 +301,7 @@ spec:
                   pattern: "^([0-9]+(\\\\.[0-9]+)?(ms|s|m|h))*$"
                   type: "string"
                 ipForwarding:
-                  description: "IPForwarding controls whether Felix sets the host sysctls to enable IP forwarding.  IP forwarding is required when using Calico for workload networking.  This should only be disabled on hosts where Calico is used for host protection.  [Default: Enabled]"
+                  description: "IPForwarding controls whether Felix sets the host sysctls to enable IP forwarding.  IP forwarding is required when using Calico for workload networking.  This should only be disabled on hosts where Calico is used for host protection. In BPF mode, due to a kernel interaction, either IPForwarding must be enabled or BPFEnforceRPF must be disabled. [Default: Enabled]"
                   enum:
                     - "Enabled"
                     - "Disabled"
