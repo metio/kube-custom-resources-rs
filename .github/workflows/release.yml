@@ -32,7 +32,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
       - name: Cargo Version
         if: steps.commits.outputs.count > 0
-        run: sed -i -e 's/^version = .*/version = "${{ steps.release.outputs.version }}"/' kube-custom-resources-rs/Cargo.toml
+        run: sed -i -e '0,/edition/s/^version = .*/version = "${{ steps.release.outputs.version }}"/' kube-custom-resources-rs/Cargo.toml
       - name: Publish to crates.io
         if: steps.commits.outputs.count > 0
         run: >
