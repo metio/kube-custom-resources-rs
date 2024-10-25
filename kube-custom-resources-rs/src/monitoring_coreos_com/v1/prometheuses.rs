@@ -569,6 +569,12 @@ pub struct PrometheusSpec {
     /// Defines the list of remote write configurations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteWrite")]
     pub remote_write: Option<Vec<PrometheusRemoteWrite>>,
+    /// List of the protobuf message versions to accept when receiving the
+    /// remote writes.
+    /// 
+    /// It requires Prometheus >= v2.54.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteWriteReceiverMessageVersions")]
+    pub remote_write_receiver_message_versions: Option<Vec<String>>,
     /// Name of Prometheus external label used to denote the replica name.
     /// The external label will _not_ be added when the field is set to the
     /// empty string (`""`).
@@ -6045,6 +6051,20 @@ pub struct PrometheusRemoteWrite {
     /// It requires Prometheus >= v2.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<BTreeMap<String, String>>,
+    /// The Remote Write message's version to use when writing to the endpoint.
+    /// 
+    /// `Version1.0` corresponds to the `prometheus.WriteRequest` protobuf message introduced in Remote Write 1.0.
+    /// `Version2.0` corresponds to the `io.prometheus.write.v2.Request` protobuf message introduced in Remote Write 2.0.
+    /// 
+    /// When `Version2.0` is selected, Prometheus will automatically be
+    /// configured to append the metadata of scraped metrics to the WAL.
+    /// 
+    /// Before setting this field, consult with your remote storage provider
+    /// what message version it supports.
+    /// 
+    /// It requires Prometheus >= v2.54.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "messageVersion")]
+    pub message_version: Option<PrometheusRemoteWriteMessageVersion>,
     /// MetadataConfig configures the sending of series metadata to the remote storage.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataConfig")]
     pub metadata_config: Option<PrometheusRemoteWriteMetadataConfig>,
@@ -6089,7 +6109,7 @@ pub struct PrometheusRemoteWrite {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteTimeout")]
     pub remote_timeout: Option<String>,
     /// Enables sending of exemplars over remote write. Note that
-    /// exemplar-storage itself must be enabled using the `spec.enableFeature`
+    /// exemplar-storage itself must be enabled using the `spec.enableFeatures`
     /// option for exemplars to be scraped in the first place.
     /// 
     /// It requires Prometheus >= v2.27.0.
@@ -6302,6 +6322,16 @@ pub struct PrometheusRemoteWriteBasicAuthUsername {
     /// Specify whether the Secret or its key must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+/// RemoteWriteSpec defines the configuration to write samples from Prometheus
+/// to a remote endpoint.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PrometheusRemoteWriteMessageVersion {
+    #[serde(rename = "V1.0")]
+    V10,
+    #[serde(rename = "V2.0")]
+    V20,
 }
 
 /// MetadataConfig configures the sending of series metadata to the remote storage.

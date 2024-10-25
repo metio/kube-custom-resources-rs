@@ -41,7 +41,8 @@ pub struct HostFirmwareComponentsStatus {
     /// Time that the status was last updated
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdated")]
     pub last_updated: Option<String>,
-    /// Updates is the list of all firmware components that should be updated they are specified via name and url fields.
+    /// Updates is the list of all firmware components that should be updated
+    /// they are specified via name and url fields.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub updates: Option<Vec<HostFirmwareComponentsStatusUpdates>>,
 }

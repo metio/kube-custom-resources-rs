@@ -76,6 +76,9 @@ pub struct HardwareInterfaces {
     /// DHCP configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dhcp: Option<HardwareInterfacesDhcp>,
+    /// DisableDHCP disables DHCP for this interface.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableDhcp")]
+    pub disable_dhcp: Option<bool>,
     /// Netboot configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub netboot: Option<HardwareInterfacesNetboot>,

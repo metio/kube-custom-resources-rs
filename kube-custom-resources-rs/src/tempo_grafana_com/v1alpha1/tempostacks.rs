@@ -101,6 +101,21 @@ pub struct TempoStackHashRingMemberlist {
     /// EnableIPv6 enables IPv6 support for the memberlist based hash ring.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableIPv6")]
     pub enable_i_pv6: Option<bool>,
+    /// InstanceAddrType defines the type of address to use to advertise to the ring.
+    /// Defaults to the first address from any private network interfaces of the current pod.
+    /// Alternatively the public pod IP can be used in case private networks (RFC 1918 and RFC 6598)
+    /// are not available.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceAddrType")]
+    pub instance_addr_type: Option<TempoStackHashRingMemberlistInstanceAddrType>,
+}
+
+/// MemberList configuration spec
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum TempoStackHashRingMemberlistInstanceAddrType {
+    #[serde(rename = "default")]
+    Default,
+    #[serde(rename = "podIP")]
+    PodIp,
 }
 
 /// Images defines the image for each container.

@@ -224,7 +224,7 @@ spec:
                   description: "ConfigSecret is the name of a secret that contains configuration for Cassandra. The\nsecret is expected to have a property named config whose value should be a JSON\nformatted string that should look like this:\n\n\n   config: |-\n     {\n       \"cassandra-yaml\": {\n         \"read_request_timeout_in_ms\": 10000\n       },\n       \"jmv-options\": {\n         \"max_heap_size\": 1024M\n       }\n     }\n\n\nConfigSecret is mutually exclusive with Config. ConfigSecret takes precedence and\nwill be used exclusively if both properties are set. The operator sets a watch such\nthat an update to the secret will trigger an update of the StatefulSets."
                   type: "string"
                 datacenterName:
-                  description: "DatacenterName allows to override the name of the Cassandra datacenter. Kubernetes objects will be named after a sanitized version of it if set, and if not metadata.name. In Cassandra the DC name will be overridden by this value.\nIt may generate some confusion as objects created for the DC will have a different name than the CasandraDatacenter object itself.\nThis setting can create conflicts if multiple DCs coexist in the same namespace if metadata.name for a DC with no override is set to the same value as the override name of another DC.\nUse cautiously."
+                  description: "DatacenterName allows to override the name of the Cassandra datacenter. In Cassandra the DC name will be overridden by this value.\nThis setting can create conflicts if multiple DCs coexist in the same namespace if metadata.name for a DC with no override is set to the same value as the override name of another DC.\nUse cautiously."
                   type: "string"
                 disableSystemLoggerSidecar:
                   description: "Configuration for disabling the simple log tailing sidecar container. Our default is to have it enabled."
@@ -6733,6 +6733,9 @@ spec:
                   description: "The timestamp when the operator last started a Server node\nwith the management API"
                   format: "date-time"
                   type: "string"
+                metadataVersion:
+                  format: "int64"
+                  type: "integer"
                 nodeReplacements:
                   items:
                     type: "string"

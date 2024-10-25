@@ -219,6 +219,8 @@ pub struct MachineStatus {
     /// Any transient errors that occur during the reconciliation of Machines
     /// can be added as events to the Machine object and/or logged in the
     /// controller's output.
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
     pub failure_message: Option<String>,
     /// FailureReason will be set in the event that there is a terminal problem
@@ -237,6 +239,8 @@ pub struct MachineStatus {
     /// Any transient errors that occur during the reconciliation of Machines
     /// can be added as events to the Machine object and/or logged in the
     /// controller's output.
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
     /// InfrastructureReady is the state of the infrastructure provider.

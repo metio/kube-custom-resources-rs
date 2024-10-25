@@ -6,6 +6,7 @@
 mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
+    pub use std::collections::BTreeMap;
     pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
@@ -58,6 +59,9 @@ pub struct LocalQueueStatus {
     /// workloads assigned to this LocalQueue.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flavorUsage")]
     pub flavor_usage: Option<Vec<LocalQueueStatusFlavorUsage>>,
+    /// flavors lists all currently available ResourceFlavors in specified ClusterQueue.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub flavors: Option<Vec<LocalQueueStatusFlavors>>,
     /// flavorsReservation are the reserved quotas, by flavor currently in use by the
     /// workloads assigned to this LocalQueue.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "flavorsReservation")]
@@ -86,6 +90,42 @@ pub struct LocalQueueStatusFlavorUsageResources {
     /// total is the total quantity of used quota.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub total: Option<IntOrString>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct LocalQueueStatusFlavors {
+    /// name of the flavor.
+    pub name: String,
+    /// nodeLabels are labels that associate the ResourceFlavor with Nodes that
+    /// have the same labels.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeLabels")]
+    pub node_labels: Option<BTreeMap<String, String>>,
+    /// nodeTaints are taints that the nodes associated with this ResourceFlavor
+    /// have.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaints")]
+    pub node_taints: Option<Vec<LocalQueueStatusFlavorsNodeTaints>>,
+    /// resources used in the flavor.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<Vec<String>>,
+}
+
+/// The node this Taint is attached to has the "effect" on
+/// any pod that does not tolerate the Taint.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct LocalQueueStatusFlavorsNodeTaints {
+    /// Required. The effect of the taint on pods
+    /// that do not tolerate the taint.
+    /// Valid effects are NoSchedule, PreferNoSchedule and NoExecute.
+    pub effect: String,
+    /// Required. The taint key to be applied to a node.
+    pub key: String,
+    /// TimeAdded represents the time at which the taint was added.
+    /// It is only written for NoExecute taints.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeAdded")]
+    pub time_added: Option<String>,
+    /// The taint value corresponding to the taint key.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

@@ -61,17 +61,28 @@ pub struct ClusterDefinitionTopologiesComponents {
     /// 	  by specifying a name prefix or regular expression pattern.
     /// 
     /// 
-    /// Once set, this field cannot be updated.
+    /// Cannot be updated once set.
     #[serde(rename = "compDef")]
     pub comp_def: String,
     /// Defines the unique identifier of the component within the cluster topology.
+    /// 
+    /// 
     /// It follows IANA Service naming rules and is used as part of the Service's DNS name.
     /// The name must start with a lowercase letter, can contain lowercase letters, numbers,
     /// and hyphens, and must end with a lowercase letter or number.
     /// 
     /// 
+    /// If the @template field is set to true, the name will be used as a prefix to match the specific components dynamically created.
+    /// 
+    /// 
     /// Cannot be updated once set.
     pub name: String,
+    /// Specifies whether the topology component will be considered as a template for instantiating components upon user requests dynamically.
+    /// 
+    /// 
+    /// Cannot be updated once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template: Option<bool>,
 }
 
 /// Specifies the sequence in which components within a cluster topology are

@@ -118,9 +118,10 @@ pub struct LokiStackLimitsGlobal {
     /// IngestionLimits defines the limits applied on ingested log streams.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ingestion: Option<LokiStackLimitsGlobalIngestion>,
-    /// OTLP to configure which resource, scope and log attributes
-    /// to store as labels or structured metadata or drop them altogether
-    /// for all tenants.
+    /// OTLP to configure which resource, scope and log attributes are stored as stream labels or structured metadata.
+    /// 
+    /// Tenancy modes can provide a default OTLP configuration, when no custom OTLP configuration is set or even
+    /// enforce the use of some required attributes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub otlp: Option<LokiStackLimitsGlobalOtlp>,
     /// QueryLimits defines the limit applied on querying log streams.
@@ -173,121 +174,76 @@ pub struct LokiStackLimitsGlobalIngestion {
     pub per_stream_rate_limit_burst: Option<i32>,
 }
 
-/// OTLP to configure which resource, scope and log attributes
-/// to store as labels or structured metadata or drop them altogether
-/// for all tenants.
+/// OTLP to configure which resource, scope and log attributes are stored as stream labels or structured metadata.
+/// 
+/// Tenancy modes can provide a default OTLP configuration, when no custom OTLP configuration is set or even
+/// enforce the use of some required attributes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LokiStackLimitsGlobalOtlp {
-    /// IndexedResourceAttributes contains the global configuration for resource attributes
-    /// to store them as index labels.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "indexedResourceAttributes")]
-    pub indexed_resource_attributes: Option<Vec<String>>,
-    /// LogAttributes contains the configuration for log attributes
-    /// to store them as structured metadata or drop them altogether.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logAttributes")]
-    pub log_attributes: Option<Vec<LokiStackLimitsGlobalOtlpLogAttributes>>,
-    /// ResourceAttributes contains the configuration for resource attributes
-    /// to store them as index labels or structured metadata or drop them altogether.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceAttributes")]
-    pub resource_attributes: Option<LokiStackLimitsGlobalOtlpResourceAttributes>,
-    /// ScopeAttributes contains the configuration for scope attributes
-    /// to store them as structured metadata or drop them altogether.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scopeAttributes")]
-    pub scope_attributes: Option<Vec<LokiStackLimitsGlobalOtlpScopeAttributes>>,
+    /// StreamLabels configures which resource attributes are converted to Loki stream labels.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "streamLabels")]
+    pub stream_labels: Option<LokiStackLimitsGlobalOtlpStreamLabels>,
+    /// StructuredMetadata configures which attributes are saved in structured metadata.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "structuredMetadata")]
+    pub structured_metadata: Option<LokiStackLimitsGlobalOtlpStructuredMetadata>,
 }
 
-/// OTLPAttributesSpec contains the configuration for a set of attributes
-/// to store them as index labels or structured metadata or drop them altogether.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct LokiStackLimitsGlobalOtlpLogAttributes {
-    /// Action defines the indexing action for the selected attributes. They
-    /// can be either added to structured metadata or drop altogether.
-    pub action: LokiStackLimitsGlobalOtlpLogAttributesAction,
-    /// Attributes allows choosing the attributes by listing their names.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<Vec<String>>,
-    /// Regex allows choosing the attributes by matching a regular expression.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub regex: Option<String>,
-}
-
-/// OTLPAttributesSpec contains the configuration for a set of attributes
-/// to store them as index labels or structured metadata or drop them altogether.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum LokiStackLimitsGlobalOtlpLogAttributesAction {
-    #[serde(rename = "structured_metadata")]
-    StructuredMetadata,
-    #[serde(rename = "drop")]
-    Drop,
-}
-
-/// ResourceAttributes contains the configuration for resource attributes
-/// to store them as index labels or structured metadata or drop them altogether.
+/// StreamLabels configures which resource attributes are converted to Loki stream labels.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LokiStackLimitsGlobalOtlpResourceAttributes {
-    /// Attributes contains the configuration for resource attributes
-    /// to store them as index labels or structured metadata or drop them altogether.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<Vec<LokiStackLimitsGlobalOtlpResourceAttributesAttributes>>,
-    /// IgnoreDefaults controls whether to ignore the global configuration for resource attributes
-    /// indexed as labels.
-    /// 
-    /// If IgnoreDefaults is true, then this spec needs to contain at least one mapping to a index label.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreDefaults")]
-    pub ignore_defaults: Option<bool>,
+pub struct LokiStackLimitsGlobalOtlpStreamLabels {
+    /// ResourceAttributes lists the names of the resource attributes that should be converted into Loki stream labels.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceAttributes")]
+    pub resource_attributes: Option<Vec<LokiStackLimitsGlobalOtlpStreamLabelsResourceAttributes>>,
 }
 
-/// OTLPResourceAttributesConfigSpec contains the configuration for a set of resource attributes
-/// to store them as index labels or structured metadata or drop them altogether.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct LokiStackLimitsGlobalOtlpResourceAttributesAttributes {
-    /// Action defines the indexing action for the selected resoure attributes. They
-    /// can be either indexed as labels, added to structured metadata or drop altogether.
-    pub action: LokiStackLimitsGlobalOtlpResourceAttributesAttributesAction,
-    /// Attributes is the list of attributes to configure indexing or drop them
-    /// altogether.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct LokiStackLimitsGlobalOtlpStreamLabelsResourceAttributes {
+    /// Name contains either a verbatim name of an attribute or a regular expression matching many attributes.
+    pub name: String,
+    /// If Regex is true, then Name is treated as a regular expression instead of as a verbatim attribute name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<Vec<String>>,
-    /// Regex allows choosing the attributes by matching a regular expression.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub regex: Option<String>,
+    pub regex: Option<bool>,
 }
 
-/// OTLPResourceAttributesConfigSpec contains the configuration for a set of resource attributes
-/// to store them as index labels or structured metadata or drop them altogether.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum LokiStackLimitsGlobalOtlpResourceAttributesAttributesAction {
-    #[serde(rename = "index_label")]
-    IndexLabel,
-    #[serde(rename = "structured_metadata")]
-    StructuredMetadata,
-    #[serde(rename = "drop")]
-    Drop,
+/// StructuredMetadata configures which attributes are saved in structured metadata.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct LokiStackLimitsGlobalOtlpStructuredMetadata {
+    /// LogAttributes lists the names of log attributes that should be included in structured metadata.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logAttributes")]
+    pub log_attributes: Option<Vec<LokiStackLimitsGlobalOtlpStructuredMetadataLogAttributes>>,
+    /// ResourceAttributes lists the names of resource attributes that should be included in structured metadata.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceAttributes")]
+    pub resource_attributes: Option<Vec<LokiStackLimitsGlobalOtlpStructuredMetadataResourceAttributes>>,
+    /// ScopeAttributes lists the names of scope attributes that should be included in structured metadata.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scopeAttributes")]
+    pub scope_attributes: Option<Vec<LokiStackLimitsGlobalOtlpStructuredMetadataScopeAttributes>>,
 }
 
-/// OTLPAttributesSpec contains the configuration for a set of attributes
-/// to store them as index labels or structured metadata or drop them altogether.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct LokiStackLimitsGlobalOtlpScopeAttributes {
-    /// Action defines the indexing action for the selected attributes. They
-    /// can be either added to structured metadata or drop altogether.
-    pub action: LokiStackLimitsGlobalOtlpScopeAttributesAction,
-    /// Attributes allows choosing the attributes by listing their names.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct LokiStackLimitsGlobalOtlpStructuredMetadataLogAttributes {
+    /// Name contains either a verbatim name of an attribute or a regular expression matching many attributes.
+    pub name: String,
+    /// If Regex is true, then Name is treated as a regular expression instead of as a verbatim attribute name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<Vec<String>>,
-    /// Regex allows choosing the attributes by matching a regular expression.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub regex: Option<String>,
+    pub regex: Option<bool>,
 }
 
-/// OTLPAttributesSpec contains the configuration for a set of attributes
-/// to store them as index labels or structured metadata or drop them altogether.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum LokiStackLimitsGlobalOtlpScopeAttributesAction {
-    #[serde(rename = "structured_metadata")]
-    StructuredMetadata,
-    #[serde(rename = "drop")]
-    Drop,
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct LokiStackLimitsGlobalOtlpStructuredMetadataResourceAttributes {
+    /// Name contains either a verbatim name of an attribute or a regular expression matching many attributes.
+    pub name: String,
+    /// If Regex is true, then Name is treated as a regular expression instead of as a verbatim attribute name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub regex: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct LokiStackLimitsGlobalOtlpStructuredMetadataScopeAttributes {
+    /// Name contains either a verbatim name of an attribute or a regular expression matching many attributes.
+    pub name: String,
+    /// If Regex is true, then Name is treated as a regular expression instead of as a verbatim attribute name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub regex: Option<bool>,
 }
 
 /// QueryLimits defines the limit applied on querying log streams.
@@ -344,9 +300,12 @@ pub struct LokiStackLimitsTenants {
     /// IngestionLimits defines the limits applied on ingested log streams.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ingestion: Option<LokiStackLimitsTenantsIngestion>,
-    /// OTLP to configure which resource, scope and log attributes
-    /// to store as labels or structured metadata or drop them altogether
-    /// for a single tenants.
+    /// OTLP to configure which resource, scope and log attributes are stored as stream labels or structured metadata.
+    /// 
+    /// Tenancy modes can provide a default OTLP configuration, when no custom OTLP configuration is set or even
+    /// enforce the use of some required attributes.
+    /// 
+    /// The per-tenant configuration for OTLP attributes will be merged with the global configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub otlp: Option<LokiStackLimitsTenantsOtlp>,
     /// QueryLimits defines the limit applied on querying log streams.
@@ -399,117 +358,78 @@ pub struct LokiStackLimitsTenantsIngestion {
     pub per_stream_rate_limit_burst: Option<i32>,
 }
 
-/// OTLP to configure which resource, scope and log attributes
-/// to store as labels or structured metadata or drop them altogether
-/// for a single tenants.
+/// OTLP to configure which resource, scope and log attributes are stored as stream labels or structured metadata.
+/// 
+/// Tenancy modes can provide a default OTLP configuration, when no custom OTLP configuration is set or even
+/// enforce the use of some required attributes.
+/// 
+/// The per-tenant configuration for OTLP attributes will be merged with the global configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LokiStackLimitsTenantsOtlp {
-    /// LogAttributes contains the configuration for log attributes
-    /// to store them as structured metadata or drop them altogether.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logAttributes")]
-    pub log_attributes: Option<Vec<LokiStackLimitsTenantsOtlpLogAttributes>>,
-    /// ResourceAttributes contains the configuration for resource attributes
-    /// to store them as index labels or structured metadata or drop them altogether.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceAttributes")]
-    pub resource_attributes: Option<LokiStackLimitsTenantsOtlpResourceAttributes>,
-    /// ScopeAttributes contains the configuration for scope attributes
-    /// to store them as structured metadata or drop them altogether.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scopeAttributes")]
-    pub scope_attributes: Option<Vec<LokiStackLimitsTenantsOtlpScopeAttributes>>,
+    /// StreamLabels configures which resource attributes are converted to Loki stream labels.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "streamLabels")]
+    pub stream_labels: Option<LokiStackLimitsTenantsOtlpStreamLabels>,
+    /// StructuredMetadata configures which attributes are saved in structured metadata.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "structuredMetadata")]
+    pub structured_metadata: Option<LokiStackLimitsTenantsOtlpStructuredMetadata>,
 }
 
-/// OTLPAttributesSpec contains the configuration for a set of attributes
-/// to store them as index labels or structured metadata or drop them altogether.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct LokiStackLimitsTenantsOtlpLogAttributes {
-    /// Action defines the indexing action for the selected attributes. They
-    /// can be either added to structured metadata or drop altogether.
-    pub action: LokiStackLimitsTenantsOtlpLogAttributesAction,
-    /// Attributes allows choosing the attributes by listing their names.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<Vec<String>>,
-    /// Regex allows choosing the attributes by matching a regular expression.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub regex: Option<String>,
-}
-
-/// OTLPAttributesSpec contains the configuration for a set of attributes
-/// to store them as index labels or structured metadata or drop them altogether.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum LokiStackLimitsTenantsOtlpLogAttributesAction {
-    #[serde(rename = "structured_metadata")]
-    StructuredMetadata,
-    #[serde(rename = "drop")]
-    Drop,
-}
-
-/// ResourceAttributes contains the configuration for resource attributes
-/// to store them as index labels or structured metadata or drop them altogether.
+/// StreamLabels configures which resource attributes are converted to Loki stream labels.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LokiStackLimitsTenantsOtlpResourceAttributes {
-    /// Attributes contains the configuration for resource attributes
-    /// to store them as index labels or structured metadata or drop them altogether.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<Vec<LokiStackLimitsTenantsOtlpResourceAttributesAttributes>>,
-    /// IgnoreDefaults controls whether to ignore the global configuration for resource attributes
-    /// indexed as labels.
-    /// 
-    /// If IgnoreDefaults is true, then this spec needs to contain at least one mapping to a index label.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreDefaults")]
-    pub ignore_defaults: Option<bool>,
+pub struct LokiStackLimitsTenantsOtlpStreamLabels {
+    /// ResourceAttributes lists the names of the resource attributes that should be converted into Loki stream labels.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceAttributes")]
+    pub resource_attributes: Option<Vec<LokiStackLimitsTenantsOtlpStreamLabelsResourceAttributes>>,
 }
 
-/// OTLPResourceAttributesConfigSpec contains the configuration for a set of resource attributes
-/// to store them as index labels or structured metadata or drop them altogether.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct LokiStackLimitsTenantsOtlpResourceAttributesAttributes {
-    /// Action defines the indexing action for the selected resoure attributes. They
-    /// can be either indexed as labels, added to structured metadata or drop altogether.
-    pub action: LokiStackLimitsTenantsOtlpResourceAttributesAttributesAction,
-    /// Attributes is the list of attributes to configure indexing or drop them
-    /// altogether.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct LokiStackLimitsTenantsOtlpStreamLabelsResourceAttributes {
+    /// Name contains either a verbatim name of an attribute or a regular expression matching many attributes.
+    pub name: String,
+    /// If Regex is true, then Name is treated as a regular expression instead of as a verbatim attribute name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<Vec<String>>,
-    /// Regex allows choosing the attributes by matching a regular expression.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub regex: Option<String>,
+    pub regex: Option<bool>,
 }
 
-/// OTLPResourceAttributesConfigSpec contains the configuration for a set of resource attributes
-/// to store them as index labels or structured metadata or drop them altogether.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum LokiStackLimitsTenantsOtlpResourceAttributesAttributesAction {
-    #[serde(rename = "index_label")]
-    IndexLabel,
-    #[serde(rename = "structured_metadata")]
-    StructuredMetadata,
-    #[serde(rename = "drop")]
-    Drop,
+/// StructuredMetadata configures which attributes are saved in structured metadata.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct LokiStackLimitsTenantsOtlpStructuredMetadata {
+    /// LogAttributes lists the names of log attributes that should be included in structured metadata.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logAttributes")]
+    pub log_attributes: Option<Vec<LokiStackLimitsTenantsOtlpStructuredMetadataLogAttributes>>,
+    /// ResourceAttributes lists the names of resource attributes that should be included in structured metadata.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceAttributes")]
+    pub resource_attributes: Option<Vec<LokiStackLimitsTenantsOtlpStructuredMetadataResourceAttributes>>,
+    /// ScopeAttributes lists the names of scope attributes that should be included in structured metadata.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scopeAttributes")]
+    pub scope_attributes: Option<Vec<LokiStackLimitsTenantsOtlpStructuredMetadataScopeAttributes>>,
 }
 
-/// OTLPAttributesSpec contains the configuration for a set of attributes
-/// to store them as index labels or structured metadata or drop them altogether.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub struct LokiStackLimitsTenantsOtlpScopeAttributes {
-    /// Action defines the indexing action for the selected attributes. They
-    /// can be either added to structured metadata or drop altogether.
-    pub action: LokiStackLimitsTenantsOtlpScopeAttributesAction,
-    /// Attributes allows choosing the attributes by listing their names.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct LokiStackLimitsTenantsOtlpStructuredMetadataLogAttributes {
+    /// Name contains either a verbatim name of an attribute or a regular expression matching many attributes.
+    pub name: String,
+    /// If Regex is true, then Name is treated as a regular expression instead of as a verbatim attribute name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub attributes: Option<Vec<String>>,
-    /// Regex allows choosing the attributes by matching a regular expression.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub regex: Option<String>,
+    pub regex: Option<bool>,
 }
 
-/// OTLPAttributesSpec contains the configuration for a set of attributes
-/// to store them as index labels or structured metadata or drop them altogether.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum LokiStackLimitsTenantsOtlpScopeAttributesAction {
-    #[serde(rename = "structured_metadata")]
-    StructuredMetadata,
-    #[serde(rename = "drop")]
-    Drop,
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct LokiStackLimitsTenantsOtlpStructuredMetadataResourceAttributes {
+    /// Name contains either a verbatim name of an attribute or a regular expression matching many attributes.
+    pub name: String,
+    /// If Regex is true, then Name is treated as a regular expression instead of as a verbatim attribute name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub regex: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct LokiStackLimitsTenantsOtlpStructuredMetadataScopeAttributes {
+    /// Name contains either a verbatim name of an attribute or a regular expression matching many attributes.
+    pub name: String,
+    /// If Regex is true, then Name is treated as a regular expression instead of as a verbatim attribute name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub regex: Option<bool>,
 }
 
 /// QueryLimits defines the limit applied on querying log streams.
@@ -706,6 +626,8 @@ pub struct LokiStackRulesSelectorMatchExpressions {
 pub enum LokiStackSize {
     #[serde(rename = "1x.demo")]
     r#_1xDemo,
+    #[serde(rename = "1x.pico")]
+    r#_1xPico,
     #[serde(rename = "1x.extra-small")]
     r#_1xExtraSmall,
     #[serde(rename = "1x.small")]
@@ -3226,6 +3148,28 @@ pub struct LokiStackTenantsOpenshift {
     ///  - dedicated-admin
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminGroups")]
     pub admin_groups: Option<Vec<String>>,
+    /// OTLP contains settings for ingesting data using OTLP in the OpenShift tenancy mode.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub otlp: Option<LokiStackTenantsOpenshiftOtlp>,
+}
+
+/// OTLP contains settings for ingesting data using OTLP in the OpenShift tenancy mode.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct LokiStackTenantsOpenshiftOtlp {
+    /// DisableRecommendedAttributes can be used to reduce the number of attributes used for stream labels and structured
+    /// metadata.
+    /// 
+    /// Enabling this setting removes the "recommended attributes" from the generated Loki configuration. This will cause
+    /// meta information to not be available as stream labels or structured metadata, potentially making queries more
+    /// expensive and less performant.
+    /// 
+    /// Note that there is a set of "required attributes", needed for OpenShift Logging to work properly. Those will be
+    /// added to the configuration, even if this field is set to true.
+    /// 
+    /// This option is supposed to be combined with a custom label configuration customizing the labels for the specific
+    /// usecase.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableRecommendedAttributes")]
+    pub disable_recommended_attributes: Option<bool>,
 }
 
 /// LokiStack CR spec Status.

@@ -5972,8 +5972,8 @@ pub struct EMQXStatus {
     pub core_nodes: Option<Vec<EMQXStatusCoreNodes>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "coreNodesStatus")]
     pub core_nodes_status: Option<EMQXStatusCoreNodesStatus>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodEvacuationsStatus")]
-    pub nod_evacuations_status: Option<Vec<EMQXStatusNodEvacuationsStatus>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeEvacuationsStatus")]
+    pub node_evacuations_status: Option<Vec<EMQXStatusNodeEvacuationsStatus>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicantNodes")]
     pub replicant_nodes: Option<Vec<EMQXStatusReplicantNodes>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicantNodesStatus")]
@@ -6023,7 +6023,7 @@ pub struct EMQXStatusCoreNodesStatus {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct EMQXStatusNodEvacuationsStatus {
+pub struct EMQXStatusNodeEvacuationsStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub connection_eviction_rate: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6039,11 +6039,11 @@ pub struct EMQXStatusNodEvacuationsStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub stats: Option<EMQXStatusNodEvacuationsStatusStats>,
+    pub stats: Option<EMQXStatusNodeEvacuationsStatusStats>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct EMQXStatusNodEvacuationsStatusStats {
+pub struct EMQXStatusNodeEvacuationsStatusStats {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub current_connected: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

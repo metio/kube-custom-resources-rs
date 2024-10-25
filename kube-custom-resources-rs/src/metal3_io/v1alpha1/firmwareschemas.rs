@@ -49,7 +49,8 @@ pub struct FirmwareSchemaSchema {
     /// Whether or not this setting is read only.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub read_only: Option<bool>,
-    /// Whether or not this setting's value is unique to this node, e.g. a serial number.
+    /// Whether or not this setting's value is unique to this node, e.g.
+    /// a serial number.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub unique: Option<bool>,
     /// The highest value for an Integer type setting.

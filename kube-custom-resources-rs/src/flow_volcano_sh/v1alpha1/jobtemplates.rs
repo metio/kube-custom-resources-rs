@@ -904,6 +904,8 @@ pub struct JobTemplateTasksTemplateSpecContainersResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobTemplateTasksTemplateSpecContainersResourcesClaims {
     pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1489,6 +1491,8 @@ pub struct JobTemplateTasksTemplateSpecEphemeralContainersResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobTemplateTasksTemplateSpecEphemeralContainersResourcesClaims {
     pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2067,6 +2071,8 @@ pub struct JobTemplateTasksTemplateSpecInitContainersResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobTemplateTasksTemplateSpecInitContainersResourcesClaims {
     pub name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub request: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2246,12 +2252,6 @@ pub struct JobTemplateTasksTemplateSpecReadinessGates {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobTemplateTasksTemplateSpecResourceClaims {
     pub name: String,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub source: Option<JobTemplateTasksTemplateSpecResourceClaimsSource>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct JobTemplateTasksTemplateSpecResourceClaimsSource {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaimName")]
     pub resource_claim_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaimTemplateName")]
@@ -2283,6 +2283,8 @@ pub struct JobTemplateTasksTemplateSpecSecurityContext {
     pub seccomp_profile: Option<JobTemplateTasksTemplateSpecSecurityContextSeccompProfile>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
+    pub supplemental_groups_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<JobTemplateTasksTemplateSpecSecurityContextSysctls>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
@@ -2421,6 +2423,8 @@ pub struct JobTemplateTasksTemplateSpecVolumes {
     pub glusterfs: Option<JobTemplateTasksTemplateSpecVolumesGlusterfs>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<JobTemplateTasksTemplateSpecVolumesHostPath>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<JobTemplateTasksTemplateSpecVolumesImage>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub iscsi: Option<JobTemplateTasksTemplateSpecVolumesIscsi>,
     pub name: String,
@@ -2774,6 +2778,14 @@ pub struct JobTemplateTasksTemplateSpecVolumesHostPath {
     pub path: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct JobTemplateTasksTemplateSpecVolumesImage {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
+    pub pull_policy: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reference: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

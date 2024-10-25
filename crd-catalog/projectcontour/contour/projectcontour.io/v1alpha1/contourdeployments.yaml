@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.15.0"
+    controller-gen.kubebuilder.io/version: "v0.16.4"
   name: "contourdeployments.projectcontour.io"
 spec:
   group: "projectcontour.io"
@@ -47,7 +47,7 @@ spec:
                           description: "Strategy describes the deployment strategy to use to replace existing pods with new pods."
                           properties:
                             rollingUpdate:
-                              description: "Rolling update config params. Present only if DeploymentStrategyType =\nRollingUpdate.\n---\nTODO: Update this to follow our convention for oneOf, whatever we decide it\nto be."
+                              description: "Rolling update config params. Present only if DeploymentStrategyType =\nRollingUpdate."
                               properties:
                                 maxSurge:
                                   anyOf:
@@ -140,6 +140,9 @@ spec:
                               name:
                                 description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
                                 type: "string"
+                              request:
+                                description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
+                                type: "string"
                             required:
                               - "name"
                             type: "object"
@@ -193,7 +196,7 @@ spec:
                           description: "Strategy describes the deployment strategy to use to replace existing DaemonSet pods with new pods."
                           properties:
                             rollingUpdate:
-                              description: "Rolling update config params. Present only if type = \"RollingUpdate\".\n---\nTODO: Update this to follow our convention for oneOf, whatever we decide it\nto be. Same as Deployment `strategy.rollingUpdate`.\nSee https://github.com/kubernetes/kubernetes/issues/35345"
+                              description: "Rolling update config params. Present only if type = \"RollingUpdate\"."
                               properties:
                                 maxSurge:
                                   anyOf:
@@ -225,7 +228,7 @@ spec:
                           description: "Strategy describes the deployment strategy to use to replace existing pods with new pods."
                           properties:
                             rollingUpdate:
-                              description: "Rolling update config params. Present only if DeploymentStrategyType =\nRollingUpdate.\n---\nTODO: Update this to follow our convention for oneOf, whatever we decide it\nto be."
+                              description: "Rolling update config params. Present only if DeploymentStrategyType =\nRollingUpdate."
                               properties:
                                 maxSurge:
                                   anyOf:
@@ -285,7 +288,7 @@ spec:
                             description: "awsElasticBlockStore represents an AWS Disk resource that is attached to a\nkubelet's host machine and then exposed to the pod.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore"
                             properties:
                               fsType:
-                                description: "fsType is the filesystem type of the volume that you want to mount.\nTip: Ensure that the filesystem type is supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore\nTODO: how do we prevent errors in the filesystem from compromising the machine"
+                                description: "fsType is the filesystem type of the volume that you want to mount.\nTip: Ensure that the filesystem type is supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore"
                                 type: "string"
                               partition:
                                 description: "partition is the partition in the volume that you want to mount.\nIf omitted, the default is to mount by volume name.\nExamples: For volume /dev/sda1, you specify the partition as \"1\".\nSimilarly, the volume partition for /dev/sda is \"0\" (or you can leave the property empty)."
@@ -313,12 +316,14 @@ spec:
                                 description: "diskURI is the URI of data disk in the blob storage"
                                 type: "string"
                               fsType:
+                                default: "ext4"
                                 description: "fsType is Filesystem type to mount.\nMust be a filesystem type supported by the host operating system.\nEx. \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified."
                                 type: "string"
                               kind:
                                 description: "kind expected values are Shared: multiple blob disks per storage account  Dedicated: single blob disk per storage account  Managed: azure managed data disk (only in managed availability set). defaults to shared"
                                 type: "string"
                               readOnly:
+                                default: false
                                 description: "readOnly Defaults to false (read/write). ReadOnly here will force\nthe ReadOnly setting in VolumeMounts."
                                 type: "boolean"
                             required:
@@ -364,7 +369,7 @@ spec:
                                 properties:
                                   name:
                                     default: ""
-                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
@@ -388,7 +393,7 @@ spec:
                                 properties:
                                   name:
                                     default: ""
-                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
@@ -428,7 +433,7 @@ spec:
                                 x-kubernetes-list-type: "atomic"
                               name:
                                 default: ""
-                                description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                                description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                 type: "string"
                               optional:
                                 description: "optional specify whether the ConfigMap or its keys must be defined"
@@ -449,7 +454,7 @@ spec:
                                 properties:
                                   name:
                                     default: ""
-                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
@@ -649,7 +654,7 @@ spec:
                                         description: "storageClassName is the name of the StorageClass required by the claim.\nMore info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1"
                                         type: "string"
                                       volumeAttributesClassName:
-                                        description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string value means that no VolumeAttributesClass\nwill be applied to the claim but it's not allowed to reset this field to empty string once it is set.\nIf unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass\nwill be set by the persistentvolume controller if it exists.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/\n(Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled."
+                                        description: "volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.\nIf specified, the CSI driver will create or update the volume with the attributes defined\nin the corresponding VolumeAttributesClass. This has a different purpose than storageClassName,\nit can be changed after the claim is created. An empty string value means that no VolumeAttributesClass\nwill be applied to the claim but it's not allowed to reset this field to empty string once it is set.\nIf unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass\nwill be set by the persistentvolume controller if it exists.\nIf the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be\nset to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource\nexists.\nMore info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/\n(Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default)."
                                         type: "string"
                                       volumeMode:
                                         description: "volumeMode defines what type of volume is required by the claim.\nValue of Filesystem is implied when not included in claim spec."
@@ -666,7 +671,7 @@ spec:
                             description: "fc represents a Fibre Channel resource that is attached to a kubelet's host machine and then exposed to the pod."
                             properties:
                               fsType:
-                                description: "fsType is the filesystem type to mount.\nMust be a filesystem type supported by the host operating system.\nEx. \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nTODO: how do we prevent errors in the filesystem from compromising the machine"
+                                description: "fsType is the filesystem type to mount.\nMust be a filesystem type supported by the host operating system.\nEx. \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified."
                                 type: "string"
                               lun:
                                 description: "lun is Optional: FC target lun number"
@@ -710,7 +715,7 @@ spec:
                                 properties:
                                   name:
                                     default: ""
-                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
@@ -731,7 +736,7 @@ spec:
                             description: "gcePersistentDisk represents a GCE Disk resource that is attached to a\nkubelet's host machine and then exposed to the pod.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk"
                             properties:
                               fsType:
-                                description: "fsType is filesystem type of the volume that you want to mount.\nTip: Ensure that the filesystem type is supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk\nTODO: how do we prevent errors in the filesystem from compromising the machine"
+                                description: "fsType is filesystem type of the volume that you want to mount.\nTip: Ensure that the filesystem type is supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk"
                                 type: "string"
                               partition:
                                 description: "partition is the partition in the volume that you want to mount.\nIf omitted, the default is to mount by volume name.\nExamples: For volume /dev/sda1, you specify the partition as \"1\".\nSimilarly, the volume partition for /dev/sda is \"0\" (or you can leave the property empty).\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk"
@@ -778,7 +783,7 @@ spec:
                               - "path"
                             type: "object"
                           hostPath:
-                            description: "hostPath represents a pre-existing file or directory on the host\nmachine that is directly exposed to the container. This is generally\nused for system agents or other privileged things that are allowed\nto see the host machine. Most containers will NOT need this.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath\n---\nTODO(jonesdl) We need to restrict who can use host directory mounts and who can/can not\nmount host directories as read/write."
+                            description: "hostPath represents a pre-existing file or directory on the host\nmachine that is directly exposed to the container. This is generally\nused for system agents or other privileged things that are allowed\nto see the host machine. Most containers will NOT need this.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath"
                             properties:
                               path:
                                 description: "path of the directory on the host.\nIf the path is a symlink, it will follow the link to the real path.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#hostpath"
@@ -788,6 +793,16 @@ spec:
                                 type: "string"
                             required:
                               - "path"
+                            type: "object"
+                          image:
+                            description: "image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.\nThe volume is resolved at pod startup depending on which PullPolicy value is provided:\n- Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.\n- Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.\n- IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.\nThe volume gets re-resolved if the pod gets deleted and recreated, which means that new remote content will become available on pod recreation.\nA failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message.\nThe types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.\nThe OCI object gets mounted in a single directory (spec.containers[*].volumeMounts.mountPath) by merging the manifest layers in the same way as for container images.\nThe volume will be mounted read-only (ro) and non-executable files (noexec).\nSub path mounts for containers are not supported (spec.containers[*].volumeMounts.subpath).\nThe field spec.securityContext.fsGroupChangePolicy has no effect on this volume type."
+                            properties:
+                              pullPolicy:
+                                description: "Policy for pulling OCI objects. Possible values are:\nAlways: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.\nNever: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.\nIfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.\nDefaults to Always if :latest tag is specified, or IfNotPresent otherwise."
+                                type: "string"
+                              reference:
+                                description: "Required: Image or artifact reference to be used.\nBehaves in the same way as pod.spec.containers[*].image.\nPull secrets will be assembled in the same way as for the container image by looking up node credentials, SA image pull secrets, and pod spec image pull secrets.\nMore info: https://kubernetes.io/docs/concepts/containers/images\nThis field is optional to allow higher level config management to default or override\ncontainer images in workload controllers like Deployments and StatefulSets."
+                                type: "string"
                             type: "object"
                           iscsi:
                             description: "iscsi represents an ISCSI Disk resource that is attached to a\nkubelet's host machine and then exposed to the pod.\nMore info: https://examples.k8s.io/volumes/iscsi/README.md"
@@ -799,7 +814,7 @@ spec:
                                 description: "chapAuthSession defines whether support iSCSI Session CHAP authentication"
                                 type: "boolean"
                               fsType:
-                                description: "fsType is the filesystem type of the volume that you want to mount.\nTip: Ensure that the filesystem type is supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#iscsi\nTODO: how do we prevent errors in the filesystem from compromising the machine"
+                                description: "fsType is the filesystem type of the volume that you want to mount.\nTip: Ensure that the filesystem type is supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#iscsi"
                                 type: "string"
                               initiatorName:
                                 description: "initiatorName is the custom iSCSI Initiator Name.\nIf initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface\n<target portal>:<volume name> will be created for the connection."
@@ -808,6 +823,7 @@ spec:
                                 description: "iqn is the target iSCSI Qualified Name."
                                 type: "string"
                               iscsiInterface:
+                                default: "default"
                                 description: "iscsiInterface is the interface Name that uses an iSCSI transport.\nDefaults to 'default' (tcp)."
                                 type: "string"
                               lun:
@@ -828,7 +844,7 @@ spec:
                                 properties:
                                   name:
                                     default: ""
-                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
@@ -906,9 +922,9 @@ spec:
                                 format: "int32"
                                 type: "integer"
                               sources:
-                                description: "sources is the list of volume projections"
+                                description: "sources is the list of volume projections. Each entry in this list\nhandles one source."
                                 items:
-                                  description: "Projection that may be projected along with other supported volume types"
+                                  description: "Projection that may be projected along with other supported volume types.\nExactly one of these fields must be set."
                                   properties:
                                     clusterTrustBundle:
                                       description: "ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field\nof ClusterTrustBundle objects in an auto-updating file.\nAlpha, gated by the ClusterTrustBundleProjection feature gate.\nClusterTrustBundle objects can either be selected by name, or by the\ncombination of signer name and a label selector.\nKubelet performs aggressive normalization of the PEM contents written\ninto the pod filesystem.  Esoteric PEM features such as inter-block\ncomments and block headers are stripped.  Certificates are deduplicated.\nThe ordering of certificates within the file is arbitrary, and Kubelet\nmay change the order over time."
@@ -987,7 +1003,7 @@ spec:
                                           x-kubernetes-list-type: "atomic"
                                         name:
                                           default: ""
-                                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                           type: "string"
                                         optional:
                                           description: "optional specify whether the ConfigMap or its keys must be defined"
@@ -1074,7 +1090,7 @@ spec:
                                           x-kubernetes-list-type: "atomic"
                                         name:
                                           default: ""
-                                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                                          description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                           type: "string"
                                         optional:
                                           description: "optional field specify whether the Secret or its key must be defined"
@@ -1130,12 +1146,13 @@ spec:
                             description: "rbd represents a Rados Block Device mount on the host that shares a pod's lifetime.\nMore info: https://examples.k8s.io/volumes/rbd/README.md"
                             properties:
                               fsType:
-                                description: "fsType is the filesystem type of the volume that you want to mount.\nTip: Ensure that the filesystem type is supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#rbd\nTODO: how do we prevent errors in the filesystem from compromising the machine"
+                                description: "fsType is the filesystem type of the volume that you want to mount.\nTip: Ensure that the filesystem type is supported by the host operating system.\nExamples: \"ext4\", \"xfs\", \"ntfs\". Implicitly inferred to be \"ext4\" if unspecified.\nMore info: https://kubernetes.io/docs/concepts/storage/volumes#rbd"
                                 type: "string"
                               image:
                                 description: "image is the rados image name.\nMore info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it"
                                 type: "string"
                               keyring:
+                                default: "/etc/ceph/keyring"
                                 description: "keyring is the path to key ring for RBDUser.\nDefault is /etc/ceph/keyring.\nMore info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it"
                                 type: "string"
                               monitors:
@@ -1145,6 +1162,7 @@ spec:
                                 type: "array"
                                 x-kubernetes-list-type: "atomic"
                               pool:
+                                default: "rbd"
                                 description: "pool is the rados pool name.\nDefault is rbd.\nMore info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it"
                                 type: "string"
                               readOnly:
@@ -1155,11 +1173,12 @@ spec:
                                 properties:
                                   name:
                                     default: ""
-                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
                               user:
+                                default: "admin"
                                 description: "user is the rados user name.\nDefault is admin.\nMore info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it"
                                 type: "string"
                             required:
@@ -1170,6 +1189,7 @@ spec:
                             description: "scaleIO represents a ScaleIO persistent volume attached and mounted on Kubernetes nodes."
                             properties:
                               fsType:
+                                default: "xfs"
                                 description: "fsType is the filesystem type to mount.\nMust be a filesystem type supported by the host operating system.\nEx. \"ext4\", \"xfs\", \"ntfs\".\nDefault is \"xfs\"."
                                 type: "string"
                               gateway:
@@ -1186,7 +1206,7 @@ spec:
                                 properties:
                                   name:
                                     default: ""
-                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
@@ -1194,6 +1214,7 @@ spec:
                                 description: "sslEnabled Flag enable/disable SSL communication with Gateway, default false"
                                 type: "boolean"
                               storageMode:
+                                default: "ThinProvisioned"
                                 description: "storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned.\nDefault is ThinProvisioned."
                                 type: "string"
                               storagePool:
@@ -1259,7 +1280,7 @@ spec:
                                 properties:
                                   name:
                                     default: ""
-                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nTODO: Add other useful fields. apiVersion, kind, uid?\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names\nTODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896."
+                                    description: "Name of the referent.\nThis field is effectively required, but due to backwards compatibility is\nallowed to be empty. Instances of this type with an empty value here are\nalmost certainly wrong.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names"
                                     type: "string"
                                 type: "object"
                                 x-kubernetes-map-type: "atomic"
@@ -1369,6 +1390,9 @@ spec:
                             properties:
                               name:
                                 description: "Name must match the name of one entry in pod.spec.resourceClaims of\nthe Pod where this field is used. It makes that resource available\ninside a container."
+                                type: "string"
+                              request:
+                                description: "Request is the name chosen for a request in the referenced claim.\nIf empty, everything from the claim is made available, otherwise\nonly the result of this request."
                                 type: "string"
                             required:
                               - "name"
@@ -1907,6 +1931,8 @@ spec:
                                               description: "Value defines the value of the descriptor entry."
                                               minLength: 1
                                               type: "string"
+                                          required:
+                                            - "value"
                                           type: "object"
                                         remoteAddress:
                                           description: "RemoteAddress defines a descriptor entry with a key of \"remote_address\"\nand a value equal to the client's IP address (from x-forwarded-for)."
@@ -1922,6 +1948,9 @@ spec:
                                               description: "HeaderName defines the name of the header to look for on the request."
                                               minLength: 1
                                               type: "string"
+                                          required:
+                                            - "descriptorKey"
+                                            - "headerName"
                                           type: "object"
                                         requestHeaderValueMatch:
                                           description: "RequestHeaderValueMatch defines a descriptor entry that's populated\nif the request's headers match a set of 1+ match criteria. The\ndescriptor key is \"header_match\", and the descriptor value is static."
@@ -1974,10 +2003,14 @@ spec:
                                               description: "Value defines the value of the descriptor entry."
                                               minLength: 1
                                               type: "string"
+                                          required:
+                                            - "value"
                                           type: "object"
                                       type: "object"
                                     minItems: 1
                                     type: "array"
+                                required:
+                                  - "entries"
                                 type: "object"
                               minItems: 1
                               type: "array"
@@ -2097,7 +2130,7 @@ spec:
                 conditions:
                   description: "Conditions describe the current conditions of the ContourDeployment resource."
                   items:
-                    description: "Condition contains details for one aspect of the current state of this API Resource.\n---\nThis struct is intended for direct use as an array at the field path .status.conditions.  For example,\n\n\n\ttype FooStatus struct{\n\t    // Represents the observations of a foo's current state.\n\t    // Known .status.conditions.type are: \"Available\", \"Progressing\", and \"Degraded\"\n\t    // +patchMergeKey=type\n\t    // +patchStrategy=merge\n\t    // +listType=map\n\t    // +listMapKey=type\n\t    Conditions []metav1.Condition `json:\"conditions,omitempty\" patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`\n\n\n\t    // other fields\n\t}"
+                    description: "Condition contains details for one aspect of the current state of this API Resource."
                     properties:
                       lastTransitionTime:
                         description: "lastTransitionTime is the last time the condition transitioned from one status to another.\nThis should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable."
@@ -2126,7 +2159,7 @@ spec:
                           - "Unknown"
                         type: "string"
                       type:
-                        description: "type of condition in CamelCase or in foo.example.com/CamelCase.\n---\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions can be\nuseful (see .node.status.conditions), the ability to deconflict is important.\nThe regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)"
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase."
                         maxLength: 316
                         pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
                         type: "string"

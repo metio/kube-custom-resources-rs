@@ -81,7 +81,8 @@ pub struct MachineConnectionProviderOptionsIntelAmt {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostScheme")]
     pub host_scheme: Option<MachineConnectionProviderOptionsIntelAmtHostScheme>,
     /// Port that intelAMT will use for calls.
-    pub port: i64,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i64>,
 }
 
 /// IntelAMT contains the options to customize the IntelAMT provider.
@@ -108,7 +109,15 @@ pub struct MachineConnectionProviderOptionsIpmitool {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineConnectionProviderOptionsRedfish {
     /// Port that redfish will use for calls.
-    pub port: i64,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub port: Option<i64>,
+    /// SystemName is the name of the system to use for redfish calls.
+    /// With redfish implementations that manage multiple systems via a single endpoint, this allows for specifying the system to manage.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemName")]
+    pub system_name: Option<String>,
+    /// UseBasicAuth for redfish calls. The default is false which means token based auth is used.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useBasicAuth")]
+    pub use_basic_auth: Option<bool>,
 }
 
 /// RPC contains the options to customize the RPC provider.

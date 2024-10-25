@@ -11,7 +11,6 @@ mod prelude {
 }
 use self::prelude::*;
 
-/// RateLimitPolicySpec defines the desired state of RateLimitPolicy
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "kuadrant.io", version = "v1beta3", kind = "RateLimitPolicy", plural = "ratelimitpolicies")]
 #[kube(namespaced)]
@@ -20,29 +19,32 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct RateLimitPolicySpec {
-    /// Defaults define explicit default values for this policy and for policies inheriting this policy.
-    /// Defaults are mutually exclusive with implicit defaults defined by RateLimitPolicyCommonSpec.
+    /// Rules to apply as defaults. Can be overridden by more specific policiy rules lower in the hierarchy and by less specific policy overrides.
+    /// Use one of: defaults, overrides, or bare set of policy rules (implicit defaults).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub defaults: Option<RateLimitPolicyDefaults>,
     /// Limits holds the struct of limits indexed by a unique name
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, RateLimitPolicyLimits>>,
-    /// Overrides define override values for this policy and for policies inheriting this policy.
-    /// Overrides are mutually exclusive with implicit defaults and explicit Defaults defined by RateLimitPolicyCommonSpec.
+    /// Rules to apply as overrides. Override all policy rules lower in the hierarchy. Can be overridden by less specific policy overrides.
+    /// Use one of: defaults, overrides, or bare set of policy rules (implicit defaults).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub overrides: Option<RateLimitPolicyOverrides>,
-    /// TargetRef identifies an API object to apply policy to.
+    /// Reference to the object to which this policy applies.
     #[serde(rename = "targetRef")]
     pub target_ref: RateLimitPolicyTargetRef,
 }
 
-/// Defaults define explicit default values for this policy and for policies inheriting this policy.
-/// Defaults are mutually exclusive with implicit defaults defined by RateLimitPolicyCommonSpec.
+/// Rules to apply as defaults. Can be overridden by more specific policiy rules lower in the hierarchy and by less specific policy overrides.
+/// Use one of: defaults, overrides, or bare set of policy rules (implicit defaults).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RateLimitPolicyDefaults {
     /// Limits holds the struct of limits indexed by a unique name
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, RateLimitPolicyDefaultsLimits>>,
+    /// Strategy defines the merge strategy to apply when merging this policy with other policies.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strategy: Option<RateLimitPolicyDefaultsStrategy>,
 }
 
 /// Limits holds the struct of limits indexed by a unique name
@@ -120,6 +122,16 @@ pub enum RateLimitPolicyDefaultsLimitsWhenOperator {
     Matches,
 }
 
+/// Rules to apply as defaults. Can be overridden by more specific policiy rules lower in the hierarchy and by less specific policy overrides.
+/// Use one of: defaults, overrides, or bare set of policy rules (implicit defaults).
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum RateLimitPolicyDefaultsStrategy {
+    #[serde(rename = "atomic")]
+    Atomic,
+    #[serde(rename = "merge")]
+    Merge,
+}
+
 /// Limits holds the struct of limits indexed by a unique name
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RateLimitPolicyLimits {
@@ -195,13 +207,16 @@ pub enum RateLimitPolicyLimitsWhenOperator {
     Matches,
 }
 
-/// Overrides define override values for this policy and for policies inheriting this policy.
-/// Overrides are mutually exclusive with implicit defaults and explicit Defaults defined by RateLimitPolicyCommonSpec.
+/// Rules to apply as overrides. Override all policy rules lower in the hierarchy. Can be overridden by less specific policy overrides.
+/// Use one of: defaults, overrides, or bare set of policy rules (implicit defaults).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RateLimitPolicyOverrides {
     /// Limits holds the struct of limits indexed by a unique name
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, RateLimitPolicyOverridesLimits>>,
+    /// Strategy defines the merge strategy to apply when merging this policy with other policies.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strategy: Option<RateLimitPolicyOverridesStrategy>,
 }
 
 /// Limits holds the struct of limits indexed by a unique name
@@ -279,7 +294,17 @@ pub enum RateLimitPolicyOverridesLimitsWhenOperator {
     Matches,
 }
 
-/// TargetRef identifies an API object to apply policy to.
+/// Rules to apply as overrides. Override all policy rules lower in the hierarchy. Can be overridden by less specific policy overrides.
+/// Use one of: defaults, overrides, or bare set of policy rules (implicit defaults).
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum RateLimitPolicyOverridesStrategy {
+    #[serde(rename = "atomic")]
+    Atomic,
+    #[serde(rename = "merge")]
+    Merge,
+}
+
+/// Reference to the object to which this policy applies.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RateLimitPolicyTargetRef {
     /// Group is the group of the target resource.
@@ -288,9 +313,23 @@ pub struct RateLimitPolicyTargetRef {
     pub kind: String,
     /// Name is the name of the target resource.
     pub name: String,
+    /// SectionName is the name of a section within the target resource. When
+    /// unspecified, this targetRef targets the entire resource. In the following
+    /// resources, SectionName is interpreted as the following:
+    /// 
+    /// 
+    /// * Gateway: Listener name
+    /// * HTTPRoute: HTTPRouteRule name
+    /// * Service: Port name
+    /// 
+    /// 
+    /// If a SectionName is specified, but does not exist on the targeted object,
+    /// the Policy must fail to attach, and the policy implementation should record
+    /// a `ResolvedRefs` or similar Condition in the Policy's status.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]
+    pub section_name: Option<String>,
 }
 
-/// RateLimitPolicyStatus defines the observed state of RateLimitPolicy
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RateLimitPolicyStatus {
     /// Represents the observations of a foo's current state.

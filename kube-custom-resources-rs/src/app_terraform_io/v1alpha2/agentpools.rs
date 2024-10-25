@@ -44,6 +44,12 @@ pub struct AgentPoolSpec {
 /// Agent deployment settings
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AgentPoolAgentDeployment {
+    /// Annotations that will be applied to the pod template in the deployment.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    /// Labels that will be applied to the pod template in the deployment.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
     /// PodSpec is a description of a pod.

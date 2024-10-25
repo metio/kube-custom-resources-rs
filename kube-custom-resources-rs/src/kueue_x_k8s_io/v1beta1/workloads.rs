@@ -31,6 +31,12 @@ pub struct WorkloadSpec {
     /// Defaults to true
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub active: Option<bool>,
+    /// maximumExecutionTimeSeconds if provided, determines the maximum time, in seconds,
+    /// the workload can be admitted before it's automatically deactivated.
+    /// 
+    /// If unspecified, no execution time limit is enforced on the Workload.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumExecutionTimeSeconds")]
+    pub maximum_execution_time_seconds: Option<i32>,
     /// podSets is a list of sets of homogeneous pods, each described by a Pod spec
     /// and a count.
     /// There must be at least one element and at most 8.

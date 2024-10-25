@@ -24,18 +24,41 @@ pub struct ClusterDeploymentCustomizationSpec {
     pub install_config_patches: Option<Vec<ClusterDeploymentCustomizationInstallConfigPatches>>,
 }
 
-/// PatchEntity represent a json patch (RFC 6902) to be applied to the install-config
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+/// PatchEntity represents a json patch (RFC 6902) to be applied
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterDeploymentCustomizationInstallConfigPatches {
     /// From is the json path to copy or move the value from
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub from: Option<String>,
-    /// Op is the operation to perform: add, remove, replace, move, copy, test
-    pub op: String,
+    /// Op is the operation to perform.
+    pub op: ClusterDeploymentCustomizationInstallConfigPatchesOp,
     /// Path is the json path to the value to be modified
     pub path: String,
-    /// Value is the value to be used in the operation
-    pub value: String,
+    /// Value is the *string* value to be used in the operation. For more complex values, use
+    /// ValueJSON.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    /// ValueJSON is a string representing a JSON object to be used in the operation. As such,
+    /// internal quotes must be escaped. If nonempty, Value is ignored.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueJSON")]
+    pub value_json: Option<String>,
+}
+
+/// PatchEntity represents a json patch (RFC 6902) to be applied
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterDeploymentCustomizationInstallConfigPatchesOp {
+    #[serde(rename = "add")]
+    Add,
+    #[serde(rename = "remove")]
+    Remove,
+    #[serde(rename = "replace")]
+    Replace,
+    #[serde(rename = "move")]
+    Move,
+    #[serde(rename = "copy")]
+    Copy,
+    #[serde(rename = "test")]
+    Test,
 }
 
 /// ClusterDeploymentCustomizationStatus defines the observed state of ClusterDeploymentCustomization.

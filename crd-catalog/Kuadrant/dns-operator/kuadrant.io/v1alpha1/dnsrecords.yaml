@@ -87,9 +87,6 @@ spec:
                       required:
                         - "name"
                       type: "object"
-                    allowInsecureCertificate:
-                      description: "AllowInsecureCertificate will instruct the health check probe to not fail on a self-signed or otherwise invalid SSL certificate\nthis is primarily used in development or testing environments"
-                      type: "boolean"
                     failureThreshold:
                       description: "FailureThreshold is a limit of consecutive failures that must occur for a host to be considered unhealthy"
                       type: "integer"
@@ -361,6 +358,47 @@ spec:
                   description: "QueuedAt is a time when DNS record was received for the reconciliation"
                   format: "date-time"
                   type: "string"
+                relatedEndpoints:
+                  description: "ZoneEndpoints are all the endpoints for the DNSRecordSpec.RootHost that are present in the provider"
+                  items:
+                    description: "Endpoint is a high-level way of a connection between a service and an IP"
+                    properties:
+                      dnsName:
+                        description: "The hostname of the DNS record"
+                        type: "string"
+                      labels:
+                        additionalProperties:
+                          type: "string"
+                        description: "Labels stores labels defined for the Endpoint"
+                        type: "object"
+                      providerSpecific:
+                        description: "ProviderSpecific stores provider specific config"
+                        items:
+                          description: "ProviderSpecificProperty holds the name and value of a configuration which is specific to individual DNS providers"
+                          properties:
+                            name:
+                              type: "string"
+                            value:
+                              type: "string"
+                          type: "object"
+                        type: "array"
+                      recordTTL:
+                        description: "TTL for the record"
+                        format: "int64"
+                        type: "integer"
+                      recordType:
+                        description: "RecordType type of record, e.g. CNAME, A, AAAA, SRV, TXT etc"
+                        type: "string"
+                      setIdentifier:
+                        description: "Identifier to distinguish multiple records with the same name and type (e.g. Route53 records with routing policies other than 'simple')"
+                        type: "string"
+                      targets:
+                        description: "The targets the DNS record points to"
+                        items:
+                          type: "string"
+                        type: "array"
+                    type: "object"
+                  type: "array"
                 validFor:
                   description: "ValidFor indicates duration since the last reconciliation we consider data in the record to be valid"
                   type: "string"

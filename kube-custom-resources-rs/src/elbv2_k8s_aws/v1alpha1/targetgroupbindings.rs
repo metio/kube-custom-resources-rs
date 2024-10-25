@@ -19,6 +19,9 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct TargetGroupBindingSpec {
+    /// MultiClusterTargetGroup Denotes if the TargetGroup is shared among multiple clusters
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multiClusterTargetGroup")]
+    pub multi_cluster_target_group: Option<bool>,
     /// networking provides the networking setup for ELBV2 LoadBalancer to access targets in TargetGroup.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub networking: Option<TargetGroupBindingNetworking>,

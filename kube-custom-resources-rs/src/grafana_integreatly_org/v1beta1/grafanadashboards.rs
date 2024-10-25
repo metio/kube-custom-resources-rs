@@ -71,6 +71,9 @@ pub struct GrafanaDashboardSpec {
     /// how often the dashboard is refreshed, defaults to 5m if not set
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resyncPeriod")]
     pub resync_period: Option<String>,
+    /// Manually specify the uid for the dashboard, overwrites uids already present in the json model
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub uid: Option<String>,
     /// dashboard url
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
@@ -151,7 +154,7 @@ pub struct GrafanaDashboardEnvFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrafanaDashboardEnvs {
     pub name: String,
-    /// Inline evn value
+    /// Inline env value
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     /// Reference on value source, might be the reference on a secret or config map

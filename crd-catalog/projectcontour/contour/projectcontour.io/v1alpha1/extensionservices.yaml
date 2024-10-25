@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.15.0"
+    controller-gen.kubebuilder.io/version: "v0.16.4"
   name: "extensionservices.projectcontour.io"
 spec:
   group: "projectcontour.io"
@@ -75,6 +75,8 @@ spec:
                                 description: "HeaderName is the name of the HTTP request header that will be used to\ncalculate the hash key. If the header specified is not present on a\nrequest, no hash will be produced."
                                 minLength: 1
                                 type: "string"
+                            required:
+                              - "headerName"
                             type: "object"
                           queryParameterHashOptions:
                             description: "QueryParameterHashOptions should be set when request query parameter hash based load\nbalancing is desired. It must be the only hash option field set,\notherwise this request hash policy object will be ignored."
@@ -83,6 +85,8 @@ spec:
                                 description: "ParameterName is the name of the HTTP request query parameter that will be used to\ncalculate the hash key. If the query parameter specified is not present on a\nrequest, no hash will be produced."
                                 minLength: 1
                                 type: "string"
+                            required:
+                              - "parameterName"
                             type: "object"
                           terminal:
                             description: "Terminal is a flag that allows for short-circuiting computing of a hash\nfor a given request. If set to true, and the request attribute specified\nin the attribute hash options is present, no further hash policies will\nbe used to calculate a hash for the request."
@@ -243,7 +247,7 @@ spec:
                           - "Unknown"
                         type: "string"
                       type:
-                        description: "type of condition in CamelCase or in foo.example.com/CamelCase.\n---\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions can be\nuseful (see .node.status.conditions), the ability to deconflict is important.\nThe regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)"
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase."
                         maxLength: 316
                         pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
                         type: "string"

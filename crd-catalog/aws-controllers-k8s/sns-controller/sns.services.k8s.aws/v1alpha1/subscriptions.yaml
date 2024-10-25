@@ -13,7 +13,18 @@ spec:
     singular: "subscription"
   scope: "Namespaced"
   versions:
-    - name: "v1alpha1"
+    - additionalPrinterColumns:
+        - jsonPath: ".status.ackResourceMetadata.arn"
+          name: "ARN"
+          priority: 1
+          type: "string"
+        - jsonPath: ".status.conditions[?(@.type==\"ACK.ResourceSynced\")].status"
+          name: "Synced"
+          type: "string"
+        - jsonPath: ".metadata.creationTimestamp"
+          name: "Age"
+          type: "date"
+      name: "v1alpha1"
       schema:
         openAPIV3Schema:
           description: "Subscription is the Schema for the Subscriptions API"

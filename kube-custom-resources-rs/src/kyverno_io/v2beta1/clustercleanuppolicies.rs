@@ -25,6 +25,9 @@ pub struct ClusterCleanupPolicySpec {
     /// Context defines variables and data sources that can be used during rule execution.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub context: Option<Vec<ClusterCleanupPolicyContext>>,
+    /// DeletionPropagationPolicy defines how resources will be deleted (Foreground, Background, Orphan).
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletionPropagationPolicy")]
+    pub deletion_propagation_policy: Option<ClusterCleanupPolicyDeletionPropagationPolicy>,
     /// ExcludeResources defines when cleanuppolicy should not be applied. The exclude
     /// criteria can include resource information (e.g. kind, name, namespace, labels)
     /// and admission review request information like the name or role.
@@ -310,6 +313,14 @@ pub struct ClusterCleanupPolicyContextVariable {
     /// Value is any arbitrary JSON object representable in YAML or JSON form.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<serde_json::Value>,
+}
+
+/// Spec declares policy behaviors.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ClusterCleanupPolicyDeletionPropagationPolicy {
+    Foreground,
+    Background,
+    Orphan,
 }
 
 /// ExcludeResources defines when cleanuppolicy should not be applied. The exclude

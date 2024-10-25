@@ -2978,6 +2978,10 @@ spec:
                               - "name"
                             type: "object"
                           type: "array"
+                        template:
+                          description: "Template is a pod template that can be used to define the driver or executor pod configurations that Spark configurations do not support.\nSpark version >= 3.0.0 is required.\nRef: https://spark.apache.org/docs/latest/running-on-kubernetes.html#pod-template."
+                          type: "object"
+                          x-kubernetes-preserve-unknown-fields: true
                         terminationGracePeriodSeconds:
                           description: "Termination grace period seconds for the pod"
                           format: "int64"
@@ -5946,6 +5950,10 @@ spec:
                               - "name"
                             type: "object"
                           type: "array"
+                        template:
+                          description: "Template is a pod template that can be used to define the driver or executor pod configurations that Spark configurations do not support.\nSpark version >= 3.0.0 is required.\nRef: https://spark.apache.org/docs/latest/running-on-kubernetes.html#pod-template."
+                          type: "object"
+                          x-kubernetes-preserve-unknown-fields: true
                         terminationGracePeriodSeconds:
                           description: "Termination grace period seconds for the pod"
                           format: "int64"
@@ -6461,6 +6469,23 @@ spec:
                                 properties:
                                   metadata:
                                     description: "May contain labels and annotations that will be copied into the PVC\nwhen creating it. No other fields are allowed and will be rejected during\nvalidation."
+                                    properties:
+                                      annotations:
+                                        additionalProperties:
+                                          type: "string"
+                                        type: "object"
+                                      finalizers:
+                                        items:
+                                          type: "string"
+                                        type: "array"
+                                      labels:
+                                        additionalProperties:
+                                          type: "string"
+                                        type: "object"
+                                      name:
+                                        type: "string"
+                                      namespace:
+                                        type: "string"
                                     type: "object"
                                   spec:
                                     description: "The specification for the PersistentVolumeClaim. The entire content is\ncopied unchanged into the PVC that gets created from this\ntemplate. The same fields as in a PersistentVolumeClaim\nare also valid here."
@@ -7191,6 +7216,7 @@ spec:
                   required:
                     - "driver"
                     - "executor"
+                    - "mainApplicationFile"
                     - "sparkVersion"
                     - "type"
                   type: "object"
@@ -7231,6 +7257,9 @@ spec:
                   description: "ScheduleState is the current scheduling state of the application."
                   type: "string"
               type: "object"
+          required:
+            - "metadata"
+            - "spec"
           type: "object"
       served: true
       storage: true

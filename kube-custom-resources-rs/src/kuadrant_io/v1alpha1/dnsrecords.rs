@@ -86,10 +86,6 @@ pub struct DNSRecordHealthCheck {
     /// token is required by the endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalHeadersRef")]
     pub additional_headers_ref: Option<DNSRecordHealthCheckAdditionalHeadersRef>,
-    /// AllowInsecureCertificate will instruct the health check probe to not fail on a self-signed or otherwise invalid SSL certificate
-    /// this is primarily used in development or testing environments
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowInsecureCertificate")]
-    pub allow_insecure_certificate: Option<bool>,
     /// FailureThreshold is a limit of consecutive failures that must occur for a host to be considered unhealthy
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i64>,
@@ -148,6 +144,9 @@ pub struct DNSRecordStatus {
     /// QueuedAt is a time when DNS record was received for the reconciliation
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "queuedAt")]
     pub queued_at: Option<String>,
+    /// ZoneEndpoints are all the endpoints for the DNSRecordSpec.RootHost that are present in the provider
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "relatedEndpoints")]
+    pub related_endpoints: Option<Vec<DNSRecordStatusRelatedEndpoints>>,
     /// ValidFor indicates duration since the last reconciliation we consider data in the record to be valid
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "validFor")]
     pub valid_for: Option<String>,
@@ -216,5 +215,40 @@ pub struct DNSRecordStatusHealthCheckProbes {
     pub ip_address: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub synced: Option<bool>,
+}
+
+/// Endpoint is a high-level way of a connection between a service and an IP
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DNSRecordStatusRelatedEndpoints {
+    /// The hostname of the DNS record
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsName")]
+    pub dns_name: Option<String>,
+    /// Labels stores labels defined for the Endpoint
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+    /// ProviderSpecific stores provider specific config
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerSpecific")]
+    pub provider_specific: Option<Vec<DNSRecordStatusRelatedEndpointsProviderSpecific>>,
+    /// TTL for the record
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recordTTL")]
+    pub record_ttl: Option<i64>,
+    /// RecordType type of record, e.g. CNAME, A, AAAA, SRV, TXT etc
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recordType")]
+    pub record_type: Option<String>,
+    /// Identifier to distinguish multiple records with the same name and type (e.g. Route53 records with routing policies other than 'simple')
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "setIdentifier")]
+    pub set_identifier: Option<String>,
+    /// The targets the DNS record points to
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub targets: Option<Vec<String>>,
+}
+
+/// ProviderSpecificProperty holds the name and value of a configuration which is specific to individual DNS providers
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DNSRecordStatusRelatedEndpointsProviderSpecific {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
 }
 
