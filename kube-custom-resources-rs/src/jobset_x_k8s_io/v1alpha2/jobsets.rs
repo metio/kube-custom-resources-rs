@@ -106,12 +106,26 @@ pub struct JobSetFailurePolicy {
     /// A restart is achieved by recreating all active child jobs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRestarts")]
     pub max_restarts: Option<i32>,
+    /// RestartStrategy defines the strategy to use when restarting the JobSet.
+    /// Defaults to Recreate.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartStrategy")]
+    pub restart_strategy: Option<JobSetFailurePolicyRestartStrategy>,
     /// List of failure policy rules for this JobSet.
     /// For a given Job failure, the rules will be evaluated in order,
     /// and only the first matching rule will be executed.
     /// If no matching rule is found, the RestartJobSet action is applied.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rules: Option<Vec<JobSetFailurePolicyRules>>,
+}
+
+/// FailurePolicy, if set, configures when to declare the JobSet as
+/// failed.
+/// The JobSet is always declared failed if any job in the set
+/// finished with status failed.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum JobSetFailurePolicyRestartStrategy {
+    Recreate,
+    BlockingRecreate,
 }
 
 /// FailurePolicyRule defines a FailurePolicyAction to be executed if a child job

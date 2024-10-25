@@ -331,11 +331,13 @@ pub struct CheClusterComponentsCheServerProxy {
     /// A list of hosts that can be reached directly, bypassing the proxy.
     /// Specify wild card domain use the following form `.<DOMAIN>`, for example:
     ///    - localhost
+    ///    - 127.0.0.1
     ///    - my.host.com
     ///    - 123.42.12.32
     /// Use only when a proxy configuration is required. The Operator respects OpenShift cluster-wide proxy configuration,
     /// defining `nonProxyHosts` in a custom resource leads to merging non-proxy hosts lists from the cluster proxy configuration, and the ones defined in the custom resources.
     /// See the following page: https://docs.openshift.com/container-platform/latest/networking/enable-cluster-wide-proxy.html.
+    /// In some proxy configurations, localhost may not translate to 127.0.0.1. Both localhost and 127.0.0.1 should be specified in this situation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nonProxyHosts")]
     pub non_proxy_hosts: Option<Vec<String>>,
     /// Proxy server port.
@@ -3791,6 +3793,15 @@ pub struct CheClusterDevEnvironmentsTolerations {
 /// Trusted certificate settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CheClusterDevEnvironmentsTrustedCerts {
+    /// By default, the Operator creates and mounts the 'ca-certs-merged' ConfigMap
+    /// containing the CA certificate bundle in users' workspaces at two locations:
+    /// '/public-certs' and '/etc/pki/ca-trust/extracted/pem'.
+    /// The '/etc/pki/ca-trust/extracted/pem' directory is where the system stores extracted CA certificates
+    /// for trusted certificate authorities on Red Hat (e.g., CentOS, Fedora).
+    /// This option disables mounting the CA bundle to the '/etc/pki/ca-trust/extracted/pem' directory
+    /// while still mounting it to '/public-certs'.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableWorkspaceCaBundleMount")]
+    pub disable_workspace_ca_bundle_mount: Option<bool>,
     /// The ConfigMap contains certificates to propagate to the Che components and to provide a particular configuration for Git.
     /// See the following page: https://www.eclipse.org/che/docs/stable/administration-guide/deploying-che-with-support-for-git-repositories-with-self-signed-certificates/
     /// The ConfigMap must have a `app.kubernetes.io/part-of=che.eclipse.org` label.

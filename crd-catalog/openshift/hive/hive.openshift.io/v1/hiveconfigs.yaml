@@ -144,7 +144,8 @@ spec:
                       type: "object"
                   type: "object"
                 clusterVersionPollInterval:
-                  description: "ClusterVersionPollInterval is a string duration indicating how much time must pass before checking\nwhether we need to update the hive.openshift.io/version* labels on ClusterDeployment. If zero or unset,\nwe'll only reconcile when the ClusterDeployment changes."
+                  description: "ClusterVersionPollInterval is a string duration indicating how much time must pass before checking\nwhether we need to update the hive.openshift.io/version* labels on ClusterDeployment. If zero or unset,\nwe'll only reconcile when the ClusterDeployment changes.\nThis is a Duration value; see https://pkg.go.dev/time#ParseDuration for accepted formats.\nNote: due to discrepancies in validation vs parsing, we use a Pattern instead of `Format=duration`. See\nhttps://bugzilla.redhat.com/show_bug.cgi?id=2050332\nhttps://github.com/kubernetes/apimachinery/issues/131\nhttps://github.com/kubernetes/apiextensions-apiserver/issues/56"
+                  pattern: "^([0-9]+(\\.[0-9]+)?(ns|us|µs|ms|s|m|h))+$"
                   type: "string"
                 controllersConfig:
                   description: "ControllersConfig is used to configure different hive controllers"
@@ -461,7 +462,8 @@ spec:
                   description: "LogLevel is the level of logging to use for the Hive controllers.\nAcceptable levels, from coarsest to finest, are panic, fatal, error, warn, info, debug, and trace.\nThe default level is info."
                   type: "string"
                 machinePoolPollInterval:
-                  description: "MachinePoolPollInterval is a string duration indicating how much time must pass before checking whether\nremote resources related to MachinePools need to be reapplied. Set to zero to disable polling -- we'll\nonly reconcile when hub objects change.\nThe default interval is 30m."
+                  description: "MachinePoolPollInterval is a string duration indicating how much time must pass before checking whether\nremote resources related to MachinePools need to be reapplied. Set to zero to disable polling -- we'll\nonly reconcile when hub objects change.\nThe default interval is 30m.\nThis is a Duration value; see https://pkg.go.dev/time#ParseDuration for accepted formats.\nNote: due to discrepancies in validation vs parsing, we use a Pattern instead of `Format=duration`. See\nhttps://bugzilla.redhat.com/show_bug.cgi?id=2050332\nhttps://github.com/kubernetes/apimachinery/issues/131\nhttps://github.com/kubernetes/apiextensions-apiserver/issues/56"
+                  pattern: "^([0-9]+(\\.[0-9]+)?(ns|us|µs|ms|s|m|h))+$"
                   type: "string"
                 maintenanceMode:
                   description: "MaintenanceMode can be set to true to disable the hive controllers in situations where we need to ensure\nnothing is running that will add or act upon finalizers on Hive types. This should rarely be needed.\nSets replicas to 0 for the hive-controllers deployment to accomplish this."
@@ -649,7 +651,8 @@ spec:
                       type: "object"
                   type: "object"
                 syncSetReapplyInterval:
-                  description: "SyncSetReapplyInterval is a string duration indicating how much time must pass before SyncSet resources\nwill be reapplied.\nThe default reapply interval is two hours."
+                  description: "SyncSetReapplyInterval is a string duration indicating how much time must pass before SyncSet resources\nwill be reapplied.\nThe default reapply interval is two hours.\nThis is a Duration value; see https://pkg.go.dev/time#ParseDuration for accepted formats.\nNote: due to discrepancies in validation vs parsing, we use a Pattern instead of `Format=duration`. See\nhttps://bugzilla.redhat.com/show_bug.cgi?id=2050332\nhttps://github.com/kubernetes/apimachinery/issues/131\nhttps://github.com/kubernetes/apiextensions-apiserver/issues/56"
+                  pattern: "^([0-9]+(\\.[0-9]+)?(ns|us|µs|ms|s|m|h))+$"
                   type: "string"
                 targetNamespace:
                   description: "TargetNamespace is the namespace where the core Hive components should be run. Defaults to \"hive\". Will be\ncreated if it does not already exist. All resource references in HiveConfig can be assumed to be in the\nTargetNamespace.\nNOTE: Whereas it is possible to edit this value, causing hive to \"move\" its core components to the new\nnamespace, the old namespace is not deleted, as it will still contain resources created by kubernetes\nand/or other OpenShift controllers."

@@ -424,6 +424,9 @@ pub struct IssuerAcmeSolversDns01AzureDnsManagedIdentity {
     /// Cannot be used for Azure Managed Service Identity
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceID")]
     pub resource_id: Option<String>,
+    /// tenant ID of the managed identity, can not be used at the same time as resourceID
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tenantID")]
+    pub tenant_id: Option<String>,
 }
 
 /// Use the Google Cloud DNS API to manage DNS01 challenge records.

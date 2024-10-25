@@ -133,8 +133,8 @@ pub struct ExtensionServiceLoadBalancerPolicyRequestHashPoliciesHeaderHashOption
     /// HeaderName is the name of the HTTP request header that will be used to
     /// calculate the hash key. If the header specified is not present on a
     /// request, no hash will be produced.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "headerName")]
-    pub header_name: Option<String>,
+    #[serde(rename = "headerName")]
+    pub header_name: String,
 }
 
 /// QueryParameterHashOptions should be set when request query parameter hash based load
@@ -145,8 +145,8 @@ pub struct ExtensionServiceLoadBalancerPolicyRequestHashPoliciesQueryParameterHa
     /// ParameterName is the name of the HTTP request query parameter that will be used to
     /// calculate the hash key. If the query parameter specified is not present on a
     /// request, no hash will be produced.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parameterName")]
-    pub parameter_name: Option<String>,
+    #[serde(rename = "parameterName")]
+    pub parameter_name: String,
 }
 
 /// ExtensionServiceSpec defines the desired state of an ExtensionService resource.

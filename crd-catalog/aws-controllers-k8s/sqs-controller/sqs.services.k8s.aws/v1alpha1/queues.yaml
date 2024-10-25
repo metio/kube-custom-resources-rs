@@ -13,7 +13,32 @@ spec:
     singular: "queue"
   scope: "Namespaced"
   versions:
-    - name: "v1alpha1"
+    - additionalPrinterColumns:
+        - jsonPath: ".spec.delaySeconds"
+          name: "DelaySeconds"
+          type: "string"
+        - jsonPath: ".spec.maximumMessageSize"
+          name: "maximumMessageSize"
+          priority: 1
+          type: "string"
+        - jsonPath: ".spec.messageRetentionPeriod"
+          name: "messageRetentionPeriod"
+          priority: 1
+          type: "string"
+        - jsonPath: ".spec.receiveMessageWaitTimeSeconds"
+          name: "receiveMessageWaitTimeSeconds"
+          priority: 1
+          type: "string"
+        - jsonPath: ".spec.visibilityTimeout"
+          name: "visibilityTimeout"
+          type: "string"
+        - jsonPath: ".status.conditions[?(@.type==\"ACK.ResourceSynced\")].status"
+          name: "Synced"
+          type: "string"
+        - jsonPath: ".metadata.creationTimestamp"
+          name: "Age"
+          type: "date"
+      name: "v1alpha1"
       schema:
         openAPIV3Schema:
           description: "Queue is the Schema for the Queues API"

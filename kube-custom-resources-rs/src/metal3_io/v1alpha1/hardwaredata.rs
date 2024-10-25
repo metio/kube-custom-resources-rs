@@ -88,7 +88,9 @@ pub struct HardwareDataHardwareFirmwareBios {
 /// NIC describes one network interface on the host.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HardwareDataHardwareNics {
-    /// The IP address of the interface. This will be an IPv4 or IPv6 address if one is present.  If both IPv4 and IPv6 addresses are present in a dual-stack environment, two nics will be output, one with each IP.
+    /// The IP address of the interface. This will be an IPv4 or IPv6 address
+    /// if one is present.  If both IPv4 and IPv6 addresses are present in a
+    /// dual-stack environment, two nics will be output, one with each IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ip: Option<String>,
     /// The device MAC address
@@ -127,7 +129,9 @@ pub struct HardwareDataHardwareNicsVlans {
 /// Storage describes one storage device (disk, SSD, etc.) on the host.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HardwareDataHardwareStorage {
-    /// A list of alternate Linux device names of the disk, e.g. "/dev/sda". Note that this list is not exhaustive, and names may not be stable across reboots.
+    /// A list of alternate Linux device names of the disk, e.g. "/dev/sda".
+    /// Note that this list is not exhaustive, and names may not be stable
+    /// across reboots.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "alternateNames")]
     pub alternate_names: Option<Vec<String>>,
     /// The SCSI location of the device
@@ -136,10 +140,15 @@ pub struct HardwareDataHardwareStorage {
     /// Hardware model
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub model: Option<String>,
-    /// A Linux device name of the disk, e.g. "/dev/disk/by-path/pci-0000:01:00.0-scsi-0:2:0:0". This will be a name that is stable across reboots if one is available.
+    /// A Linux device name of the disk, e.g.
+    /// "/dev/disk/by-path/pci-0000:01:00.0-scsi-0:2:0:0". This will be a name
+    /// that is stable across reboots if one is available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Whether this disk represents rotational storage. This field is not recommended for usage, please prefer using 'Type' field instead, this field will be deprecated eventually.
+    /// Whether this disk represents rotational storage.
+    /// This field is not recommended for usage, please
+    /// prefer using 'Type' field instead, this field
+    /// will be deprecated eventually.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rotational: Option<bool>,
     /// The serial number of the device

@@ -105,6 +105,9 @@ pub struct DevicePropertiesPushMethod {
     /// MQTT Push method configuration for mqtt
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mqtt: Option<DevicePropertiesPushMethodMqtt>,
+    /// OTEL Push Method configuration for otel
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub otel: Option<DevicePropertiesPushMethodOtel>,
 }
 
 /// DBMethod represents the method used to push data to database, please ensure that the mapper can access the destination address.
@@ -251,6 +254,14 @@ pub struct DevicePropertiesPushMethodMqtt {
     pub topic: Option<String>,
 }
 
+/// OTEL Push Method configuration for otel
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct DevicePropertiesPushMethodOtel {
+    /// the target endpoint URL the Exporter will connect to, like https://localhost:4318/v1/metrics
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointURL")]
+    pub endpoint_url: Option<String>,
+}
+
 /// Visitors are intended to be consumed by device mappers which connect to devices and collect data / perform actions on the device. Required: Protocol relevant config details about the how to access the device property.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DevicePropertiesVisitors {
@@ -279,6 +290,12 @@ pub struct DeviceStatus {
     /// Optional: The last time the device was online.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastOnlineTime")]
     pub last_online_time: Option<String>,
+    /// Optional: Define how frequent mapper will report the device status.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reportCycle")]
+    pub report_cycle: Option<i64>,
+    /// Optional: whether be reported to the cloud
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reportToCloud")]
+    pub report_to_cloud: Option<bool>,
     /// Optional: The state of the device.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,

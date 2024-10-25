@@ -34,14 +34,18 @@ pub struct HostFirmwareSettingsStatus {
     /// Time that the status was last updated
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdated")]
     pub last_updated: Option<String>,
-    /// FirmwareSchema is a reference to the Schema used to describe each FirmwareSetting. By default, this will be a Schema in the same Namespace as the settings but it can be overwritten in the Spec
+    /// FirmwareSchema is a reference to the Schema used to describe each
+    /// FirmwareSetting. By default, this will be a Schema in the same
+    /// Namespace as the settings but it can be overwritten in the Spec
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub schema: Option<HostFirmwareSettingsStatusSchema>,
     /// Settings are the firmware settings stored as name/value pairs
     pub settings: BTreeMap<String, String>,
 }
 
-/// FirmwareSchema is a reference to the Schema used to describe each FirmwareSetting. By default, this will be a Schema in the same Namespace as the settings but it can be overwritten in the Spec
+/// FirmwareSchema is a reference to the Schema used to describe each
+/// FirmwareSetting. By default, this will be a Schema in the same
+/// Namespace as the settings but it can be overwritten in the Spec
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HostFirmwareSettingsStatusSchema {
     /// `name` is the reference to the schema.

@@ -7,6 +7,7 @@ mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
@@ -119,6 +120,16 @@ pub struct ScrapeConfigSpec {
     /// MetricsPath HTTP path to scrape for metrics. If empty, Prometheus uses the default value (e.g. /metrics).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsPath")]
     pub metrics_path: Option<String>,
+    /// If there are more than this many buckets in a native histogram,
+    /// buckets will be merged to stay within the limit.
+    /// It requires Prometheus >= v2.45.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nativeHistogramBucketLimit")]
+    pub native_histogram_bucket_limit: Option<i64>,
+    /// If the growth factor of one bucket to the next is smaller than this,
+    /// buckets will be merged to increase the factor sufficiently.
+    /// It requires Prometheus >= v2.50.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nativeHistogramMinBucketFactor")]
+    pub native_histogram_min_bucket_factor: Option<IntOrString>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
@@ -177,6 +188,10 @@ pub struct ScrapeConfigSpec {
     /// The scrape class to apply.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeClass")]
     pub scrape_class: Option<String>,
+    /// Whether to scrape a classic histogram that is also exposed as a native histogram.
+    /// It requires Prometheus >= v2.45.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeClassicHistograms")]
+    pub scrape_classic_histograms: Option<bool>,
     /// ScrapeInterval is the interval between consecutive scrapes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeInterval")]
     pub scrape_interval: Option<String>,

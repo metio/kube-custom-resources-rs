@@ -312,6 +312,7 @@ pub struct MachineSetStatus {
     /// Conditions defines current service state of the MachineSet.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
+    /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
     pub failure_message: Option<String>,
     /// In the event that there is a terminal problem reconciling the
@@ -332,6 +333,8 @@ pub struct MachineSetStatus {
     /// Any transient errors that occur during the reconciliation of Machines
     /// can be added as events to the MachineSet object and/or logged in the
     /// controller's output.
+    /// 
+    /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
     /// The number of replicas that have labels matching the labels of the machine template of the MachineSet.

@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.15.0"
+    controller-gen.kubebuilder.io/version: "v0.16.4"
   name: "httpproxies.projectcontour.io"
 spec:
   group: "projectcontour.io"
@@ -461,6 +461,8 @@ spec:
                                       description: "HeaderName is the name of the HTTP request header that will be used to\ncalculate the hash key. If the header specified is not present on a\nrequest, no hash will be produced."
                                       minLength: 1
                                       type: "string"
+                                  required:
+                                    - "headerName"
                                   type: "object"
                                 queryParameterHashOptions:
                                   description: "QueryParameterHashOptions should be set when request query parameter hash based load\nbalancing is desired. It must be the only hash option field set,\notherwise this request hash policy object will be ignored."
@@ -469,6 +471,8 @@ spec:
                                       description: "ParameterName is the name of the HTTP request query parameter that will be used to\ncalculate the hash key. If the query parameter specified is not present on a\nrequest, no hash will be produced."
                                       minLength: 1
                                       type: "string"
+                                  required:
+                                    - "parameterName"
                                   type: "object"
                                 terminal:
                                   description: "Terminal is a flag that allows for short-circuiting computing of a hash\nfor a given request. If set to true, and the request attribute specified\nin the attribute hash options is present, no further hash policies will\nbe used to calculate a hash for the request."
@@ -529,6 +533,8 @@ spec:
                                                 description: "Value defines the value of the descriptor entry."
                                                 minLength: 1
                                                 type: "string"
+                                            required:
+                                              - "value"
                                             type: "object"
                                           remoteAddress:
                                             description: "RemoteAddress defines a descriptor entry with a key of \"remote_address\"\nand a value equal to the client's IP address (from x-forwarded-for)."
@@ -544,6 +550,9 @@ spec:
                                                 description: "HeaderName defines the name of the header to look for on the request."
                                                 minLength: 1
                                                 type: "string"
+                                            required:
+                                              - "descriptorKey"
+                                              - "headerName"
                                             type: "object"
                                           requestHeaderValueMatch:
                                             description: "RequestHeaderValueMatch defines a descriptor entry that's populated\nif the request's headers match a set of 1+ match criteria. The\ndescriptor key is \"header_match\", and the descriptor value is static."
@@ -596,10 +605,14 @@ spec:
                                                 description: "Value defines the value of the descriptor entry."
                                                 minLength: 1
                                                 type: "string"
+                                            required:
+                                              - "value"
                                             type: "object"
                                         type: "object"
                                       minItems: 1
                                       type: "array"
+                                  required:
+                                    - "entries"
                                   type: "object"
                                 minItems: 1
                                 type: "array"
@@ -1059,6 +1072,8 @@ spec:
                                     description: "HeaderName is the name of the HTTP request header that will be used to\ncalculate the hash key. If the header specified is not present on a\nrequest, no hash will be produced."
                                     minLength: 1
                                     type: "string"
+                                required:
+                                  - "headerName"
                                 type: "object"
                               queryParameterHashOptions:
                                 description: "QueryParameterHashOptions should be set when request query parameter hash based load\nbalancing is desired. It must be the only hash option field set,\notherwise this request hash policy object will be ignored."
@@ -1067,6 +1082,8 @@ spec:
                                     description: "ParameterName is the name of the HTTP request query parameter that will be used to\ncalculate the hash key. If the query parameter specified is not present on a\nrequest, no hash will be produced."
                                     minLength: 1
                                     type: "string"
+                                required:
+                                  - "parameterName"
                                 type: "object"
                               terminal:
                                 description: "Terminal is a flag that allows for short-circuiting computing of a hash\nfor a given request. If set to true, and the request attribute specified\nin the attribute hash options is present, no further hash policies will\nbe used to calculate a hash for the request."
@@ -1519,6 +1536,8 @@ spec:
                                               description: "Value defines the value of the descriptor entry."
                                               minLength: 1
                                               type: "string"
+                                          required:
+                                            - "value"
                                           type: "object"
                                         remoteAddress:
                                           description: "RemoteAddress defines a descriptor entry with a key of \"remote_address\"\nand a value equal to the client's IP address (from x-forwarded-for)."
@@ -1534,6 +1553,9 @@ spec:
                                               description: "HeaderName defines the name of the header to look for on the request."
                                               minLength: 1
                                               type: "string"
+                                          required:
+                                            - "descriptorKey"
+                                            - "headerName"
                                           type: "object"
                                         requestHeaderValueMatch:
                                           description: "RequestHeaderValueMatch defines a descriptor entry that's populated\nif the request's headers match a set of 1+ match criteria. The\ndescriptor key is \"header_match\", and the descriptor value is static."
@@ -1586,10 +1608,14 @@ spec:
                                               description: "Value defines the value of the descriptor entry."
                                               minLength: 1
                                               type: "string"
+                                          required:
+                                            - "value"
                                           type: "object"
                                       type: "object"
                                     minItems: 1
                                     type: "array"
+                                required:
+                                  - "entries"
                                 type: "object"
                               minItems: 1
                               type: "array"
@@ -1780,7 +1806,7 @@ spec:
                           - "Unknown"
                         type: "string"
                       type:
-                        description: "type of condition in CamelCase or in foo.example.com/CamelCase.\n---\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions can be\nuseful (see .node.status.conditions), the ability to deconflict is important.\nThe regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)"
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase."
                         maxLength: 316
                         pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
                         type: "string"
@@ -1855,7 +1881,7 @@ spec:
                             items:
                               properties:
                                 error:
-                                  description: "Error is to record the problem with the service port\nThe format of the error shall comply with the following rules:\n- built-in error values shall be specified in this file and those shall use\n  CamelCase names\n- cloud provider specific error values must have names that comply with the\n  format foo.example.com/CamelCase.\n---\nThe regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)"
+                                  description: "Error is to record the problem with the service port\nThe format of the error shall comply with the following rules:\n- built-in error values shall be specified in this file and those shall use\n  CamelCase names\n- cloud provider specific error values must have names that comply with the\n  format foo.example.com/CamelCase."
                                   maxLength: 316
                                   pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
                                   type: "string"
@@ -1864,10 +1890,10 @@ spec:
                                   format: "int32"
                                   type: "integer"
                                 protocol:
-                                  default: "TCP"
                                   description: "Protocol is the protocol of the service port of which status is recorded here\nThe supported values are: \"TCP\", \"UDP\", \"SCTP\""
                                   type: "string"
                               required:
+                                - "error"
                                 - "port"
                                 - "protocol"
                               type: "object"

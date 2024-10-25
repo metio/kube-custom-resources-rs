@@ -851,8 +851,7 @@ pub struct ContourConfigurationRateLimitServiceDefaultGlobalRateLimitPolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ContourConfigurationRateLimitServiceDefaultGlobalRateLimitPolicyDescriptors {
     /// Entries is the list of key-value pair generators.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub entries: Option<Vec<ContourConfigurationRateLimitServiceDefaultGlobalRateLimitPolicyDescriptorsEntries>>,
+    pub entries: Vec<ContourConfigurationRateLimitServiceDefaultGlobalRateLimitPolicyDescriptorsEntries>,
 }
 
 /// RateLimitDescriptorEntry is a key-value pair generator. Exactly
@@ -886,8 +885,7 @@ pub struct ContourConfigurationRateLimitServiceDefaultGlobalRateLimitPolicyDescr
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// Value defines the value of the descriptor entry.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
+    pub value: String,
 }
 
 /// RemoteAddress defines a descriptor entry with a key of "remote_address"
@@ -902,11 +900,11 @@ pub struct ContourConfigurationRateLimitServiceDefaultGlobalRateLimitPolicyDescr
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ContourConfigurationRateLimitServiceDefaultGlobalRateLimitPolicyDescriptorsEntriesRequestHeader {
     /// DescriptorKey defines the key to use on the descriptor entry.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "descriptorKey")]
-    pub descriptor_key: Option<String>,
+    #[serde(rename = "descriptorKey")]
+    pub descriptor_key: String,
     /// HeaderName defines the name of the header to look for on the request.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "headerName")]
-    pub header_name: Option<String>,
+    #[serde(rename = "headerName")]
+    pub header_name: String,
 }
 
 /// RequestHeaderValueMatch defines a descriptor entry that's populated
@@ -925,8 +923,7 @@ pub struct ContourConfigurationRateLimitServiceDefaultGlobalRateLimitPolicyDescr
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<Vec<ContourConfigurationRateLimitServiceDefaultGlobalRateLimitPolicyDescriptorsEntriesRequestHeaderValueMatchHeaders>>,
     /// Value defines the value of the descriptor entry.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
+    pub value: String,
 }
 
 /// HeaderMatchCondition specifies how to conditionally match against HTTP

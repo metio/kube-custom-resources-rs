@@ -90,8 +90,8 @@ pub struct ScheduledSparkApplicationTemplate {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<String>>,
     /// MainFile is the path to a bundled JAR, Python, or R file of the application.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mainApplicationFile")]
-    pub main_application_file: Option<String>,
+    #[serde(rename = "mainApplicationFile")]
+    pub main_application_file: String,
     /// MainClass is the fully-qualified main class of the Spark application.
     /// This only applies to Java/Scala Spark applications.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mainClass")]
@@ -320,6 +320,11 @@ pub struct ScheduledSparkApplicationTemplateDriver {
     /// Sidecars is a list of sidecar containers that run along side the main Spark container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sidecars: Option<Vec<ScheduledSparkApplicationTemplateDriverSidecars>>,
+    /// Template is a pod template that can be used to define the driver or executor pod configurations that Spark configurations do not support.
+    /// Spark version >= 3.0.0 is required.
+    /// Ref: https://spark.apache.org/docs/latest/running-on-kubernetes.html#pod-template.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template: Option<BTreeMap<String, serde_json::Value>>,
     /// Termination grace period seconds for the pod
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
@@ -4357,6 +4362,11 @@ pub struct ScheduledSparkApplicationTemplateExecutor {
     /// Sidecars is a list of sidecar containers that run along side the main Spark container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sidecars: Option<Vec<ScheduledSparkApplicationTemplateExecutorSidecars>>,
+    /// Template is a pod template that can be used to define the driver or executor pod configurations that Spark configurations do not support.
+    /// Spark version >= 3.0.0 is required.
+    /// Ref: https://spark.apache.org/docs/latest/running-on-kubernetes.html#pod-template.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template: Option<BTreeMap<String, serde_json::Value>>,
     /// Termination grace period seconds for the pod
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
@@ -8936,6 +8946,16 @@ pub struct ScheduledSparkApplicationTemplateVolumesEphemeralVolumeClaimTemplate 
 /// validation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScheduledSparkApplicationTemplateVolumesEphemeralVolumeClaimTemplateMetadata {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub annotations: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub finalizers: Option<Vec<String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<BTreeMap<String, String>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub namespace: Option<String>,
 }
 
 /// The specification for the PersistentVolumeClaim. The entire content is

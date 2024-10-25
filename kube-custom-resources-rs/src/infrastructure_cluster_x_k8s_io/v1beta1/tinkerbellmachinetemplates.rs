@@ -32,6 +32,9 @@ pub struct TinkerbellMachineTemplateTemplate {
 /// Spec is the specification of the desired behavior of the machine.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TinkerbellMachineTemplateTemplateSpec {
+    /// BootOptions are options that control the booting of Hardware.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootOptions")]
+    pub boot_options: Option<TinkerbellMachineTemplateTemplateSpecBootOptions>,
     /// HardwareAffinity allows filtering for hardware.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hardwareAffinity")]
     pub hardware_affinity: Option<TinkerbellMachineTemplateTemplateSpecHardwareAffinity>,
@@ -71,6 +74,31 @@ pub struct TinkerbellMachineTemplateTemplateSpec {
     /// You can learn more about Tinkerbell templates here: https://tinkerbell.org/docs/concepts/templates/
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateOverride")]
     pub template_override: Option<String>,
+}
+
+/// BootOptions are options that control the booting of Hardware.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct TinkerbellMachineTemplateTemplateSpecBootOptions {
+    /// BootMode is the type of booting that will be done.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootMode")]
+    pub boot_mode: Option<TinkerbellMachineTemplateTemplateSpecBootOptionsBootMode>,
+    /// ISOURL is the URL of the ISO that will be one-time booted.
+    /// When this field is set, the controller will create a job.bmc.tinkerbell.org object
+    /// for getting the associated hardware into a CDROM booting state.
+    /// A HardwareRef that contains a spec.BmcRef must be provided.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "isoURL")]
+    pub iso_url: Option<String>,
+}
+
+/// BootOptions are options that control the booting of Hardware.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum TinkerbellMachineTemplateTemplateSpecBootOptionsBootMode {
+    #[serde(rename = "none")]
+    None,
+    #[serde(rename = "netboot")]
+    Netboot,
+    #[serde(rename = "iso")]
+    Iso,
 }
 
 /// HardwareAffinity allows filtering for hardware.

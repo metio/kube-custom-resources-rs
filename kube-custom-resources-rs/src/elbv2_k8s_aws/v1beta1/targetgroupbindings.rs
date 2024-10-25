@@ -23,6 +23,9 @@ pub struct TargetGroupBindingSpec {
     /// ipAddressType specifies whether the target group is of type IPv4 or IPv6. If unspecified, it will be automatically inferred.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipAddressType")]
     pub ip_address_type: Option<TargetGroupBindingIpAddressType>,
+    /// MultiClusterTargetGroup Denotes if the TargetGroup is shared among multiple clusters
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multiClusterTargetGroup")]
+    pub multi_cluster_target_group: Option<bool>,
     /// networking defines the networking rules to allow ELBV2 LoadBalancer to access targets in TargetGroup.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub networking: Option<TargetGroupBindingNetworking>,

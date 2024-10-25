@@ -13,7 +13,21 @@ spec:
     singular: "topic"
   scope: "Namespaced"
   versions:
-    - name: "v1alpha1"
+    - additionalPrinterColumns:
+        - jsonPath: ".status.ackResourceMetadata.arn"
+          name: "ARN"
+          priority: 1
+          type: "string"
+        - jsonPath: ".spec.displayName"
+          name: "DISPLAYNAME"
+          type: "string"
+        - jsonPath: ".status.conditions[?(@.type==\"ACK.ResourceSynced\")].status"
+          name: "Synced"
+          type: "string"
+        - jsonPath: ".metadata.creationTimestamp"
+          name: "Age"
+          type: "date"
+      name: "v1alpha1"
       schema:
         openAPIV3Schema:
           description: "Topic is the Schema for the Topics API"

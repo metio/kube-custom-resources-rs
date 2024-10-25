@@ -73,6 +73,16 @@ pub struct ServiceMonitorSpec {
     /// By default, the services are discovered in the same namespace as the `ServiceMonitor` object but it is possible to select pods across different/all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<ServiceMonitorNamespaceSelector>,
+    /// If there are more than this many buckets in a native histogram,
+    /// buckets will be merged to stay within the limit.
+    /// It requires Prometheus >= v2.45.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nativeHistogramBucketLimit")]
+    pub native_histogram_bucket_limit: Option<i64>,
+    /// If the growth factor of one bucket to the next is smaller than this,
+    /// buckets will be merged to increase the factor sufficiently.
+    /// It requires Prometheus >= v2.50.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nativeHistogramMinBucketFactor")]
+    pub native_histogram_min_bucket_factor: Option<IntOrString>,
     /// `podTargetLabels` defines the labels which are transferred from the
     /// associated Kubernetes `Pod` object onto the ingested metrics.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podTargetLabels")]
@@ -84,6 +94,10 @@ pub struct ServiceMonitorSpec {
     /// The scrape class to apply.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeClass")]
     pub scrape_class: Option<String>,
+    /// Whether to scrape a classic histogram that is also exposed as a native histogram.
+    /// It requires Prometheus >= v2.45.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeClassicHistograms")]
+    pub scrape_classic_histograms: Option<bool>,
     /// `scrapeProtocols` defines the protocols to negotiate during a scrape. It tells clients the
     /// protocols supported by Prometheus in order of preference (from most to least preferred).
     /// 

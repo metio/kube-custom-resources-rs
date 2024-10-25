@@ -257,7 +257,7 @@ spec:
                               description: "The secret name that contains `user` and `password` for a proxy server.\nThe secret must have a `app.kubernetes.io/part-of=che.eclipse.org` label."
                               type: "string"
                             nonProxyHosts:
-                              description: "A list of hosts that can be reached directly, bypassing the proxy.\nSpecify wild card domain use the following form `.<DOMAIN>`, for example:\n   - localhost\n   - my.host.com\n   - 123.42.12.32\nUse only when a proxy configuration is required. The Operator respects OpenShift cluster-wide proxy configuration,\ndefining `nonProxyHosts` in a custom resource leads to merging non-proxy hosts lists from the cluster proxy configuration, and the ones defined in the custom resources.\nSee the following page: https://docs.openshift.com/container-platform/latest/networking/enable-cluster-wide-proxy.html."
+                              description: "A list of hosts that can be reached directly, bypassing the proxy.\nSpecify wild card domain use the following form `.<DOMAIN>`, for example:\n   - localhost\n   - 127.0.0.1\n   - my.host.com\n   - 123.42.12.32\nUse only when a proxy configuration is required. The Operator respects OpenShift cluster-wide proxy configuration,\ndefining `nonProxyHosts` in a custom resource leads to merging non-proxy hosts lists from the cluster proxy configuration, and the ones defined in the custom resources.\nSee the following page: https://docs.openshift.com/container-platform/latest/networking/enable-cluster-wide-proxy.html.\nIn some proxy configurations, localhost may not translate to 127.0.0.1. Both localhost and 127.0.0.1 should be specified in this situation."
                               items:
                                 type: "string"
                               type: "array"
@@ -2589,6 +2589,9 @@ spec:
                     trustedCerts:
                       description: "Trusted certificate settings."
                       properties:
+                        disableWorkspaceCaBundleMount:
+                          description: "By default, the Operator creates and mounts the 'ca-certs-merged' ConfigMap\ncontaining the CA certificate bundle in users' workspaces at two locations:\n'/public-certs' and '/etc/pki/ca-trust/extracted/pem'.\nThe '/etc/pki/ca-trust/extracted/pem' directory is where the system stores extracted CA certificates\nfor trusted certificate authorities on Red Hat (e.g., CentOS, Fedora).\nThis option disables mounting the CA bundle to the '/etc/pki/ca-trust/extracted/pem' directory\nwhile still mounting it to '/public-certs'."
+                          type: "boolean"
                         gitTrustedCertsConfigMapName:
                           description: "The ConfigMap contains certificates to propagate to the Che components and to provide a particular configuration for Git.\nSee the following page: https://www.eclipse.org/che/docs/stable/administration-guide/deploying-che-with-support-for-git-repositories-with-self-signed-certificates/\nThe ConfigMap must have a `app.kubernetes.io/part-of=che.eclipse.org` label."
                           type: "string"

@@ -84,8 +84,7 @@ pub struct CassandraDatacenterSpec {
     /// that an update to the secret will trigger an update of the StatefulSets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configSecret")]
     pub config_secret: Option<String>,
-    /// DatacenterName allows to override the name of the Cassandra datacenter. Kubernetes objects will be named after a sanitized version of it if set, and if not metadata.name. In Cassandra the DC name will be overridden by this value.
-    /// It may generate some confusion as objects created for the DC will have a different name than the CasandraDatacenter object itself.
+    /// DatacenterName allows to override the name of the Cassandra datacenter. In Cassandra the DC name will be overridden by this value.
     /// This setting can create conflicts if multiple DCs coexist in the same namespace if metadata.name for a DC with no override is set to the same value as the override name of another DC.
     /// Use cautiously.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "datacenterName")]
@@ -9801,6 +9800,8 @@ pub struct CassandraDatacenterStatus {
     /// with the management API
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastServerNodeStarted")]
     pub last_server_node_started: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataVersion")]
+    pub metadata_version: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeReplacements")]
     pub node_replacements: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeStatuses")]

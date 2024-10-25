@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.15.0"
+    controller-gen.kubebuilder.io/version: "v0.16.4"
   name: "contourconfigurations.projectcontour.io"
 spec:
   group: "projectcontour.io"
@@ -531,6 +531,8 @@ spec:
                                           description: "Value defines the value of the descriptor entry."
                                           minLength: 1
                                           type: "string"
+                                      required:
+                                        - "value"
                                       type: "object"
                                     remoteAddress:
                                       description: "RemoteAddress defines a descriptor entry with a key of \"remote_address\"\nand a value equal to the client's IP address (from x-forwarded-for)."
@@ -546,6 +548,9 @@ spec:
                                           description: "HeaderName defines the name of the header to look for on the request."
                                           minLength: 1
                                           type: "string"
+                                      required:
+                                        - "descriptorKey"
+                                        - "headerName"
                                       type: "object"
                                     requestHeaderValueMatch:
                                       description: "RequestHeaderValueMatch defines a descriptor entry that's populated\nif the request's headers match a set of 1+ match criteria. The\ndescriptor key is \"header_match\", and the descriptor value is static."
@@ -598,10 +603,14 @@ spec:
                                           description: "Value defines the value of the descriptor entry."
                                           minLength: 1
                                           type: "string"
+                                      required:
+                                        - "value"
                                       type: "object"
                                   type: "object"
                                 minItems: 1
                                 type: "array"
+                            required:
+                              - "entries"
                             type: "object"
                           minItems: 1
                           type: "array"
@@ -783,7 +792,7 @@ spec:
                           - "Unknown"
                         type: "string"
                       type:
-                        description: "type of condition in CamelCase or in foo.example.com/CamelCase.\n---\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions can be\nuseful (see .node.status.conditions), the ability to deconflict is important.\nThe regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)"
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase."
                         maxLength: 316
                         pattern: "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$"
                         type: "string"

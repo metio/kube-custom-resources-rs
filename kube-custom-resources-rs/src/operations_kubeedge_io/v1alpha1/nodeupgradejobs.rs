@@ -30,17 +30,41 @@ pub struct NodeUpgradeJobSpec {
     /// Image specifies a container image name, the image contains: keadm and edgecore. keadm is used as upgradetool, to install the new version of edgecore. The image name consists of registry hostname and repository name, if it includes the tag or digest, the tag or digest will be overwritten by Version field above. If the registry hostname is empty, docker.io will be used as default. The default image name is: kubeedge/installation-package.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
+    /// ImageDigestGatter define registry v2 interface access configuration. As a transition, it is not required at first, and the image digest is checked when this field is set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageDigestGatter")]
+    pub image_digest_gatter: Option<NodeUpgradeJobImageDigestGatter>,
     /// LabelSelector is a filter to select member clusters by labels. It must match a node's labels for the NodeUpgradeJob to be operated on that node. Please note that sets of NodeNames and LabelSelector are ORed. Users must set one and can only set one.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<NodeUpgradeJobLabelSelector>,
     /// NodeNames is a request to select some specific nodes. If it is non-empty, the upgrade job simply select these edge nodes to do upgrade operation. Please note that sets of NodeNames and LabelSelector are ORed. Users must set one and can only set one.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeNames")]
     pub node_names: Option<Vec<String>>,
+    /// RequireConfirmation specifies whether you need to confirm the upgrade. The default RequireConfirmation value is false.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireConfirmation")]
+    pub require_confirmation: Option<bool>,
     /// TimeoutSeconds limits the duration of the node upgrade job. Default to 300. If set to 0, we'll use the default value 300.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
+}
+
+/// ImageDigestGatter define registry v2 interface access configuration. As a transition, it is not required at first, and the image digest is checked when this field is set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NodeUpgradeJobImageDigestGatter {
+    /// RegistryAPI define registry v2 interface access configuration
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "registryAPI")]
+    pub registry_api: Option<NodeUpgradeJobImageDigestGatterRegistryApi>,
+    /// Value used to directly set a value to check image
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+}
+
+/// RegistryAPI define registry v2 interface access configuration
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct NodeUpgradeJobImageDigestGatterRegistryApi {
+    pub host: String,
+    pub token: String,
 }
 
 /// LabelSelector is a filter to select member clusters by labels. It must match a node's labels for the NodeUpgradeJob to be operated on that node. Please note that sets of NodeNames and LabelSelector are ORed. Users must set one and can only set one.

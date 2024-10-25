@@ -30,6 +30,16 @@ spec:
                 allow:
                   description: "Allow is the set of conditions evaluated to grant access."
                   properties:
+                    account_assignments:
+                      description: "AccountAssignments holds the list of account assignments affected by this condition."
+                      items:
+                        properties:
+                          account:
+                            type: "string"
+                          permission_set:
+                            type: "string"
+                        type: "object"
+                      type: "array"
                     app_labels:
                       additionalProperties:
                         x-kubernetes-preserve-unknown-fields: true
@@ -208,7 +218,7 @@ spec:
                       items:
                         properties:
                           kind:
-                            description: "Kind specifies the Kubernetes Resource type. At the moment only \"pod\" is supported."
+                            description: "Kind specifies the Kubernetes Resource type."
                             type: "string"
                           name:
                             description: "Name is the resource name. It supports wildcards."
@@ -452,6 +462,16 @@ spec:
                 deny:
                   description: "Deny is the set of conditions evaluated to deny access. Deny takes priority over allow."
                   properties:
+                    account_assignments:
+                      description: "AccountAssignments holds the list of account assignments affected by this condition."
+                      items:
+                        properties:
+                          account:
+                            type: "string"
+                          permission_set:
+                            type: "string"
+                        type: "object"
+                      type: "array"
                     app_labels:
                       additionalProperties:
                         x-kubernetes-preserve-unknown-fields: true
@@ -630,7 +650,7 @@ spec:
                       items:
                         properties:
                           kind:
-                            description: "Kind specifies the Kubernetes Resource type. At the moment only \"pod\" is supported."
+                            description: "Kind specifies the Kubernetes Resource type."
                             type: "string"
                           name:
                             description: "Name is the resource name. It supports wildcards."

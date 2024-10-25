@@ -71,6 +71,13 @@ spec:
                       description: "MaxRestarts defines the limit on the number of JobSet restarts.\nA restart is achieved by recreating all active child jobs."
                       format: "int32"
                       type: "integer"
+                    restartStrategy:
+                      default: "Recreate"
+                      description: "RestartStrategy defines the strategy to use when restarting the JobSet.\nDefaults to Recreate."
+                      enum:
+                        - "Recreate"
+                        - "BlockingRecreate"
+                      type: "string"
                     rules:
                       description: "List of failure policy rules for this JobSet.\nFor a given Job failure, the rules will be evaluated in order,\nand only the first matching rule will be executed.\nIf no matching rule is found, the RestartJobSet action is applied."
                       items:

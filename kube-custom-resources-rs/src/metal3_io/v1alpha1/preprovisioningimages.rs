@@ -25,7 +25,8 @@ pub struct PreprovisioningImageSpec {
     /// architecture is the processor architecture for which to build the image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub architecture: Option<String>,
-    /// networkDataName is the name of a Secret in the local namespace that contains network data to build in to the image.
+    /// networkDataName is the name of a Secret in the local namespace that
+    /// contains network data to build in to the image.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkDataName")]
     pub network_data_name: Option<String>,
 }
@@ -39,19 +40,23 @@ pub struct PreprovisioningImageStatus {
     /// conditions describe the state of the built image
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// extraKernelParams is a string with extra parameters to pass to the kernel when booting the image over network. Only makes sense for initrd images.
+    /// extraKernelParams is a string with extra parameters to pass to the
+    /// kernel when booting the image over network. Only makes sense for initrd images.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraKernelParams")]
     pub extra_kernel_params: Option<String>,
-    /// format is the type of image that is available at the download url: either iso or initrd.
+    /// format is the type of image that is available at the download url:
+    /// either iso or initrd.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format: Option<PreprovisioningImageStatusFormat>,
     /// imageUrl is the URL from which the built image can be downloaded.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageUrl")]
     pub image_url: Option<String>,
-    /// kernelUrl is the URL from which the kernel of the image can be downloaded. Only makes sense for initrd images.
+    /// kernelUrl is the URL from which the kernel of the image can be downloaded.
+    /// Only makes sense for initrd images.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kernelUrl")]
     pub kernel_url: Option<String>,
-    /// networkData is a reference to the version of the Secret containing the network data used to build the image.
+    /// networkData is a reference to the version of the Secret containing the
+    /// network data used to build the image.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkData")]
     pub network_data: Option<PreprovisioningImageStatusNetworkData>,
 }
@@ -65,7 +70,8 @@ pub enum PreprovisioningImageStatusFormat {
     Initrd,
 }
 
-/// networkData is a reference to the version of the Secret containing the network data used to build the image.
+/// networkData is a reference to the version of the Secret containing the
+/// network data used to build the image.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PreprovisioningImageStatusNetworkData {
     #[serde(default, skip_serializing_if = "Option::is_none")]

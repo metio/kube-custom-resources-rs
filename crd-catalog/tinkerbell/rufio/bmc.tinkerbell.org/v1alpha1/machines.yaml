@@ -72,8 +72,6 @@ spec:
                             port:
                               description: "Port that intelAMT will use for calls."
                               type: "integer"
-                          required:
-                            - "port"
                           type: "object"
                         ipmitool:
                           description: "IPMITOOL contains the options to customize the Ipmitool provider."
@@ -91,8 +89,12 @@ spec:
                             port:
                               description: "Port that redfish will use for calls."
                               type: "integer"
-                          required:
-                            - "port"
+                            systemName:
+                              description: "SystemName is the name of the system to use for redfish calls.\nWith redfish implementations that manage multiple systems via a single endpoint, this allows for specifying the system to manage."
+                              type: "string"
+                            useBasicAuth:
+                              description: "UseBasicAuth for redfish calls. The default is false which means token based auth is used."
+                              type: "boolean"
                           type: "object"
                         rpc:
                           description: "RPC contains the options to customize the RPC provider."

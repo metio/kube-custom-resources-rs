@@ -18,7 +18,8 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct DataImageSpec {
-    /// Url is the address of the dataImage that we want to attach to a BareMetalHost
+    /// Url is the address of the dataImage that we want to attach
+    /// to a BareMetalHost
     pub url: String,
 }
 

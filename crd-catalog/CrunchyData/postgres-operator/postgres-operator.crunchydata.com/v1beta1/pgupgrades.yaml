@@ -589,7 +589,7 @@ spec:
                 fromPostgresVersion:
                   description: "The major version of PostgreSQL before the upgrade."
                   maximum: 17.0
-                  minimum: 10.0
+                  minimum: 11.0
                   type: "integer"
                 image:
                   description: "The image name to use for major PostgreSQL upgrades."
@@ -675,7 +675,7 @@ spec:
                 toPostgresVersion:
                   description: "The major version of PostgreSQL to be upgraded to."
                   maximum: 17.0
-                  minimum: 10.0
+                  minimum: 11.0
                   type: "integer"
                 tolerations:
                   description: "Tolerations of the PGUpgrade pod.\nMore info: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration"

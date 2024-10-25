@@ -13,7 +13,16 @@ spec:
     singular: "limitador"
   scope: "Namespaced"
   versions:
-    - name: "v1alpha1"
+    - additionalPrinterColumns:
+        - description: "Limitador Ready"
+          jsonPath: ".status.conditions[?(@.type==\"Ready\")].status"
+          name: "Ready"
+          priority: 2
+          type: "string"
+        - jsonPath: ".metadata.creationTimestamp"
+          name: "Age"
+          type: "date"
+      name: "v1alpha1"
       schema:
         openAPIV3Schema:
           description: "Limitador is the Schema for the limitadors API"

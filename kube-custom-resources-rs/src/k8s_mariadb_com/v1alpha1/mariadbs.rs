@@ -394,6 +394,10 @@ pub struct MariaDBBootstrapFrom {
     /// S3 defines the configuration to restore backups from a S3 compatible storage. It has priority over Volume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub s3: Option<MariaDBBootstrapFromS3>,
+    /// StagingStorage defines the temporary storage used to keep external backups (i.e. S3) while they are being processed.
+    /// It defaults to an emptyDir volume, meaning that the backups will be temporarily stored in the node where the Restore Job is scheduled.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stagingStorage")]
+    pub staging_storage: Option<MariaDBBootstrapFromStagingStorage>,
     /// TargetRecoveryTime is a RFC3339 (1970-01-01T00:00:00Z) date and time that defines the point in time recovery objective.
     /// It is used to determine the closest restoration source in time.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRecoveryTime")]
@@ -699,12 +703,152 @@ pub struct MariaDBBootstrapFromS3TlsCaSecretKeyRef {
     pub name: Option<String>,
 }
 
+/// StagingStorage defines the temporary storage used to keep external backups (i.e. S3) while they are being processed.
+/// It defaults to an emptyDir volume, meaning that the backups will be temporarily stored in the node where the Restore Job is scheduled.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBBootstrapFromStagingStorage {
+    /// PersistentVolumeClaim is a Kubernetes PVC specification.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<MariaDBBootstrapFromStagingStoragePersistentVolumeClaim>,
+    /// Volume is a Kubernetes volume specification.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub volume: Option<MariaDBBootstrapFromStagingStorageVolume>,
+}
+
+/// PersistentVolumeClaim is a Kubernetes PVC specification.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBBootstrapFromStagingStoragePersistentVolumeClaim {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
+    pub access_modes: Option<Vec<String>>,
+    /// VolumeResourceRequirements describes the storage resource requirements for a volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub resources: Option<MariaDBBootstrapFromStagingStoragePersistentVolumeClaimResources>,
+    /// A label selector is a label query over a set of resources. The result of matchLabels and
+    /// matchExpressions are ANDed. An empty label selector matches all objects. A null
+    /// label selector matches no objects.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub selector: Option<MariaDBBootstrapFromStagingStoragePersistentVolumeClaimSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
+    pub storage_class_name: Option<String>,
+}
+
+/// VolumeResourceRequirements describes the storage resource requirements for a volume.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBBootstrapFromStagingStoragePersistentVolumeClaimResources {
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub limits: Option<BTreeMap<String, IntOrString>>,
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requests: Option<BTreeMap<String, IntOrString>>,
+}
+
+/// A label selector is a label query over a set of resources. The result of matchLabels and
+/// matchExpressions are ANDed. An empty label selector matches all objects. A null
+/// label selector matches no objects.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBBootstrapFromStagingStoragePersistentVolumeClaimSelector {
+    /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<MariaDBBootstrapFromStagingStoragePersistentVolumeClaimSelectorMatchExpressions>>,
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
+    pub match_labels: Option<BTreeMap<String, String>>,
+}
+
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBBootstrapFromStagingStoragePersistentVolumeClaimSelectorMatchExpressions {
+    /// key is the label key that the selector applies to.
+    pub key: String,
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
+    pub operator: String,
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub values: Option<Vec<String>>,
+}
+
+/// Volume is a Kubernetes volume specification.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBBootstrapFromStagingStorageVolume {
+    /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#csivolumesource-v1-core.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub csi: Option<MariaDBBootstrapFromStagingStorageVolumeCsi>,
+    /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#emptydirvolumesource-v1-core.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
+    pub empty_dir: Option<MariaDBBootstrapFromStagingStorageVolumeEmptyDir>,
+    /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nfsvolumesource-v1-core.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub nfs: Option<MariaDBBootstrapFromStagingStorageVolumeNfs>,
+    /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#persistentvolumeclaimvolumesource-v1-core.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<MariaDBBootstrapFromStagingStorageVolumePersistentVolumeClaim>,
+}
+
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#csivolumesource-v1-core.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBBootstrapFromStagingStorageVolumeCsi {
+    pub driver: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
+    pub fs_type: Option<String>,
+    /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#localobjectreference-v1-core.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
+    pub node_publish_secret_ref: Option<MariaDBBootstrapFromStagingStorageVolumeCsiNodePublishSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
+    pub volume_attributes: Option<BTreeMap<String, String>>,
+}
+
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#localobjectreference-v1-core.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBBootstrapFromStagingStorageVolumeCsiNodePublishSecretRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#emptydirvolumesource-v1-core.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBBootstrapFromStagingStorageVolumeEmptyDir {
+    /// StorageMedium defines ways that storage can be allocated to a volume.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub medium: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sizeLimit")]
+    pub size_limit: Option<IntOrString>,
+}
+
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#nfsvolumesource-v1-core.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBBootstrapFromStagingStorageVolumeNfs {
+    pub path: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+    pub server: String,
+}
+
+/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#persistentvolumeclaimvolumesource-v1-core.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct MariaDBBootstrapFromStagingStorageVolumePersistentVolumeClaim {
+    #[serde(rename = "claimName")]
+    pub claim_name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
+    pub read_only: Option<bool>,
+}
+
 /// Volume is a Kubernetes Volume object that contains a backup.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MariaDBBootstrapFromVolume {
-    /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#configmapvolumesource-v1-core.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map: Option<MariaDBBootstrapFromVolumeConfigMap>,
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#csivolumesource-v1-core.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<MariaDBBootstrapFromVolumeCsi>,
@@ -717,18 +861,6 @@ pub struct MariaDBBootstrapFromVolume {
     /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#persistentvolumeclaimvolumesource-v1-core.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<MariaDBBootstrapFromVolumePersistentVolumeClaim>,
-    /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#secretvolumesource-v1-core.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret: Option<MariaDBBootstrapFromVolumeSecret>,
-}
-
-/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#configmapvolumesource-v1-core.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MariaDBBootstrapFromVolumeConfigMap {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
-    pub default_mode: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub name: Option<String>,
 }
 
 /// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#csivolumesource-v1-core.
@@ -779,15 +911,6 @@ pub struct MariaDBBootstrapFromVolumePersistentVolumeClaim {
     pub claim_name: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-}
-
-/// Refer to the Kubernetes docs: https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#secretvolumesource-v1-core.
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MariaDBBootstrapFromVolumeSecret {
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
-    pub default_mode: Option<i32>,
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
-    pub secret_name: Option<String>,
 }
 
 /// Connection defines a template to configure the general Connection object.

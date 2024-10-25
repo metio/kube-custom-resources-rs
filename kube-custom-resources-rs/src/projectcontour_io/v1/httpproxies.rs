@@ -626,8 +626,8 @@ pub struct HTTPProxyRoutesLoadBalancerPolicyRequestHashPoliciesHeaderHashOptions
     /// HeaderName is the name of the HTTP request header that will be used to
     /// calculate the hash key. If the header specified is not present on a
     /// request, no hash will be produced.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "headerName")]
-    pub header_name: Option<String>,
+    #[serde(rename = "headerName")]
+    pub header_name: String,
 }
 
 /// QueryParameterHashOptions should be set when request query parameter hash based load
@@ -638,8 +638,8 @@ pub struct HTTPProxyRoutesLoadBalancerPolicyRequestHashPoliciesQueryParameterHas
     /// ParameterName is the name of the HTTP request query parameter that will be used to
     /// calculate the hash key. If the query parameter specified is not present on a
     /// request, no hash will be produced.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parameterName")]
-    pub parameter_name: Option<String>,
+    #[serde(rename = "parameterName")]
+    pub parameter_name: String,
 }
 
 /// The policy for rewriting the path of the request URL
@@ -705,8 +705,7 @@ pub struct HTTPProxyRoutesRateLimitPolicyGlobal {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HTTPProxyRoutesRateLimitPolicyGlobalDescriptors {
     /// Entries is the list of key-value pair generators.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub entries: Option<Vec<HTTPProxyRoutesRateLimitPolicyGlobalDescriptorsEntries>>,
+    pub entries: Vec<HTTPProxyRoutesRateLimitPolicyGlobalDescriptorsEntries>,
 }
 
 /// RateLimitDescriptorEntry is a key-value pair generator. Exactly
@@ -740,8 +739,7 @@ pub struct HTTPProxyRoutesRateLimitPolicyGlobalDescriptorsEntriesGenericKey {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// Value defines the value of the descriptor entry.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
+    pub value: String,
 }
 
 /// RemoteAddress defines a descriptor entry with a key of "remote_address"
@@ -756,11 +754,11 @@ pub struct HTTPProxyRoutesRateLimitPolicyGlobalDescriptorsEntriesRemoteAddress {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HTTPProxyRoutesRateLimitPolicyGlobalDescriptorsEntriesRequestHeader {
     /// DescriptorKey defines the key to use on the descriptor entry.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "descriptorKey")]
-    pub descriptor_key: Option<String>,
+    #[serde(rename = "descriptorKey")]
+    pub descriptor_key: String,
     /// HeaderName defines the name of the header to look for on the request.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "headerName")]
-    pub header_name: Option<String>,
+    #[serde(rename = "headerName")]
+    pub header_name: String,
 }
 
 /// RequestHeaderValueMatch defines a descriptor entry that's populated
@@ -779,8 +777,7 @@ pub struct HTTPProxyRoutesRateLimitPolicyGlobalDescriptorsEntriesRequestHeaderVa
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<Vec<HTTPProxyRoutesRateLimitPolicyGlobalDescriptorsEntriesRequestHeaderValueMatchHeaders>>,
     /// Value defines the value of the descriptor entry.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
+    pub value: String,
 }
 
 /// HeaderMatchCondition specifies how to conditionally match against HTTP
@@ -1353,8 +1350,8 @@ pub struct HTTPProxyTcpproxyLoadBalancerPolicyRequestHashPoliciesHeaderHashOptio
     /// HeaderName is the name of the HTTP request header that will be used to
     /// calculate the hash key. If the header specified is not present on a
     /// request, no hash will be produced.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "headerName")]
-    pub header_name: Option<String>,
+    #[serde(rename = "headerName")]
+    pub header_name: String,
 }
 
 /// QueryParameterHashOptions should be set when request query parameter hash based load
@@ -1365,8 +1362,8 @@ pub struct HTTPProxyTcpproxyLoadBalancerPolicyRequestHashPoliciesQueryParameterH
     /// ParameterName is the name of the HTTP request query parameter that will be used to
     /// calculate the hash key. If the query parameter specified is not present on a
     /// request, no hash will be produced.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parameterName")]
-    pub parameter_name: Option<String>,
+    #[serde(rename = "parameterName")]
+    pub parameter_name: String,
 }
 
 /// Service defines an Kubernetes Service to proxy traffic.
@@ -1886,8 +1883,7 @@ pub struct HTTPProxyVirtualhostRateLimitPolicyGlobal {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HTTPProxyVirtualhostRateLimitPolicyGlobalDescriptors {
     /// Entries is the list of key-value pair generators.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub entries: Option<Vec<HTTPProxyVirtualhostRateLimitPolicyGlobalDescriptorsEntries>>,
+    pub entries: Vec<HTTPProxyVirtualhostRateLimitPolicyGlobalDescriptorsEntries>,
 }
 
 /// RateLimitDescriptorEntry is a key-value pair generator. Exactly
@@ -1921,8 +1917,7 @@ pub struct HTTPProxyVirtualhostRateLimitPolicyGlobalDescriptorsEntriesGenericKey
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key: Option<String>,
     /// Value defines the value of the descriptor entry.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
+    pub value: String,
 }
 
 /// RemoteAddress defines a descriptor entry with a key of "remote_address"
@@ -1937,11 +1932,11 @@ pub struct HTTPProxyVirtualhostRateLimitPolicyGlobalDescriptorsEntriesRemoteAddr
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HTTPProxyVirtualhostRateLimitPolicyGlobalDescriptorsEntriesRequestHeader {
     /// DescriptorKey defines the key to use on the descriptor entry.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "descriptorKey")]
-    pub descriptor_key: Option<String>,
+    #[serde(rename = "descriptorKey")]
+    pub descriptor_key: String,
     /// HeaderName defines the name of the header to look for on the request.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "headerName")]
-    pub header_name: Option<String>,
+    #[serde(rename = "headerName")]
+    pub header_name: String,
 }
 
 /// RequestHeaderValueMatch defines a descriptor entry that's populated
@@ -1960,8 +1955,7 @@ pub struct HTTPProxyVirtualhostRateLimitPolicyGlobalDescriptorsEntriesRequestHea
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<Vec<HTTPProxyVirtualhostRateLimitPolicyGlobalDescriptorsEntriesRequestHeaderValueMatchHeaders>>,
     /// Value defines the value of the descriptor entry.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
+    pub value: String,
 }
 
 /// HeaderMatchCondition specifies how to conditionally match against HTTP
@@ -2258,10 +2252,7 @@ pub struct HTTPProxyStatusLoadBalancerIngressPorts {
     ///   CamelCase names
     /// - cloud provider specific error values must have names that comply with the
     ///   format foo.example.com/CamelCase.
-    /// ---
-    /// The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub error: Option<String>,
+    pub error: String,
     /// Port is the port number of the service port of which status is recorded here
     pub port: i32,
     /// Protocol is the protocol of the service port of which status is recorded here

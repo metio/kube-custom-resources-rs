@@ -66,6 +66,8 @@ pub struct OpenTelemetryCollectorSpec {
     pub node_selector: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub observability: Option<OpenTelemetryCollectorObservability>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaimRetentionPolicy")]
+    pub persistent_volume_claim_retention_policy: Option<OpenTelemetryCollectorPersistentVolumeClaimRetentionPolicy>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAnnotations")]
     pub pod_annotations: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podDisruptionBudget")]
@@ -2019,6 +2021,14 @@ pub struct OpenTelemetryCollectorObservabilityMetrics {
     pub disable_prometheus_annotations: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableMetrics")]
     pub enable_metrics: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct OpenTelemetryCollectorPersistentVolumeClaimRetentionPolicy {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "whenDeleted")]
+    pub when_deleted: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "whenScaled")]
+    pub when_scaled: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

@@ -621,6 +621,9 @@ pub struct WorkspaceStatus {
     /// Workspace Runs status.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runStatus")]
     pub run_status: Option<WorkspaceStatusRunStatus>,
+    /// SSH Key ID.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sshKeyID")]
+    pub ssh_key_id: Option<String>,
     /// Workspace Terraform version.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "terraformVersion")]
     pub terraform_version: Option<String>,

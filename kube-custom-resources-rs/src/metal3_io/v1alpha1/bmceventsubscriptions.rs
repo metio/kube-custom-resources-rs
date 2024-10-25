@@ -26,12 +26,14 @@ pub struct BMCEventSubscriptionSpec {
     /// A reference to a BareMetalHost
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostName")]
     pub host_name: Option<String>,
-    /// A secret containing HTTP headers which should be passed along to the Destination when making a request
+    /// A secret containing HTTP headers which should be passed along to the Destination
+    /// when making a request
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeadersRef")]
     pub http_headers_ref: Option<BMCEventSubscriptionHttpHeadersRef>,
 }
 
-/// A secret containing HTTP headers which should be passed along to the Destination when making a request
+/// A secret containing HTTP headers which should be passed along to the Destination
+/// when making a request
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BMCEventSubscriptionHttpHeadersRef {
     /// name is unique within a namespace to reference a secret resource.
