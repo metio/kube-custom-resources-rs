@@ -1810,7 +1810,6 @@ apiVersion `kuadrant.io/v1beta2`:
 - `RateLimitPolicy`
 
 apiVersion `kuadrant.io/v1beta3`:
-- `AuthPolicy`
 - `RateLimitPolicy`
 
 ## kube_green_com
