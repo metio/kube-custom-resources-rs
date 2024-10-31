@@ -32,6 +32,9 @@ version = "~1"
 version = "~0"
 features = ["v1_31"]
 
+[package.metadata.docs.rs]
+features = [ "k8s-openapi/v1_31" ]
+
 [features]
 about_k8s_io = []
 acid_zalan_do = []
