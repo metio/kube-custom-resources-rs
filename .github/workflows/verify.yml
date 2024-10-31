@@ -50,4 +50,4 @@ jobs:
         run: cat kube-custom-resources-rs/Cargo.toml
       - uses: dtolnay/rust-toolchain@nightly
       - uses: dtolnay/install@cargo-docs-rs
-      - run: cargo docs-rs --package kube-custom-resources-rs
+      - run: cargo +nightly docs-rs --package kube-custom-resources-rs
