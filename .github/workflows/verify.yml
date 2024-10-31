@@ -43,3 +43,11 @@ jobs:
         env:
           RUSTFLAGS: "--deny warnings"
           K8S_OPENAPI_ENABLED_VERSION: "1.31"
+      - name: Try-run Cargo Version Update
+        if: steps.commits.outputs.count > 0
+        run: sed -i -e '0,/edition/s/^version = .*/version = "${{ steps.release.outputs.version }}"/' kube-custom-resources-rs/Cargo.toml
+      - name: Print modified Cargo.toml
+        run: cat kube-custom-resources-rs/Cargo.toml
+      - uses: dtolnay/rust-toolchain@nightly
+      - uses: dtolnay/install@cargo-docs-rs
+      - run: cargo docs-rs
