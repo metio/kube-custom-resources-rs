@@ -28,6 +28,12 @@ pub struct ComponentDefinitionSpec {
     /// This field is immutable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
+    /// Specifies the strategies for determining the available status of the Component.
+    /// 
+    /// 
+    /// This field is immutable.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub available: Option<ComponentDefinitionAvailable>,
     /// Specifies the configuration file templates and volume mount parameters used by the Component.
     /// It also includes descriptions of the parameters in the ConfigMaps, such as value range limitations.
     /// 
@@ -452,6 +458,4696 @@ pub struct ComponentDefinitionSpec {
     pub volumes: Option<Vec<ComponentDefinitionVolumes>>,
 }
 
+/// Specifies the strategies for determining the available status of the Component.
+/// 
+/// 
+/// This field is immutable.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailable {
+    /// Specifies the phases that the component will go through to be considered available.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withPhases")]
+    pub with_phases: Option<String>,
+    /// Specifies the strategies for determining whether the component is available based on the available probe.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withProbe")]
+    pub with_probe: Option<ComponentDefinitionAvailableWithProbe>,
+}
+
+/// Specifies the strategies for determining whether the component is available based on the available probe.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbe {
+    /// Specifies the conditions that the component will go through to be considered available.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub condition: Option<ComponentDefinitionAvailableWithProbeCondition>,
+    /// A brief description for the condition when the component is available.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeWindowSeconds")]
+    pub time_window_seconds: Option<i32>,
+}
+
+/// Specifies the conditions that the component will go through to be considered available.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeCondition {
+    /// All replicas must satisfy the assertion.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub all: Option<ComponentDefinitionAvailableWithProbeConditionAll>,
+    /// Logical And to combine multiple expressions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub and: Option<Vec<ComponentDefinitionAvailableWithProbeConditionAnd>>,
+    /// At least one replica must satisfy the assertion.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub any: Option<ComponentDefinitionAvailableWithProbeConditionAny>,
+    /// Majority replicas must satisfy the assertion.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub majority: Option<ComponentDefinitionAvailableWithProbeConditionMajority>,
+    /// None of the replicas must satisfy the assertion.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub none: Option<ComponentDefinitionAvailableWithProbeConditionNone>,
+    /// Logical Not to negate the expression.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub not: Option<ComponentDefinitionAvailableWithProbeConditionNot>,
+    /// Logical Or to combine multiple expressions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub or: Option<Vec<ComponentDefinitionAvailableWithProbeConditionOr>>,
+}
+
+/// All replicas must satisfy the assertion.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAll {
+    /// Logical And to combine multiple assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub and: Option<Vec<ComponentDefinitionAvailableWithProbeConditionAllAnd>>,
+    /// Logical Not to negate the assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub not: Option<ComponentDefinitionAvailableWithProbeConditionAllNot>,
+    /// Logical Or to combine multiple assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub or: Option<Vec<ComponentDefinitionAvailableWithProbeConditionAllOr>>,
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionAllStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionAllStdout>,
+    /// Specifies whether apply the assertions strictly to all replicas.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strict: Option<bool>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// ActionAssertion defines the custom assertions for evaluating the success or failure of an action.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAllAnd {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionAllAndStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionAllAndStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAllAndStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAllAndStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Logical Not to negate the assertions.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAllNot {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionAllNotStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionAllNotStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAllNotStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAllNotStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// ActionAssertion defines the custom assertions for evaluating the success or failure of an action.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAllOr {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionAllOrStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionAllOrStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAllOrStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAllOrStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAllStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAllStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAnd {
+    /// All replicas must satisfy the assertion.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub all: Option<ComponentDefinitionAvailableWithProbeConditionAndAll>,
+    /// At least one replica must satisfy the assertion.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub any: Option<ComponentDefinitionAvailableWithProbeConditionAndAny>,
+    /// Majority replicas must satisfy the assertion.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub majority: Option<ComponentDefinitionAvailableWithProbeConditionAndMajority>,
+    /// None of the replicas must satisfy the assertion.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub none: Option<ComponentDefinitionAvailableWithProbeConditionAndNone>,
+}
+
+/// All replicas must satisfy the assertion.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndAll {
+    /// Logical And to combine multiple assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub and: Option<Vec<ComponentDefinitionAvailableWithProbeConditionAndAllAnd>>,
+    /// Logical Not to negate the assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub not: Option<ComponentDefinitionAvailableWithProbeConditionAndAllNot>,
+    /// Logical Or to combine multiple assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub or: Option<Vec<ComponentDefinitionAvailableWithProbeConditionAndAllOr>>,
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionAndAllStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionAndAllStdout>,
+    /// Specifies whether apply the assertions strictly to all replicas.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strict: Option<bool>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// ActionAssertion defines the custom assertions for evaluating the success or failure of an action.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndAllAnd {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionAndAllAndStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionAndAllAndStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndAllAndStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndAllAndStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Logical Not to negate the assertions.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndAllNot {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionAndAllNotStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionAndAllNotStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndAllNotStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndAllNotStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// ActionAssertion defines the custom assertions for evaluating the success or failure of an action.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndAllOr {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionAndAllOrStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionAndAllOrStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndAllOrStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndAllOrStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndAllStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndAllStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// At least one replica must satisfy the assertion.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndAny {
+    /// Logical And to combine multiple assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub and: Option<Vec<ComponentDefinitionAvailableWithProbeConditionAndAnyAnd>>,
+    /// Logical Not to negate the assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub not: Option<ComponentDefinitionAvailableWithProbeConditionAndAnyNot>,
+    /// Logical Or to combine multiple assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub or: Option<Vec<ComponentDefinitionAvailableWithProbeConditionAndAnyOr>>,
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionAndAnyStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionAndAnyStdout>,
+    /// Specifies whether apply the assertions strictly to all replicas.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strict: Option<bool>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// ActionAssertion defines the custom assertions for evaluating the success or failure of an action.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndAnyAnd {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionAndAnyAndStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionAndAnyAndStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndAnyAndStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndAnyAndStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Logical Not to negate the assertions.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndAnyNot {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionAndAnyNotStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionAndAnyNotStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndAnyNotStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndAnyNotStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// ActionAssertion defines the custom assertions for evaluating the success or failure of an action.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndAnyOr {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionAndAnyOrStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionAndAnyOrStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndAnyOrStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndAnyOrStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndAnyStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndAnyStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Majority replicas must satisfy the assertion.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndMajority {
+    /// Logical And to combine multiple assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub and: Option<Vec<ComponentDefinitionAvailableWithProbeConditionAndMajorityAnd>>,
+    /// Logical Not to negate the assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub not: Option<ComponentDefinitionAvailableWithProbeConditionAndMajorityNot>,
+    /// Logical Or to combine multiple assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub or: Option<Vec<ComponentDefinitionAvailableWithProbeConditionAndMajorityOr>>,
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionAndMajorityStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionAndMajorityStdout>,
+    /// Specifies whether apply the assertions strictly to all replicas.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strict: Option<bool>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// ActionAssertion defines the custom assertions for evaluating the success or failure of an action.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndMajorityAnd {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionAndMajorityAndStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionAndMajorityAndStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndMajorityAndStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndMajorityAndStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Logical Not to negate the assertions.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndMajorityNot {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionAndMajorityNotStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionAndMajorityNotStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndMajorityNotStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndMajorityNotStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// ActionAssertion defines the custom assertions for evaluating the success or failure of an action.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndMajorityOr {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionAndMajorityOrStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionAndMajorityOrStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndMajorityOrStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndMajorityOrStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndMajorityStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndMajorityStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// None of the replicas must satisfy the assertion.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndNone {
+    /// Logical And to combine multiple assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub and: Option<Vec<ComponentDefinitionAvailableWithProbeConditionAndNoneAnd>>,
+    /// Logical Not to negate the assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub not: Option<ComponentDefinitionAvailableWithProbeConditionAndNoneNot>,
+    /// Logical Or to combine multiple assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub or: Option<Vec<ComponentDefinitionAvailableWithProbeConditionAndNoneOr>>,
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionAndNoneStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionAndNoneStdout>,
+    /// Specifies whether apply the assertions strictly to all replicas.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strict: Option<bool>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// ActionAssertion defines the custom assertions for evaluating the success or failure of an action.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndNoneAnd {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionAndNoneAndStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionAndNoneAndStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndNoneAndStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndNoneAndStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Logical Not to negate the assertions.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndNoneNot {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionAndNoneNotStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionAndNoneNotStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndNoneNotStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndNoneNotStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// ActionAssertion defines the custom assertions for evaluating the success or failure of an action.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndNoneOr {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionAndNoneOrStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionAndNoneOrStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndNoneOrStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndNoneOrStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndNoneStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAndNoneStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// At least one replica must satisfy the assertion.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAny {
+    /// Logical And to combine multiple assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub and: Option<Vec<ComponentDefinitionAvailableWithProbeConditionAnyAnd>>,
+    /// Logical Not to negate the assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub not: Option<ComponentDefinitionAvailableWithProbeConditionAnyNot>,
+    /// Logical Or to combine multiple assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub or: Option<Vec<ComponentDefinitionAvailableWithProbeConditionAnyOr>>,
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionAnyStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionAnyStdout>,
+    /// Specifies whether apply the assertions strictly to all replicas.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strict: Option<bool>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// ActionAssertion defines the custom assertions for evaluating the success or failure of an action.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAnyAnd {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionAnyAndStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionAnyAndStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAnyAndStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAnyAndStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Logical Not to negate the assertions.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAnyNot {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionAnyNotStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionAnyNotStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAnyNotStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAnyNotStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// ActionAssertion defines the custom assertions for evaluating the success or failure of an action.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAnyOr {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionAnyOrStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionAnyOrStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAnyOrStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAnyOrStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAnyStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionAnyStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Majority replicas must satisfy the assertion.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionMajority {
+    /// Logical And to combine multiple assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub and: Option<Vec<ComponentDefinitionAvailableWithProbeConditionMajorityAnd>>,
+    /// Logical Not to negate the assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub not: Option<ComponentDefinitionAvailableWithProbeConditionMajorityNot>,
+    /// Logical Or to combine multiple assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub or: Option<Vec<ComponentDefinitionAvailableWithProbeConditionMajorityOr>>,
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionMajorityStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionMajorityStdout>,
+    /// Specifies whether apply the assertions strictly to all replicas.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strict: Option<bool>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// ActionAssertion defines the custom assertions for evaluating the success or failure of an action.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionMajorityAnd {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionMajorityAndStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionMajorityAndStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionMajorityAndStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionMajorityAndStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Logical Not to negate the assertions.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionMajorityNot {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionMajorityNotStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionMajorityNotStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionMajorityNotStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionMajorityNotStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// ActionAssertion defines the custom assertions for evaluating the success or failure of an action.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionMajorityOr {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionMajorityOrStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionMajorityOrStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionMajorityOrStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionMajorityOrStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionMajorityStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionMajorityStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// None of the replicas must satisfy the assertion.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNone {
+    /// Logical And to combine multiple assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub and: Option<Vec<ComponentDefinitionAvailableWithProbeConditionNoneAnd>>,
+    /// Logical Not to negate the assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub not: Option<ComponentDefinitionAvailableWithProbeConditionNoneNot>,
+    /// Logical Or to combine multiple assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub or: Option<Vec<ComponentDefinitionAvailableWithProbeConditionNoneOr>>,
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionNoneStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionNoneStdout>,
+    /// Specifies whether apply the assertions strictly to all replicas.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strict: Option<bool>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// ActionAssertion defines the custom assertions for evaluating the success or failure of an action.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNoneAnd {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionNoneAndStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionNoneAndStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNoneAndStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNoneAndStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Logical Not to negate the assertions.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNoneNot {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionNoneNotStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionNoneNotStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNoneNotStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNoneNotStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// ActionAssertion defines the custom assertions for evaluating the success or failure of an action.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNoneOr {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionNoneOrStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionNoneOrStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNoneOrStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNoneOrStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNoneStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNoneStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Logical Not to negate the expression.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNot {
+    /// All replicas must satisfy the assertion.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub all: Option<ComponentDefinitionAvailableWithProbeConditionNotAll>,
+    /// At least one replica must satisfy the assertion.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub any: Option<ComponentDefinitionAvailableWithProbeConditionNotAny>,
+    /// Majority replicas must satisfy the assertion.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub majority: Option<ComponentDefinitionAvailableWithProbeConditionNotMajority>,
+    /// None of the replicas must satisfy the assertion.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub none: Option<ComponentDefinitionAvailableWithProbeConditionNotNone>,
+}
+
+/// All replicas must satisfy the assertion.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotAll {
+    /// Logical And to combine multiple assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub and: Option<Vec<ComponentDefinitionAvailableWithProbeConditionNotAllAnd>>,
+    /// Logical Not to negate the assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub not: Option<ComponentDefinitionAvailableWithProbeConditionNotAllNot>,
+    /// Logical Or to combine multiple assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub or: Option<Vec<ComponentDefinitionAvailableWithProbeConditionNotAllOr>>,
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionNotAllStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionNotAllStdout>,
+    /// Specifies whether apply the assertions strictly to all replicas.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strict: Option<bool>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// ActionAssertion defines the custom assertions for evaluating the success or failure of an action.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotAllAnd {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionNotAllAndStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionNotAllAndStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotAllAndStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotAllAndStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Logical Not to negate the assertions.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotAllNot {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionNotAllNotStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionNotAllNotStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotAllNotStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotAllNotStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// ActionAssertion defines the custom assertions for evaluating the success or failure of an action.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotAllOr {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionNotAllOrStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionNotAllOrStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotAllOrStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotAllOrStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotAllStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotAllStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// At least one replica must satisfy the assertion.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotAny {
+    /// Logical And to combine multiple assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub and: Option<Vec<ComponentDefinitionAvailableWithProbeConditionNotAnyAnd>>,
+    /// Logical Not to negate the assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub not: Option<ComponentDefinitionAvailableWithProbeConditionNotAnyNot>,
+    /// Logical Or to combine multiple assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub or: Option<Vec<ComponentDefinitionAvailableWithProbeConditionNotAnyOr>>,
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionNotAnyStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionNotAnyStdout>,
+    /// Specifies whether apply the assertions strictly to all replicas.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strict: Option<bool>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// ActionAssertion defines the custom assertions for evaluating the success or failure of an action.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotAnyAnd {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionNotAnyAndStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionNotAnyAndStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotAnyAndStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotAnyAndStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Logical Not to negate the assertions.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotAnyNot {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionNotAnyNotStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionNotAnyNotStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotAnyNotStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotAnyNotStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// ActionAssertion defines the custom assertions for evaluating the success or failure of an action.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotAnyOr {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionNotAnyOrStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionNotAnyOrStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotAnyOrStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotAnyOrStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotAnyStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotAnyStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Majority replicas must satisfy the assertion.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotMajority {
+    /// Logical And to combine multiple assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub and: Option<Vec<ComponentDefinitionAvailableWithProbeConditionNotMajorityAnd>>,
+    /// Logical Not to negate the assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub not: Option<ComponentDefinitionAvailableWithProbeConditionNotMajorityNot>,
+    /// Logical Or to combine multiple assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub or: Option<Vec<ComponentDefinitionAvailableWithProbeConditionNotMajorityOr>>,
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionNotMajorityStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionNotMajorityStdout>,
+    /// Specifies whether apply the assertions strictly to all replicas.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strict: Option<bool>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// ActionAssertion defines the custom assertions for evaluating the success or failure of an action.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotMajorityAnd {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionNotMajorityAndStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionNotMajorityAndStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotMajorityAndStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotMajorityAndStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Logical Not to negate the assertions.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotMajorityNot {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionNotMajorityNotStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionNotMajorityNotStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotMajorityNotStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotMajorityNotStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// ActionAssertion defines the custom assertions for evaluating the success or failure of an action.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotMajorityOr {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionNotMajorityOrStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionNotMajorityOrStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotMajorityOrStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotMajorityOrStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotMajorityStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotMajorityStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// None of the replicas must satisfy the assertion.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotNone {
+    /// Logical And to combine multiple assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub and: Option<Vec<ComponentDefinitionAvailableWithProbeConditionNotNoneAnd>>,
+    /// Logical Not to negate the assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub not: Option<ComponentDefinitionAvailableWithProbeConditionNotNoneNot>,
+    /// Logical Or to combine multiple assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub or: Option<Vec<ComponentDefinitionAvailableWithProbeConditionNotNoneOr>>,
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionNotNoneStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionNotNoneStdout>,
+    /// Specifies whether apply the assertions strictly to all replicas.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strict: Option<bool>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// ActionAssertion defines the custom assertions for evaluating the success or failure of an action.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotNoneAnd {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionNotNoneAndStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionNotNoneAndStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotNoneAndStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotNoneAndStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Logical Not to negate the assertions.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotNoneNot {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionNotNoneNotStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionNotNoneNotStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotNoneNotStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotNoneNotStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// ActionAssertion defines the custom assertions for evaluating the success or failure of an action.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotNoneOr {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionNotNoneOrStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionNotNoneOrStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotNoneOrStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotNoneOrStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotNoneStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionNotNoneStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOr {
+    /// All replicas must satisfy the assertion.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub all: Option<ComponentDefinitionAvailableWithProbeConditionOrAll>,
+    /// At least one replica must satisfy the assertion.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub any: Option<ComponentDefinitionAvailableWithProbeConditionOrAny>,
+    /// Majority replicas must satisfy the assertion.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub majority: Option<ComponentDefinitionAvailableWithProbeConditionOrMajority>,
+    /// None of the replicas must satisfy the assertion.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub none: Option<ComponentDefinitionAvailableWithProbeConditionOrNone>,
+}
+
+/// All replicas must satisfy the assertion.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrAll {
+    /// Logical And to combine multiple assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub and: Option<Vec<ComponentDefinitionAvailableWithProbeConditionOrAllAnd>>,
+    /// Logical Not to negate the assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub not: Option<ComponentDefinitionAvailableWithProbeConditionOrAllNot>,
+    /// Logical Or to combine multiple assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub or: Option<Vec<ComponentDefinitionAvailableWithProbeConditionOrAllOr>>,
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionOrAllStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionOrAllStdout>,
+    /// Specifies whether apply the assertions strictly to all replicas.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strict: Option<bool>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// ActionAssertion defines the custom assertions for evaluating the success or failure of an action.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrAllAnd {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionOrAllAndStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionOrAllAndStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrAllAndStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrAllAndStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Logical Not to negate the assertions.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrAllNot {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionOrAllNotStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionOrAllNotStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrAllNotStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrAllNotStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// ActionAssertion defines the custom assertions for evaluating the success or failure of an action.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrAllOr {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionOrAllOrStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionOrAllOrStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrAllOrStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrAllOrStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrAllStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrAllStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// At least one replica must satisfy the assertion.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrAny {
+    /// Logical And to combine multiple assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub and: Option<Vec<ComponentDefinitionAvailableWithProbeConditionOrAnyAnd>>,
+    /// Logical Not to negate the assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub not: Option<ComponentDefinitionAvailableWithProbeConditionOrAnyNot>,
+    /// Logical Or to combine multiple assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub or: Option<Vec<ComponentDefinitionAvailableWithProbeConditionOrAnyOr>>,
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionOrAnyStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionOrAnyStdout>,
+    /// Specifies whether apply the assertions strictly to all replicas.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strict: Option<bool>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// ActionAssertion defines the custom assertions for evaluating the success or failure of an action.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrAnyAnd {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionOrAnyAndStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionOrAnyAndStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrAnyAndStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrAnyAndStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Logical Not to negate the assertions.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrAnyNot {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionOrAnyNotStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionOrAnyNotStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrAnyNotStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrAnyNotStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// ActionAssertion defines the custom assertions for evaluating the success or failure of an action.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrAnyOr {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionOrAnyOrStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionOrAnyOrStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrAnyOrStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrAnyOrStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrAnyStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrAnyStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Majority replicas must satisfy the assertion.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrMajority {
+    /// Logical And to combine multiple assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub and: Option<Vec<ComponentDefinitionAvailableWithProbeConditionOrMajorityAnd>>,
+    /// Logical Not to negate the assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub not: Option<ComponentDefinitionAvailableWithProbeConditionOrMajorityNot>,
+    /// Logical Or to combine multiple assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub or: Option<Vec<ComponentDefinitionAvailableWithProbeConditionOrMajorityOr>>,
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionOrMajorityStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionOrMajorityStdout>,
+    /// Specifies whether apply the assertions strictly to all replicas.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strict: Option<bool>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// ActionAssertion defines the custom assertions for evaluating the success or failure of an action.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrMajorityAnd {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionOrMajorityAndStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionOrMajorityAndStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrMajorityAndStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrMajorityAndStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Logical Not to negate the assertions.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrMajorityNot {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionOrMajorityNotStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionOrMajorityNotStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrMajorityNotStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrMajorityNotStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// ActionAssertion defines the custom assertions for evaluating the success or failure of an action.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrMajorityOr {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionOrMajorityOrStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionOrMajorityOrStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrMajorityOrStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrMajorityOrStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrMajorityStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrMajorityStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// None of the replicas must satisfy the assertion.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrNone {
+    /// Logical And to combine multiple assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub and: Option<Vec<ComponentDefinitionAvailableWithProbeConditionOrNoneAnd>>,
+    /// Logical Not to negate the assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub not: Option<ComponentDefinitionAvailableWithProbeConditionOrNoneNot>,
+    /// Logical Or to combine multiple assertions.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub or: Option<Vec<ComponentDefinitionAvailableWithProbeConditionOrNoneOr>>,
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionOrNoneStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionOrNoneStdout>,
+    /// Specifies whether apply the assertions strictly to all replicas.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub strict: Option<bool>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// ActionAssertion defines the custom assertions for evaluating the success or failure of an action.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrNoneAnd {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionOrNoneAndStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionOrNoneAndStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrNoneAndStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrNoneAndStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Logical Not to negate the assertions.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrNoneNot {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionOrNoneNotStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionOrNoneNotStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrNoneNotStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrNoneNotStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// ActionAssertion defines the custom assertions for evaluating the success or failure of an action.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrNoneOr {
+    /// Specifies the stderr matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stderr: Option<ComponentDefinitionAvailableWithProbeConditionOrNoneOrStderr>,
+    /// Specifies the stdout matcher for the action.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub stdout: Option<ComponentDefinitionAvailableWithProbeConditionOrNoneOrStdout>,
+    /// Whether the action should succeed or fail.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub succeed: Option<bool>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrNoneOrStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrNoneOrStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stderr matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrNoneStderr {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
+/// Specifies the stdout matcher for the action.
+/// 
+/// 
+/// This field is immutable once set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionAvailableWithProbeConditionOrNoneStdout {
+    /// The output of the action should contain the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub contains: Option<String>,
+    /// The output of the action should be equal to the specified value.
+    /// 
+    /// 
+    /// This field is immutable once set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "equalTo")]
+    pub equal_to: Option<String>,
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionConfigs {
     /// Specifies the containers to inject the ConfigMap parameters as environment variables.
@@ -721,6 +5417,12 @@ pub struct ComponentDefinitionLifecycleActions {
     /// Note: This field is immutable once it has been set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "accountProvision")]
     pub account_provision: Option<ComponentDefinitionLifecycleActionsAccountProvision>,
+    /// Defines the procedure which is invoked regularly to assess the availability of the component.
+    /// 
+    /// 
+    /// Note: This field is immutable once it has been set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableProbe")]
+    pub available_probe: Option<ComponentDefinitionLifecycleActionsAvailableProbe>,
     /// Defines the procedure for exporting the data from a replica.
     /// 
     /// 
@@ -1230,6 +5932,281 @@ pub enum ComponentDefinitionLifecycleActionsAccountProvisionExecTargetPodSelecto
 /// This field cannot be updated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentDefinitionLifecycleActionsAccountProvisionRetryPolicy {
+    /// Defines the maximum number of retry attempts that should be made for a given Action.
+    /// This value is set to 0 by default, indicating that no retries will be made.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
+    pub max_retries: Option<i64>,
+    /// Indicates the duration of time to wait between each retry attempt.
+    /// This value is set to 0 by default, indicating that there will be no delay between retry attempts.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
+    pub retry_interval: Option<i64>,
+}
+
+/// Defines the procedure which is invoked regularly to assess the availability of the component.
+/// 
+/// 
+/// Note: This field is immutable once it has been set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionLifecycleActionsAvailableProbe {
+    /// Defines the command to run.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub exec: Option<ComponentDefinitionLifecycleActionsAvailableProbeExec>,
+    /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
+    /// Defaults to 3. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
+    pub failure_threshold: Option<i32>,
+    /// Specifies the number of seconds to wait after the container has started before the RoleProbe
+    /// begins to detect the container's role.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
+    pub initial_delay_seconds: Option<i32>,
+    /// Specifies the frequency at which the probe is conducted. This value is expressed in seconds.
+    /// Default to 10 seconds. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
+    pub period_seconds: Option<i32>,
+    /// Specifies the state that the cluster must reach before the Action is executed.
+    /// Currently, this is only applicable to the `postProvision` action.
+    /// 
+    /// 
+    /// The conditions are as follows:
+    /// 
+    /// 
+    /// - `Immediately`: Executed right after the Component object is created.
+    ///   The readiness of the Component and its resources is not guaranteed at this stage.
+    /// - `RuntimeReady`: The Action is triggered after the Component object has been created and all associated
+    ///   runtime resources (e.g. Pods) are in a ready state.
+    /// - `ComponentReady`: The Action is triggered after the Component itself is in a ready state.
+    ///   This process does not affect the readiness state of the Component or the Cluster.
+    /// - `ClusterReady`: The Action is executed after the Cluster is in a ready state.
+    ///   This execution does not alter the Component or the Cluster's state of readiness.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preCondition")]
+    pub pre_condition: Option<String>,
+    /// Defines the strategy to be taken when retrying the Action after a failure.
+    /// 
+    /// 
+    /// It specifies the conditions under which the Action should be retried and the limits to apply,
+    /// such as the maximum number of retries and backoff strategy.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryPolicy")]
+    pub retry_policy: Option<ComponentDefinitionLifecycleActionsAvailableProbeRetryPolicy>,
+    /// Minimum consecutive successes for the probe to be considered successful after having failed.
+    /// Defaults to 1. Minimum value is 1.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
+    pub success_threshold: Option<i32>,
+    /// Specifies the maximum duration in seconds that the Action is allowed to run.
+    /// 
+    /// 
+    /// If the Action does not complete within this time frame, it will be terminated.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
+    pub timeout_seconds: Option<i32>,
+}
+
+/// Defines the command to run.
+/// 
+/// 
+/// This field cannot be updated.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionLifecycleActionsAvailableProbeExec {
+    /// Args represents the arguments that are passed to the `command` for execution.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub args: Option<Vec<String>>,
+    /// Specifies the command to be executed inside the container.
+    /// The working directory for this command is the container's root directory('/').
+    /// Commands are executed directly without a shell environment, meaning shell-specific syntax ('|', etc.) is not supported.
+    /// If the shell is required, it must be explicitly invoked in the command.
+    /// 
+    /// 
+    /// A successful execution is indicated by an exit status of 0; any non-zero status signifies a failure.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub command: Option<Vec<String>>,
+    /// Specifies the name of the container within the same pod whose resources will be shared with the action.
+    /// This allows the action to utilize the specified container's resources without executing within it.
+    /// 
+    /// 
+    /// The name must match one of the containers defined in `componentDefinition.spec.runtime`.
+    /// 
+    /// 
+    /// The resources that can be shared are included:
+    /// 
+    /// 
+    /// - volume mounts
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub container: Option<String>,
+    /// Represents a list of environment variables that will be injected into the container.
+    /// These variables enable the container to adapt its behavior based on the environment it's running in.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub env: Option<Vec<ComponentDefinitionLifecycleActionsAvailableProbeExecEnv>>,
+    /// Specifies the container image to be used for running the Action.
+    /// 
+    /// 
+    /// When specified, a dedicated container will be created using this image to execute the Action.
+    /// All actions with same image will share the same container.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub image: Option<String>,
+    /// Used in conjunction with the `targetPodSelector` field to refine the selection of target pod(s) for Action execution.
+    /// The impact of this field depends on the `targetPodSelector` value:
+    /// 
+    /// 
+    /// - When `targetPodSelector` is set to `Any` or `All`, this field will be ignored.
+    /// - When `targetPodSelector` is set to `Role`, only those replicas whose role matches the `matchingKey`
+    ///   will be selected for the Action.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchingKey")]
+    pub matching_key: Option<String>,
+    /// Defines the criteria used to select the target Pod(s) for executing the Action.
+    /// This is useful when there is no default target replica identified.
+    /// It allows for precise control over which Pod(s) the Action should run in.
+    /// 
+    /// 
+    /// If not specified, the Action will be executed in the pod where the Action is triggered, such as the pod
+    /// to be removed or added; or a random pod if the Action is triggered at the component level, such as
+    /// post-provision or pre-terminate of the component.
+    /// 
+    /// 
+    /// This field cannot be updated.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPodSelector")]
+    pub target_pod_selector: Option<ComponentDefinitionLifecycleActionsAvailableProbeExecTargetPodSelector>,
+}
+
+/// EnvVar represents an environment variable present in a Container.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionLifecycleActionsAvailableProbeExecEnv {
+    /// Name of the environment variable. Must be a C_IDENTIFIER.
+    pub name: String,
+    /// Variable references $(VAR_NAME) are expanded
+    /// using the previously defined environment variables in the container and
+    /// any service environment variables. If a variable cannot be resolved,
+    /// the reference in the input string will be unchanged. Double $$ are reduced
+    /// to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e.
+    /// "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)".
+    /// Escaped references will never be expanded, regardless of whether the variable
+    /// exists or not.
+    /// Defaults to "".
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value: Option<String>,
+    /// Source for the environment variable's value. Cannot be used if value is not empty.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<ComponentDefinitionLifecycleActionsAvailableProbeExecEnvValueFrom>,
+}
+
+/// Source for the environment variable's value. Cannot be used if value is not empty.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionLifecycleActionsAvailableProbeExecEnvValueFrom {
+    /// Selects a key of a ConfigMap.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ComponentDefinitionLifecycleActionsAvailableProbeExecEnvValueFromConfigMapKeyRef>,
+    /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+    /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
+    pub field_ref: Option<ComponentDefinitionLifecycleActionsAvailableProbeExecEnvValueFromFieldRef>,
+    /// Selects a resource of the container: only resources limits and requests
+    /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ComponentDefinitionLifecycleActionsAvailableProbeExecEnvValueFromResourceFieldRef>,
+    /// Selects a key of a secret in the pod's namespace
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ComponentDefinitionLifecycleActionsAvailableProbeExecEnvValueFromSecretKeyRef>,
+}
+
+/// Selects a key of a ConfigMap.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionLifecycleActionsAvailableProbeExecEnvValueFromConfigMapKeyRef {
+    /// The key to select.
+    pub key: String,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the ConfigMap or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
+/// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionLifecycleActionsAvailableProbeExecEnvValueFromFieldRef {
+    /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
+    pub api_version: Option<String>,
+    /// Path of the field to select in the specified API version.
+    #[serde(rename = "fieldPath")]
+    pub field_path: String,
+}
+
+/// Selects a resource of the container: only resources limits and requests
+/// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionLifecycleActionsAvailableProbeExecEnvValueFromResourceFieldRef {
+    /// Container name: required for volumes, optional for env vars
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
+    pub container_name: Option<String>,
+    /// Specifies the output format of the exposed resources, defaults to "1"
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub divisor: Option<IntOrString>,
+    /// Required: resource to select
+    pub resource: String,
+}
+
+/// Selects a key of a secret in the pod's namespace
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionLifecycleActionsAvailableProbeExecEnvValueFromSecretKeyRef {
+    /// The key of the secret to select from.  Must be a valid secret key.
+    pub key: String,
+    /// Name of the referent.
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Add other useful fields. apiVersion, kind, uid?
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Specify whether the Secret or its key must be defined
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Defines the command to run.
+/// 
+/// 
+/// This field cannot be updated.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum ComponentDefinitionLifecycleActionsAvailableProbeExecTargetPodSelector {
+    Any,
+    All,
+    Role,
+    Ordinal,
+}
+
+/// Defines the strategy to be taken when retrying the Action after a failure.
+/// 
+/// 
+/// It specifies the conditions under which the Action should be retried and the limits to apply,
+/// such as the maximum number of retries and backoff strategy.
+/// 
+/// 
+/// This field cannot be updated.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentDefinitionLifecycleActionsAvailableProbeRetryPolicy {
     /// Defines the maximum number of retry attempts that should be made for a given Action.
     /// This value is set to 0 by default, indicating that no retries will be made.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]

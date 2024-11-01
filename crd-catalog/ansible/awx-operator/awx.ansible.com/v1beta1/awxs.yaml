@@ -911,6 +911,10 @@ spec:
                     - "_Yes_"
                     - "_No_"
                   type: "string"
+                public_base_url:
+                  default: ""
+                  description: "Public base URL"
+                  type: "string"
                 receptor_log_level:
                   description: "Set log level of receptor service"
                   type: "string"

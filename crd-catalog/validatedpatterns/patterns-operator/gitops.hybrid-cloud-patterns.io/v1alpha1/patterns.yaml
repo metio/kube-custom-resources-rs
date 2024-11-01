@@ -107,7 +107,6 @@ spec:
                 multiSourceConfig:
                   properties:
                     clusterGroupChartGitRevision:
-                      default: "main"
                       description: "The git reference when deploying the clustergroup helm chart directly from a git repo\nDefaults to 'main'. (Only used when developing the clustergroup helm chart)"
                       type: "string"
                     clusterGroupChartVersion:

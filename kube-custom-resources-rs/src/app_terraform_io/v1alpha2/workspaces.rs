@@ -37,9 +37,9 @@ pub struct WorkspaceSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "applyMethod")]
     pub apply_method: Option<String>,
     /// The Deletion Policy specifies the behavior of the custom resource and its associated workspace when the custom resource is deleted.
-    /// - `retain`: When the custom resource is deleted, the associated workspace is retained.
+    /// - `retain`: When you delete the custom resource, the operator does not delete the workspace.
     /// - `soft`: Attempts to delete the associated workspace only if it does not contain any managed resources.
-    /// - `destroy`: Executes a destroy operation to remove all resources managed by the associated workspace. Once the destruction of these resources is successful, the workspace itself is deleted, followed by the removal of the custom resource.
+    /// - `destroy`: Executes a destroy operation to remove all resources managed by the associated workspace. Once the destruction of these resources is successful, the operator deletes the workspace, and then deletes the custom resource.
     /// - `force`: Forcefully and immediately deletes the workspace and the custom resource.
     /// Default: `retain`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletionPolicy")]

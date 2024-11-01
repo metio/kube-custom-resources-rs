@@ -443,13 +443,27 @@ spec:
                   properties:
                     authentication:
                       default: []
-                      description: "The Airflow [authentication](https://docs.stackable.tech/home/nightly/airflow/usage-guide/security.html) settings. Currently the underlying Flask App Builder only supports one authentication mechanism at a time. This means the operator will error out if multiple references to an AuthenticationClass are provided."
                       items:
                         properties:
                           authenticationClass:
-                            description: "Name of the [AuthenticationClass](https://docs.stackable.tech/home/nightly/concepts/authentication.html#authenticationclass) used to authenticate the users. At the moment only LDAP is supported. If not specified the default authentication (AUTH_DB) will be used."
-                            nullable: true
+                            description: "Name of the [AuthenticationClass](https://docs.stackable.tech/home/nightly/concepts/authentication) used to authenticate users."
                             type: "string"
+                          oidc:
+                            description: "This field contains OIDC-specific configuration. It is only required in case OIDC is used."
+                            nullable: true
+                            properties:
+                              clientCredentialsSecret:
+                                description: "A reference to the OIDC client credentials secret. The secret contains the client id and secret."
+                                type: "string"
+                              extraScopes:
+                                default: []
+                                description: "An optional list of extra scopes which get merged with the scopes defined in the [`AuthenticationClass`]."
+                                items:
+                                  type: "string"
+                                type: "array"
+                            required:
+                              - "clientCredentialsSecret"
+                            type: "object"
                           syncRolesAt:
                             default: "Registration"
                             description: "If we should replace ALL the user's roles each login, or only on registration. Gets mapped to `AUTH_ROLES_SYNC_AT_LOGIN`"
@@ -465,6 +479,8 @@ spec:
                             default: "Public"
                             description: "This role will be given in addition to any AUTH_ROLES_MAPPING. Gets mapped to `AUTH_USER_REGISTRATION_ROLE`"
                             type: "string"
+                        required:
+                          - "authenticationClass"
                         type: "object"
                       type: "array"
                     credentialsSecret:

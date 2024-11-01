@@ -666,9 +666,9 @@ spec:
                             type: "string"
                           type: "array"
                         features:
-                          description: "List of additional features to enable. They are all disabled by default. Enabling additional features might have performance impacts. Possible values are:<br>\n- `PacketDrop`: enable the packets drop flows logging feature. This feature requires mounting\nthe kernel debug filesystem, so the eBPF pod has to run as privileged.\nIf the `spec.agent.ebpf.privileged` parameter is not set, an error is reported.<br>\n- `DNSTracking`: enable the DNS tracking feature.<br>\n- `FlowRTT`: enable flow latency (sRTT) extraction in the eBPF agent from TCP traffic.<br>\n- `NetworkEvents`: enable the Network events monitoring feature. This feature requires mounting\nthe kernel debug filesystem, so the eBPF pod has to run as privileged.\nIt requires using the OVN-Kubernetes network plugin with the Observability feature.\nIMPORTANT: this feature is available as a Developer Preview.<br>"
+                          description: "List of additional features to enable. They are all disabled by default. Enabling additional features might have performance impacts. Possible values are:<br>\n- `PacketDrop`: enable the packets drop flows logging feature. This feature requires mounting\nthe kernel debug filesystem, so the eBPF agent pods have to run as privileged.\nIf the `spec.agent.ebpf.privileged` parameter is not set, an error is reported.<br>\n- `DNSTracking`: enable the DNS tracking feature.<br>\n- `FlowRTT`: enable flow latency (sRTT) extraction in the eBPF agent from TCP traffic.<br>\n- `NetworkEvents`: enable the network events monitoring feature, such as correlating flows and network policies.\nThis feature requires mounting the kernel debug filesystem, so the eBPF agent pods have to run as privileged.\nIt requires using the OVN-Kubernetes network plugin with the Observability feature.\nIMPORTANT: This feature is available as a Developer Preview.<br>"
                           items:
-                            description: "Agent feature, can be one of:<br>\n- `PacketDrop`, to track packet drops.<br>\n- `DNSTracking`, to track specific information on DNS traffic.<br>\n- `FlowRTT`, to track TCP latency.<br>\n- `NetworkEvents`, to track Network events [Developer Preview].<br>"
+                            description: "Agent feature, can be one of:<br>\n- `PacketDrop`, to track packet drops.<br>\n- `DNSTracking`, to track specific information on DNS traffic.<br>\n- `FlowRTT`, to track TCP latency.<br>\n- `NetworkEvents`, to track network events [Developer Preview].<br>"
                             enum:
                               - "PacketDrop"
                               - "DNSTracking"
@@ -713,7 +713,7 @@ spec:
                               description: "`peerIP` defines the IP address to filter flows by.\nExample: `10.10.10.10`."
                               type: "string"
                             pktDrops:
-                              description: "`pktDrops`, to filter flows with packet drops"
+                              description: "`pktDrops` filters flows with packet drops"
                               type: "boolean"
                             ports:
                               anyOf:
@@ -2032,10 +2032,10 @@ spec:
                         properties:
                           targetHost:
                             default: ""
-                            description: "Address of the IPFIX external receiver"
+                            description: "Address of the IPFIX external receiver."
                             type: "string"
                           targetPort:
-                            description: "Port for the IPFIX external receiver"
+                            description: "Port for the IPFIX external receiver."
                             type: "integer"
                           transport:
                             description: "Transport protocol (`TCP` or `UDP`) to be used for the IPFIX connection, defaults to `TCP`."
@@ -2110,7 +2110,7 @@ spec:
                             description: "TLS client configuration. When using TLS, verify that the address matches the Kafka port used for TLS, generally 9093."
                             properties:
                               caCert:
-                                description: "`caCert` defines the reference of the certificate for the Certificate Authority"
+                                description: "`caCert` defines the reference of the certificate for the Certificate Authority."
                                 properties:
                                   certFile:
                                     description: "`certFile` defines the path to the certificate file name within the config map or secret."
@@ -2141,7 +2141,7 @@ spec:
                                 description: "`insecureSkipVerify` allows skipping client-side verification of the server certificate.\nIf set to `true`, the `caCert` field is ignored."
                                 type: "boolean"
                               userCert:
-                                description: "`userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)"
+                                description: "`userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property."
                                 properties:
                                   certFile:
                                     description: "`certFile` defines the path to the certificate file name within the config map or secret."
@@ -2173,10 +2173,10 @@ spec:
                           - "topic"
                         type: "object"
                       openTelemetry:
-                        description: "Open telemetry configuration, such as the IP address and port to send enriched logs, metrics and or traces to."
+                        description: "OpenTelemetry configuration, such as the IP address and port to send enriched logs or metrics to."
                         properties:
                           fieldsMapping:
-                            description: "Custom fields mapping to an OpenTelemetry conformant format.\nBy default, NetObserv format proposal is used: https://github.com/rhobs/observability-data-model/blob/main/network-observability.md#format-proposal .\nAs there is currently no accepted otlp standard for L3/4 network logs, you can freely override it with your own."
+                            description: "Custom fields mapping to an OpenTelemetry conformant format.\nBy default, NetObserv format proposal is used: https://github.com/rhobs/observability-data-model/blob/main/network-observability.md#format-proposal .\nAs there is currently no accepted standard for L3 or L4 enriched network logs, you can freely override it with your own."
                             items:
                               properties:
                                 input:
@@ -2193,43 +2193,43 @@ spec:
                             description: "Headers to add to messages (optional)"
                             type: "object"
                           logs:
-                            description: "Open telemetry configuration for logs."
+                            description: "OpenTelemetry configuration for logs."
                             properties:
                               enable:
                                 default: true
-                                description: "Set `enable` to `true` to send logs to Open Telemetry receiver."
+                                description: "Set `enable` to `true` to send logs to an OpenTelemetry receiver."
                                 type: "boolean"
                             type: "object"
                           metrics:
-                            description: "Open telemetry configuration for metrics."
+                            description: "OpenTelemetry configuration for metrics."
                             properties:
                               enable:
                                 default: true
-                                description: "Set `enable` to `true` to send metrics to Open Telemetry receiver."
+                                description: "Set `enable` to `true` to send metrics to an OpenTelemetry receiver."
                                 type: "boolean"
                               pushTimeInterval:
                                 default: "20s"
-                                description: "How often should metrics be sent to collector"
+                                description: "Specify how often metrics are sent to a collector."
                                 type: "string"
                             type: "object"
                           protocol:
-                            description: "Protocol of Open Telemetry connection. The available options are `http` and `grpc`."
+                            description: "Protocol of the OpenTelemetry connection. The available options are `http` and `grpc`."
                             enum:
                               - "http"
                               - "grpc"
                             type: "string"
                           targetHost:
                             default: ""
-                            description: "Address of the Open Telemetry receiver"
+                            description: "Address of the OpenTelemetry receiver."
                             type: "string"
                           targetPort:
-                            description: "Port for the Open Telemetry receiver"
+                            description: "Port for the OpenTelemetry receiver."
                             type: "integer"
                           tls:
                             description: "TLS client configuration."
                             properties:
                               caCert:
-                                description: "`caCert` defines the reference of the certificate for the Certificate Authority"
+                                description: "`caCert` defines the reference of the certificate for the Certificate Authority."
                                 properties:
                                   certFile:
                                     description: "`certFile` defines the path to the certificate file name within the config map or secret."
@@ -2260,7 +2260,7 @@ spec:
                                 description: "`insecureSkipVerify` allows skipping client-side verification of the server certificate.\nIf set to `true`, the `caCert` field is ignored."
                                 type: "boolean"
                               userCert:
-                                description: "`userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)"
+                                description: "`userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property."
                                 properties:
                                   certFile:
                                     description: "`certFile` defines the path to the certificate file name within the config map or secret."
@@ -2361,7 +2361,7 @@ spec:
                       description: "TLS client configuration. When using TLS, verify that the address matches the Kafka port used for TLS, generally 9093."
                       properties:
                         caCert:
-                          description: "`caCert` defines the reference of the certificate for the Certificate Authority"
+                          description: "`caCert` defines the reference of the certificate for the Certificate Authority."
                           properties:
                             certFile:
                               description: "`certFile` defines the path to the certificate file name within the config map or secret."
@@ -2392,7 +2392,7 @@ spec:
                           description: "`insecureSkipVerify` allows skipping client-side verification of the server certificate.\nIf set to `true`, the `caCert` field is ignored."
                           type: "boolean"
                         userCert:
-                          description: "`userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)"
+                          description: "`userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property."
                           properties:
                             certFile:
                               description: "`certFile` defines the path to the certificate file name within the config map or secret."
@@ -2491,7 +2491,7 @@ spec:
                           description: "TLS client configuration for Loki status URL."
                           properties:
                             caCert:
-                              description: "`caCert` defines the reference of the certificate for the Certificate Authority"
+                              description: "`caCert` defines the reference of the certificate for the Certificate Authority."
                               properties:
                                 certFile:
                                   description: "`certFile` defines the path to the certificate file name within the config map or secret."
@@ -2522,7 +2522,7 @@ spec:
                               description: "`insecureSkipVerify` allows skipping client-side verification of the server certificate.\nIf set to `true`, the `caCert` field is ignored."
                               type: "boolean"
                             userCert:
-                              description: "`userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)"
+                              description: "`userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property."
                               properties:
                                 certFile:
                                   description: "`certFile` defines the path to the certificate file name within the config map or secret."
@@ -2556,7 +2556,7 @@ spec:
                           description: "TLS client configuration for Loki URL."
                           properties:
                             caCert:
-                              description: "`caCert` defines the reference of the certificate for the Certificate Authority"
+                              description: "`caCert` defines the reference of the certificate for the Certificate Authority."
                               properties:
                                 certFile:
                                   description: "`certFile` defines the path to the certificate file name within the config map or secret."
@@ -2587,7 +2587,7 @@ spec:
                               description: "`insecureSkipVerify` allows skipping client-side verification of the server certificate.\nIf set to `true`, the `caCert` field is ignored."
                               type: "boolean"
                             userCert:
-                              description: "`userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)"
+                              description: "`userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property."
                               properties:
                                 certFile:
                                   description: "`certFile` defines the path to the certificate file name within the config map or secret."
@@ -2630,7 +2630,7 @@ spec:
                           description: "TLS client configuration for Loki URL."
                           properties:
                             caCert:
-                              description: "`caCert` defines the reference of the certificate for the Certificate Authority"
+                              description: "`caCert` defines the reference of the certificate for the Certificate Authority."
                               properties:
                                 certFile:
                                   description: "`certFile` defines the path to the certificate file name within the config map or secret."
@@ -2661,7 +2661,7 @@ spec:
                               description: "`insecureSkipVerify` allows skipping client-side verification of the server certificate.\nIf set to `true`, the `caCert` field is ignored."
                               type: "boolean"
                             userCert:
-                              description: "`userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)"
+                              description: "`userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property."
                               properties:
                                 certFile:
                                   description: "`certFile` defines the path to the certificate file name within the config map or secret."
@@ -2705,7 +2705,7 @@ spec:
                           description: "TLS client configuration for Loki URL."
                           properties:
                             caCert:
-                              description: "`caCert` defines the reference of the certificate for the Certificate Authority"
+                              description: "`caCert` defines the reference of the certificate for the Certificate Authority."
                               properties:
                                 certFile:
                                   description: "`certFile` defines the path to the certificate file name within the config map or secret."
@@ -2736,7 +2736,7 @@ spec:
                               description: "`insecureSkipVerify` allows skipping client-side verification of the server certificate.\nIf set to `true`, the `caCert` field is ignored."
                               type: "boolean"
                             userCert:
-                              description: "`userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)"
+                              description: "`userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property."
                               properties:
                                 certFile:
                                   description: "`certFile` defines the path to the certificate file name within the config map or secret."
@@ -2793,7 +2793,7 @@ spec:
                   description: "`networkPolicy` defines ingress network policy settings for NetObserv components isolation."
                   properties:
                     additionalNamespaces:
-                      description: "`additionalNamespaces` contains additional namespaces allowed to connect to the NetObserv namespace.\nIt gives some flexibility in the network policy configuration, however should you need a more specific\nconfiguration, you can disable it and install your own instead."
+                      description: "`additionalNamespaces` contains additional namespaces allowed to connect to the NetObserv namespace.\nIt provides flexibility in the network policy configuration, but if you need a more specific\nconfiguration, you can disable it and install your own instead."
                       items:
                         type: "string"
                       type: "array"
@@ -3447,13 +3447,13 @@ spec:
                               type: "array"
                           type: "object"
                         secondaryNetworks:
-                          description: "Define secondary networks to be checked for resources identification.\nIn order to guarantee a correct identification, it is important that the indexed values form an unique identifier across the cluster.\nIf there are collisions in the indexes (same index used by several resources), those resources might be wrongly labelled."
+                          description: "Define secondary networks to be checked for resources identification.\nTo guarantee a correct identification, indexed values must form an unique identifier across the cluster.\nIf the same index is used by several resources, those resources might be incorrectly labeled."
                           items:
                             properties:
                               index:
-                                description: "`index` is a list of fields to use for indexing the pods. They should form a unique Pod identifier across the cluster.\nCan be any of: MAC, IP, Interface"
+                                description: "`index` is a list of fields to use for indexing the pods. They should form a unique Pod identifier across the cluster.\nCan be any of: `MAC`, `IP`, `Interface`.\nFields absent from the 'k8s.v1.cni.cncf.io/network-status' annotation must not be added to the index."
                                 items:
-                                  description: "Field to index for secondary network pod identification, can be any of: MAC, IP, Interface"
+                                  description: "Field to index for secondary network pod identification, can be any of: `MAC`, `IP`, `Interface`."
                                   enum:
                                     - "MAC"
                                     - "IP"
@@ -4018,7 +4018,7 @@ spec:
                               description: "TLS client configuration for Prometheus URL."
                               properties:
                                 caCert:
-                                  description: "`caCert` defines the reference of the certificate for the Certificate Authority"
+                                  description: "`caCert` defines the reference of the certificate for the Certificate Authority."
                                   properties:
                                     certFile:
                                       description: "`certFile` defines the path to the certificate file name within the config map or secret."
@@ -4049,7 +4049,7 @@ spec:
                                   description: "`insecureSkipVerify` allows skipping client-side verification of the server certificate.\nIf set to `true`, the `caCert` field is ignored."
                                   type: "boolean"
                                 userCert:
-                                  description: "`userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)"
+                                  description: "`userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property."
                                   properties:
                                     certFile:
                                       description: "`certFile` defines the path to the certificate file name within the config map or secret."

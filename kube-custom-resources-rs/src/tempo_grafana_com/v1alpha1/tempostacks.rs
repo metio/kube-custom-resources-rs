@@ -2288,6 +2288,10 @@ pub struct TempoStackTemplateQueryFrontendJaegerQueryMonitorTab {
     /// For instance on OpenShift this is set to https://thanos-querier.openshift-monitoring.svc.cluster.local:9091
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "prometheusEndpoint")]
     pub prometheus_endpoint: Option<String>,
+    /// REDMetricsNamespace defines the a prefix used retrieve span rate, error, and duration (RED) metrics.
+    /// By default it is set to `traces.span.metrics` following the default namespace of the OpenTelemetry Collector since Version 0.109.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redMetricsNamespace")]
+    pub red_metrics_namespace: Option<String>,
 }
 
 /// Resources defines resources for this component, this will override the calculated resources derived from total

@@ -20,6 +20,9 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct KafkaConnectorSpec {
+    /// Configuration for altering offsets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "alterOffsets")]
+    pub alter_offsets: Option<KafkaConnectorAlterOffsets>,
     /// Automatic restart of connector and tasks configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoRestart")]
     pub auto_restart: Option<KafkaConnectorAutoRestart>,
@@ -29,6 +32,9 @@ pub struct KafkaConnectorSpec {
     /// The Kafka Connector configuration. The following properties cannot be set: name, connector.class, tasks.max.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<BTreeMap<String, serde_json::Value>>,
+    /// Configuration for listing offsets.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "listOffsets")]
+    pub list_offsets: Option<KafkaConnectorListOffsets>,
     /// Whether the connector should be paused. Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pause: Option<bool>,
@@ -40,6 +46,21 @@ pub struct KafkaConnectorSpec {
     pub tasks_max: Option<i64>,
 }
 
+/// Configuration for altering offsets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaConnectorAlterOffsets {
+    /// Reference to the ConfigMap where the new offsets are stored.
+    #[serde(rename = "fromConfigMap")]
+    pub from_config_map: KafkaConnectorAlterOffsetsFromConfigMap,
+}
+
+/// Reference to the ConfigMap where the new offsets are stored.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaConnectorAlterOffsetsFromConfigMap {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+}
+
 /// Automatic restart of connector and tasks configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaConnectorAutoRestart {
@@ -49,6 +70,21 @@ pub struct KafkaConnectorAutoRestart {
     /// The maximum number of connector restarts that the operator will try. If the connector remains in a failed state after reaching this limit, it must be restarted manually by the user. Defaults to an unlimited number of restarts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRestarts")]
     pub max_restarts: Option<i64>,
+}
+
+/// Configuration for listing offsets.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaConnectorListOffsets {
+    /// Reference to the ConfigMap where the list of offsets will be written to.
+    #[serde(rename = "toConfigMap")]
+    pub to_config_map: KafkaConnectorListOffsetsToConfigMap,
+}
+
+/// Reference to the ConfigMap where the list of offsets will be written to.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaConnectorListOffsetsToConfigMap {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// The specification of the Kafka Connector.

@@ -35,6 +35,10 @@ pub struct PolicySpec {
     /// uses variables that are only available in the admission review request (e.g. user name).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub background: Option<bool>,
+    /// EmitWarning enables API response warnings for mutate policy rules or validate policy rules with validationFailureAction set to Audit.
+    /// Enabling this option will extend admission request processing times. The default value is "false".
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emitWarning")]
+    pub emit_warning: Option<bool>,
     /// Deprecated, use failurePolicy under the webhookConfiguration instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failurePolicy")]
     pub failure_policy: Option<PolicyFailurePolicy>,

@@ -113,6 +113,9 @@ pub struct KafkaCruiseControl {
     /// Configuration of the Cruise Control REST API users.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiUsers")]
     pub api_users: Option<KafkaCruiseControlApiUsers>,
+    /// Auto-rebalancing on scaling related configuration listing the modes, when brokers are added or removed, with the corresponding rebalance template configurations.If this field is set, at least one mode has to be defined.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoRebalance")]
+    pub auto_rebalance: Option<Vec<KafkaCruiseControlAutoRebalance>>,
     /// The Cruise Control `brokerCapacity` configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "brokerCapacity")]
     pub broker_capacity: Option<KafkaCruiseControlBrokerCapacity>,
@@ -183,6 +186,31 @@ pub struct KafkaCruiseControlApiUsersValueFromSecretKeyRef {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub struct KafkaCruiseControlAutoRebalance {
+    /// Specifies the mode for automatically rebalancing when brokers are added or removed. Supported modes are `add-brokers` and `remove-brokers`. 
+    /// 
+    pub mode: KafkaCruiseControlAutoRebalanceMode,
+    /// Reference to the KafkaRebalance custom resource to be used as the configuration template for the auto-rebalancing on scaling when running for the corresponding mode.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub template: Option<KafkaCruiseControlAutoRebalanceTemplate>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaCruiseControlAutoRebalanceMode {
+    #[serde(rename = "add-brokers")]
+    AddBrokers,
+    #[serde(rename = "remove-brokers")]
+    RemoveBrokers,
+}
+
+/// Reference to the KafkaRebalance custom resource to be used as the configuration template for the auto-rebalancing on scaling when running for the corresponding mode.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaCruiseControlAutoRebalanceTemplate {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// The Cruise Control `brokerCapacity` configuration.
@@ -470,6 +498,42 @@ pub struct KafkaCruiseControlTemplateCruiseControlContainerEnv {
     /// The environment variable value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+    /// Reference to the secret or config map property to which the environment variable is set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<KafkaCruiseControlTemplateCruiseControlContainerEnvValueFrom>,
+}
+
+/// Reference to the secret or config map property to which the environment variable is set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaCruiseControlTemplateCruiseControlContainerEnvValueFrom {
+    /// Reference to a key in a config map.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<KafkaCruiseControlTemplateCruiseControlContainerEnvValueFromConfigMapKeyRef>,
+    /// Reference to a key in a secret.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<KafkaCruiseControlTemplateCruiseControlContainerEnvValueFromSecretKeyRef>,
+}
+
+/// Reference to a key in a config map.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaCruiseControlTemplateCruiseControlContainerEnvValueFromConfigMapKeyRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Reference to a key in a secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaCruiseControlTemplateCruiseControlContainerEnvValueFromSecretKeyRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// Security context for the container.
@@ -1275,6 +1339,42 @@ pub struct KafkaCruiseControlTemplateTlsSidecarContainerEnv {
     /// The environment variable value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+    /// Reference to the secret or config map property to which the environment variable is set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<KafkaCruiseControlTemplateTlsSidecarContainerEnvValueFrom>,
+}
+
+/// Reference to the secret or config map property to which the environment variable is set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaCruiseControlTemplateTlsSidecarContainerEnvValueFrom {
+    /// Reference to a key in a config map.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<KafkaCruiseControlTemplateTlsSidecarContainerEnvValueFromConfigMapKeyRef>,
+    /// Reference to a key in a secret.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<KafkaCruiseControlTemplateTlsSidecarContainerEnvValueFromSecretKeyRef>,
+}
+
+/// Reference to a key in a config map.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaCruiseControlTemplateTlsSidecarContainerEnvValueFromConfigMapKeyRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Reference to a key in a secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaCruiseControlTemplateTlsSidecarContainerEnvValueFromSecretKeyRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// Security context for the container.
@@ -2224,6 +2324,42 @@ pub struct KafkaEntityOperatorTemplateTlsSidecarContainerEnv {
     /// The environment variable value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+    /// Reference to the secret or config map property to which the environment variable is set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<KafkaEntityOperatorTemplateTlsSidecarContainerEnvValueFrom>,
+}
+
+/// Reference to the secret or config map property to which the environment variable is set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaEntityOperatorTemplateTlsSidecarContainerEnvValueFrom {
+    /// Reference to a key in a config map.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<KafkaEntityOperatorTemplateTlsSidecarContainerEnvValueFromConfigMapKeyRef>,
+    /// Reference to a key in a secret.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<KafkaEntityOperatorTemplateTlsSidecarContainerEnvValueFromSecretKeyRef>,
+}
+
+/// Reference to a key in a config map.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaEntityOperatorTemplateTlsSidecarContainerEnvValueFromConfigMapKeyRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Reference to a key in a secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaEntityOperatorTemplateTlsSidecarContainerEnvValueFromSecretKeyRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// Security context for the container.
@@ -2343,6 +2479,42 @@ pub struct KafkaEntityOperatorTemplateTopicOperatorContainerEnv {
     /// The environment variable value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+    /// Reference to the secret or config map property to which the environment variable is set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<KafkaEntityOperatorTemplateTopicOperatorContainerEnvValueFrom>,
+}
+
+/// Reference to the secret or config map property to which the environment variable is set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaEntityOperatorTemplateTopicOperatorContainerEnvValueFrom {
+    /// Reference to a key in a config map.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<KafkaEntityOperatorTemplateTopicOperatorContainerEnvValueFromConfigMapKeyRef>,
+    /// Reference to a key in a secret.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<KafkaEntityOperatorTemplateTopicOperatorContainerEnvValueFromSecretKeyRef>,
+}
+
+/// Reference to a key in a config map.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaEntityOperatorTemplateTopicOperatorContainerEnvValueFromConfigMapKeyRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Reference to a key in a secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaEntityOperatorTemplateTopicOperatorContainerEnvValueFromSecretKeyRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// Security context for the container.
@@ -2481,6 +2653,42 @@ pub struct KafkaEntityOperatorTemplateUserOperatorContainerEnv {
     /// The environment variable value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+    /// Reference to the secret or config map property to which the environment variable is set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<KafkaEntityOperatorTemplateUserOperatorContainerEnvValueFrom>,
+}
+
+/// Reference to the secret or config map property to which the environment variable is set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaEntityOperatorTemplateUserOperatorContainerEnvValueFrom {
+    /// Reference to a key in a config map.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<KafkaEntityOperatorTemplateUserOperatorContainerEnvValueFromConfigMapKeyRef>,
+    /// Reference to a key in a secret.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<KafkaEntityOperatorTemplateUserOperatorContainerEnvValueFromSecretKeyRef>,
+}
+
+/// Reference to a key in a config map.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaEntityOperatorTemplateUserOperatorContainerEnvValueFromConfigMapKeyRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Reference to a key in a secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaEntityOperatorTemplateUserOperatorContainerEnvValueFromSecretKeyRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// Security context for the container.
@@ -3163,6 +3371,42 @@ pub struct KafkaJmxTransTemplateContainerEnv {
     /// The environment variable value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+    /// Reference to the secret or config map property to which the environment variable is set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<KafkaJmxTransTemplateContainerEnvValueFrom>,
+}
+
+/// Reference to the secret or config map property to which the environment variable is set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaJmxTransTemplateContainerEnvValueFrom {
+    /// Reference to a key in a config map.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<KafkaJmxTransTemplateContainerEnvValueFromConfigMapKeyRef>,
+    /// Reference to a key in a secret.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<KafkaJmxTransTemplateContainerEnvValueFromSecretKeyRef>,
+}
+
+/// Reference to a key in a config map.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaJmxTransTemplateContainerEnvValueFromConfigMapKeyRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Reference to a key in a secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaJmxTransTemplateContainerEnvValueFromSecretKeyRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// Security context for the container.
@@ -4356,6 +4600,9 @@ pub enum KafkaKafkaListenersAuthenticationType {
 /// Additional listener configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaKafkaListenersConfiguration {
+    /// Configures the template for generating the advertised hostnames of the individual brokers. Valid placeholders that you can use in the template are `{nodeId}` and `{nodePodName}`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "advertisedHostTemplate")]
+    pub advertised_host_template: Option<String>,
     /// Bootstrap configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bootstrap: Option<KafkaKafkaListenersConfigurationBootstrap>,
@@ -4387,6 +4634,9 @@ pub struct KafkaKafkaListenersConfiguration {
     /// A list of finalizers configured for the `LoadBalancer` type services created for this listener. If supported by the platform, the finalizer `service.kubernetes.io/load-balancer-cleanup` to make sure that the external load balancer is deleted together with the service.For more information, see https://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#garbage-collecting-load-balancers. For `loadbalancer` listeners only.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub finalizers: Option<Vec<String>>,
+    /// Configures the template for generating the hostnames of the individual brokers. Valid placeholders that you can use in the template are `{nodeId}` and `{nodePodName}`.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostTemplate")]
+    pub host_template: Option<String>,
     /// Specifies the IP Families used by the service. Available options are `IPv4` and `IPv6`. If unspecified, Kubernetes will choose the default value based on the `ipFamilyPolicy` setting.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilies")]
     pub ip_families: Option<Vec<String>>,
@@ -5144,6 +5394,42 @@ pub struct KafkaKafkaTemplateInitContainerEnv {
     /// The environment variable value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+    /// Reference to the secret or config map property to which the environment variable is set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<KafkaKafkaTemplateInitContainerEnvValueFrom>,
+}
+
+/// Reference to the secret or config map property to which the environment variable is set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaKafkaTemplateInitContainerEnvValueFrom {
+    /// Reference to a key in a config map.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<KafkaKafkaTemplateInitContainerEnvValueFromConfigMapKeyRef>,
+    /// Reference to a key in a secret.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<KafkaKafkaTemplateInitContainerEnvValueFromSecretKeyRef>,
+}
+
+/// Reference to a key in a config map.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaKafkaTemplateInitContainerEnvValueFromConfigMapKeyRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Reference to a key in a secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaKafkaTemplateInitContainerEnvValueFromSecretKeyRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// Security context for the container.
@@ -5282,6 +5568,42 @@ pub struct KafkaKafkaTemplateKafkaContainerEnv {
     /// The environment variable value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+    /// Reference to the secret or config map property to which the environment variable is set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<KafkaKafkaTemplateKafkaContainerEnvValueFrom>,
+}
+
+/// Reference to the secret or config map property to which the environment variable is set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaKafkaTemplateKafkaContainerEnvValueFrom {
+    /// Reference to a key in a config map.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<KafkaKafkaTemplateKafkaContainerEnvValueFromConfigMapKeyRef>,
+    /// Reference to a key in a secret.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<KafkaKafkaTemplateKafkaContainerEnvValueFromSecretKeyRef>,
+}
+
+/// Reference to a key in a config map.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaKafkaTemplateKafkaContainerEnvValueFromConfigMapKeyRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Reference to a key in a secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaKafkaTemplateKafkaContainerEnvValueFromSecretKeyRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// Security context for the container.
@@ -6332,6 +6654,42 @@ pub struct KafkaKafkaExporterTemplateContainerEnv {
     /// The environment variable value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+    /// Reference to the secret or config map property to which the environment variable is set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<KafkaKafkaExporterTemplateContainerEnvValueFrom>,
+}
+
+/// Reference to the secret or config map property to which the environment variable is set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaKafkaExporterTemplateContainerEnvValueFrom {
+    /// Reference to a key in a config map.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<KafkaKafkaExporterTemplateContainerEnvValueFromConfigMapKeyRef>,
+    /// Reference to a key in a secret.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<KafkaKafkaExporterTemplateContainerEnvValueFromSecretKeyRef>,
+}
+
+/// Reference to a key in a config map.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaKafkaExporterTemplateContainerEnvValueFromConfigMapKeyRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Reference to a key in a secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaKafkaExporterTemplateContainerEnvValueFromSecretKeyRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// Security context for the container.
@@ -8264,6 +8622,42 @@ pub struct KafkaZookeeperTemplateZookeeperContainerEnv {
     /// The environment variable value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+    /// Reference to the secret or config map property to which the environment variable is set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<KafkaZookeeperTemplateZookeeperContainerEnvValueFrom>,
+}
+
+/// Reference to the secret or config map property to which the environment variable is set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaZookeeperTemplateZookeeperContainerEnvValueFrom {
+    /// Reference to a key in a config map.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<KafkaZookeeperTemplateZookeeperContainerEnvValueFromConfigMapKeyRef>,
+    /// Reference to a key in a secret.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<KafkaZookeeperTemplateZookeeperContainerEnvValueFromSecretKeyRef>,
+}
+
+/// Reference to a key in a config map.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaZookeeperTemplateZookeeperContainerEnvValueFromConfigMapKeyRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Reference to a key in a secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaZookeeperTemplateZookeeperContainerEnvValueFromSecretKeyRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// Security context for the container.
@@ -8364,6 +8758,9 @@ pub struct KafkaZookeeperTemplateZookeeperContainerVolumeMounts {
 /// The status of the Kafka and ZooKeeper clusters, and Topic Operator.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaStatus {
+    /// The status of an auto-rebalancing triggered by a cluster scaling request.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoRebalance")]
+    pub auto_rebalance: Option<KafkaStatusAutoRebalance>,
     /// Kafka cluster Id.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterId")]
     pub cluster_id: Option<String>,
@@ -8394,6 +8791,59 @@ pub struct KafkaStatus {
     /// Registered node IDs used by this Kafka cluster. This field is used for internal purposes only and will be removed in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "registeredNodeIds")]
     pub registered_node_ids: Option<Vec<i64>>,
+}
+
+/// The status of an auto-rebalancing triggered by a cluster scaling request.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaStatusAutoRebalance {
+    /// The timestamp of the latest auto-rebalancing state update.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastTransitionTime")]
+    pub last_transition_time: Option<String>,
+    /// List of modes where an auto-rebalancing operation is either running or queued. 
+    /// Each mode entry (`add-brokers` or `remove-brokers`) includes one of the following: 
+    /// 
+    /// * Broker IDs for a current auto-rebalance. 
+    /// * Broker IDs for a queued auto-rebalance (if a previous rebalance is still in progress).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub modes: Option<Vec<KafkaStatusAutoRebalanceModes>>,
+    /// The current state of an auto-rebalancing operation. Possible values are: 
+    /// 
+    /// * `Idle` as the initial state when an auto-rebalancing is requested or as final state when it completes or fails.
+    /// * `RebalanceOnScaleDown` if an auto-rebalance related to a scale-down operation is running.
+    /// * `RebalanceOnScaleUp` if an auto-rebalance related to a scale-up operation is running.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub state: Option<KafkaStatusAutoRebalanceState>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaStatusAutoRebalanceModes {
+    /// List of broker IDs involved in an auto-rebalancing operation related to the current mode. 
+    /// The list contains one of the following: 
+    /// 
+    /// * Broker IDs for a current auto-rebalance. 
+    /// * Broker IDs for a queued auto-rebalance (if a previous auto-rebalance is still in progress). 
+    /// 
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub brokers: Option<Vec<i64>>,
+    /// Mode for which there is an auto-rebalancing operation in progress or queued, when brokers are added or removed. The possible modes are `add-brokers` and `remove-brokers`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub mode: Option<KafkaStatusAutoRebalanceModesMode>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaStatusAutoRebalanceModesMode {
+    #[serde(rename = "add-brokers")]
+    AddBrokers,
+    #[serde(rename = "remove-brokers")]
+    RemoveBrokers,
+}
+
+/// The status of an auto-rebalancing triggered by a cluster scaling request.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum KafkaStatusAutoRebalanceState {
+    Idle,
+    RebalanceOnScaleDown,
+    RebalanceOnScaleUp,
 }
 
 /// The status of the Kafka and ZooKeeper clusters, and Topic Operator.

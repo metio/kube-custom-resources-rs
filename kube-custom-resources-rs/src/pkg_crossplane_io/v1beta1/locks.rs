@@ -6,6 +6,7 @@
 mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
@@ -37,5 +38,13 @@ pub struct LockPackagesDependencies {
     /// Type is the type of package. Can be either Configuration or Provider.
     #[serde(rename = "type")]
     pub r#type: String,
+}
+
+/// Status of the Lock.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct LockStatus {
+    /// Conditions of the resource.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub conditions: Option<Vec<Condition>>,
 }
 

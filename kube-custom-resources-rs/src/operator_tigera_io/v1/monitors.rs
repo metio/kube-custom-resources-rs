@@ -160,8 +160,12 @@ pub struct MonitorExternalPrometheusServiceMonitorEndpointsBearerTokenSecret {
     /// The key of the secret to select from.  Must be a valid secret key.
     pub key: String,
     /// Name of the referent.
-    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// This field is effectively required, but due to backwards compatibility is
+    /// allowed to be empty. Instances of this type with an empty value here are
+    /// almost certainly wrong.
     /// TODO: Add other useful fields. apiVersion, kind, uid?
+    /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
+    /// TODO: Drop `kubebuilder:default` when controller-gen doesn't need it https://github.com/kubernetes-sigs/kubebuilder/issues/3896.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Specify whether the Secret or its key must be defined
@@ -169,42 +173,48 @@ pub struct MonitorExternalPrometheusServiceMonitorEndpointsBearerTokenSecret {
     pub optional: Option<bool>,
 }
 
-/// RelabelConfig allows dynamic rewriting of the label set, being applied to samples before ingestion.
-/// It defines `<metric_relabel_configs>`-section of Prometheus configuration.
-/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#metric_relabel_configs
+/// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
+/// scraped samples and remote write samples.
+/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MonitorExternalPrometheusServiceMonitorEndpointsMetricRelabelings {
-    /// Action to perform based on regex matching. Default is 'replace'.
-    /// uppercase and lowercase actions require Prometheus >= 2.36.
+    /// Action to perform based on the regex matching.
+    /// `Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.
+    /// `DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.
+    /// Default: "Replace"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<MonitorExternalPrometheusServiceMonitorEndpointsMetricRelabelingsAction>,
     /// Modulus to take of the hash of the source label values.
+    /// Only applicable when the action is `HashMod`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub modulus: Option<i64>,
-    /// Regular expression against which the extracted value is matched. Default is '(.*)'
+    /// Regular expression against which the extracted value is matched.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<String>,
-    /// Replacement value against which a regex replace is performed if the
-    /// regular expression matches. Regex capture groups are available. Default is '$1'
+    /// Replacement value against which a Replace action is performed if the
+    /// regular expression matches.
+    /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replacement: Option<String>,
-    /// Separator placed between concatenated source label values. default is ';'.
+    /// Separator is the string between concatenated SourceLabels.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub separator: Option<String>,
-    /// The source labels select values from existing labels. Their content is concatenated
-    /// using the configured separator and matched against the configured regular expression
-    /// for the replace, keep, and drop actions.
+    /// The source labels select values from existing labels. Their content is
+    /// concatenated using the configured Separator and matched against the
+    /// configured regular expression.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
     pub source_labels: Option<Vec<String>>,
-    /// Label to which the resulting value is written in a replace action.
-    /// It is mandatory for replace actions. Regex capture groups are available.
+    /// Label to which the resulting string is written in a replacement.
+    /// It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,
+    /// `KeepEqual` and `DropEqual` actions.
+    /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
     pub target_label: Option<String>,
 }
 
-/// RelabelConfig allows dynamic rewriting of the label set, being applied to samples before ingestion.
-/// It defines `<metric_relabel_configs>`-section of Prometheus configuration.
-/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#metric_relabel_configs
+/// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
+/// scraped samples and remote write samples.
+/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MonitorExternalPrometheusServiceMonitorEndpointsMetricRelabelingsAction {
     #[serde(rename = "replace")]
@@ -239,44 +249,56 @@ pub enum MonitorExternalPrometheusServiceMonitorEndpointsMetricRelabelingsAction
     Uppercase,
     #[serde(rename = "Uppercase")]
     UppercaseX,
+    #[serde(rename = "keepequal")]
+    Keepequal,
+    KeepEqual,
+    #[serde(rename = "dropequal")]
+    Dropequal,
+    DropEqual,
 }
 
-/// RelabelConfig allows dynamic rewriting of the label set, being applied to samples before ingestion.
-/// It defines `<metric_relabel_configs>`-section of Prometheus configuration.
-/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#metric_relabel_configs
+/// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
+/// scraped samples and remote write samples.
+/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MonitorExternalPrometheusServiceMonitorEndpointsRelabelings {
-    /// Action to perform based on regex matching. Default is 'replace'.
-    /// uppercase and lowercase actions require Prometheus >= 2.36.
+    /// Action to perform based on the regex matching.
+    /// `Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.
+    /// `DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.
+    /// Default: "Replace"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<MonitorExternalPrometheusServiceMonitorEndpointsRelabelingsAction>,
     /// Modulus to take of the hash of the source label values.
+    /// Only applicable when the action is `HashMod`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub modulus: Option<i64>,
-    /// Regular expression against which the extracted value is matched. Default is '(.*)'
+    /// Regular expression against which the extracted value is matched.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub regex: Option<String>,
-    /// Replacement value against which a regex replace is performed if the
-    /// regular expression matches. Regex capture groups are available. Default is '$1'
+    /// Replacement value against which a Replace action is performed if the
+    /// regular expression matches.
+    /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replacement: Option<String>,
-    /// Separator placed between concatenated source label values. default is ';'.
+    /// Separator is the string between concatenated SourceLabels.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub separator: Option<String>,
-    /// The source labels select values from existing labels. Their content is concatenated
-    /// using the configured separator and matched against the configured regular expression
-    /// for the replace, keep, and drop actions.
+    /// The source labels select values from existing labels. Their content is
+    /// concatenated using the configured Separator and matched against the
+    /// configured regular expression.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
     pub source_labels: Option<Vec<String>>,
-    /// Label to which the resulting value is written in a replace action.
-    /// It is mandatory for replace actions. Regex capture groups are available.
+    /// Label to which the resulting string is written in a replacement.
+    /// It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,
+    /// `KeepEqual` and `DropEqual` actions.
+    /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
     pub target_label: Option<String>,
 }
 
-/// RelabelConfig allows dynamic rewriting of the label set, being applied to samples before ingestion.
-/// It defines `<metric_relabel_configs>`-section of Prometheus configuration.
-/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#metric_relabel_configs
+/// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
+/// scraped samples and remote write samples.
+/// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum MonitorExternalPrometheusServiceMonitorEndpointsRelabelingsAction {
     #[serde(rename = "replace")]
@@ -311,6 +333,12 @@ pub enum MonitorExternalPrometheusServiceMonitorEndpointsRelabelingsAction {
     Uppercase,
     #[serde(rename = "Uppercase")]
     UppercaseX,
+    #[serde(rename = "keepequal")]
+    Keepequal,
+    KeepEqual,
+    #[serde(rename = "dropequal")]
+    Dropequal,
+    DropEqual,
 }
 
 /// Prometheus is the configuration for the Prometheus.

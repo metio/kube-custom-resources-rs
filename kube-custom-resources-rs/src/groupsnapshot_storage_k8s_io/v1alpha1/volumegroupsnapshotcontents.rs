@@ -194,6 +194,11 @@ pub struct VolumeGroupSnapshotContentStatus {
     /// CSI driver can choose to return the VolumeGroupSnapshot name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeGroupSnapshotHandle")]
     pub volume_group_snapshot_handle: Option<String>,
+    /// VolumeSnapshotHandlePairList is a list of CSI "volume_id" and "snapshot_id"
+    /// pair returned by the CSI driver to identify snapshots and their source volumes
+    /// on the storage system.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSnapshotHandlePairList")]
+    pub volume_snapshot_handle_pair_list: Option<Vec<VolumeGroupSnapshotContentStatusVolumeSnapshotHandlePairList>>,
 }
 
 /// Error is the last observed error during group snapshot creation, if any.
@@ -241,5 +246,18 @@ pub struct VolumeGroupSnapshotContentStatusPvVolumeSnapshotContentListVolumeSnap
     /// TODO: Add other useful fields. apiVersion, kind, uid?
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+}
+
+/// VolumeSnapshotHandlePair defines a pair of a source volume handle and a snapshot handle
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct VolumeGroupSnapshotContentStatusVolumeSnapshotHandlePairList {
+    /// SnapshotHandle is a unique id returned by the CSI driver to identify a volume
+    /// snapshot on the storage system
+    #[serde(rename = "snapshotHandle")]
+    pub snapshot_handle: String,
+    /// VolumeHandle is a unique id returned by the CSI driver to identify a volume
+    /// on the storage system
+    #[serde(rename = "volumeHandle")]
+    pub volume_handle: String,
 }
 

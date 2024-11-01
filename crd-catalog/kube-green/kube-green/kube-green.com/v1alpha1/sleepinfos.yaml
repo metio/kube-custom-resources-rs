@@ -30,7 +30,7 @@ spec:
               description: "SleepInfoSpec defines the desired state of SleepInfo"
               properties:
                 excludeRef:
-                  description: "ExcludeRef define the resource to exclude from the sleep."
+                  description: "ExcludeRef define the resource to exclude from the sleep.\nExclusion rules are evaluated in AND condition."
                   items:
                     description: "Define a resource to filter, used to include or exclude resources from the sleep."
                     properties:
@@ -51,7 +51,7 @@ spec:
                     type: "object"
                   type: "array"
                 includeRef:
-                  description: "IncludeRef define the resource to include from the sleep."
+                  description: "IncludeRef define the resource to include from the sleep.\nInclusion rules are evaluated in AND condition."
                   items:
                     description: "Define a resource to filter, used to include or exclude resources from the sleep."
                     properties:

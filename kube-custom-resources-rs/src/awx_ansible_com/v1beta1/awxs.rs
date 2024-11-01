@@ -340,6 +340,9 @@ pub struct AWXSpec {
     /// Using existing PersistentVolumeClaim
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projects_use_existing_claim: Option<AWXProjectsUseExistingClaim>,
+    /// Public base URL
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub public_base_url: Option<String>,
     /// Set log level of receptor service
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub receptor_log_level: Option<String>,
