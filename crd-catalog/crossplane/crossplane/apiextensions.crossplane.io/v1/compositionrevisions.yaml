@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.14.0"
+    controller-gen.kubebuilder.io/version: "v0.16.5"
   name: "compositionrevisions.apiextensions.crossplane.io"
 spec:
   group: "apiextensions.crossplane.io"
@@ -33,7 +33,7 @@ spec:
       name: "v1"
       schema:
         openAPIV3Schema:
-          description: "A CompositionRevision represents a revision of a Composition. Crossplane\ncreates new revisions when there are changes to the Composition.\n\n\nCrossplane creates and manages CompositionRevisions. Don't directly edit\nCompositionRevisions."
+          description: "A CompositionRevision represents a revision of a Composition. Crossplane\ncreates new revisions when there are changes to the Composition.\n\nCrossplane creates and manages CompositionRevisions. Don't directly edit\nCompositionRevisions."
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
@@ -64,13 +64,13 @@ spec:
                       rule: "self == oldSelf"
                 mode:
                   default: "Resources"
-                  description: "Mode controls what type or \"mode\" of Composition will be used.\n\n\n\"Pipeline\" indicates that a Composition specifies a pipeline of\nComposition Functions, each of which is responsible for producing\ncomposed resources that Crossplane should create or update.\n\n\n\"Resources\" indicates that a Composition uses what is commonly referred\nto as \"Patch & Transform\" or P&T composition. This mode of Composition\nuses an array of resources, each a template for a composed resource.\n\n\nAll Compositions should use Pipeline mode. Resources mode is deprecated.\nResources mode won't be removed in Crossplane 1.x, and will remain the\ndefault to avoid breaking legacy Compositions. However, it's no longer\naccepting new features, and only accepting security related bug fixes."
+                  description: "Mode controls what type or \"mode\" of Composition will be used.\n\n\"Pipeline\" indicates that a Composition specifies a pipeline of\nComposition Functions, each of which is responsible for producing\ncomposed resources that Crossplane should create or update.\n\n\"Resources\" indicates that a Composition uses what is commonly referred\nto as \"Patch & Transform\" or P&T composition. This mode of Composition\nuses an array of resources, each a template for a composed resource.\n\nAll Compositions should use Pipeline mode. Resources mode is deprecated.\nResources mode won't be removed in Crossplane 1.x, and will remain the\ndefault to avoid breaking legacy Compositions. However, it's no longer\naccepting new features, and only accepting security related bug fixes."
                   enum:
                     - "Resources"
                     - "Pipeline"
                   type: "string"
                 patchSets:
-                  description: "PatchSets define a named set of patches that may be included by any\nresource in this Composition. PatchSets cannot themselves refer to other\nPatchSets.\n\n\nPatchSets are only used by the \"Resources\" mode of Composition. They\nare ignored by other modes.\n\n\nDeprecated: Use Composition Functions instead."
+                  description: "PatchSets define a named set of patches that may be included by any\nresource in this Composition. PatchSets cannot themselves refer to other\nPatchSets.\n\nPatchSets are only used by the \"Resources\" mode of Composition. They\nare ignored by other modes.\n\nDeprecated: Use Composition Functions instead."
                   items:
                     description: "A PatchSet is a set of patches that can be reused from all resources within\na Composition."
                     properties:
@@ -154,7 +154,7 @@ spec:
                                     description: "Convert is used to cast the input into the given output type."
                                     properties:
                                       format:
-                                        description: "The expected input format.\n\n\n* `quantity` - parses the input as a K8s [`resource.Quantity`](https://pkg.go.dev/k8s.io/apimachinery/pkg/api/resource#Quantity).\nOnly used during `string -> float64` conversions.\n* `json` - parses the input as a JSON string.\nOnly used during `string -> object` or `string -> list` conversions.\n\n\nIf this property is null, the default conversion is applied."
+                                        description: "The expected input format.\n\n* `quantity` - parses the input as a K8s [`resource.Quantity`](https://pkg.go.dev/k8s.io/apimachinery/pkg/api/resource#Quantity).\nOnly used during `string -> float64` conversions.\n* `json` - parses the input as a JSON string.\nOnly used during `string -> object` or `string -> list` conversions.\n\nIf this property is null, the default conversion is applied."
                                         enum:
                                           - "none"
                                           - "quantity"
@@ -208,7 +208,7 @@ spec:
                                               x-kubernetes-preserve-unknown-fields: true
                                             type:
                                               default: "literal"
-                                              description: "Type specifies how the pattern matches the input.\n\n\n* `literal` - the pattern value has to exactly match (case sensitive) the\ninput string. This is the default.\n\n\n* `regexp` - the pattern treated as a regular expression against\nwhich the input string is tested. Crossplane will throw an error if the\nkey is not a valid regexp."
+                                              description: "Type specifies how the pattern matches the input.\n\n* `literal` - the pattern value has to exactly match (case sensitive) the\ninput string. This is the default.\n\n* `regexp` - the pattern treated as a regular expression against\nwhich the input string is tested. Crossplane will throw an error if the\nkey is not a valid regexp."
                                               enum:
                                                 - "literal"
                                                 - "regexp"
@@ -329,7 +329,7 @@ spec:
                     type: "object"
                   type: "array"
                 pipeline:
-                  description: "Pipeline is a list of composition function steps that will be used when a\ncomposite resource referring to this composition is created. One of\nresources and pipeline must be specified - you cannot specify both.\n\n\nThe Pipeline is only used by the \"Pipeline\" mode of Composition. It is\nignored by other modes."
+                  description: "Pipeline is a list of composition function steps that will be used when a\ncomposite resource referring to this composition is created. One of\nresources and pipeline must be specified - you cannot specify both.\n\nThe Pipeline is only used by the \"Pipeline\" mode of Composition. It is\nignored by other modes."
                   items:
                     description: "A PipelineStep in a Composition Function pipeline."
                     properties:
@@ -396,7 +396,7 @@ spec:
                 publishConnectionDetailsWithStoreConfigRef:
                   default:
                     name: "default"
-                  description: "PublishConnectionDetailsWithStoreConfig specifies the secret store config\nwith which the connection details of composite resources dynamically\nprovisioned using this composition will be published.\n\n\nTHIS IS AN ALPHA FIELD. Do not use it in production. It is not honored\nunless the relevant Crossplane feature flag is enabled, and may be\nchanged or removed without notice."
+                  description: "PublishConnectionDetailsWithStoreConfig specifies the secret store config\nwith which the connection details of composite resources dynamically\nprovisioned using this composition will be published.\n\nTHIS IS AN ALPHA FIELD. Do not use it in production. It is not honored\nunless the relevant Crossplane feature flag is enabled, and may be\nchanged or removed without notice."
                   properties:
                     name:
                       description: "Name of the referenced StoreConfig."
@@ -405,7 +405,7 @@ spec:
                     - "name"
                   type: "object"
                 resources:
-                  description: "Resources is a list of resource templates that will be used when a\ncomposite resource referring to this composition is created.\n\n\nResources are only used by the \"Resources\" mode of Composition. They are\nignored by other modes.\n\n\nDeprecated: Use Composition Functions instead."
+                  description: "Resources is a list of resource templates that will be used when a\ncomposite resource referring to this composition is created.\n\nResources are only used by the \"Resources\" mode of Composition. They are\nignored by other modes.\n\nDeprecated: Use Composition Functions instead."
                   items:
                     description: "ComposedTemplate is used to provide information about how the composed resource\nshould be processed."
                     properties:
@@ -520,7 +520,7 @@ spec:
                                     description: "Convert is used to cast the input into the given output type."
                                     properties:
                                       format:
-                                        description: "The expected input format.\n\n\n* `quantity` - parses the input as a K8s [`resource.Quantity`](https://pkg.go.dev/k8s.io/apimachinery/pkg/api/resource#Quantity).\nOnly used during `string -> float64` conversions.\n* `json` - parses the input as a JSON string.\nOnly used during `string -> object` or `string -> list` conversions.\n\n\nIf this property is null, the default conversion is applied."
+                                        description: "The expected input format.\n\n* `quantity` - parses the input as a K8s [`resource.Quantity`](https://pkg.go.dev/k8s.io/apimachinery/pkg/api/resource#Quantity).\nOnly used during `string -> float64` conversions.\n* `json` - parses the input as a JSON string.\nOnly used during `string -> object` or `string -> list` conversions.\n\nIf this property is null, the default conversion is applied."
                                         enum:
                                           - "none"
                                           - "quantity"
@@ -574,7 +574,7 @@ spec:
                                               x-kubernetes-preserve-unknown-fields: true
                                             type:
                                               default: "literal"
-                                              description: "Type specifies how the pattern matches the input.\n\n\n* `literal` - the pattern value has to exactly match (case sensitive) the\ninput string. This is the default.\n\n\n* `regexp` - the pattern treated as a regular expression against\nwhich the input string is tested. Crossplane will throw an error if the\nkey is not a valid regexp."
+                                              description: "Type specifies how the pattern matches the input.\n\n* `literal` - the pattern value has to exactly match (case sensitive) the\ninput string. This is the default.\n\n* `regexp` - the pattern treated as a regular expression against\nwhich the input string is tested. Crossplane will throw an error if the\nkey is not a valid regexp."
                                               enum:
                                                 - "literal"
                                                 - "regexp"
@@ -744,7 +744,7 @@ spec:
                     type: "object"
                   type: "array"
                 revision:
-                  description: "Revision number. Newer revisions have larger numbers.\n\n\nThis number can change. When a Composition transitions from state A\n-> B -> A there will be only two CompositionRevisions. Crossplane will\nedit the original CompositionRevision to change its revision number from\n0 to 2."
+                  description: "Revision number. Newer revisions have larger numbers.\n\nThis number can change. When a Composition transitions from state A\n-> B -> A there will be only two CompositionRevisions. Crossplane will\nedit the original CompositionRevision to change its revision number from\n0 to 2."
                   format: "int64"
                   type: "integer"
                 writeConnectionSecretsToNamespace:

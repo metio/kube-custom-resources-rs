@@ -6916,6 +6916,10 @@ pub enum WorkloadPriorityClassSource {
 /// WorkloadStatus defines the observed state of Workload
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkloadStatus {
+    /// accumulatedPastExexcutionTimeSeconds holds the total time, in seconds, the workload spent
+    /// in Admitted state, in the previous `Admit` - `Evict` cycles.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accumulatedPastExexcutionTimeSeconds")]
+    pub accumulated_past_exexcution_time_seconds: Option<i32>,
     /// admission holds the parameters of the admission of the workload by a
     /// ClusterQueue. admission can be set back to null, but its fields cannot be
     /// changed once set.

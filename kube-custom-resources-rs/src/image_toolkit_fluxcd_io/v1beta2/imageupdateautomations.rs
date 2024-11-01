@@ -113,6 +113,10 @@ pub struct ImageUpdateAutomationGitCommit {
     /// into which will be interpolated the details of the change made.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "messageTemplate")]
     pub message_template: Option<String>,
+    /// MessageTemplateValues provides additional values to be available to the
+    /// templating rendering.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "messageTemplateValues")]
+    pub message_template_values: Option<BTreeMap<String, String>>,
     /// SigningKey provides the option to sign commits with a GPG key
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "signingKey")]
     pub signing_key: Option<ImageUpdateAutomationGitCommitSigningKey>,

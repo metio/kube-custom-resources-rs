@@ -11,6 +11,9 @@ categories = ["api-bindings"]
 license = "0BSD"
 repository = "https://github.com/metio/kube-custom-resources-rs"
 
+[package.metadata.docs.rs]
+features = ["k8s-openapi/v1_31"]
+
 [dependencies.k8s-openapi]
 version = "~0"
 
@@ -31,9 +34,6 @@ version = "~1"
 [dev-dependencies.k8s-openapi]
 version = "~0"
 features = ["v1_31"]
-
-[package.metadata.docs.rs]
-features = [ "k8s-openapi/v1_31" ]
 
 [features]
 about_k8s_io = []

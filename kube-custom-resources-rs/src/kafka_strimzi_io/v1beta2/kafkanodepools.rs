@@ -253,6 +253,42 @@ pub struct KafkaNodePoolTemplateInitContainerEnv {
     /// The environment variable value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+    /// Reference to the secret or config map property to which the environment variable is set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<KafkaNodePoolTemplateInitContainerEnvValueFrom>,
+}
+
+/// Reference to the secret or config map property to which the environment variable is set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaNodePoolTemplateInitContainerEnvValueFrom {
+    /// Reference to a key in a config map.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<KafkaNodePoolTemplateInitContainerEnvValueFromConfigMapKeyRef>,
+    /// Reference to a key in a secret.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<KafkaNodePoolTemplateInitContainerEnvValueFromSecretKeyRef>,
+}
+
+/// Reference to a key in a config map.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaNodePoolTemplateInitContainerEnvValueFromConfigMapKeyRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Reference to a key in a secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaNodePoolTemplateInitContainerEnvValueFromSecretKeyRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// Security context for the container.
@@ -372,6 +408,42 @@ pub struct KafkaNodePoolTemplateKafkaContainerEnv {
     /// The environment variable value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+    /// Reference to the secret or config map property to which the environment variable is set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<KafkaNodePoolTemplateKafkaContainerEnvValueFrom>,
+}
+
+/// Reference to the secret or config map property to which the environment variable is set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaNodePoolTemplateKafkaContainerEnvValueFrom {
+    /// Reference to a key in a config map.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<KafkaNodePoolTemplateKafkaContainerEnvValueFromConfigMapKeyRef>,
+    /// Reference to a key in a secret.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<KafkaNodePoolTemplateKafkaContainerEnvValueFromSecretKeyRef>,
+}
+
+/// Reference to a key in a config map.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaNodePoolTemplateKafkaContainerEnvValueFromConfigMapKeyRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Reference to a key in a secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaNodePoolTemplateKafkaContainerEnvValueFromSecretKeyRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// Security context for the container.

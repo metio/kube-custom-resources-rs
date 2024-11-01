@@ -134,6 +134,27 @@ spec:
                         - "type"
                         - "valueFrom"
                       type: "object"
+                    autoRebalance:
+                      description: "Auto-rebalancing on scaling related configuration listing the modes, when brokers are added or removed, with the corresponding rebalance template configurations.If this field is set, at least one mode has to be defined."
+                      items:
+                        properties:
+                          mode:
+                            description: "Specifies the mode for automatically rebalancing when brokers are added or removed. Supported modes are `add-brokers` and `remove-brokers`. \n"
+                            enum:
+                              - "add-brokers"
+                              - "remove-brokers"
+                            type: "string"
+                          template:
+                            description: "Reference to the KafkaRebalance custom resource to be used as the configuration template for the auto-rebalancing on scaling when running for the corresponding mode."
+                            properties:
+                              name:
+                                type: "string"
+                            type: "object"
+                        required:
+                          - "mode"
+                        type: "object"
+                      minItems: 1
+                      type: "array"
                     brokerCapacity:
                       description: "The Cruise Control `brokerCapacity` configuration."
                       properties:
@@ -397,6 +418,15 @@ spec:
                             env:
                               description: "Environment variables which should be applied to the container."
                               items:
+                                oneOf:
+                                  - properties:
+                                      value: {}
+                                    required:
+                                      - "value"
+                                  - properties:
+                                      valueFrom: {}
+                                    required:
+                                      - "valueFrom"
                                 properties:
                                   name:
                                     description: "The environment variable key."
@@ -404,6 +434,39 @@ spec:
                                   value:
                                     description: "The environment variable value."
                                     type: "string"
+                                  valueFrom:
+                                    description: "Reference to the secret or config map property to which the environment variable is set."
+                                    oneOf:
+                                      - properties:
+                                          secretKeyRef: {}
+                                        required:
+                                          - "secretKeyRef"
+                                      - properties:
+                                          configMapKeyRef: {}
+                                        required:
+                                          - "configMapKeyRef"
+                                    properties:
+                                      configMapKeyRef:
+                                        description: "Reference to a key in a config map."
+                                        properties:
+                                          key:
+                                            type: "string"
+                                          name:
+                                            type: "string"
+                                          optional:
+                                            type: "boolean"
+                                        type: "object"
+                                      secretKeyRef:
+                                        description: "Reference to a key in a secret."
+                                        properties:
+                                          key:
+                                            type: "string"
+                                          name:
+                                            type: "string"
+                                          optional:
+                                            type: "boolean"
+                                        type: "object"
+                                    type: "object"
                                 type: "object"
                               type: "array"
                             securityContext:
@@ -1029,7 +1092,6 @@ spec:
                                       emptyDir: {}
                                       persistentVolumeClaim: {}
                                       secret: {}
-                                    required: []
                                 properties:
                                   configMap:
                                     description: "ConfigMap to use to populate the volume."
@@ -1146,6 +1208,15 @@ spec:
                             env:
                               description: "Environment variables which should be applied to the container."
                               items:
+                                oneOf:
+                                  - properties:
+                                      value: {}
+                                    required:
+                                      - "value"
+                                  - properties:
+                                      valueFrom: {}
+                                    required:
+                                      - "valueFrom"
                                 properties:
                                   name:
                                     description: "The environment variable key."
@@ -1153,6 +1224,39 @@ spec:
                                   value:
                                     description: "The environment variable value."
                                     type: "string"
+                                  valueFrom:
+                                    description: "Reference to the secret or config map property to which the environment variable is set."
+                                    oneOf:
+                                      - properties:
+                                          secretKeyRef: {}
+                                        required:
+                                          - "secretKeyRef"
+                                      - properties:
+                                          configMapKeyRef: {}
+                                        required:
+                                          - "configMapKeyRef"
+                                    properties:
+                                      configMapKeyRef:
+                                        description: "Reference to a key in a config map."
+                                        properties:
+                                          key:
+                                            type: "string"
+                                          name:
+                                            type: "string"
+                                          optional:
+                                            type: "boolean"
+                                        type: "object"
+                                      secretKeyRef:
+                                        description: "Reference to a key in a secret."
+                                        properties:
+                                          key:
+                                            type: "string"
+                                          name:
+                                            type: "string"
+                                          optional:
+                                            type: "boolean"
+                                        type: "object"
+                                    type: "object"
                                 type: "object"
                               type: "array"
                             securityContext:
@@ -1898,7 +2002,6 @@ spec:
                                       emptyDir: {}
                                       persistentVolumeClaim: {}
                                       secret: {}
-                                    required: []
                                 properties:
                                   configMap:
                                     description: "ConfigMap to use to populate the volume."
@@ -1993,6 +2096,15 @@ spec:
                             env:
                               description: "Environment variables which should be applied to the container."
                               items:
+                                oneOf:
+                                  - properties:
+                                      value: {}
+                                    required:
+                                      - "value"
+                                  - properties:
+                                      valueFrom: {}
+                                    required:
+                                      - "valueFrom"
                                 properties:
                                   name:
                                     description: "The environment variable key."
@@ -2000,6 +2112,39 @@ spec:
                                   value:
                                     description: "The environment variable value."
                                     type: "string"
+                                  valueFrom:
+                                    description: "Reference to the secret or config map property to which the environment variable is set."
+                                    oneOf:
+                                      - properties:
+                                          secretKeyRef: {}
+                                        required:
+                                          - "secretKeyRef"
+                                      - properties:
+                                          configMapKeyRef: {}
+                                        required:
+                                          - "configMapKeyRef"
+                                    properties:
+                                      configMapKeyRef:
+                                        description: "Reference to a key in a config map."
+                                        properties:
+                                          key:
+                                            type: "string"
+                                          name:
+                                            type: "string"
+                                          optional:
+                                            type: "boolean"
+                                        type: "object"
+                                      secretKeyRef:
+                                        description: "Reference to a key in a secret."
+                                        properties:
+                                          key:
+                                            type: "string"
+                                          name:
+                                            type: "string"
+                                          optional:
+                                            type: "boolean"
+                                        type: "object"
+                                    type: "object"
                                 type: "object"
                               type: "array"
                             securityContext:
@@ -2094,6 +2239,15 @@ spec:
                             env:
                               description: "Environment variables which should be applied to the container."
                               items:
+                                oneOf:
+                                  - properties:
+                                      value: {}
+                                    required:
+                                      - "value"
+                                  - properties:
+                                      valueFrom: {}
+                                    required:
+                                      - "valueFrom"
                                 properties:
                                   name:
                                     description: "The environment variable key."
@@ -2101,6 +2255,39 @@ spec:
                                   value:
                                     description: "The environment variable value."
                                     type: "string"
+                                  valueFrom:
+                                    description: "Reference to the secret or config map property to which the environment variable is set."
+                                    oneOf:
+                                      - properties:
+                                          secretKeyRef: {}
+                                        required:
+                                          - "secretKeyRef"
+                                      - properties:
+                                          configMapKeyRef: {}
+                                        required:
+                                          - "configMapKeyRef"
+                                    properties:
+                                      configMapKeyRef:
+                                        description: "Reference to a key in a config map."
+                                        properties:
+                                          key:
+                                            type: "string"
+                                          name:
+                                            type: "string"
+                                          optional:
+                                            type: "boolean"
+                                        type: "object"
+                                      secretKeyRef:
+                                        description: "Reference to a key in a secret."
+                                        properties:
+                                          key:
+                                            type: "string"
+                                          name:
+                                            type: "string"
+                                          optional:
+                                            type: "boolean"
+                                        type: "object"
+                                    type: "object"
                                 type: "object"
                               type: "array"
                             securityContext:
@@ -2213,6 +2400,15 @@ spec:
                             env:
                               description: "Environment variables which should be applied to the container."
                               items:
+                                oneOf:
+                                  - properties:
+                                      value: {}
+                                    required:
+                                      - "value"
+                                  - properties:
+                                      valueFrom: {}
+                                    required:
+                                      - "valueFrom"
                                 properties:
                                   name:
                                     description: "The environment variable key."
@@ -2220,6 +2416,39 @@ spec:
                                   value:
                                     description: "The environment variable value."
                                     type: "string"
+                                  valueFrom:
+                                    description: "Reference to the secret or config map property to which the environment variable is set."
+                                    oneOf:
+                                      - properties:
+                                          secretKeyRef: {}
+                                        required:
+                                          - "secretKeyRef"
+                                      - properties:
+                                          configMapKeyRef: {}
+                                        required:
+                                          - "configMapKeyRef"
+                                    properties:
+                                      configMapKeyRef:
+                                        description: "Reference to a key in a config map."
+                                        properties:
+                                          key:
+                                            type: "string"
+                                          name:
+                                            type: "string"
+                                          optional:
+                                            type: "boolean"
+                                        type: "object"
+                                      secretKeyRef:
+                                        description: "Reference to a key in a secret."
+                                        properties:
+                                          key:
+                                            type: "string"
+                                          name:
+                                            type: "string"
+                                          optional:
+                                            type: "boolean"
+                                        type: "object"
+                                    type: "object"
                                 type: "object"
                               type: "array"
                             securityContext:
@@ -2870,6 +3099,15 @@ spec:
                             env:
                               description: "Environment variables which should be applied to the container."
                               items:
+                                oneOf:
+                                  - properties:
+                                      value: {}
+                                    required:
+                                      - "value"
+                                  - properties:
+                                      valueFrom: {}
+                                    required:
+                                      - "valueFrom"
                                 properties:
                                   name:
                                     description: "The environment variable key."
@@ -2877,6 +3115,39 @@ spec:
                                   value:
                                     description: "The environment variable value."
                                     type: "string"
+                                  valueFrom:
+                                    description: "Reference to the secret or config map property to which the environment variable is set."
+                                    oneOf:
+                                      - properties:
+                                          secretKeyRef: {}
+                                        required:
+                                          - "secretKeyRef"
+                                      - properties:
+                                          configMapKeyRef: {}
+                                        required:
+                                          - "configMapKeyRef"
+                                    properties:
+                                      configMapKeyRef:
+                                        description: "Reference to a key in a config map."
+                                        properties:
+                                          key:
+                                            type: "string"
+                                          name:
+                                            type: "string"
+                                          optional:
+                                            type: "boolean"
+                                        type: "object"
+                                      secretKeyRef:
+                                        description: "Reference to a key in a secret."
+                                        properties:
+                                          key:
+                                            type: "string"
+                                          name:
+                                            type: "string"
+                                          optional:
+                                            type: "boolean"
+                                        type: "object"
+                                    type: "object"
                                 type: "object"
                               type: "array"
                             securityContext:
@@ -3502,7 +3773,6 @@ spec:
                                       emptyDir: {}
                                       persistentVolumeClaim: {}
                                       secret: {}
-                                    required: []
                                 properties:
                                   configMap:
                                     description: "ConfigMap to use to populate the volume."
@@ -3968,6 +4238,9 @@ spec:
                           configuration:
                             description: "Additional listener configuration."
                             properties:
+                              advertisedHostTemplate:
+                                description: "Configures the template for generating the advertised hostnames of the individual brokers. Valid placeholders that you can use in the template are `{nodeId}` and `{nodePodName}`."
+                                type: "string"
                               bootstrap:
                                 description: "Bootstrap configuration."
                                 properties:
@@ -4076,6 +4349,9 @@ spec:
                                 items:
                                   type: "string"
                                 type: "array"
+                              hostTemplate:
+                                description: "Configures the template for generating the hostnames of the individual brokers. Valid placeholders that you can use in the template are `{nodeId}` and `{nodePodName}`."
+                                type: "string"
                               ipFamilies:
                                 description: "Specifies the IP Families used by the service. Available options are `IPv4` and `IPv6`. If unspecified, Kubernetes will choose the default value based on the `ipFamilyPolicy` setting."
                                 items:
@@ -4663,6 +4939,15 @@ spec:
                             env:
                               description: "Environment variables which should be applied to the container."
                               items:
+                                oneOf:
+                                  - properties:
+                                      value: {}
+                                    required:
+                                      - "value"
+                                  - properties:
+                                      valueFrom: {}
+                                    required:
+                                      - "valueFrom"
                                 properties:
                                   name:
                                     description: "The environment variable key."
@@ -4670,6 +4955,39 @@ spec:
                                   value:
                                     description: "The environment variable value."
                                     type: "string"
+                                  valueFrom:
+                                    description: "Reference to the secret or config map property to which the environment variable is set."
+                                    oneOf:
+                                      - properties:
+                                          secretKeyRef: {}
+                                        required:
+                                          - "secretKeyRef"
+                                      - properties:
+                                          configMapKeyRef: {}
+                                        required:
+                                          - "configMapKeyRef"
+                                    properties:
+                                      configMapKeyRef:
+                                        description: "Reference to a key in a config map."
+                                        properties:
+                                          key:
+                                            type: "string"
+                                          name:
+                                            type: "string"
+                                          optional:
+                                            type: "boolean"
+                                        type: "object"
+                                      secretKeyRef:
+                                        description: "Reference to a key in a secret."
+                                        properties:
+                                          key:
+                                            type: "string"
+                                          name:
+                                            type: "string"
+                                          optional:
+                                            type: "boolean"
+                                        type: "object"
+                                    type: "object"
                                 type: "object"
                               type: "array"
                             securityContext:
@@ -4782,6 +5100,15 @@ spec:
                             env:
                               description: "Environment variables which should be applied to the container."
                               items:
+                                oneOf:
+                                  - properties:
+                                      value: {}
+                                    required:
+                                      - "value"
+                                  - properties:
+                                      valueFrom: {}
+                                    required:
+                                      - "valueFrom"
                                 properties:
                                   name:
                                     description: "The environment variable key."
@@ -4789,6 +5116,39 @@ spec:
                                   value:
                                     description: "The environment variable value."
                                     type: "string"
+                                  valueFrom:
+                                    description: "Reference to the secret or config map property to which the environment variable is set."
+                                    oneOf:
+                                      - properties:
+                                          secretKeyRef: {}
+                                        required:
+                                          - "secretKeyRef"
+                                      - properties:
+                                          configMapKeyRef: {}
+                                        required:
+                                          - "configMapKeyRef"
+                                    properties:
+                                      configMapKeyRef:
+                                        description: "Reference to a key in a config map."
+                                        properties:
+                                          key:
+                                            type: "string"
+                                          name:
+                                            type: "string"
+                                          optional:
+                                            type: "boolean"
+                                        type: "object"
+                                      secretKeyRef:
+                                        description: "Reference to a key in a secret."
+                                        properties:
+                                          key:
+                                            type: "string"
+                                          name:
+                                            type: "string"
+                                          optional:
+                                            type: "boolean"
+                                        type: "object"
+                                    type: "object"
                                 type: "object"
                               type: "array"
                             securityContext:
@@ -5462,7 +5822,6 @@ spec:
                                       emptyDir: {}
                                       persistentVolumeClaim: {}
                                       secret: {}
-                                    required: []
                                 properties:
                                   configMap:
                                     description: "ConfigMap to use to populate the volume."
@@ -5753,6 +6112,15 @@ spec:
                             env:
                               description: "Environment variables which should be applied to the container."
                               items:
+                                oneOf:
+                                  - properties:
+                                      value: {}
+                                    required:
+                                      - "value"
+                                  - properties:
+                                      valueFrom: {}
+                                    required:
+                                      - "valueFrom"
                                 properties:
                                   name:
                                     description: "The environment variable key."
@@ -5760,6 +6128,39 @@ spec:
                                   value:
                                     description: "The environment variable value."
                                     type: "string"
+                                  valueFrom:
+                                    description: "Reference to the secret or config map property to which the environment variable is set."
+                                    oneOf:
+                                      - properties:
+                                          secretKeyRef: {}
+                                        required:
+                                          - "secretKeyRef"
+                                      - properties:
+                                          configMapKeyRef: {}
+                                        required:
+                                          - "configMapKeyRef"
+                                    properties:
+                                      configMapKeyRef:
+                                        description: "Reference to a key in a config map."
+                                        properties:
+                                          key:
+                                            type: "string"
+                                          name:
+                                            type: "string"
+                                          optional:
+                                            type: "boolean"
+                                        type: "object"
+                                      secretKeyRef:
+                                        description: "Reference to a key in a secret."
+                                        properties:
+                                          key:
+                                            type: "string"
+                                          name:
+                                            type: "string"
+                                          optional:
+                                            type: "boolean"
+                                        type: "object"
+                                    type: "object"
                                 type: "object"
                               type: "array"
                             securityContext:
@@ -6385,7 +6786,6 @@ spec:
                                       emptyDir: {}
                                       persistentVolumeClaim: {}
                                       secret: {}
-                                    required: []
                                 properties:
                                   configMap:
                                     description: "ConfigMap to use to populate the volume."
@@ -7367,7 +7767,6 @@ spec:
                                       emptyDir: {}
                                       persistentVolumeClaim: {}
                                       secret: {}
-                                    required: []
                                 properties:
                                   configMap:
                                     description: "ConfigMap to use to populate the volume."
@@ -7526,6 +7925,15 @@ spec:
                             env:
                               description: "Environment variables which should be applied to the container."
                               items:
+                                oneOf:
+                                  - properties:
+                                      value: {}
+                                    required:
+                                      - "value"
+                                  - properties:
+                                      valueFrom: {}
+                                    required:
+                                      - "valueFrom"
                                 properties:
                                   name:
                                     description: "The environment variable key."
@@ -7533,6 +7941,39 @@ spec:
                                   value:
                                     description: "The environment variable value."
                                     type: "string"
+                                  valueFrom:
+                                    description: "Reference to the secret or config map property to which the environment variable is set."
+                                    oneOf:
+                                      - properties:
+                                          secretKeyRef: {}
+                                        required:
+                                          - "secretKeyRef"
+                                      - properties:
+                                          configMapKeyRef: {}
+                                        required:
+                                          - "configMapKeyRef"
+                                    properties:
+                                      configMapKeyRef:
+                                        description: "Reference to a key in a config map."
+                                        properties:
+                                          key:
+                                            type: "string"
+                                          name:
+                                            type: "string"
+                                          optional:
+                                            type: "boolean"
+                                        type: "object"
+                                      secretKeyRef:
+                                        description: "Reference to a key in a secret."
+                                        properties:
+                                          key:
+                                            type: "string"
+                                          name:
+                                            type: "string"
+                                          optional:
+                                            type: "boolean"
+                                        type: "object"
+                                    type: "object"
                                 type: "object"
                               type: "array"
                             securityContext:
@@ -7632,6 +8073,37 @@ spec:
             status:
               description: "The status of the Kafka and ZooKeeper clusters, and Topic Operator."
               properties:
+                autoRebalance:
+                  description: "The status of an auto-rebalancing triggered by a cluster scaling request."
+                  properties:
+                    lastTransitionTime:
+                      description: "The timestamp of the latest auto-rebalancing state update."
+                      type: "string"
+                    modes:
+                      description: "List of modes where an auto-rebalancing operation is either running or queued. \nEach mode entry (`add-brokers` or `remove-brokers`) includes one of the following: \n\n* Broker IDs for a current auto-rebalance. \n* Broker IDs for a queued auto-rebalance (if a previous rebalance is still in progress)."
+                      items:
+                        properties:
+                          brokers:
+                            description: "List of broker IDs involved in an auto-rebalancing operation related to the current mode. \nThe list contains one of the following: \n\n* Broker IDs for a current auto-rebalance. \n* Broker IDs for a queued auto-rebalance (if a previous auto-rebalance is still in progress). \n"
+                            items:
+                              type: "integer"
+                            type: "array"
+                          mode:
+                            description: "Mode for which there is an auto-rebalancing operation in progress or queued, when brokers are added or removed. The possible modes are `add-brokers` and `remove-brokers`."
+                            enum:
+                              - "add-brokers"
+                              - "remove-brokers"
+                            type: "string"
+                        type: "object"
+                      type: "array"
+                    state:
+                      description: "The current state of an auto-rebalancing operation. Possible values are: \n\n* `Idle` as the initial state when an auto-rebalancing is requested or as final state when it completes or fails.\n* `RebalanceOnScaleDown` if an auto-rebalance related to a scale-down operation is running.\n* `RebalanceOnScaleUp` if an auto-rebalance related to a scale-up operation is running."
+                      enum:
+                        - "Idle"
+                        - "RebalanceOnScaleDown"
+                        - "RebalanceOnScaleUp"
+                      type: "string"
+                  type: "object"
                 clusterId:
                   description: "Kafka cluster Id."
                   type: "string"

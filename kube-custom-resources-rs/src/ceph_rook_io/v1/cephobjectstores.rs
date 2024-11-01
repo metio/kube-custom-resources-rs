@@ -1583,6 +1583,8 @@ pub struct CephObjectStoreSharedPoolsPoolPlacements {
     /// The data pool used to store ObjectStore objects data.
     #[serde(rename = "dataPoolName")]
     pub data_pool_name: String,
+    /// Sets given placement as default. Only one placement in the list can be marked as default.
+    pub default: bool,
     /// The metadata pool used to store ObjectStore bucket index.
     #[serde(rename = "metadataPoolName")]
     pub metadata_pool_name: String,

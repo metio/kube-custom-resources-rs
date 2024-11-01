@@ -7,14 +7,12 @@ mod prelude {
     pub use kube::CustomResource;
     pub use serde::{Serialize, Deserialize};
     pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// CohortSpec defines the desired state of Cohort
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 #[kube(group = "kueue.x-k8s.io", version = "v1alpha1", kind = "Cohort", plural = "cohorts")]
-#[kube(status = "CohortStatus")]
 #[kube(schema = "disabled")]
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
@@ -120,12 +118,5 @@ pub struct CohortResourceGroupsFlavorsResources {
     /// allocated by a ClusterQueue in the cohort.
     #[serde(rename = "nominalQuota")]
     pub nominal_quota: IntOrString,
-}
-
-/// CohortStatus defines the observed state of Cohort
-#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CohortStatus {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub conditions: Option<Vec<Condition>>,
 }
 

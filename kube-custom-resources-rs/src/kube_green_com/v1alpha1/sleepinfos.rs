@@ -20,9 +20,11 @@ use self::prelude::*;
 #[kube(derive="PartialEq")]
 pub struct SleepInfoSpec {
     /// ExcludeRef define the resource to exclude from the sleep.
+    /// Exclusion rules are evaluated in AND condition.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeRef")]
     pub exclude_ref: Option<Vec<SleepInfoExcludeRef>>,
     /// IncludeRef define the resource to include from the sleep.
+    /// Inclusion rules are evaluated in AND condition.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeRef")]
     pub include_ref: Option<Vec<SleepInfoIncludeRef>>,
     /// Patches is a list of json 6902 patches to apply to the target resources.

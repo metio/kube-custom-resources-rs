@@ -104,14 +104,14 @@ pub struct FlowCollectorAgentEbpf {
     pub exclude_interfaces: Option<Vec<String>>,
     /// List of additional features to enable. They are all disabled by default. Enabling additional features might have performance impacts. Possible values are:<br>
     /// - `PacketDrop`: enable the packets drop flows logging feature. This feature requires mounting
-    /// the kernel debug filesystem, so the eBPF pod has to run as privileged.
+    /// the kernel debug filesystem, so the eBPF agent pods have to run as privileged.
     /// If the `spec.agent.ebpf.privileged` parameter is not set, an error is reported.<br>
     /// - `DNSTracking`: enable the DNS tracking feature.<br>
     /// - `FlowRTT`: enable flow latency (sRTT) extraction in the eBPF agent from TCP traffic.<br>
-    /// - `NetworkEvents`: enable the Network events monitoring feature. This feature requires mounting
-    /// the kernel debug filesystem, so the eBPF pod has to run as privileged.
+    /// - `NetworkEvents`: enable the network events monitoring feature, such as correlating flows and network policies.
+    /// This feature requires mounting the kernel debug filesystem, so the eBPF agent pods have to run as privileged.
     /// It requires using the OVN-Kubernetes network plugin with the Observability feature.
-    /// IMPORTANT: this feature is available as a Developer Preview.<br>
+    /// IMPORTANT: This feature is available as a Developer Preview.<br>
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub features: Option<Vec<String>>,
     /// `flowFilter` defines the eBPF agent configuration regarding flow filtering.
@@ -950,7 +950,7 @@ pub struct FlowCollectorAgentEbpfFlowFilter {
     /// Example: `10.10.10.10`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "peerIP")]
     pub peer_ip: Option<String>,
-    /// `pktDrops`, to filter flows with packet drops
+    /// `pktDrops` filters flows with packet drops
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pktDrops")]
     pub pkt_drops: Option<bool>,
     /// `ports` defines the ports to filter flows by. It is used both for source and destination ports.
@@ -2413,7 +2413,7 @@ pub struct FlowCollectorExporters {
     /// Kafka configuration, such as the address and topic, to send enriched flows to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kafka: Option<FlowCollectorExportersKafka>,
-    /// Open telemetry configuration, such as the IP address and port to send enriched logs, metrics and or traces to.
+    /// OpenTelemetry configuration, such as the IP address and port to send enriched logs or metrics to.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "openTelemetry")]
     pub open_telemetry: Option<FlowCollectorExportersOpenTelemetry>,
     /// `type` selects the type of exporters. The available options are `Kafka` and `IPFIX`.
@@ -2424,10 +2424,10 @@ pub struct FlowCollectorExporters {
 /// IPFIX configuration, such as the IP address and port to send enriched IPFIX flows to.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorExportersIpfix {
-    /// Address of the IPFIX external receiver
+    /// Address of the IPFIX external receiver.
     #[serde(rename = "targetHost")]
     pub target_host: String,
-    /// Port for the IPFIX external receiver
+    /// Port for the IPFIX external receiver.
     #[serde(rename = "targetPort")]
     pub target_port: i64,
     /// Transport protocol (`TCP` or `UDP`) to be used for the IPFIX connection, defaults to `TCP`.
@@ -2539,7 +2539,7 @@ pub enum FlowCollectorExportersKafkaSaslType {
 /// TLS client configuration. When using TLS, verify that the address matches the Kafka port used for TLS, generally 9093.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorExportersKafkaTls {
-    /// `caCert` defines the reference of the certificate for the Certificate Authority
+    /// `caCert` defines the reference of the certificate for the Certificate Authority.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCert")]
     pub ca_cert: Option<FlowCollectorExportersKafkaTlsCaCert>,
     /// Enable TLS
@@ -2549,12 +2549,12 @@ pub struct FlowCollectorExportersKafkaTls {
     /// If set to `true`, the `caCert` field is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
-    /// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
+    /// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userCert")]
     pub user_cert: Option<FlowCollectorExportersKafkaTlsUserCert>,
 }
 
-/// `caCert` defines the reference of the certificate for the Certificate Authority
+/// `caCert` defines the reference of the certificate for the Certificate Authority.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorExportersKafkaTlsCaCert {
     /// `certFile` defines the path to the certificate file name within the config map or secret.
@@ -2575,7 +2575,7 @@ pub struct FlowCollectorExportersKafkaTlsCaCert {
     pub r#type: Option<FlowCollectorExportersKafkaTlsCaCertType>,
 }
 
-/// `caCert` defines the reference of the certificate for the Certificate Authority
+/// `caCert` defines the reference of the certificate for the Certificate Authority.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorExportersKafkaTlsCaCertType {
     #[serde(rename = "configmap")]
@@ -2584,7 +2584,7 @@ pub enum FlowCollectorExportersKafkaTlsCaCertType {
     Secret,
 }
 
-/// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
+/// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorExportersKafkaTlsUserCert {
     /// `certFile` defines the path to the certificate file name within the config map or secret.
@@ -2605,7 +2605,7 @@ pub struct FlowCollectorExportersKafkaTlsUserCert {
     pub r#type: Option<FlowCollectorExportersKafkaTlsUserCertType>,
 }
 
-/// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
+/// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorExportersKafkaTlsUserCertType {
     #[serde(rename = "configmap")]
@@ -2614,30 +2614,30 @@ pub enum FlowCollectorExportersKafkaTlsUserCertType {
     Secret,
 }
 
-/// Open telemetry configuration, such as the IP address and port to send enriched logs, metrics and or traces to.
+/// OpenTelemetry configuration, such as the IP address and port to send enriched logs or metrics to.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorExportersOpenTelemetry {
     /// Custom fields mapping to an OpenTelemetry conformant format.
     /// By default, NetObserv format proposal is used: https://github.com/rhobs/observability-data-model/blob/main/network-observability.md#format-proposal .
-    /// As there is currently no accepted otlp standard for L3/4 network logs, you can freely override it with your own.
+    /// As there is currently no accepted standard for L3 or L4 enriched network logs, you can freely override it with your own.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldsMapping")]
     pub fields_mapping: Option<Vec<FlowCollectorExportersOpenTelemetryFieldsMapping>>,
     /// Headers to add to messages (optional)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<BTreeMap<String, String>>,
-    /// Open telemetry configuration for logs.
+    /// OpenTelemetry configuration for logs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logs: Option<FlowCollectorExportersOpenTelemetryLogs>,
-    /// Open telemetry configuration for metrics.
+    /// OpenTelemetry configuration for metrics.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metrics: Option<FlowCollectorExportersOpenTelemetryMetrics>,
-    /// Protocol of Open Telemetry connection. The available options are `http` and `grpc`.
+    /// Protocol of the OpenTelemetry connection. The available options are `http` and `grpc`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<FlowCollectorExportersOpenTelemetryProtocol>,
-    /// Address of the Open Telemetry receiver
+    /// Address of the OpenTelemetry receiver.
     #[serde(rename = "targetHost")]
     pub target_host: String,
-    /// Port for the Open Telemetry receiver
+    /// Port for the OpenTelemetry receiver.
     #[serde(rename = "targetPort")]
     pub target_port: i64,
     /// TLS client configuration.
@@ -2655,26 +2655,26 @@ pub struct FlowCollectorExportersOpenTelemetryFieldsMapping {
     pub output: Option<String>,
 }
 
-/// Open telemetry configuration for logs.
+/// OpenTelemetry configuration for logs.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorExportersOpenTelemetryLogs {
-    /// Set `enable` to `true` to send logs to Open Telemetry receiver.
+    /// Set `enable` to `true` to send logs to an OpenTelemetry receiver.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
 }
 
-/// Open telemetry configuration for metrics.
+/// OpenTelemetry configuration for metrics.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorExportersOpenTelemetryMetrics {
-    /// Set `enable` to `true` to send metrics to Open Telemetry receiver.
+    /// Set `enable` to `true` to send metrics to an OpenTelemetry receiver.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
-    /// How often should metrics be sent to collector
+    /// Specify how often metrics are sent to a collector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pushTimeInterval")]
     pub push_time_interval: Option<String>,
 }
 
-/// Open telemetry configuration, such as the IP address and port to send enriched logs, metrics and or traces to.
+/// OpenTelemetry configuration, such as the IP address and port to send enriched logs or metrics to.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorExportersOpenTelemetryProtocol {
     #[serde(rename = "http")]
@@ -2686,7 +2686,7 @@ pub enum FlowCollectorExportersOpenTelemetryProtocol {
 /// TLS client configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorExportersOpenTelemetryTls {
-    /// `caCert` defines the reference of the certificate for the Certificate Authority
+    /// `caCert` defines the reference of the certificate for the Certificate Authority.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCert")]
     pub ca_cert: Option<FlowCollectorExportersOpenTelemetryTlsCaCert>,
     /// Enable TLS
@@ -2696,12 +2696,12 @@ pub struct FlowCollectorExportersOpenTelemetryTls {
     /// If set to `true`, the `caCert` field is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
-    /// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
+    /// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userCert")]
     pub user_cert: Option<FlowCollectorExportersOpenTelemetryTlsUserCert>,
 }
 
-/// `caCert` defines the reference of the certificate for the Certificate Authority
+/// `caCert` defines the reference of the certificate for the Certificate Authority.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorExportersOpenTelemetryTlsCaCert {
     /// `certFile` defines the path to the certificate file name within the config map or secret.
@@ -2722,7 +2722,7 @@ pub struct FlowCollectorExportersOpenTelemetryTlsCaCert {
     pub r#type: Option<FlowCollectorExportersOpenTelemetryTlsCaCertType>,
 }
 
-/// `caCert` defines the reference of the certificate for the Certificate Authority
+/// `caCert` defines the reference of the certificate for the Certificate Authority.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorExportersOpenTelemetryTlsCaCertType {
     #[serde(rename = "configmap")]
@@ -2731,7 +2731,7 @@ pub enum FlowCollectorExportersOpenTelemetryTlsCaCertType {
     Secret,
 }
 
-/// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
+/// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorExportersOpenTelemetryTlsUserCert {
     /// `certFile` defines the path to the certificate file name within the config map or secret.
@@ -2752,7 +2752,7 @@ pub struct FlowCollectorExportersOpenTelemetryTlsUserCert {
     pub r#type: Option<FlowCollectorExportersOpenTelemetryTlsUserCertType>,
 }
 
-/// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
+/// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorExportersOpenTelemetryTlsUserCertType {
     #[serde(rename = "configmap")]
@@ -2865,7 +2865,7 @@ pub enum FlowCollectorKafkaSaslType {
 /// TLS client configuration. When using TLS, verify that the address matches the Kafka port used for TLS, generally 9093.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorKafkaTls {
-    /// `caCert` defines the reference of the certificate for the Certificate Authority
+    /// `caCert` defines the reference of the certificate for the Certificate Authority.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCert")]
     pub ca_cert: Option<FlowCollectorKafkaTlsCaCert>,
     /// Enable TLS
@@ -2875,12 +2875,12 @@ pub struct FlowCollectorKafkaTls {
     /// If set to `true`, the `caCert` field is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
-    /// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
+    /// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userCert")]
     pub user_cert: Option<FlowCollectorKafkaTlsUserCert>,
 }
 
-/// `caCert` defines the reference of the certificate for the Certificate Authority
+/// `caCert` defines the reference of the certificate for the Certificate Authority.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorKafkaTlsCaCert {
     /// `certFile` defines the path to the certificate file name within the config map or secret.
@@ -2901,7 +2901,7 @@ pub struct FlowCollectorKafkaTlsCaCert {
     pub r#type: Option<FlowCollectorKafkaTlsCaCertType>,
 }
 
-/// `caCert` defines the reference of the certificate for the Certificate Authority
+/// `caCert` defines the reference of the certificate for the Certificate Authority.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorKafkaTlsCaCertType {
     #[serde(rename = "configmap")]
@@ -2910,7 +2910,7 @@ pub enum FlowCollectorKafkaTlsCaCertType {
     Secret,
 }
 
-/// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
+/// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorKafkaTlsUserCert {
     /// `certFile` defines the path to the certificate file name within the config map or secret.
@@ -2931,7 +2931,7 @@ pub struct FlowCollectorKafkaTlsUserCert {
     pub r#type: Option<FlowCollectorKafkaTlsUserCertType>,
 }
 
-/// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
+/// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorKafkaTlsUserCertType {
     #[serde(rename = "configmap")]
@@ -3077,7 +3077,7 @@ pub enum FlowCollectorLokiManualAuthToken {
 /// TLS client configuration for Loki status URL.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorLokiManualStatusTls {
-    /// `caCert` defines the reference of the certificate for the Certificate Authority
+    /// `caCert` defines the reference of the certificate for the Certificate Authority.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCert")]
     pub ca_cert: Option<FlowCollectorLokiManualStatusTlsCaCert>,
     /// Enable TLS
@@ -3087,12 +3087,12 @@ pub struct FlowCollectorLokiManualStatusTls {
     /// If set to `true`, the `caCert` field is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
-    /// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
+    /// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userCert")]
     pub user_cert: Option<FlowCollectorLokiManualStatusTlsUserCert>,
 }
 
-/// `caCert` defines the reference of the certificate for the Certificate Authority
+/// `caCert` defines the reference of the certificate for the Certificate Authority.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorLokiManualStatusTlsCaCert {
     /// `certFile` defines the path to the certificate file name within the config map or secret.
@@ -3113,7 +3113,7 @@ pub struct FlowCollectorLokiManualStatusTlsCaCert {
     pub r#type: Option<FlowCollectorLokiManualStatusTlsCaCertType>,
 }
 
-/// `caCert` defines the reference of the certificate for the Certificate Authority
+/// `caCert` defines the reference of the certificate for the Certificate Authority.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorLokiManualStatusTlsCaCertType {
     #[serde(rename = "configmap")]
@@ -3122,7 +3122,7 @@ pub enum FlowCollectorLokiManualStatusTlsCaCertType {
     Secret,
 }
 
-/// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
+/// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorLokiManualStatusTlsUserCert {
     /// `certFile` defines the path to the certificate file name within the config map or secret.
@@ -3143,7 +3143,7 @@ pub struct FlowCollectorLokiManualStatusTlsUserCert {
     pub r#type: Option<FlowCollectorLokiManualStatusTlsUserCertType>,
 }
 
-/// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
+/// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorLokiManualStatusTlsUserCertType {
     #[serde(rename = "configmap")]
@@ -3155,7 +3155,7 @@ pub enum FlowCollectorLokiManualStatusTlsUserCertType {
 /// TLS client configuration for Loki URL.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorLokiManualTls {
-    /// `caCert` defines the reference of the certificate for the Certificate Authority
+    /// `caCert` defines the reference of the certificate for the Certificate Authority.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCert")]
     pub ca_cert: Option<FlowCollectorLokiManualTlsCaCert>,
     /// Enable TLS
@@ -3165,12 +3165,12 @@ pub struct FlowCollectorLokiManualTls {
     /// If set to `true`, the `caCert` field is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
-    /// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
+    /// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userCert")]
     pub user_cert: Option<FlowCollectorLokiManualTlsUserCert>,
 }
 
-/// `caCert` defines the reference of the certificate for the Certificate Authority
+/// `caCert` defines the reference of the certificate for the Certificate Authority.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorLokiManualTlsCaCert {
     /// `certFile` defines the path to the certificate file name within the config map or secret.
@@ -3191,7 +3191,7 @@ pub struct FlowCollectorLokiManualTlsCaCert {
     pub r#type: Option<FlowCollectorLokiManualTlsCaCertType>,
 }
 
-/// `caCert` defines the reference of the certificate for the Certificate Authority
+/// `caCert` defines the reference of the certificate for the Certificate Authority.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorLokiManualTlsCaCertType {
     #[serde(rename = "configmap")]
@@ -3200,7 +3200,7 @@ pub enum FlowCollectorLokiManualTlsCaCertType {
     Secret,
 }
 
-/// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
+/// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorLokiManualTlsUserCert {
     /// `certFile` defines the path to the certificate file name within the config map or secret.
@@ -3221,7 +3221,7 @@ pub struct FlowCollectorLokiManualTlsUserCert {
     pub r#type: Option<FlowCollectorLokiManualTlsUserCertType>,
 }
 
-/// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
+/// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorLokiManualTlsUserCertType {
     #[serde(rename = "configmap")]
@@ -3252,7 +3252,7 @@ pub struct FlowCollectorLokiMicroservices {
 /// TLS client configuration for Loki URL.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorLokiMicroservicesTls {
-    /// `caCert` defines the reference of the certificate for the Certificate Authority
+    /// `caCert` defines the reference of the certificate for the Certificate Authority.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCert")]
     pub ca_cert: Option<FlowCollectorLokiMicroservicesTlsCaCert>,
     /// Enable TLS
@@ -3262,12 +3262,12 @@ pub struct FlowCollectorLokiMicroservicesTls {
     /// If set to `true`, the `caCert` field is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
-    /// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
+    /// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userCert")]
     pub user_cert: Option<FlowCollectorLokiMicroservicesTlsUserCert>,
 }
 
-/// `caCert` defines the reference of the certificate for the Certificate Authority
+/// `caCert` defines the reference of the certificate for the Certificate Authority.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorLokiMicroservicesTlsCaCert {
     /// `certFile` defines the path to the certificate file name within the config map or secret.
@@ -3288,7 +3288,7 @@ pub struct FlowCollectorLokiMicroservicesTlsCaCert {
     pub r#type: Option<FlowCollectorLokiMicroservicesTlsCaCertType>,
 }
 
-/// `caCert` defines the reference of the certificate for the Certificate Authority
+/// `caCert` defines the reference of the certificate for the Certificate Authority.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorLokiMicroservicesTlsCaCertType {
     #[serde(rename = "configmap")]
@@ -3297,7 +3297,7 @@ pub enum FlowCollectorLokiMicroservicesTlsCaCertType {
     Secret,
 }
 
-/// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
+/// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorLokiMicroservicesTlsUserCert {
     /// `certFile` defines the path to the certificate file name within the config map or secret.
@@ -3318,7 +3318,7 @@ pub struct FlowCollectorLokiMicroservicesTlsUserCert {
     pub r#type: Option<FlowCollectorLokiMicroservicesTlsUserCertType>,
 }
 
-/// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
+/// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorLokiMicroservicesTlsUserCertType {
     #[serde(rename = "configmap")]
@@ -3355,7 +3355,7 @@ pub struct FlowCollectorLokiMonolithic {
 /// TLS client configuration for Loki URL.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorLokiMonolithicTls {
-    /// `caCert` defines the reference of the certificate for the Certificate Authority
+    /// `caCert` defines the reference of the certificate for the Certificate Authority.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCert")]
     pub ca_cert: Option<FlowCollectorLokiMonolithicTlsCaCert>,
     /// Enable TLS
@@ -3365,12 +3365,12 @@ pub struct FlowCollectorLokiMonolithicTls {
     /// If set to `true`, the `caCert` field is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
-    /// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
+    /// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userCert")]
     pub user_cert: Option<FlowCollectorLokiMonolithicTlsUserCert>,
 }
 
-/// `caCert` defines the reference of the certificate for the Certificate Authority
+/// `caCert` defines the reference of the certificate for the Certificate Authority.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorLokiMonolithicTlsCaCert {
     /// `certFile` defines the path to the certificate file name within the config map or secret.
@@ -3391,7 +3391,7 @@ pub struct FlowCollectorLokiMonolithicTlsCaCert {
     pub r#type: Option<FlowCollectorLokiMonolithicTlsCaCertType>,
 }
 
-/// `caCert` defines the reference of the certificate for the Certificate Authority
+/// `caCert` defines the reference of the certificate for the Certificate Authority.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorLokiMonolithicTlsCaCertType {
     #[serde(rename = "configmap")]
@@ -3400,7 +3400,7 @@ pub enum FlowCollectorLokiMonolithicTlsCaCertType {
     Secret,
 }
 
-/// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
+/// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorLokiMonolithicTlsUserCert {
     /// `certFile` defines the path to the certificate file name within the config map or secret.
@@ -3421,7 +3421,7 @@ pub struct FlowCollectorLokiMonolithicTlsUserCert {
     pub r#type: Option<FlowCollectorLokiMonolithicTlsUserCertType>,
 }
 
-/// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
+/// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorLokiMonolithicTlsUserCertType {
     #[serde(rename = "configmap")]
@@ -3434,7 +3434,7 @@ pub enum FlowCollectorLokiMonolithicTlsUserCertType {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorNetworkPolicy {
     /// `additionalNamespaces` contains additional namespaces allowed to connect to the NetObserv namespace.
-    /// It gives some flexibility in the network policy configuration, however should you need a more specific
+    /// It provides flexibility in the network policy configuration, but if you need a more specific
     /// configuration, you can disable it and install your own instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalNamespaces")]
     pub additional_namespaces: Option<Vec<String>>,
@@ -3546,8 +3546,8 @@ pub struct FlowCollectorProcessorAdvanced {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheduling: Option<FlowCollectorProcessorAdvancedScheduling>,
     /// Define secondary networks to be checked for resources identification.
-    /// In order to guarantee a correct identification, it is important that the indexed values form an unique identifier across the cluster.
-    /// If there are collisions in the indexes (same index used by several resources), those resources might be wrongly labelled.
+    /// To guarantee a correct identification, indexed values must form an unique identifier across the cluster.
+    /// If the same index is used by several resources, those resources might be incorrectly labeled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secondaryNetworks")]
     pub secondary_networks: Option<Vec<FlowCollectorProcessorAdvancedSecondaryNetworks>>,
 }
@@ -4306,7 +4306,8 @@ pub struct FlowCollectorProcessorAdvancedSchedulingTolerations {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorProcessorAdvancedSecondaryNetworks {
     /// `index` is a list of fields to use for indexing the pods. They should form a unique Pod identifier across the cluster.
-    /// Can be any of: MAC, IP, Interface
+    /// Can be any of: `MAC`, `IP`, `Interface`.
+    /// Fields absent from the 'k8s.v1.cni.cncf.io/network-status' annotation must not be added to the index.
     pub index: Vec<String>,
     /// `name` should match the network name as visible in the pods annotation 'k8s.v1.cni.cncf.io/network-status'.
     pub name: String,
@@ -4804,7 +4805,7 @@ pub struct FlowCollectorPrometheusQuerierManual {
 /// TLS client configuration for Prometheus URL.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorPrometheusQuerierManualTls {
-    /// `caCert` defines the reference of the certificate for the Certificate Authority
+    /// `caCert` defines the reference of the certificate for the Certificate Authority.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCert")]
     pub ca_cert: Option<FlowCollectorPrometheusQuerierManualTlsCaCert>,
     /// Enable TLS
@@ -4814,12 +4815,12 @@ pub struct FlowCollectorPrometheusQuerierManualTls {
     /// If set to `true`, the `caCert` field is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
-    /// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
+    /// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userCert")]
     pub user_cert: Option<FlowCollectorPrometheusQuerierManualTlsUserCert>,
 }
 
-/// `caCert` defines the reference of the certificate for the Certificate Authority
+/// `caCert` defines the reference of the certificate for the Certificate Authority.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorPrometheusQuerierManualTlsCaCert {
     /// `certFile` defines the path to the certificate file name within the config map or secret.
@@ -4840,7 +4841,7 @@ pub struct FlowCollectorPrometheusQuerierManualTlsCaCert {
     pub r#type: Option<FlowCollectorPrometheusQuerierManualTlsCaCertType>,
 }
 
-/// `caCert` defines the reference of the certificate for the Certificate Authority
+/// `caCert` defines the reference of the certificate for the Certificate Authority.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorPrometheusQuerierManualTlsCaCertType {
     #[serde(rename = "configmap")]
@@ -4849,7 +4850,7 @@ pub enum FlowCollectorPrometheusQuerierManualTlsCaCertType {
     Secret,
 }
 
-/// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
+/// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FlowCollectorPrometheusQuerierManualTlsUserCert {
     /// `certFile` defines the path to the certificate file name within the config map or secret.
@@ -4870,7 +4871,7 @@ pub struct FlowCollectorPrometheusQuerierManualTlsUserCert {
     pub r#type: Option<FlowCollectorPrometheusQuerierManualTlsUserCertType>,
 }
 
-/// `userCert` defines the user certificate reference and is used for mTLS (you can ignore it when using one-way TLS)
+/// `userCert` defines the user certificate reference and is used for mTLS. When you use one-way TLS, you can ignore this property.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum FlowCollectorPrometheusQuerierManualTlsUserCertType {
     #[serde(rename = "configmap")]

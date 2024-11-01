@@ -69,6 +69,12 @@ pub struct TaskConnectionProviderOptions {
     /// IPMITOOL contains the options to customize the Ipmitool provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ipmitool: Option<TaskConnectionProviderOptionsIpmitool>,
+    /// PreferredOrder allows customizing the order that BMC providers are called.
+    /// Providers added to this list will be moved to the front of the default order.
+    /// Provider names are case insensitive.
+    /// The default order is: ipmitool, asrockrack, gofish, intelamt, dell, supermicro, openbmc.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredOrder")]
+    pub preferred_order: Option<Vec<String>>,
     /// Redfish contains the options to customize the Redfish provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub redfish: Option<TaskConnectionProviderOptionsRedfish>,

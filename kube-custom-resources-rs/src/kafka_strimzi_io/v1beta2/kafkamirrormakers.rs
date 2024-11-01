@@ -736,6 +736,42 @@ pub struct KafkaMirrorMakerTemplateMirrorMakerContainerEnv {
     /// The environment variable value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
+    /// Reference to the secret or config map property to which the environment variable is set.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
+    pub value_from: Option<KafkaMirrorMakerTemplateMirrorMakerContainerEnvValueFrom>,
+}
+
+/// Reference to the secret or config map property to which the environment variable is set.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaMirrorMakerTemplateMirrorMakerContainerEnvValueFrom {
+    /// Reference to a key in a config map.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<KafkaMirrorMakerTemplateMirrorMakerContainerEnvValueFromConfigMapKeyRef>,
+    /// Reference to a key in a secret.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<KafkaMirrorMakerTemplateMirrorMakerContainerEnvValueFromSecretKeyRef>,
+}
+
+/// Reference to a key in a config map.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaMirrorMakerTemplateMirrorMakerContainerEnvValueFromConfigMapKeyRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
+}
+
+/// Reference to a key in a secret.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct KafkaMirrorMakerTemplateMirrorMakerContainerEnvValueFromSecretKeyRef {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub optional: Option<bool>,
 }
 
 /// Security context for the container.

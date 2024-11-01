@@ -233,6 +233,15 @@ spec:
                         env:
                           description: "Environment variables which should be applied to the container."
                           items:
+                            oneOf:
+                              - properties:
+                                  value: {}
+                                required:
+                                  - "value"
+                              - properties:
+                                  valueFrom: {}
+                                required:
+                                  - "valueFrom"
                             properties:
                               name:
                                 description: "The environment variable key."
@@ -240,6 +249,39 @@ spec:
                               value:
                                 description: "The environment variable value."
                                 type: "string"
+                              valueFrom:
+                                description: "Reference to the secret or config map property to which the environment variable is set."
+                                oneOf:
+                                  - properties:
+                                      secretKeyRef: {}
+                                    required:
+                                      - "secretKeyRef"
+                                  - properties:
+                                      configMapKeyRef: {}
+                                    required:
+                                      - "configMapKeyRef"
+                                properties:
+                                  configMapKeyRef:
+                                    description: "Reference to a key in a config map."
+                                    properties:
+                                      key:
+                                        type: "string"
+                                      name:
+                                        type: "string"
+                                      optional:
+                                        type: "boolean"
+                                    type: "object"
+                                  secretKeyRef:
+                                    description: "Reference to a key in a secret."
+                                    properties:
+                                      key:
+                                        type: "string"
+                                      name:
+                                        type: "string"
+                                      optional:
+                                        type: "boolean"
+                                    type: "object"
+                                type: "object"
                             type: "object"
                           type: "array"
                         securityContext:
@@ -334,6 +376,15 @@ spec:
                         env:
                           description: "Environment variables which should be applied to the container."
                           items:
+                            oneOf:
+                              - properties:
+                                  value: {}
+                                required:
+                                  - "value"
+                              - properties:
+                                  valueFrom: {}
+                                required:
+                                  - "valueFrom"
                             properties:
                               name:
                                 description: "The environment variable key."
@@ -341,6 +392,39 @@ spec:
                               value:
                                 description: "The environment variable value."
                                 type: "string"
+                              valueFrom:
+                                description: "Reference to the secret or config map property to which the environment variable is set."
+                                oneOf:
+                                  - properties:
+                                      secretKeyRef: {}
+                                    required:
+                                      - "secretKeyRef"
+                                  - properties:
+                                      configMapKeyRef: {}
+                                    required:
+                                      - "configMapKeyRef"
+                                properties:
+                                  configMapKeyRef:
+                                    description: "Reference to a key in a config map."
+                                    properties:
+                                      key:
+                                        type: "string"
+                                      name:
+                                        type: "string"
+                                      optional:
+                                        type: "boolean"
+                                    type: "object"
+                                  secretKeyRef:
+                                    description: "Reference to a key in a secret."
+                                    properties:
+                                      key:
+                                        type: "string"
+                                      name:
+                                        type: "string"
+                                      optional:
+                                        type: "boolean"
+                                    type: "object"
+                                type: "object"
                             type: "object"
                           type: "array"
                         securityContext:
@@ -1014,7 +1098,6 @@ spec:
                                   emptyDir: {}
                                   persistentVolumeClaim: {}
                                   secret: {}
-                                required: []
                             properties:
                               configMap:
                                 description: "ConfigMap to use to populate the volume."
