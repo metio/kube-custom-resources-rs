@@ -20,35 +20,35 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct MachineSpec {
-    /// Bootstrap is a reference to a local struct which encapsulates
+    /// bootstrap is a reference to a local struct which encapsulates
     /// fields to configure the Machine’s bootstrapping mechanism.
     pub bootstrap: MachineBootstrap,
-    /// ClusterName is the name of the Cluster this object belongs to.
+    /// clusterName is the name of the Cluster this object belongs to.
     #[serde(rename = "clusterName")]
     pub cluster_name: String,
-    /// FailureDomain is the failure domain the machine will be created in.
+    /// failureDomain is the failure domain the machine will be created in.
     /// Must match a key in the FailureDomains map stored on the cluster object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomain")]
     pub failure_domain: Option<String>,
-    /// InfrastructureRef is a required reference to a custom resource
+    /// infrastructureRef is a required reference to a custom resource
     /// offered by an infrastructure provider.
     #[serde(rename = "infrastructureRef")]
     pub infrastructure_ref: ObjectReference,
-    /// NodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine
+    /// nodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine
     /// hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely.
     /// Defaults to 10 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDeletionTimeout")]
     pub node_deletion_timeout: Option<String>,
-    /// NodeDrainTimeout is the total amount of time that the controller will spend on draining a node.
+    /// nodeDrainTimeout is the total amount of time that the controller will spend on draining a node.
     /// The default value is 0, meaning that the node can be drained without any time limitations.
     /// NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDrainTimeout")]
     pub node_drain_timeout: Option<String>,
-    /// NodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes
+    /// nodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes
     /// to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeVolumeDetachTimeout")]
     pub node_volume_detach_timeout: Option<String>,
-    /// ProviderID is the identification ID of the machine provided by the provider.
+    /// providerID is the identification ID of the machine provided by the provider.
     /// This field must match the provider ID as seen on the node object corresponding to this machine.
     /// This field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler
     /// with cluster-api as provider. Clean-up logic in the autoscaler compares machines to nodes to find out
@@ -72,29 +72,29 @@ pub struct MachineSpec {
     /// NOTE: this field is considered only for computing v1beta2 conditions.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessGates")]
     pub readiness_gates: Option<Vec<MachineReadinessGates>>,
-    /// Version defines the desired Kubernetes version.
+    /// version defines the desired Kubernetes version.
     /// This field is meant to be optionally used by bootstrap providers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
 
-/// Bootstrap is a reference to a local struct which encapsulates
+/// bootstrap is a reference to a local struct which encapsulates
 /// fields to configure the Machine’s bootstrapping mechanism.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineBootstrap {
-    /// ConfigRef is a reference to a bootstrap provider-specific resource
+    /// configRef is a reference to a bootstrap provider-specific resource
     /// that holds configuration details. The reference is optional to
     /// allow users/operators to specify Bootstrap.DataSecretName without
     /// the need of a controller.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configRef")]
     pub config_ref: Option<ObjectReference>,
-    /// DataSecretName is the name of the secret that stores the bootstrap data script.
+    /// dataSecretName is the name of the secret that stores the bootstrap data script.
     /// If nil, the Machine should remain in the Pending state.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSecretName")]
     pub data_secret_name: Option<String>,
 }
 
-/// ConfigRef is a reference to a bootstrap provider-specific resource
+/// configRef is a reference to a bootstrap provider-specific resource
 /// that holds configuration details. The reference is optional to
 /// allow users/operators to specify Bootstrap.DataSecretName without
 /// the need of a controller.
@@ -134,7 +134,7 @@ pub struct MachineBootstrapConfigRef {
     pub uid: Option<String>,
 }
 
-/// InfrastructureRef is a required reference to a custom resource
+/// infrastructureRef is a required reference to a custom resource
 /// offered by an infrastructure provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineInfrastructureRef {
@@ -185,25 +185,25 @@ pub struct MachineReadinessGates {
 /// MachineStatus defines the observed state of Machine.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineStatus {
-    /// Addresses is a list of addresses assigned to the machine.
+    /// addresses is a list of addresses assigned to the machine.
     /// This field is copied from the infrastructure provider reference.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub addresses: Option<Vec<MachineStatusAddresses>>,
-    /// BootstrapReady is the state of the bootstrap provider.
+    /// bootstrapReady is the state of the bootstrap provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapReady")]
     pub bootstrap_ready: Option<bool>,
-    /// CertificatesExpiryDate is the expiry date of the machine certificates.
+    /// certificatesExpiryDate is the expiry date of the machine certificates.
     /// This value is only set for control plane machines.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificatesExpiryDate")]
     pub certificates_expiry_date: Option<String>,
-    /// Conditions defines current service state of the Machine.
+    /// conditions defines current service state of the Machine.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// deletion contains information relating to removal of the Machine.
     /// Only present when the Machine has a deletionTimestamp and drain or wait for volume detach started.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deletion: Option<MachineStatusDeletion>,
-    /// FailureMessage will be set in the event that there is a terminal problem
+    /// failureMessage will be set in the event that there is a terminal problem
     /// reconciling the Machine and will contain a more verbose string suitable
     /// for logging and human consumption.
     /// 
@@ -223,7 +223,7 @@ pub struct MachineStatus {
     /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
     pub failure_message: Option<String>,
-    /// FailureReason will be set in the event that there is a terminal problem
+    /// failureReason will be set in the event that there is a terminal problem
     /// reconciling the Machine and will contain a succinct value suitable
     /// for machine interpretation.
     /// 
@@ -243,23 +243,23 @@ pub struct MachineStatus {
     /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
-    /// InfrastructureReady is the state of the infrastructure provider.
+    /// infrastructureReady is the state of the infrastructure provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "infrastructureReady")]
     pub infrastructure_ready: Option<bool>,
-    /// LastUpdated identifies when the phase of the Machine last transitioned.
+    /// lastUpdated identifies when the phase of the Machine last transitioned.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdated")]
     pub last_updated: Option<String>,
-    /// NodeInfo is a set of ids/uuids to uniquely identify the node.
+    /// nodeInfo is a set of ids/uuids to uniquely identify the node.
     /// More info: https://kubernetes.io/docs/concepts/nodes/node/#info
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeInfo")]
     pub node_info: Option<MachineStatusNodeInfo>,
-    /// NodeRef will point to the corresponding Node if it exists.
+    /// nodeRef will point to the corresponding Node if it exists.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeRef")]
     pub node_ref: Option<ObjectReference>,
-    /// ObservedGeneration is the latest generation observed by the controller.
+    /// observedGeneration is the latest generation observed by the controller.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// Phase represents the current phase of machine actuation.
+    /// phase represents the current phase of machine actuation.
     /// E.g. Pending, Running, Terminating, Failed etc.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
@@ -296,7 +296,7 @@ pub struct MachineStatusDeletion {
     pub wait_for_node_volume_detach_start_time: Option<String>,
 }
 
-/// NodeInfo is a set of ids/uuids to uniquely identify the node.
+/// nodeInfo is a set of ids/uuids to uniquely identify the node.
 /// More info: https://kubernetes.io/docs/concepts/nodes/node/#info
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineStatusNodeInfo {
@@ -335,7 +335,7 @@ pub struct MachineStatusNodeInfo {
     pub system_uuid: String,
 }
 
-/// NodeRef will point to the corresponding Node if it exists.
+/// nodeRef will point to the corresponding Node if it exists.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineStatusNodeRef {
     /// API version of the referent.

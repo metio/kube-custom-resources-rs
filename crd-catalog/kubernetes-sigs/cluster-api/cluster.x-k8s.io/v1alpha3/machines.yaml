@@ -53,10 +53,10 @@ spec:
               description: "MachineSpec defines the desired state of Machine."
               properties:
                 bootstrap:
-                  description: "Bootstrap is a reference to a local struct which encapsulates\nfields to configure the Machine’s bootstrapping mechanism."
+                  description: "bootstrap is a reference to a local struct which encapsulates\nfields to configure the Machine’s bootstrapping mechanism."
                   properties:
                     configRef:
-                      description: "ConfigRef is a reference to a bootstrap provider-specific resource\nthat holds configuration details. The reference is optional to\nallow users/operators to specify Bootstrap.Data without\nthe need of a controller."
+                      description: "configRef is a reference to a bootstrap provider-specific resource\nthat holds configuration details. The reference is optional to\nallow users/operators to specify Bootstrap.Data without\nthe need of a controller."
                       properties:
                         apiVersion:
                           description: "API version of the referent."
@@ -82,21 +82,21 @@ spec:
                       type: "object"
                       x-kubernetes-map-type: "atomic"
                     data:
-                      description: "Data contains the bootstrap data, such as cloud-init details scripts.\nIf nil, the Machine should remain in the Pending state.\n\nDeprecated: Switch to DataSecretName."
+                      description: "data contains the bootstrap data, such as cloud-init details scripts.\nIf nil, the Machine should remain in the Pending state.\n\nDeprecated: Switch to DataSecretName."
                       type: "string"
                     dataSecretName:
-                      description: "DataSecretName is the name of the secret that stores the bootstrap data script.\nIf nil, the Machine should remain in the Pending state."
+                      description: "dataSecretName is the name of the secret that stores the bootstrap data script.\nIf nil, the Machine should remain in the Pending state."
                       type: "string"
                   type: "object"
                 clusterName:
-                  description: "ClusterName is the name of the Cluster this object belongs to."
+                  description: "clusterName is the name of the Cluster this object belongs to."
                   minLength: 1
                   type: "string"
                 failureDomain:
-                  description: "FailureDomain is the failure domain the machine will be created in.\nMust match a key in the FailureDomains map stored on the cluster object."
+                  description: "failureDomain is the failure domain the machine will be created in.\nMust match a key in the FailureDomains map stored on the cluster object."
                   type: "string"
                 infrastructureRef:
-                  description: "InfrastructureRef is a required reference to a custom resource\noffered by an infrastructure provider."
+                  description: "infrastructureRef is a required reference to a custom resource\noffered by an infrastructure provider."
                   properties:
                     apiVersion:
                       description: "API version of the referent."
@@ -122,13 +122,13 @@ spec:
                   type: "object"
                   x-kubernetes-map-type: "atomic"
                 nodeDrainTimeout:
-                  description: "NodeDrainTimeout is the total amount of time that the controller will spend on draining a node.\nThe default value is 0, meaning that the node can be drained without any time limitations.\nNOTE: NodeDrainTimeout is different from `kubectl drain --timeout`"
+                  description: "nodeDrainTimeout is the total amount of time that the controller will spend on draining a node.\nThe default value is 0, meaning that the node can be drained without any time limitations.\nNOTE: NodeDrainTimeout is different from `kubectl drain --timeout`"
                   type: "string"
                 providerID:
-                  description: "ProviderID is the identification ID of the machine provided by the provider.\nThis field must match the provider ID as seen on the node object corresponding to this machine.\nThis field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler\nwith cluster-api as provider. Clean-up logic in the autoscaler compares machines to nodes to find out\nmachines at provider which could not get registered as Kubernetes nodes. With cluster-api as a\ngeneric out-of-tree provider for autoscaler, this field is required by autoscaler to be\nable to have a provider view of the list of machines. Another list of nodes is queried from the k8s apiserver\nand then a comparison is done to find out unregistered machines and are marked for delete.\nThis field will be set by the actuators and consumed by higher level entities like autoscaler that will\nbe interfacing with cluster-api as generic provider."
+                  description: "providerID is the identification ID of the machine provided by the provider.\nThis field must match the provider ID as seen on the node object corresponding to this machine.\nThis field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler\nwith cluster-api as provider. Clean-up logic in the autoscaler compares machines to nodes to find out\nmachines at provider which could not get registered as Kubernetes nodes. With cluster-api as a\ngeneric out-of-tree provider for autoscaler, this field is required by autoscaler to be\nable to have a provider view of the list of machines. Another list of nodes is queried from the k8s apiserver\nand then a comparison is done to find out unregistered machines and are marked for delete.\nThis field will be set by the actuators and consumed by higher level entities like autoscaler that will\nbe interfacing with cluster-api as generic provider."
                   type: "string"
                 version:
-                  description: "Version defines the desired Kubernetes version.\nThis field is meant to be optionally used by bootstrap providers."
+                  description: "version defines the desired Kubernetes version.\nThis field is meant to be optionally used by bootstrap providers."
                   type: "string"
               required:
                 - "bootstrap"
@@ -139,7 +139,7 @@ spec:
               description: "MachineStatus defines the observed state of Machine."
               properties:
                 addresses:
-                  description: "Addresses is a list of addresses assigned to the machine.\nThis field is copied from the infrastructure provider reference."
+                  description: "addresses is a list of addresses assigned to the machine.\nThis field is copied from the infrastructure provider reference."
                   items:
                     description: "MachineAddress contains information for the node's address."
                     properties:
@@ -155,10 +155,10 @@ spec:
                     type: "object"
                   type: "array"
                 bootstrapReady:
-                  description: "BootstrapReady is the state of the bootstrap provider."
+                  description: "bootstrapReady is the state of the bootstrap provider."
                   type: "boolean"
                 conditions:
-                  description: "Conditions defines current service state of the Machine."
+                  description: "conditions defines current service state of the Machine."
                   items:
                     description: "Condition defines an observation of a Cluster API resource operational state."
                     properties:
@@ -173,13 +173,13 @@ spec:
                         description: "The reason for the condition's last transition in CamelCase.\nThe specific API may choose whether or not this field is considered a guaranteed API.\nThis field may not be empty."
                         type: "string"
                       severity:
-                        description: "Severity provides an explicit classification of Reason code, so the users or machines can immediately\nunderstand the current situation and act accordingly.\nThe Severity field MUST be set only when Status=False."
+                        description: "severity provides an explicit classification of Reason code, so the users or machines can immediately\nunderstand the current situation and act accordingly.\nThe Severity field MUST be set only when Status=False."
                         type: "string"
                       status:
-                        description: "Status of the condition, one of True, False, Unknown."
+                        description: "status of the condition, one of True, False, Unknown."
                         type: "string"
                       type:
-                        description: "Type of condition in CamelCase or in foo.example.com/CamelCase.\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions\ncan be useful (see .node.status.conditions), the ability to deconflict is important."
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase.\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions\ncan be useful (see .node.status.conditions), the ability to deconflict is important."
                         type: "string"
                     required:
                       - "status"
@@ -187,20 +187,20 @@ spec:
                     type: "object"
                   type: "array"
                 failureMessage:
-                  description: "FailureMessage will be set in the event that there is a terminal problem\nreconciling the Machine and will contain a more verbose string suitable\nfor logging and human consumption.\n\nThis field should not be set for transitive errors that a controller\nfaces that are expected to be fixed automatically over\ntime (like service outages), but instead indicate that something is\nfundamentally wrong with the Machine's spec or the configuration of\nthe controller, and that manual intervention is required. Examples\nof terminal errors would be invalid combinations of settings in the\nspec, values that are unsupported by the controller, or the\nresponsible controller itself being critically misconfigured.\n\nAny transient errors that occur during the reconciliation of Machines\ncan be added as events to the Machine object and/or logged in the\ncontroller's output."
+                  description: "failureMessage will be set in the event that there is a terminal problem\nreconciling the Machine and will contain a more verbose string suitable\nfor logging and human consumption.\n\nThis field should not be set for transitive errors that a controller\nfaces that are expected to be fixed automatically over\ntime (like service outages), but instead indicate that something is\nfundamentally wrong with the Machine's spec or the configuration of\nthe controller, and that manual intervention is required. Examples\nof terminal errors would be invalid combinations of settings in the\nspec, values that are unsupported by the controller, or the\nresponsible controller itself being critically misconfigured.\n\nAny transient errors that occur during the reconciliation of Machines\ncan be added as events to the Machine object and/or logged in the\ncontroller's output."
                   type: "string"
                 failureReason:
-                  description: "FailureReason will be set in the event that there is a terminal problem\nreconciling the Machine and will contain a succinct value suitable\nfor machine interpretation.\n\nThis field should not be set for transitive errors that a controller\nfaces that are expected to be fixed automatically over\ntime (like service outages), but instead indicate that something is\nfundamentally wrong with the Machine's spec or the configuration of\nthe controller, and that manual intervention is required. Examples\nof terminal errors would be invalid combinations of settings in the\nspec, values that are unsupported by the controller, or the\nresponsible controller itself being critically misconfigured.\n\nAny transient errors that occur during the reconciliation of Machines\ncan be added as events to the Machine object and/or logged in the\ncontroller's output."
+                  description: "failureReason will be set in the event that there is a terminal problem\nreconciling the Machine and will contain a succinct value suitable\nfor machine interpretation.\n\nThis field should not be set for transitive errors that a controller\nfaces that are expected to be fixed automatically over\ntime (like service outages), but instead indicate that something is\nfundamentally wrong with the Machine's spec or the configuration of\nthe controller, and that manual intervention is required. Examples\nof terminal errors would be invalid combinations of settings in the\nspec, values that are unsupported by the controller, or the\nresponsible controller itself being critically misconfigured.\n\nAny transient errors that occur during the reconciliation of Machines\ncan be added as events to the Machine object and/or logged in the\ncontroller's output."
                   type: "string"
                 infrastructureReady:
-                  description: "InfrastructureReady is the state of the infrastructure provider."
+                  description: "infrastructureReady is the state of the infrastructure provider."
                   type: "boolean"
                 lastUpdated:
-                  description: "LastUpdated identifies when the phase of the Machine last transitioned."
+                  description: "lastUpdated identifies when the phase of the Machine last transitioned."
                   format: "date-time"
                   type: "string"
                 nodeRef:
-                  description: "NodeRef will point to the corresponding Node if it exists."
+                  description: "nodeRef will point to the corresponding Node if it exists."
                   properties:
                     apiVersion:
                       description: "API version of the referent."
@@ -226,14 +226,14 @@ spec:
                   type: "object"
                   x-kubernetes-map-type: "atomic"
                 observedGeneration:
-                  description: "ObservedGeneration is the latest generation observed by the controller."
+                  description: "observedGeneration is the latest generation observed by the controller."
                   format: "int64"
                   type: "integer"
                 phase:
-                  description: "Phase represents the current phase of machine actuation.\nE.g. Pending, Running, Terminating, Failed etc."
+                  description: "phase represents the current phase of machine actuation.\nE.g. Pending, Running, Terminating, Failed etc."
                   type: "string"
                 version:
-                  description: "Version specifies the current version of Kubernetes running\non the corresponding Node. This is meant to be a means of bubbling\nup status from the Node to the Machine.\nIt is entirely optional, but useful for end-user UX if it’s present."
+                  description: "version specifies the current version of Kubernetes running\non the corresponding Node. This is meant to be a means of bubbling\nup status from the Node to the Machine.\nIt is entirely optional, but useful for end-user UX if it’s present."
                   type: "string"
               type: "object"
           type: "object"

@@ -13665,13 +13665,12 @@ pub struct ClusterStatusComponents {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterStatusComponentsPhase {
     Creating,
-    Running,
+    Deleting,
     Updating,
     Stopping,
+    Running,
     Stopped,
-    Deleting,
     Failed,
-    Abnormal,
 }
 
 /// ClusterStatus defines the observed state of the Cluster.
@@ -13703,12 +13702,11 @@ pub struct ClusterStatusShardings {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ClusterStatusShardingsPhase {
     Creating,
-    Running,
+    Deleting,
     Updating,
     Stopping,
+    Running,
     Stopped,
-    Deleting,
     Failed,
-    Abnormal,
 }
 

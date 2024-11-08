@@ -94,6 +94,9 @@ spec:
                     azure:
                       description: "Azure contains Azure-specific deprovision settings"
                       properties:
+                        baseDomainResourceGroupName:
+                          description: "BaseDomainResourceGroupName is the name of the resource group where the cluster's DNS records\nwere created, if different from the default or the custom ResourceGroupName."
+                          type: "string"
                         cloudName:
                           description: "cloudName is the name of the Azure cloud environment which can be used to configure the Azure SDK\nwith the appropriate Azure API endpoints.\nIf empty, the value is equal to \"AzurePublicCloud\"."
                           enum:

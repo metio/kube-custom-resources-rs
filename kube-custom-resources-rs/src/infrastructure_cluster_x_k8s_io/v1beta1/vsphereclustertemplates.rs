@@ -39,6 +39,11 @@ pub struct VSphereClusterTemplateTemplateSpec {
     /// ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneEndpoint")]
     pub control_plane_endpoint: Option<VSphereClusterTemplateTemplateSpecControlPlaneEndpoint>,
+    /// DisableClusterModule is used to explicitly turn off the ClusterModule feature.
+    /// This should work along side NodeAntiAffinity feature flag.
+    /// If the NodeAntiAffinity feature flag is turned off, this will be disregarded.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableClusterModule")]
+    pub disable_cluster_module: Option<bool>,
     /// FailureDomainSelector is the label selector to use for failure domain selection
     /// for the control plane nodes of the cluster.
     /// If not set (`nil`), selecting failure domains will be disabled.

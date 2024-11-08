@@ -139,8 +139,6 @@ spec:
                   x-kubernetes-validations:
                     - message: "both volumeGroupSnapshotRef.name and volumeGroupSnapshotRef.namespace must be set"
                       rule: "has(self.name) && has(self.__namespace__)"
-                    - message: "volumeGroupSnapshotRef is immutable"
-                      rule: "self == oldSelf"
               required:
                 - "deletionPolicy"
                 - "driver"

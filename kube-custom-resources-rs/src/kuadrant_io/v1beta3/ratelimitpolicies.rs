@@ -33,6 +33,11 @@ pub struct RateLimitPolicySpec {
     /// Reference to the object to which this policy applies.
     #[serde(rename = "targetRef")]
     pub target_ref: RateLimitPolicyTargetRef,
+    /// Overall conditions for the policy to be enforced.
+    /// If omitted, the policy will be enforced at all requests to the protected routes.
+    /// If present, all conditions must match for the policy to be enforced.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub when: Option<Vec<RateLimitPolicyWhen>>,
 }
 
 /// Rules to apply as defaults. Can be overridden by more specific policiy rules lower in the hierarchy and by less specific policy overrides.
@@ -45,81 +50,53 @@ pub struct RateLimitPolicyDefaults {
     /// Strategy defines the merge strategy to apply when merging this policy with other policies.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<RateLimitPolicyDefaultsStrategy>,
+    /// Overall conditions for the policy to be enforced.
+    /// If omitted, the policy will be enforced at all requests to the protected routes.
+    /// If present, all conditions must match for the policy to be enforced.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub when: Option<Vec<RateLimitPolicyDefaultsWhen>>,
 }
 
 /// Limits holds the struct of limits indexed by a unique name
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RateLimitPolicyDefaultsLimits {
-    /// Counters defines additional rate limit counters based on context qualifiers and well known selectors
+    /// Counters defines additional rate limit counters based on CEL expressions which can reference well known selectors
     /// TODO Document properly "Well-known selector" https://github.com/Kuadrant/architecture/blob/main/rfcs/0001-rlp-v2.md#well-known-selectors
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub counters: Option<Vec<String>>,
+    pub counters: Option<Vec<RateLimitPolicyDefaultsLimitsCounters>>,
     /// Rates holds the list of limit rates
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rates: Option<Vec<RateLimitPolicyDefaultsLimitsRates>>,
-    /// When holds the list of conditions for the policy to be enforced.
+    /// When holds a list of "limit-level" `Predicate`s
     /// Called also "soft" conditions as route selectors must also match
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub when: Option<Vec<RateLimitPolicyDefaultsLimitsWhen>>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RateLimitPolicyDefaultsLimitsCounters {
+    /// Expression defines one CEL expression
+    /// Expression can use well known attributes
+    /// Attributes: https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/advanced/attributes
+    /// Well-known selectors: https://github.com/Kuadrant/architecture/blob/main/rfcs/0001-rlp-v2.md#well-known-selectors
+    /// They are named by a dot-separated path (e.g. request.path)
+    /// Example: "request.path" -> The path portion of the URL
+    pub expression: String,
+}
+
 /// Rate defines the actual rate limit that will be used when there is a match
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RateLimitPolicyDefaultsLimitsRates {
-    /// Duration defines the time period for which the Limit specified above applies.
-    pub duration: i64,
     /// Limit defines the max value allowed for a given period of time
     pub limit: i64,
-    /// Duration defines the time uni
-    /// Possible values are: "second", "minute", "hour", "day"
-    pub unit: RateLimitPolicyDefaultsLimitsRatesUnit,
+    /// Window defines the time period for which the Limit specified above applies.
+    pub window: String,
 }
 
-/// Rate defines the actual rate limit that will be used when there is a match
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum RateLimitPolicyDefaultsLimitsRatesUnit {
-    #[serde(rename = "second")]
-    Second,
-    #[serde(rename = "minute")]
-    Minute,
-    #[serde(rename = "hour")]
-    Hour,
-    #[serde(rename = "day")]
-    Day,
-}
-
-/// WhenCondition defines semantics for matching an HTTP request based on conditions
-/// https://gateway-api.sigs.k8s.io/reference/spec/#gateway.networking.k8s.io/v1.HTTPRouteSpec
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+/// Predicate defines one CEL expression that must be evaluated to bool
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RateLimitPolicyDefaultsLimitsWhen {
-    /// The binary operator to be applied to the content fetched from the selector
-    /// Possible values are: "eq" (equal to), "neq" (not equal to)
-    pub operator: RateLimitPolicyDefaultsLimitsWhenOperator,
-    /// Selector defines one item from the well known selectors
-    /// TODO Document properly "Well-known selector" https://github.com/Kuadrant/architecture/blob/main/rfcs/0001-rlp-v2.md#well-known-selectors
-    pub selector: String,
-    /// The value of reference for the comparison.
-    pub value: String,
-}
-
-/// WhenCondition defines semantics for matching an HTTP request based on conditions
-/// https://gateway-api.sigs.k8s.io/reference/spec/#gateway.networking.k8s.io/v1.HTTPRouteSpec
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum RateLimitPolicyDefaultsLimitsWhenOperator {
-    #[serde(rename = "eq")]
-    Eq,
-    #[serde(rename = "neq")]
-    Neq,
-    #[serde(rename = "startswith")]
-    Startswith,
-    #[serde(rename = "endswith")]
-    Endswith,
-    #[serde(rename = "incl")]
-    Incl,
-    #[serde(rename = "excl")]
-    Excl,
-    #[serde(rename = "matches")]
-    Matches,
+    pub predicate: String,
 }
 
 /// Rules to apply as defaults. Can be overridden by more specific policiy rules lower in the hierarchy and by less specific policy overrides.
@@ -132,79 +109,52 @@ pub enum RateLimitPolicyDefaultsStrategy {
     Merge,
 }
 
+/// Predicate defines one CEL expression that must be evaluated to bool
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RateLimitPolicyDefaultsWhen {
+    pub predicate: String,
+}
+
 /// Limits holds the struct of limits indexed by a unique name
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RateLimitPolicyLimits {
-    /// Counters defines additional rate limit counters based on context qualifiers and well known selectors
+    /// Counters defines additional rate limit counters based on CEL expressions which can reference well known selectors
     /// TODO Document properly "Well-known selector" https://github.com/Kuadrant/architecture/blob/main/rfcs/0001-rlp-v2.md#well-known-selectors
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub counters: Option<Vec<String>>,
+    pub counters: Option<Vec<RateLimitPolicyLimitsCounters>>,
     /// Rates holds the list of limit rates
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rates: Option<Vec<RateLimitPolicyLimitsRates>>,
-    /// When holds the list of conditions for the policy to be enforced.
+    /// When holds a list of "limit-level" `Predicate`s
     /// Called also "soft" conditions as route selectors must also match
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub when: Option<Vec<RateLimitPolicyLimitsWhen>>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RateLimitPolicyLimitsCounters {
+    /// Expression defines one CEL expression
+    /// Expression can use well known attributes
+    /// Attributes: https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/advanced/attributes
+    /// Well-known selectors: https://github.com/Kuadrant/architecture/blob/main/rfcs/0001-rlp-v2.md#well-known-selectors
+    /// They are named by a dot-separated path (e.g. request.path)
+    /// Example: "request.path" -> The path portion of the URL
+    pub expression: String,
+}
+
 /// Rate defines the actual rate limit that will be used when there is a match
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RateLimitPolicyLimitsRates {
-    /// Duration defines the time period for which the Limit specified above applies.
-    pub duration: i64,
     /// Limit defines the max value allowed for a given period of time
     pub limit: i64,
-    /// Duration defines the time uni
-    /// Possible values are: "second", "minute", "hour", "day"
-    pub unit: RateLimitPolicyLimitsRatesUnit,
+    /// Window defines the time period for which the Limit specified above applies.
+    pub window: String,
 }
 
-/// Rate defines the actual rate limit that will be used when there is a match
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum RateLimitPolicyLimitsRatesUnit {
-    #[serde(rename = "second")]
-    Second,
-    #[serde(rename = "minute")]
-    Minute,
-    #[serde(rename = "hour")]
-    Hour,
-    #[serde(rename = "day")]
-    Day,
-}
-
-/// WhenCondition defines semantics for matching an HTTP request based on conditions
-/// https://gateway-api.sigs.k8s.io/reference/spec/#gateway.networking.k8s.io/v1.HTTPRouteSpec
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+/// Predicate defines one CEL expression that must be evaluated to bool
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RateLimitPolicyLimitsWhen {
-    /// The binary operator to be applied to the content fetched from the selector
-    /// Possible values are: "eq" (equal to), "neq" (not equal to)
-    pub operator: RateLimitPolicyLimitsWhenOperator,
-    /// Selector defines one item from the well known selectors
-    /// TODO Document properly "Well-known selector" https://github.com/Kuadrant/architecture/blob/main/rfcs/0001-rlp-v2.md#well-known-selectors
-    pub selector: String,
-    /// The value of reference for the comparison.
-    pub value: String,
-}
-
-/// WhenCondition defines semantics for matching an HTTP request based on conditions
-/// https://gateway-api.sigs.k8s.io/reference/spec/#gateway.networking.k8s.io/v1.HTTPRouteSpec
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum RateLimitPolicyLimitsWhenOperator {
-    #[serde(rename = "eq")]
-    Eq,
-    #[serde(rename = "neq")]
-    Neq,
-    #[serde(rename = "startswith")]
-    Startswith,
-    #[serde(rename = "endswith")]
-    Endswith,
-    #[serde(rename = "incl")]
-    Incl,
-    #[serde(rename = "excl")]
-    Excl,
-    #[serde(rename = "matches")]
-    Matches,
+    pub predicate: String,
 }
 
 /// Rules to apply as overrides. Override all policy rules lower in the hierarchy. Can be overridden by less specific policy overrides.
@@ -217,81 +167,53 @@ pub struct RateLimitPolicyOverrides {
     /// Strategy defines the merge strategy to apply when merging this policy with other policies.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<RateLimitPolicyOverridesStrategy>,
+    /// Overall conditions for the policy to be enforced.
+    /// If omitted, the policy will be enforced at all requests to the protected routes.
+    /// If present, all conditions must match for the policy to be enforced.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub when: Option<Vec<RateLimitPolicyOverridesWhen>>,
 }
 
 /// Limits holds the struct of limits indexed by a unique name
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RateLimitPolicyOverridesLimits {
-    /// Counters defines additional rate limit counters based on context qualifiers and well known selectors
+    /// Counters defines additional rate limit counters based on CEL expressions which can reference well known selectors
     /// TODO Document properly "Well-known selector" https://github.com/Kuadrant/architecture/blob/main/rfcs/0001-rlp-v2.md#well-known-selectors
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub counters: Option<Vec<String>>,
+    pub counters: Option<Vec<RateLimitPolicyOverridesLimitsCounters>>,
     /// Rates holds the list of limit rates
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rates: Option<Vec<RateLimitPolicyOverridesLimitsRates>>,
-    /// When holds the list of conditions for the policy to be enforced.
+    /// When holds a list of "limit-level" `Predicate`s
     /// Called also "soft" conditions as route selectors must also match
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub when: Option<Vec<RateLimitPolicyOverridesLimitsWhen>>,
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RateLimitPolicyOverridesLimitsCounters {
+    /// Expression defines one CEL expression
+    /// Expression can use well known attributes
+    /// Attributes: https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/advanced/attributes
+    /// Well-known selectors: https://github.com/Kuadrant/architecture/blob/main/rfcs/0001-rlp-v2.md#well-known-selectors
+    /// They are named by a dot-separated path (e.g. request.path)
+    /// Example: "request.path" -> The path portion of the URL
+    pub expression: String,
+}
+
 /// Rate defines the actual rate limit that will be used when there is a match
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RateLimitPolicyOverridesLimitsRates {
-    /// Duration defines the time period for which the Limit specified above applies.
-    pub duration: i64,
     /// Limit defines the max value allowed for a given period of time
     pub limit: i64,
-    /// Duration defines the time uni
-    /// Possible values are: "second", "minute", "hour", "day"
-    pub unit: RateLimitPolicyOverridesLimitsRatesUnit,
+    /// Window defines the time period for which the Limit specified above applies.
+    pub window: String,
 }
 
-/// Rate defines the actual rate limit that will be used when there is a match
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum RateLimitPolicyOverridesLimitsRatesUnit {
-    #[serde(rename = "second")]
-    Second,
-    #[serde(rename = "minute")]
-    Minute,
-    #[serde(rename = "hour")]
-    Hour,
-    #[serde(rename = "day")]
-    Day,
-}
-
-/// WhenCondition defines semantics for matching an HTTP request based on conditions
-/// https://gateway-api.sigs.k8s.io/reference/spec/#gateway.networking.k8s.io/v1.HTTPRouteSpec
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+/// Predicate defines one CEL expression that must be evaluated to bool
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RateLimitPolicyOverridesLimitsWhen {
-    /// The binary operator to be applied to the content fetched from the selector
-    /// Possible values are: "eq" (equal to), "neq" (not equal to)
-    pub operator: RateLimitPolicyOverridesLimitsWhenOperator,
-    /// Selector defines one item from the well known selectors
-    /// TODO Document properly "Well-known selector" https://github.com/Kuadrant/architecture/blob/main/rfcs/0001-rlp-v2.md#well-known-selectors
-    pub selector: String,
-    /// The value of reference for the comparison.
-    pub value: String,
-}
-
-/// WhenCondition defines semantics for matching an HTTP request based on conditions
-/// https://gateway-api.sigs.k8s.io/reference/spec/#gateway.networking.k8s.io/v1.HTTPRouteSpec
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum RateLimitPolicyOverridesLimitsWhenOperator {
-    #[serde(rename = "eq")]
-    Eq,
-    #[serde(rename = "neq")]
-    Neq,
-    #[serde(rename = "startswith")]
-    Startswith,
-    #[serde(rename = "endswith")]
-    Endswith,
-    #[serde(rename = "incl")]
-    Incl,
-    #[serde(rename = "excl")]
-    Excl,
-    #[serde(rename = "matches")]
-    Matches,
+    pub predicate: String,
 }
 
 /// Rules to apply as overrides. Override all policy rules lower in the hierarchy. Can be overridden by less specific policy overrides.
@@ -302,6 +224,12 @@ pub enum RateLimitPolicyOverridesStrategy {
     Atomic,
     #[serde(rename = "merge")]
     Merge,
+}
+
+/// Predicate defines one CEL expression that must be evaluated to bool
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RateLimitPolicyOverridesWhen {
+    pub predicate: String,
 }
 
 /// Reference to the object to which this policy applies.
@@ -328,6 +256,12 @@ pub struct RateLimitPolicyTargetRef {
     /// a `ResolvedRefs` or similar Condition in the Policy's status.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]
     pub section_name: Option<String>,
+}
+
+/// Predicate defines one CEL expression that must be evaluated to bool
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct RateLimitPolicyWhen {
+    pub predicate: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]

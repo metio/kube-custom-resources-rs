@@ -19,15 +19,15 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct IPAddressClaimSpec {
-    /// ClusterName is the name of the Cluster this object belongs to.
+    /// clusterName is the name of the Cluster this object belongs to.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
     pub cluster_name: Option<String>,
-    /// PoolRef is a reference to the pool from which an IP address should be created.
+    /// poolRef is a reference to the pool from which an IP address should be created.
     #[serde(rename = "poolRef")]
     pub pool_ref: IPAddressClaimPoolRef,
 }
 
-/// PoolRef is a reference to the pool from which an IP address should be created.
+/// poolRef is a reference to the pool from which an IP address should be created.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IPAddressClaimPoolRef {
     /// APIGroup is the group for the resource being referenced.
@@ -44,15 +44,15 @@ pub struct IPAddressClaimPoolRef {
 /// IPAddressClaimStatus is the observed status of a IPAddressClaim.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IPAddressClaimStatus {
-    /// AddressRef is a reference to the address that was created for this claim.
+    /// addressRef is a reference to the address that was created for this claim.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "addressRef")]
     pub address_ref: Option<IPAddressClaimStatusAddressRef>,
-    /// Conditions summarises the current state of the IPAddressClaim
+    /// conditions summarises the current state of the IPAddressClaim
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
 
-/// AddressRef is a reference to the address that was created for this claim.
+/// addressRef is a reference to the address that was created for this claim.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IPAddressClaimStatusAddressRef {
     /// Name of the referent.

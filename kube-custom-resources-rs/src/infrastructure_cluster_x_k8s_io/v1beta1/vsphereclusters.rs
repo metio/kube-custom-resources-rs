@@ -27,6 +27,11 @@ pub struct VSphereClusterSpec {
     /// ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneEndpoint")]
     pub control_plane_endpoint: Option<VSphereClusterControlPlaneEndpoint>,
+    /// DisableClusterModule is used to explicitly turn off the ClusterModule feature.
+    /// This should work along side NodeAntiAffinity feature flag.
+    /// If the NodeAntiAffinity feature flag is turned off, this will be disregarded.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableClusterModule")]
+    pub disable_cluster_module: Option<bool>,
     /// FailureDomainSelector is the label selector to use for failure domain selection
     /// for the control plane nodes of the cluster.
     /// If not set (`nil`), selecting failure domains will be disabled.
@@ -144,10 +149,10 @@ pub struct VSphereClusterStatus {
 /// FailureDomains is a list of failure domain objects synced from the infrastructure provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereClusterStatusFailureDomains {
-    /// Attributes is a free form map of attributes an infrastructure provider might use or require.
+    /// attributes is a free form map of attributes an infrastructure provider might use or require.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<BTreeMap<String, String>>,
-    /// ControlPlane determines if this failure domain is suitable for use by control plane machines.
+    /// controlPlane determines if this failure domain is suitable for use by control plane machines.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
     pub control_plane: Option<bool>,
 }

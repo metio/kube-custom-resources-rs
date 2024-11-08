@@ -30,16 +30,20 @@ pub struct EnvoyDeploymentSpec {
     /// Affinity configuration for the envoy pods
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<EnvoyDeploymentAffinity>,
-    /// Defines the local service cluster name where Envoy is running. Defaults to the NodeID in the EnvoyConfig if unset
+    /// Defines the local service cluster name where Envoy is running. Defaults
+    /// to the NodeID in the EnvoyConfig if unset
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterID")]
     pub cluster_id: Option<String>,
-    /// DiscoveryServiceRef points to a DiscoveryService in the same namespace
+    /// DiscoveryServiceRef points to a DiscoveryService in the same
+    /// namespace
     #[serde(rename = "discoveryServiceRef")]
     pub discovery_service_ref: String,
-    /// Defines the duration of the client certificate that is used to authenticate with the DiscoveryService
+    /// Defines the duration of the client certificate that is used to authenticate
+    /// with the DiscoveryService
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub duration: Option<String>,
-    /// EnvoyConfigRef points to an EnvoyConfig in the same namespace that holds the envoy resources for this Deployment
+    /// EnvoyConfigRef points to an EnvoyConfig in the same namespace
+    /// that holds the envoy resources for this Deployment
     #[serde(rename = "envoyConfigRef")]
     pub envoy_config_ref: String,
     /// Allows the user to define extra command line arguments for the Envoy process
@@ -48,7 +52,8 @@ pub struct EnvoyDeploymentSpec {
     /// Image is the envoy image and tag to use
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    /// InitManager defines configuration for Envoy's init manager, which handles initialization for Envoy pods
+    /// InitManager defines configuration for Envoy's init
+    /// manager, which handles initialization for Envoy pods
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initManager")]
     pub init_manager: Option<EnvoyDeploymentInitManager>,
     /// Liveness probe for the envoy pods
@@ -63,13 +68,16 @@ pub struct EnvoyDeploymentSpec {
     /// Readiness probe for the envoy pods
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<EnvoyDeploymentReadinessProbe>,
-    /// Replicas configures the number of replicas in the Deployment. One of 'static', 'dynamic' can be set. If both are set, static has precedence.
+    /// Replicas configures the number of replicas in the Deployment. One of
+    /// 'static', 'dynamic' can be set. If both are set, static has precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<EnvoyDeploymentReplicas>,
-    /// Resources holds the resource requirements to use for the Envoy Deployment. Defaults to no resource requests nor limits.
+    /// Resources holds the resource requirements to use for the Envoy
+    /// Deployment. Defaults to no resource requests nor limits.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<EnvoyDeploymentResources>,
-    /// ShutdownManager defines configuration for Envoy's shutdown manager, which handles graceful termination of Envoy pods
+    /// ShutdownManager defines configuration for Envoy's shutdown
+    /// manager, which handles graceful termination of Envoy pods
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "shutdownManager")]
     pub shutdown_manager: Option<EnvoyDeploymentShutdownManager>,
 }
@@ -91,15 +99,28 @@ pub struct EnvoyDeploymentAffinity {
 /// Describes node affinity scheduling rules for the pod.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentAffinityNodeAffinity {
-    /// The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node matches the corresponding matchExpressions; the node(s) with the highest sum are the most preferred.
+    /// The scheduler will prefer to schedule pods to nodes that satisfy
+    /// the affinity expressions specified by this field, but it may choose
+    /// a node that violates one or more of the expressions. The node that is
+    /// most preferred is the one with the greatest sum of weights, i.e.
+    /// for each node that meets all of the scheduling requirements (resource
+    /// request, requiredDuringScheduling affinity expressions, etc.),
+    /// compute a sum by iterating through the elements of this field and adding
+    /// "weight" to the sum if the node matches the corresponding matchExpressions; the
+    /// node(s) with the highest sum are the most preferred.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
     pub preferred_during_scheduling_ignored_during_execution: Option<Vec<EnvoyDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    /// If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to an update), the system may or may not try to eventually evict the pod from its node.
+    /// If the affinity requirements specified by this field are not met at
+    /// scheduling time, the pod will not be scheduled onto the node.
+    /// If the affinity requirements specified by this field cease to be met
+    /// at some point during pod execution (e.g. due to an update), the system
+    /// may or may not try to eventually evict the pod from its node.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
     pub required_during_scheduling_ignored_during_execution: Option<EnvoyDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
-/// An empty preferred scheduling term matches all objects with implicit weight 0 (i.e. it's a no-op). A null preferred scheduling term matches no objects (i.e. is also a no-op).
+/// An empty preferred scheduling term matches all objects with implicit weight 0
+/// (i.e. it's a no-op). A null preferred scheduling term matches no objects (i.e. is also a no-op).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// A node selector term, associated with the corresponding weight.
@@ -119,31 +140,47 @@ pub struct EnvoyDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDu
     pub match_fields: Option<Vec<EnvoyDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields>>,
 }
 
-/// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
-    /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
     pub operator: String,
-    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
-    /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
     pub operator: String,
-    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to an update), the system may or may not try to eventually evict the pod from its node.
+/// If the affinity requirements specified by this field are not met at
+/// scheduling time, the pod will not be scheduled onto the node.
+/// If the affinity requirements specified by this field cease to be met
+/// at some point during pod execution (e.g. due to an update), the system
+/// may or may not try to eventually evict the pod from its node.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// Required. A list of node selector terms. The terms are ORed.
@@ -151,7 +188,9 @@ pub struct EnvoyDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDur
     pub node_selector_terms: Vec<EnvoyDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
 }
 
-/// A null or empty node selector term matches no objects. The requirements of them are ANDed. The TopologySelectorTerm type implements a subset of the NodeSelectorTerm.
+/// A null or empty node selector term matches no objects. The requirements of
+/// them are ANDed.
+/// The TopologySelectorTerm type implements a subset of the NodeSelectorTerm.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms {
     /// A list of node selector requirements by node's labels.
@@ -162,26 +201,38 @@ pub struct EnvoyDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDur
     pub match_fields: Option<Vec<EnvoyDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields>>,
 }
 
-/// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
-    /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
     pub operator: String,
-    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A node selector requirement is a selector that contains values, a key, and an operator
+/// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
-    /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
+    /// Represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
     pub operator: String,
-    /// An array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. If the operator is Gt or Lt, the values array must have a single element, which will be interpreted as an integer. This array is replaced during a strategic merge patch.
+    /// An array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. If the operator is Gt or Lt, the values
+    /// array must have a single element, which will be interpreted as an integer.
+    /// This array is replaced during a strategic merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -189,10 +240,24 @@ pub struct EnvoyDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDur
 /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentAffinityPodAffinity {
-    /// The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the node(s) with the highest sum are the most preferred.
+    /// The scheduler will prefer to schedule pods to nodes that satisfy
+    /// the affinity expressions specified by this field, but it may choose
+    /// a node that violates one or more of the expressions. The node that is
+    /// most preferred is the one with the greatest sum of weights, i.e.
+    /// for each node that meets all of the scheduling requirements (resource
+    /// request, requiredDuringScheduling affinity expressions, etc.),
+    /// compute a sum by iterating through the elements of this field and adding
+    /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+    /// node(s) with the highest sum are the most preferred.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
     pub preferred_during_scheduling_ignored_during_execution: Option<Vec<EnvoyDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    /// If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to a pod label update), the system may or may not try to eventually evict the pod from its node. When there are multiple elements, the lists of nodes corresponding to each podAffinityTerm are intersected, i.e. all terms must be satisfied.
+    /// If the affinity requirements specified by this field are not met at
+    /// scheduling time, the pod will not be scheduled onto the node.
+    /// If the affinity requirements specified by this field cease to be met
+    /// at some point during pod execution (e.g. due to a pod label update), the
+    /// system may or may not try to eventually evict the pod from its node.
+    /// When there are multiple elements, the lists of nodes corresponding to each
+    /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
     pub required_during_scheduling_ignored_during_execution: Option<Vec<EnvoyDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
@@ -203,144 +268,244 @@ pub struct EnvoyDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDur
     /// Required. A pod affinity term, associated with the corresponding weight.
     #[serde(rename = "podAffinityTerm")]
     pub pod_affinity_term: EnvoyDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
-    /// weight associated with matching the corresponding podAffinityTerm, in the range 1-100.
+    /// weight associated with matching the corresponding podAffinityTerm,
+    /// in the range 1-100.
     pub weight: i32,
 }
 
 /// Required. A pod affinity term, associated with the corresponding weight.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
-    /// A label query over a set of resources, in this case pods. If it's null, this PodAffinityTerm matches with no Pods.
+    /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<EnvoyDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
-    /// MatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration. The keys are used to lookup values from the incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)` to select the group of existing pods which pods will be taken into consideration for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming pod labels will be ignored. The default value is empty. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector. Also, MatchLabelKeys cannot be set when LabelSelector isn't set. This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
-    /// MismatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration. The keys are used to lookup values from the incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)` to select the group of existing pods which pods will be taken into consideration for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming pod labels will be ignored. The default value is empty. The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector. Also, MismatchLabelKeys cannot be set when LabelSelector isn't set. This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
-    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+    /// A label query over the set of namespaces that the term applies to.
+    /// The term is applied to the union of the namespaces selected by this field
+    /// and the ones listed in the namespaces field.
+    /// null selector and null or empty namespaces list means "this pod's namespace".
+    /// An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<EnvoyDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    /// namespaces specifies a static list of namespace names that the term applies to.
+    /// The term is applied to the union of the namespaces listed in this field
+    /// and the ones selected by namespaceSelector.
+    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
-    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching the labelSelector in the specified namespaces, where co-located is defined as running on a node whose value of the label with key topologyKey matches that of any node on which any of the selected pods is running. Empty topologyKey is not allowed.
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
+    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
+    /// whose value of the label with key topologyKey matches that of any node on which any of the
+    /// selected pods is running.
+    /// Empty topologyKey is not allowed.
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
 
-/// A label query over a set of resources, in this case pods. If it's null, this PodAffinityTerm matches with no Pods.
+/// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<EnvoyDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+/// A label query over the set of namespaces that the term applies to.
+/// The term is applied to the union of the namespaces selected by this field
+/// and the ones listed in the namespaces field.
+/// null selector and null or empty namespaces list means "this pod's namespace".
+/// An empty selector ({}) matches all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<EnvoyDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
+/// Defines a set of pods (namely those matching the labelSelector
+/// relative to the given namespace(s)) that this pod should be
+/// co-located (affinity) or not co-located (anti-affinity) with,
+/// where co-located is defined as running on a node whose value of
+/// the label with key <topologyKey> matches that of any node on which
+/// a pod of the set of pods is running
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
-    /// A label query over a set of resources, in this case pods. If it's null, this PodAffinityTerm matches with no Pods.
+    /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<EnvoyDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
-    /// MatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration. The keys are used to lookup values from the incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)` to select the group of existing pods which pods will be taken into consideration for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming pod labels will be ignored. The default value is empty. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector. Also, MatchLabelKeys cannot be set when LabelSelector isn't set. This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
-    /// MismatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration. The keys are used to lookup values from the incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)` to select the group of existing pods which pods will be taken into consideration for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming pod labels will be ignored. The default value is empty. The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector. Also, MismatchLabelKeys cannot be set when LabelSelector isn't set. This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
-    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+    /// A label query over the set of namespaces that the term applies to.
+    /// The term is applied to the union of the namespaces selected by this field
+    /// and the ones listed in the namespaces field.
+    /// null selector and null or empty namespaces list means "this pod's namespace".
+    /// An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<EnvoyDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    /// namespaces specifies a static list of namespace names that the term applies to.
+    /// The term is applied to the union of the namespaces listed in this field
+    /// and the ones selected by namespaceSelector.
+    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
-    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching the labelSelector in the specified namespaces, where co-located is defined as running on a node whose value of the label with key topologyKey matches that of any node on which any of the selected pods is running. Empty topologyKey is not allowed.
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
+    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
+    /// whose value of the label with key topologyKey matches that of any node on which any of the
+    /// selected pods is running.
+    /// Empty topologyKey is not allowed.
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
 
-/// A label query over a set of resources, in this case pods. If it's null, this PodAffinityTerm matches with no Pods.
+/// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<EnvoyDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+/// A label query over the set of namespaces that the term applies to.
+/// The term is applied to the union of the namespaces selected by this field
+/// and the ones listed in the namespaces field.
+/// null selector and null or empty namespaces list means "this pod's namespace".
+/// An empty selector ({}) matches all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<EnvoyDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -348,10 +513,24 @@ pub struct EnvoyDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuri
 /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentAffinityPodAntiAffinity {
-    /// The scheduler will prefer to schedule pods to nodes that satisfy the anti-affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling anti-affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the node(s) with the highest sum are the most preferred.
+    /// The scheduler will prefer to schedule pods to nodes that satisfy
+    /// the anti-affinity expressions specified by this field, but it may choose
+    /// a node that violates one or more of the expressions. The node that is
+    /// most preferred is the one with the greatest sum of weights, i.e.
+    /// for each node that meets all of the scheduling requirements (resource
+    /// request, requiredDuringScheduling anti-affinity expressions, etc.),
+    /// compute a sum by iterating through the elements of this field and adding
+    /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
+    /// node(s) with the highest sum are the most preferred.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
     pub preferred_during_scheduling_ignored_during_execution: Option<Vec<EnvoyDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
-    /// If the anti-affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the anti-affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to a pod label update), the system may or may not try to eventually evict the pod from its node. When there are multiple elements, the lists of nodes corresponding to each podAffinityTerm are intersected, i.e. all terms must be satisfied.
+    /// If the anti-affinity requirements specified by this field are not met at
+    /// scheduling time, the pod will not be scheduled onto the node.
+    /// If the anti-affinity requirements specified by this field cease to be met
+    /// at some point during pod execution (e.g. due to a pod label update), the
+    /// system may or may not try to eventually evict the pod from its node.
+    /// When there are multiple elements, the lists of nodes corresponding to each
+    /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
     pub required_during_scheduling_ignored_during_execution: Option<Vec<EnvoyDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
@@ -362,149 +541,250 @@ pub struct EnvoyDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnore
     /// Required. A pod affinity term, associated with the corresponding weight.
     #[serde(rename = "podAffinityTerm")]
     pub pod_affinity_term: EnvoyDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
-    /// weight associated with matching the corresponding podAffinityTerm, in the range 1-100.
+    /// weight associated with matching the corresponding podAffinityTerm,
+    /// in the range 1-100.
     pub weight: i32,
 }
 
 /// Required. A pod affinity term, associated with the corresponding weight.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm {
-    /// A label query over a set of resources, in this case pods. If it's null, this PodAffinityTerm matches with no Pods.
+    /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<EnvoyDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector>,
-    /// MatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration. The keys are used to lookup values from the incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)` to select the group of existing pods which pods will be taken into consideration for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming pod labels will be ignored. The default value is empty. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector. Also, MatchLabelKeys cannot be set when LabelSelector isn't set. This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
-    /// MismatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration. The keys are used to lookup values from the incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)` to select the group of existing pods which pods will be taken into consideration for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming pod labels will be ignored. The default value is empty. The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector. Also, MismatchLabelKeys cannot be set when LabelSelector isn't set. This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
-    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+    /// A label query over the set of namespaces that the term applies to.
+    /// The term is applied to the union of the namespaces selected by this field
+    /// and the ones listed in the namespaces field.
+    /// null selector and null or empty namespaces list means "this pod's namespace".
+    /// An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<EnvoyDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    /// namespaces specifies a static list of namespace names that the term applies to.
+    /// The term is applied to the union of the namespaces listed in this field
+    /// and the ones selected by namespaceSelector.
+    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
-    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching the labelSelector in the specified namespaces, where co-located is defined as running on a node whose value of the label with key topologyKey matches that of any node on which any of the selected pods is running. Empty topologyKey is not allowed.
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
+    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
+    /// whose value of the label with key topologyKey matches that of any node on which any of the
+    /// selected pods is running.
+    /// Empty topologyKey is not allowed.
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
 
-/// A label query over a set of resources, in this case pods. If it's null, this PodAffinityTerm matches with no Pods.
+/// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<EnvoyDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+/// A label query over the set of namespaces that the term applies to.
+/// The term is applied to the union of the namespaces selected by this field
+/// and the ones listed in the namespaces field.
+/// null selector and null or empty namespaces list means "this pod's namespace".
+/// An empty selector ({}) matches all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<EnvoyDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// Defines a set of pods (namely those matching the labelSelector relative to the given namespace(s)) that this pod should be co-located (affinity) or not co-located (anti-affinity) with, where co-located is defined as running on a node whose value of the label with key <topologyKey> matches that of any node on which a pod of the set of pods is running
+/// Defines a set of pods (namely those matching the labelSelector
+/// relative to the given namespace(s)) that this pod should be
+/// co-located (affinity) or not co-located (anti-affinity) with,
+/// where co-located is defined as running on a node whose value of
+/// the label with key <topologyKey> matches that of any node on which
+/// a pod of the set of pods is running
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution {
-    /// A label query over a set of resources, in this case pods. If it's null, this PodAffinityTerm matches with no Pods.
+    /// A label query over a set of resources, in this case pods.
+    /// If it's null, this PodAffinityTerm matches with no Pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<EnvoyDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
-    /// MatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration. The keys are used to lookup values from the incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)` to select the group of existing pods which pods will be taken into consideration for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming pod labels will be ignored. The default value is empty. The same key is forbidden to exist in both MatchLabelKeys and LabelSelector. Also, MatchLabelKeys cannot be set when LabelSelector isn't set. This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// MatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key in (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MatchLabelKeys and LabelSelector.
+    /// Also, MatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
-    /// MismatchLabelKeys is a set of pod label keys to select which pods will be taken into consideration. The keys are used to lookup values from the incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)` to select the group of existing pods which pods will be taken into consideration for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming pod labels will be ignored. The default value is empty. The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector. Also, MismatchLabelKeys cannot be set when LabelSelector isn't set. This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
+    /// MismatchLabelKeys is a set of pod label keys to select which pods will
+    /// be taken into consideration. The keys are used to lookup values from the
+    /// incoming pod labels, those key-value labels are merged with `LabelSelector` as `key notin (value)`
+    /// to select the group of existing pods which pods will be taken into consideration
+    /// for the incoming pod's pod (anti) affinity. Keys that don't exist in the incoming
+    /// pod labels will be ignored. The default value is empty.
+    /// The same key is forbidden to exist in both MismatchLabelKeys and LabelSelector.
+    /// Also, MismatchLabelKeys cannot be set when LabelSelector isn't set.
+    /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
-    /// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+    /// A label query over the set of namespaces that the term applies to.
+    /// The term is applied to the union of the namespaces selected by this field
+    /// and the ones listed in the namespaces field.
+    /// null selector and null or empty namespaces list means "this pod's namespace".
+    /// An empty selector ({}) matches all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<EnvoyDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
-    /// namespaces specifies a static list of namespace names that the term applies to. The term is applied to the union of the namespaces listed in this field and the ones selected by namespaceSelector. null or empty namespaces list and null namespaceSelector means "this pod's namespace".
+    /// namespaces specifies a static list of namespace names that the term applies to.
+    /// The term is applied to the union of the namespaces listed in this field
+    /// and the ones selected by namespaceSelector.
+    /// null or empty namespaces list and null namespaceSelector means "this pod's namespace".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
-    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching the labelSelector in the specified namespaces, where co-located is defined as running on a node whose value of the label with key topologyKey matches that of any node on which any of the selected pods is running. Empty topologyKey is not allowed.
+    /// This pod should be co-located (affinity) or not co-located (anti-affinity) with the pods matching
+    /// the labelSelector in the specified namespaces, where co-located is defined as running on a node
+    /// whose value of the label with key topologyKey matches that of any node on which any of the
+    /// selected pods is running.
+    /// Empty topologyKey is not allowed.
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
 }
 
-/// A label query over a set of resources, in this case pods. If it's null, this PodAffinityTerm matches with no Pods.
+/// A label query over a set of resources, in this case pods.
+/// If it's null, this PodAffinityTerm matches with no Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<EnvoyDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// A label query over the set of namespaces that the term applies to. The term is applied to the union of the namespaces selected by this field and the ones listed in the namespaces field. null selector and null or empty namespaces list means "this pod's namespace". An empty selector ({}) matches all namespaces.
+/// A label query over the set of namespaces that the term applies to.
+/// The term is applied to the union of the namespaces selected by this field
+/// and the ones listed in the namespaces field.
+/// null selector and null or empty namespaces list means "this pod's namespace".
+/// An empty selector ({}) matches all namespaces.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<EnvoyDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
 
-/// InitManager defines configuration for Envoy's init manager, which handles initialization for Envoy pods
+/// InitManager defines configuration for Envoy's init
+/// manager, which handles initialization for Envoy pods
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentInitManager {
     /// Image is the init manager image and tag to use
@@ -535,10 +815,16 @@ pub struct EnvoyDeploymentLivenessProbe {
 /// Configures PodDisruptionBudget for the envoy Pods
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentPodDisruptionBudget {
-    /// An eviction is allowed if at most "maxUnavailable" pods selected by "selector" are unavailable after the eviction, i.e. even in absence of the evicted pod. For example, one can prevent all voluntary evictions by specifying 0. This is a mutually exclusive setting with "minAvailable".
+    /// An eviction is allowed if at most "maxUnavailable" pods selected by
+    /// "selector" are unavailable after the eviction, i.e. even in absence of
+    /// the evicted pod. For example, one can prevent all voluntary evictions
+    /// by specifying 0. This is a mutually exclusive setting with "minAvailable".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
-    /// An eviction is allowed if at least "minAvailable" pods selected by "selector" will still be available after the eviction, i.e. even in the absence of the evicted pod.  So for example you can prevent all voluntary evictions by specifying "100%".
+    /// An eviction is allowed if at least "minAvailable" pods selected by
+    /// "selector" will still be available after the eviction, i.e. even in the
+    /// absence of the evicted pod.  So for example you can prevent all voluntary
+    /// evictions by specifying "100%".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minAvailable")]
     pub min_available: Option<IntOrString>,
 }
@@ -575,7 +861,8 @@ pub struct EnvoyDeploymentReadinessProbe {
     pub timeout_seconds: i32,
 }
 
-/// Replicas configures the number of replicas in the Deployment. One of 'static', 'dynamic' can be set. If both are set, static has precedence.
+/// Replicas configures the number of replicas in the Deployment. One of
+/// 'static', 'dynamic' can be set. If both are set, static has precedence.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentReplicas {
     /// Configure a min and max value for the number of pods to autoscale dynamically.
@@ -589,41 +876,74 @@ pub struct EnvoyDeploymentReplicas {
 /// Configure a min and max value for the number of pods to autoscale dynamically.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentReplicasDynamic {
-    /// behavior configures the scaling behavior of the target in both Up and Down directions (scaleUp and scaleDown fields respectively). If not set, the default HPAScalingRules for scale up and scale down are used.
+    /// behavior configures the scaling behavior of the target
+    /// in both Up and Down directions (scaleUp and scaleDown fields respectively).
+    /// If not set, the default HPAScalingRules for scale up and scale down are used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub behavior: Option<EnvoyDeploymentReplicasDynamicBehavior>,
-    /// maxReplicas is the upper limit for the number of replicas to which the autoscaler can scale up. It cannot be less that minReplicas.
+    /// maxReplicas is the upper limit for the number of replicas to which the autoscaler can scale up.
+    /// It cannot be less that minReplicas.
     #[serde(rename = "maxReplicas")]
     pub max_replicas: i32,
-    /// metrics contains the specifications for which to use to calculate the desired replica count (the maximum replica count across all metrics will be used).  The desired replica count is calculated multiplying the ratio between the target value and the current value by the current number of pods.  Ergo, metrics used must decrease as the pod count is increased, and vice-versa.  See the individual metric source types for more information about how each type of metric must respond. If not set, the default metric will be set to 80% average CPU utilization.
+    /// metrics contains the specifications for which to use to calculate the
+    /// desired replica count (the maximum replica count across all metrics will
+    /// be used).  The desired replica count is calculated multiplying the
+    /// ratio between the target value and the current value by the current
+    /// number of pods.  Ergo, metrics used must decrease as the pod count is
+    /// increased, and vice-versa.  See the individual metric source types for
+    /// more information about how each type of metric must respond.
+    /// If not set, the default metric will be set to 80% average CPU utilization.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metrics: Option<Vec<EnvoyDeploymentReplicasDynamicMetrics>>,
-    /// minReplicas is the lower limit for the number of replicas to which the autoscaler can scale down.  It defaults to 1 pod.  minReplicas is allowed to be 0 if the alpha feature gate HPAScaleToZero is enabled and at least one Object or External metric is configured.  Scaling is active as long as at least one metric value is available.
+    /// minReplicas is the lower limit for the number of replicas to which the autoscaler
+    /// can scale down.  It defaults to 1 pod.  minReplicas is allowed to be 0 if the
+    /// alpha feature gate HPAScaleToZero is enabled and at least one Object or External
+    /// metric is configured.  Scaling is active as long as at least one metric value is
+    /// available.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReplicas")]
     pub min_replicas: Option<i32>,
 }
 
-/// behavior configures the scaling behavior of the target in both Up and Down directions (scaleUp and scaleDown fields respectively). If not set, the default HPAScalingRules for scale up and scale down are used.
+/// behavior configures the scaling behavior of the target
+/// in both Up and Down directions (scaleUp and scaleDown fields respectively).
+/// If not set, the default HPAScalingRules for scale up and scale down are used.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentReplicasDynamicBehavior {
-    /// scaleDown is scaling policy for scaling Down. If not set, the default value is to allow to scale down to minReplicas pods, with a 300 second stabilization window (i.e., the highest recommendation for the last 300sec is used).
+    /// scaleDown is scaling policy for scaling Down.
+    /// If not set, the default value is to allow to scale down to minReplicas pods, with a
+    /// 300 second stabilization window (i.e., the highest recommendation for
+    /// the last 300sec is used).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleDown")]
     pub scale_down: Option<EnvoyDeploymentReplicasDynamicBehaviorScaleDown>,
-    /// scaleUp is scaling policy for scaling Up. If not set, the default value is the higher of: * increase no more than 4 pods per 60 seconds * double the number of pods per 60 seconds No stabilization is used.
+    /// scaleUp is scaling policy for scaling Up.
+    /// If not set, the default value is the higher of:
+    ///   * increase no more than 4 pods per 60 seconds
+    ///   * double the number of pods per 60 seconds
+    /// No stabilization is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleUp")]
     pub scale_up: Option<EnvoyDeploymentReplicasDynamicBehaviorScaleUp>,
 }
 
-/// scaleDown is scaling policy for scaling Down. If not set, the default value is to allow to scale down to minReplicas pods, with a 300 second stabilization window (i.e., the highest recommendation for the last 300sec is used).
+/// scaleDown is scaling policy for scaling Down.
+/// If not set, the default value is to allow to scale down to minReplicas pods, with a
+/// 300 second stabilization window (i.e., the highest recommendation for
+/// the last 300sec is used).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentReplicasDynamicBehaviorScaleDown {
-    /// policies is a list of potential scaling polices which can be used during scaling. At least one policy must be specified, otherwise the HPAScalingRules will be discarded as invalid
+    /// policies is a list of potential scaling polices which can be used during scaling.
+    /// At least one policy must be specified, otherwise the HPAScalingRules will be discarded as invalid
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policies: Option<Vec<EnvoyDeploymentReplicasDynamicBehaviorScaleDownPolicies>>,
-    /// selectPolicy is used to specify which policy should be used. If not set, the default value Max is used.
+    /// selectPolicy is used to specify which policy should be used.
+    /// If not set, the default value Max is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "selectPolicy")]
     pub select_policy: Option<String>,
-    /// stabilizationWindowSeconds is the number of seconds for which past recommendations should be considered while scaling up or scaling down. StabilizationWindowSeconds must be greater than or equal to zero and less than or equal to 3600 (one hour). If not set, use the default values: - For scale up: 0 (i.e. no stabilization is done). - For scale down: 300 (i.e. the stabilization window is 300 seconds long).
+    /// stabilizationWindowSeconds is the number of seconds for which past recommendations should be
+    /// considered while scaling up or scaling down.
+    /// StabilizationWindowSeconds must be greater than or equal to zero and less than or equal to 3600 (one hour).
+    /// If not set, use the default values:
+    /// - For scale up: 0 (i.e. no stabilization is done).
+    /// - For scale down: 300 (i.e. the stabilization window is 300 seconds long).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stabilizationWindowSeconds")]
     pub stabilization_window_seconds: Option<i32>,
 }
@@ -631,26 +951,39 @@ pub struct EnvoyDeploymentReplicasDynamicBehaviorScaleDown {
 /// HPAScalingPolicy is a single policy which must hold true for a specified past interval.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentReplicasDynamicBehaviorScaleDownPolicies {
-    /// periodSeconds specifies the window of time for which the policy should hold true. PeriodSeconds must be greater than zero and less than or equal to 1800 (30 min).
+    /// periodSeconds specifies the window of time for which the policy should hold true.
+    /// PeriodSeconds must be greater than zero and less than or equal to 1800 (30 min).
     #[serde(rename = "periodSeconds")]
     pub period_seconds: i32,
     /// type is used to specify the scaling policy.
     #[serde(rename = "type")]
     pub r#type: String,
-    /// value contains the amount of change which is permitted by the policy. It must be greater than zero
+    /// value contains the amount of change which is permitted by the policy.
+    /// It must be greater than zero
     pub value: i32,
 }
 
-/// scaleUp is scaling policy for scaling Up. If not set, the default value is the higher of: * increase no more than 4 pods per 60 seconds * double the number of pods per 60 seconds No stabilization is used.
+/// scaleUp is scaling policy for scaling Up.
+/// If not set, the default value is the higher of:
+///   * increase no more than 4 pods per 60 seconds
+///   * double the number of pods per 60 seconds
+/// No stabilization is used.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentReplicasDynamicBehaviorScaleUp {
-    /// policies is a list of potential scaling polices which can be used during scaling. At least one policy must be specified, otherwise the HPAScalingRules will be discarded as invalid
+    /// policies is a list of potential scaling polices which can be used during scaling.
+    /// At least one policy must be specified, otherwise the HPAScalingRules will be discarded as invalid
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policies: Option<Vec<EnvoyDeploymentReplicasDynamicBehaviorScaleUpPolicies>>,
-    /// selectPolicy is used to specify which policy should be used. If not set, the default value Max is used.
+    /// selectPolicy is used to specify which policy should be used.
+    /// If not set, the default value Max is used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "selectPolicy")]
     pub select_policy: Option<String>,
-    /// stabilizationWindowSeconds is the number of seconds for which past recommendations should be considered while scaling up or scaling down. StabilizationWindowSeconds must be greater than or equal to zero and less than or equal to 3600 (one hour). If not set, use the default values: - For scale up: 0 (i.e. no stabilization is done). - For scale down: 300 (i.e. the stabilization window is 300 seconds long).
+    /// stabilizationWindowSeconds is the number of seconds for which past recommendations should be
+    /// considered while scaling up or scaling down.
+    /// StabilizationWindowSeconds must be greater than or equal to zero and less than or equal to 3600 (one hour).
+    /// If not set, use the default values:
+    /// - For scale up: 0 (i.e. no stabilization is done).
+    /// - For scale down: 300 (i.e. the stabilization window is 300 seconds long).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stabilizationWindowSeconds")]
     pub stabilization_window_seconds: Option<i32>,
 }
@@ -658,40 +991,67 @@ pub struct EnvoyDeploymentReplicasDynamicBehaviorScaleUp {
 /// HPAScalingPolicy is a single policy which must hold true for a specified past interval.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentReplicasDynamicBehaviorScaleUpPolicies {
-    /// periodSeconds specifies the window of time for which the policy should hold true. PeriodSeconds must be greater than zero and less than or equal to 1800 (30 min).
+    /// periodSeconds specifies the window of time for which the policy should hold true.
+    /// PeriodSeconds must be greater than zero and less than or equal to 1800 (30 min).
     #[serde(rename = "periodSeconds")]
     pub period_seconds: i32,
     /// type is used to specify the scaling policy.
     #[serde(rename = "type")]
     pub r#type: String,
-    /// value contains the amount of change which is permitted by the policy. It must be greater than zero
+    /// value contains the amount of change which is permitted by the policy.
+    /// It must be greater than zero
     pub value: i32,
 }
 
-/// MetricSpec specifies how to scale based on a single metric (only `type` and one other matching field should be set at once).
+/// MetricSpec specifies how to scale based on a single metric
+/// (only `type` and one other matching field should be set at once).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentReplicasDynamicMetrics {
-    /// containerResource refers to a resource metric (such as those specified in requests and limits) known to Kubernetes describing a single container in each pod of the current scale target (e.g. CPU or memory). Such metrics are built in to Kubernetes, and have special scaling options on top of those available to normal per-pod metrics using the "pods" source. This is an alpha feature and can be enabled by the HPAContainerMetrics feature flag.
+    /// containerResource refers to a resource metric (such as those specified in
+    /// requests and limits) known to Kubernetes describing a single container in
+    /// each pod of the current scale target (e.g. CPU or memory). Such metrics are
+    /// built in to Kubernetes, and have special scaling options on top of those
+    /// available to normal per-pod metrics using the "pods" source.
+    /// This is an alpha feature and can be enabled by the HPAContainerMetrics feature flag.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerResource")]
     pub container_resource: Option<EnvoyDeploymentReplicasDynamicMetricsContainerResource>,
-    /// external refers to a global metric that is not associated with any Kubernetes object. It allows autoscaling based on information coming from components running outside of cluster (for example length of queue in cloud messaging service, or QPS from loadbalancer running outside of cluster).
+    /// external refers to a global metric that is not associated
+    /// with any Kubernetes object. It allows autoscaling based on information
+    /// coming from components running outside of cluster
+    /// (for example length of queue in cloud messaging service, or
+    /// QPS from loadbalancer running outside of cluster).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub external: Option<EnvoyDeploymentReplicasDynamicMetricsExternal>,
-    /// object refers to a metric describing a single kubernetes object (for example, hits-per-second on an Ingress object).
+    /// object refers to a metric describing a single kubernetes object
+    /// (for example, hits-per-second on an Ingress object).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub object: Option<EnvoyDeploymentReplicasDynamicMetricsObject>,
-    /// pods refers to a metric describing each pod in the current scale target (for example, transactions-processed-per-second).  The values will be averaged together before being compared to the target value.
+    /// pods refers to a metric describing each pod in the current scale target
+    /// (for example, transactions-processed-per-second).  The values will be
+    /// averaged together before being compared to the target value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pods: Option<EnvoyDeploymentReplicasDynamicMetricsPods>,
-    /// resource refers to a resource metric (such as those specified in requests and limits) known to Kubernetes describing each pod in the current scale target (e.g. CPU or memory). Such metrics are built in to Kubernetes, and have special scaling options on top of those available to normal per-pod metrics using the "pods" source.
+    /// resource refers to a resource metric (such as those specified in
+    /// requests and limits) known to Kubernetes describing each pod in the
+    /// current scale target (e.g. CPU or memory). Such metrics are built in to
+    /// Kubernetes, and have special scaling options on top of those available
+    /// to normal per-pod metrics using the "pods" source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resource: Option<EnvoyDeploymentReplicasDynamicMetricsResource>,
-    /// type is the type of metric source.  It should be one of "ContainerResource", "External", "Object", "Pods" or "Resource", each mapping to a matching field in the object. Note: "ContainerResource" type is available on when the feature-gate HPAContainerMetrics is enabled
+    /// type is the type of metric source.  It should be one of "ContainerResource", "External",
+    /// "Object", "Pods" or "Resource", each mapping to a matching field in the object.
+    /// Note: "ContainerResource" type is available on when the feature-gate
+    /// HPAContainerMetrics is enabled
     #[serde(rename = "type")]
     pub r#type: String,
 }
 
-/// containerResource refers to a resource metric (such as those specified in requests and limits) known to Kubernetes describing a single container in each pod of the current scale target (e.g. CPU or memory). Such metrics are built in to Kubernetes, and have special scaling options on top of those available to normal per-pod metrics using the "pods" source. This is an alpha feature and can be enabled by the HPAContainerMetrics feature flag.
+/// containerResource refers to a resource metric (such as those specified in
+/// requests and limits) known to Kubernetes describing a single container in
+/// each pod of the current scale target (e.g. CPU or memory). Such metrics are
+/// built in to Kubernetes, and have special scaling options on top of those
+/// available to normal per-pod metrics using the "pods" source.
+/// This is an alpha feature and can be enabled by the HPAContainerMetrics feature flag.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentReplicasDynamicMetricsContainerResource {
     /// container is the name of the container in the pods of the scaling target
@@ -705,10 +1065,14 @@ pub struct EnvoyDeploymentReplicasDynamicMetricsContainerResource {
 /// target specifies the target value for the given metric
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentReplicasDynamicMetricsContainerResourceTarget {
-    /// averageUtilization is the target value of the average of the resource metric across all relevant pods, represented as a percentage of the requested value of the resource for the pods. Currently only valid for Resource metric source type
+    /// averageUtilization is the target value of the average of the
+    /// resource metric across all relevant pods, represented as a percentage of
+    /// the requested value of the resource for the pods.
+    /// Currently only valid for Resource metric source type
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
     pub average_utilization: Option<i32>,
-    /// averageValue is the target value of the average of the metric across all relevant pods (as a quantity)
+    /// averageValue is the target value of the average of the
+    /// metric across all relevant pods (as a quantity)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
     pub average_value: Option<IntOrString>,
     /// type represents whether the metric type is Utilization, Value, or AverageValue
@@ -719,7 +1083,11 @@ pub struct EnvoyDeploymentReplicasDynamicMetricsContainerResourceTarget {
     pub value: Option<IntOrString>,
 }
 
-/// external refers to a global metric that is not associated with any Kubernetes object. It allows autoscaling based on information coming from components running outside of cluster (for example length of queue in cloud messaging service, or QPS from loadbalancer running outside of cluster).
+/// external refers to a global metric that is not associated
+/// with any Kubernetes object. It allows autoscaling based on information
+/// coming from components running outside of cluster
+/// (for example length of queue in cloud messaging service, or
+/// QPS from loadbalancer running outside of cluster).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentReplicasDynamicMetricsExternal {
     /// metric identifies the target metric by name and selector
@@ -733,30 +1101,41 @@ pub struct EnvoyDeploymentReplicasDynamicMetricsExternal {
 pub struct EnvoyDeploymentReplicasDynamicMetricsExternalMetric {
     /// name is the name of the given metric
     pub name: String,
-    /// selector is the string-encoded form of a standard kubernetes label selector for the given metric When set, it is passed as an additional parameter to the metrics server for more specific metrics scoping. When unset, just the metricName will be used to gather metrics.
+    /// selector is the string-encoded form of a standard kubernetes label selector for the given metric
+    /// When set, it is passed as an additional parameter to the metrics server for more specific metrics scoping.
+    /// When unset, just the metricName will be used to gather metrics.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<EnvoyDeploymentReplicasDynamicMetricsExternalMetricSelector>,
 }
 
-/// selector is the string-encoded form of a standard kubernetes label selector for the given metric When set, it is passed as an additional parameter to the metrics server for more specific metrics scoping. When unset, just the metricName will be used to gather metrics.
+/// selector is the string-encoded form of a standard kubernetes label selector for the given metric
+/// When set, it is passed as an additional parameter to the metrics server for more specific metrics scoping.
+/// When unset, just the metricName will be used to gather metrics.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentReplicasDynamicMetricsExternalMetricSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<EnvoyDeploymentReplicasDynamicMetricsExternalMetricSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentReplicasDynamicMetricsExternalMetricSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -764,10 +1143,14 @@ pub struct EnvoyDeploymentReplicasDynamicMetricsExternalMetricSelectorMatchExpre
 /// target specifies the target value for the given metric
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentReplicasDynamicMetricsExternalTarget {
-    /// averageUtilization is the target value of the average of the resource metric across all relevant pods, represented as a percentage of the requested value of the resource for the pods. Currently only valid for Resource metric source type
+    /// averageUtilization is the target value of the average of the
+    /// resource metric across all relevant pods, represented as a percentage of
+    /// the requested value of the resource for the pods.
+    /// Currently only valid for Resource metric source type
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
     pub average_utilization: Option<i32>,
-    /// averageValue is the target value of the average of the metric across all relevant pods (as a quantity)
+    /// averageValue is the target value of the average of the
+    /// metric across all relevant pods (as a quantity)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
     pub average_value: Option<IntOrString>,
     /// type represents whether the metric type is Utilization, Value, or AverageValue
@@ -778,7 +1161,8 @@ pub struct EnvoyDeploymentReplicasDynamicMetricsExternalTarget {
     pub value: Option<IntOrString>,
 }
 
-/// object refers to a metric describing a single kubernetes object (for example, hits-per-second on an Ingress object).
+/// object refers to a metric describing a single kubernetes object
+/// (for example, hits-per-second on an Ingress object).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentReplicasDynamicMetricsObject {
     /// describedObject specifies the descriptions of a object,such as kind,name apiVersion
@@ -807,30 +1191,41 @@ pub struct EnvoyDeploymentReplicasDynamicMetricsObjectDescribedObject {
 pub struct EnvoyDeploymentReplicasDynamicMetricsObjectMetric {
     /// name is the name of the given metric
     pub name: String,
-    /// selector is the string-encoded form of a standard kubernetes label selector for the given metric When set, it is passed as an additional parameter to the metrics server for more specific metrics scoping. When unset, just the metricName will be used to gather metrics.
+    /// selector is the string-encoded form of a standard kubernetes label selector for the given metric
+    /// When set, it is passed as an additional parameter to the metrics server for more specific metrics scoping.
+    /// When unset, just the metricName will be used to gather metrics.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<EnvoyDeploymentReplicasDynamicMetricsObjectMetricSelector>,
 }
 
-/// selector is the string-encoded form of a standard kubernetes label selector for the given metric When set, it is passed as an additional parameter to the metrics server for more specific metrics scoping. When unset, just the metricName will be used to gather metrics.
+/// selector is the string-encoded form of a standard kubernetes label selector for the given metric
+/// When set, it is passed as an additional parameter to the metrics server for more specific metrics scoping.
+/// When unset, just the metricName will be used to gather metrics.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentReplicasDynamicMetricsObjectMetricSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<EnvoyDeploymentReplicasDynamicMetricsObjectMetricSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentReplicasDynamicMetricsObjectMetricSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -838,10 +1233,14 @@ pub struct EnvoyDeploymentReplicasDynamicMetricsObjectMetricSelectorMatchExpress
 /// target specifies the target value for the given metric
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentReplicasDynamicMetricsObjectTarget {
-    /// averageUtilization is the target value of the average of the resource metric across all relevant pods, represented as a percentage of the requested value of the resource for the pods. Currently only valid for Resource metric source type
+    /// averageUtilization is the target value of the average of the
+    /// resource metric across all relevant pods, represented as a percentage of
+    /// the requested value of the resource for the pods.
+    /// Currently only valid for Resource metric source type
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
     pub average_utilization: Option<i32>,
-    /// averageValue is the target value of the average of the metric across all relevant pods (as a quantity)
+    /// averageValue is the target value of the average of the
+    /// metric across all relevant pods (as a quantity)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
     pub average_value: Option<IntOrString>,
     /// type represents whether the metric type is Utilization, Value, or AverageValue
@@ -852,7 +1251,9 @@ pub struct EnvoyDeploymentReplicasDynamicMetricsObjectTarget {
     pub value: Option<IntOrString>,
 }
 
-/// pods refers to a metric describing each pod in the current scale target (for example, transactions-processed-per-second).  The values will be averaged together before being compared to the target value.
+/// pods refers to a metric describing each pod in the current scale target
+/// (for example, transactions-processed-per-second).  The values will be
+/// averaged together before being compared to the target value.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentReplicasDynamicMetricsPods {
     /// metric identifies the target metric by name and selector
@@ -866,30 +1267,41 @@ pub struct EnvoyDeploymentReplicasDynamicMetricsPods {
 pub struct EnvoyDeploymentReplicasDynamicMetricsPodsMetric {
     /// name is the name of the given metric
     pub name: String,
-    /// selector is the string-encoded form of a standard kubernetes label selector for the given metric When set, it is passed as an additional parameter to the metrics server for more specific metrics scoping. When unset, just the metricName will be used to gather metrics.
+    /// selector is the string-encoded form of a standard kubernetes label selector for the given metric
+    /// When set, it is passed as an additional parameter to the metrics server for more specific metrics scoping.
+    /// When unset, just the metricName will be used to gather metrics.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<EnvoyDeploymentReplicasDynamicMetricsPodsMetricSelector>,
 }
 
-/// selector is the string-encoded form of a standard kubernetes label selector for the given metric When set, it is passed as an additional parameter to the metrics server for more specific metrics scoping. When unset, just the metricName will be used to gather metrics.
+/// selector is the string-encoded form of a standard kubernetes label selector for the given metric
+/// When set, it is passed as an additional parameter to the metrics server for more specific metrics scoping.
+/// When unset, just the metricName will be used to gather metrics.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentReplicasDynamicMetricsPodsMetricSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<EnvoyDeploymentReplicasDynamicMetricsPodsMetricSelectorMatchExpressions>>,
-    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
+    /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+    /// map is equivalent to an element of matchExpressions, whose key field is "key", the
+    /// operator is "In", and the values array contains only "value". The requirements are ANDed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
-/// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
+/// A label selector requirement is a selector that contains values, a key, and an operator that
+/// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentReplicasDynamicMetricsPodsMetricSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
-    /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
+    /// operator represents a key's relationship to a set of values.
+    /// Valid operators are In, NotIn, Exists and DoesNotExist.
     pub operator: String,
-    /// values is an array of string values. If the operator is In or NotIn, the values array must be non-empty. If the operator is Exists or DoesNotExist, the values array must be empty. This array is replaced during a strategic merge patch.
+    /// values is an array of string values. If the operator is In or NotIn,
+    /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
+    /// the values array must be empty. This array is replaced during a strategic
+    /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
 }
@@ -897,10 +1309,14 @@ pub struct EnvoyDeploymentReplicasDynamicMetricsPodsMetricSelectorMatchExpressio
 /// target specifies the target value for the given metric
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentReplicasDynamicMetricsPodsTarget {
-    /// averageUtilization is the target value of the average of the resource metric across all relevant pods, represented as a percentage of the requested value of the resource for the pods. Currently only valid for Resource metric source type
+    /// averageUtilization is the target value of the average of the
+    /// resource metric across all relevant pods, represented as a percentage of
+    /// the requested value of the resource for the pods.
+    /// Currently only valid for Resource metric source type
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
     pub average_utilization: Option<i32>,
-    /// averageValue is the target value of the average of the metric across all relevant pods (as a quantity)
+    /// averageValue is the target value of the average of the
+    /// metric across all relevant pods (as a quantity)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
     pub average_value: Option<IntOrString>,
     /// type represents whether the metric type is Utilization, Value, or AverageValue
@@ -911,7 +1327,11 @@ pub struct EnvoyDeploymentReplicasDynamicMetricsPodsTarget {
     pub value: Option<IntOrString>,
 }
 
-/// resource refers to a resource metric (such as those specified in requests and limits) known to Kubernetes describing each pod in the current scale target (e.g. CPU or memory). Such metrics are built in to Kubernetes, and have special scaling options on top of those available to normal per-pod metrics using the "pods" source.
+/// resource refers to a resource metric (such as those specified in
+/// requests and limits) known to Kubernetes describing each pod in the
+/// current scale target (e.g. CPU or memory). Such metrics are built in to
+/// Kubernetes, and have special scaling options on top of those available
+/// to normal per-pod metrics using the "pods" source.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentReplicasDynamicMetricsResource {
     /// name is the name of the resource in question.
@@ -923,10 +1343,14 @@ pub struct EnvoyDeploymentReplicasDynamicMetricsResource {
 /// target specifies the target value for the given metric
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentReplicasDynamicMetricsResourceTarget {
-    /// averageUtilization is the target value of the average of the resource metric across all relevant pods, represented as a percentage of the requested value of the resource for the pods. Currently only valid for Resource metric source type
+    /// averageUtilization is the target value of the average of the
+    /// resource metric across all relevant pods, represented as a percentage of
+    /// the requested value of the resource for the pods.
+    /// Currently only valid for Resource metric source type
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageUtilization")]
     pub average_utilization: Option<i32>,
-    /// averageValue is the target value of the average of the metric across all relevant pods (as a quantity)
+    /// averageValue is the target value of the average of the
+    /// metric across all relevant pods (as a quantity)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "averageValue")]
     pub average_value: Option<IntOrString>,
     /// type represents whether the metric type is Utilization, Value, or AverageValue
@@ -937,18 +1361,29 @@ pub struct EnvoyDeploymentReplicasDynamicMetricsResourceTarget {
     pub value: Option<IntOrString>,
 }
 
-/// Resources holds the resource requirements to use for the Envoy Deployment. Defaults to no resource requests nor limits.
+/// Resources holds the resource requirements to use for the Envoy
+/// Deployment. Defaults to no resource requests nor limits.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
-    ///  This field is immutable. It can only be set for containers.
+    /// Claims lists the names of resources, defined in spec.resourceClaims,
+    /// that are used by this container.
+    /// 
+    /// 
+    /// This is an alpha field and requires enabling the
+    /// DynamicResourceAllocation feature gate.
+    /// 
+    /// 
+    /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<EnvoyDeploymentResourcesClaims>>,
-    /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Limits describes the maximum amount of compute resources allowed.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
-    /// Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. Requests cannot exceed Limits. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+    /// Requests describes the minimum amount of compute resources required.
+    /// If Requests is omitted for a container, it defaults to Limits if that is explicitly specified,
+    /// otherwise to an implementation-defined value. Requests cannot exceed Limits.
+    /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requests: Option<BTreeMap<String, IntOrString>>,
 }
@@ -956,17 +1391,22 @@ pub struct EnvoyDeploymentResources {
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentResourcesClaims {
-    /// Name must match the name of one entry in pod.spec.resourceClaims of the Pod where this field is used. It makes that resource available inside a container.
+    /// Name must match the name of one entry in pod.spec.resourceClaims of
+    /// the Pod where this field is used. It makes that resource available
+    /// inside a container.
     pub name: String,
 }
 
-/// ShutdownManager defines configuration for Envoy's shutdown manager, which handles graceful termination of Envoy pods
+/// ShutdownManager defines configuration for Envoy's shutdown
+/// manager, which handles graceful termination of Envoy pods
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyDeploymentShutdownManager {
-    /// The drain strategy for the graceful shutdown. It also affects drain when listeners are modified or removed via LDS.
+    /// The drain strategy for the graceful shutdown. It also affects
+    /// drain when listeners are modified or removed via LDS.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "drainStrategy")]
     pub drain_strategy: Option<EnvoyDeploymentShutdownManagerDrainStrategy>,
-    /// The time in seconds that Envoy will drain connections during shutdown. It also affects drain behaviour when listeners are modified or removed via LDS.
+    /// The time in seconds that Envoy will drain connections during shutdown.
+    /// It also affects drain behaviour when listeners are modified or removed via LDS.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "drainTime")]
     pub drain_time: Option<i64>,
     /// Image is the shutdown manager image and tag to use
@@ -977,7 +1417,8 @@ pub struct EnvoyDeploymentShutdownManager {
     pub server_port: Option<i32>,
 }
 
-/// ShutdownManager defines configuration for Envoy's shutdown manager, which handles graceful termination of Envoy pods
+/// ShutdownManager defines configuration for Envoy's shutdown
+/// manager, which handles graceful termination of Envoy pods
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum EnvoyDeploymentShutdownManagerDrainStrategy {
     #[serde(rename = "gradual")]
@@ -1002,7 +1443,9 @@ pub struct EnvoyDeploymentStatusDeploymentStatus {
     /// Total number of available pods (ready for at least minReadySeconds) targeted by this deployment.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableReplicas")]
     pub available_replicas: Option<i32>,
-    /// Count of hash collisions for the Deployment. The Deployment controller uses this field as a collision avoidance mechanism when it needs to create the name for the newest ReplicaSet.
+    /// Count of hash collisions for the Deployment. The Deployment controller uses this
+    /// field as a collision avoidance mechanism when it needs to create the name for the
+    /// newest ReplicaSet.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "collisionCount")]
     pub collision_count: Option<i32>,
     /// Represents the latest available observations of a deployment's current state.
@@ -1017,7 +1460,9 @@ pub struct EnvoyDeploymentStatusDeploymentStatus {
     /// Total number of non-terminated pods targeted by this deployment (their labels match the selector).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// Total number of unavailable pods targeted by this deployment. This is the total number of pods that are still required for the deployment to have 100% available capacity. They may either be pods that are running but not yet available or pods that still have not been created.
+    /// Total number of unavailable pods targeted by this deployment. This is the total number of
+    /// pods that are still required for the deployment to have 100% available capacity. They may
+    /// either be pods that are running but not yet available or pods that still have not been created.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unavailableReplicas")]
     pub unavailable_replicas: Option<i32>,
     /// Total number of non-terminated pods targeted by this deployment that have the desired template spec.

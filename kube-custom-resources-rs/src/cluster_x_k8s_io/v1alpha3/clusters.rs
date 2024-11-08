@@ -24,18 +24,18 @@ pub struct ClusterSpec {
     /// Cluster network configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterNetwork")]
     pub cluster_network: Option<ClusterClusterNetwork>,
-    /// ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+    /// controlPlaneEndpoint represents the endpoint used to communicate with the control plane.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneEndpoint")]
     pub control_plane_endpoint: Option<ClusterControlPlaneEndpoint>,
-    /// ControlPlaneRef is an optional reference to a provider-specific resource that holds
+    /// controlPlaneRef is an optional reference to a provider-specific resource that holds
     /// the details for provisioning the Control Plane for a Cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneRef")]
     pub control_plane_ref: Option<ObjectReference>,
-    /// InfrastructureRef is a reference to a provider-specific resource that holds the details
+    /// infrastructureRef is a reference to a provider-specific resource that holds the details
     /// for provisioning infrastructure for a cluster in said provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "infrastructureRef")]
     pub infrastructure_ref: Option<ObjectReference>,
-    /// Paused can be used to prevent controllers from processing the Cluster and all its associated objects.
+    /// paused can be used to prevent controllers from processing the Cluster and all its associated objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub paused: Option<bool>,
 }
@@ -43,7 +43,7 @@ pub struct ClusterSpec {
 /// Cluster network configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClusterNetwork {
-    /// APIServerPort specifies the port the API Server should bind to.
+    /// apiServerPort specifies the port the API Server should bind to.
     /// Defaults to 6443.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiServerPort")]
     pub api_server_port: Option<i32>,
@@ -72,7 +72,7 @@ pub struct ClusterClusterNetworkServices {
     pub cidr_blocks: Vec<String>,
 }
 
-/// ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+/// controlPlaneEndpoint represents the endpoint used to communicate with the control plane.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterControlPlaneEndpoint {
     /// The hostname on which the API server is serving.
@@ -81,7 +81,7 @@ pub struct ClusterControlPlaneEndpoint {
     pub port: i32,
 }
 
-/// ControlPlaneRef is an optional reference to a provider-specific resource that holds
+/// controlPlaneRef is an optional reference to a provider-specific resource that holds
 /// the details for provisioning the Control Plane for a Cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterControlPlaneRef {
@@ -119,7 +119,7 @@ pub struct ClusterControlPlaneRef {
     pub uid: Option<String>,
 }
 
-/// InfrastructureRef is a reference to a provider-specific resource that holds the details
+/// infrastructureRef is a reference to a provider-specific resource that holds the details
 /// for provisioning infrastructure for a cluster in said provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterInfrastructureRef {
@@ -160,46 +160,46 @@ pub struct ClusterInfrastructureRef {
 /// ClusterStatus defines the observed state of Cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterStatus {
-    /// Conditions defines current service state of the cluster.
+    /// conditions defines current service state of the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// ControlPlaneInitialized defines if the control plane has been initialized.
+    /// controlPlaneInitialized defines if the control plane has been initialized.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneInitialized")]
     pub control_plane_initialized: Option<bool>,
-    /// ControlPlaneReady defines if the control plane is ready.
+    /// controlPlaneReady defines if the control plane is ready.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneReady")]
     pub control_plane_ready: Option<bool>,
-    /// FailureDomains is a slice of failure domain objects synced from the infrastructure provider.
+    /// failureDomains is a slice of failure domain objects synced from the infrastructure provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomains")]
     pub failure_domains: Option<BTreeMap<String, ClusterStatusFailureDomains>>,
-    /// FailureMessage indicates that there is a fatal problem reconciling the
+    /// failureMessage indicates that there is a fatal problem reconciling the
     /// state, and will be set to a descriptive error message.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
     pub failure_message: Option<String>,
-    /// FailureReason indicates that there is a fatal problem reconciling the
+    /// failureReason indicates that there is a fatal problem reconciling the
     /// state, and will be set to a token value suitable for
     /// programmatic interpretation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
-    /// InfrastructureReady is the state of the infrastructure provider.
+    /// infrastructureReady is the state of the infrastructure provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "infrastructureReady")]
     pub infrastructure_ready: Option<bool>,
-    /// ObservedGeneration is the latest generation observed by the controller.
+    /// observedGeneration is the latest generation observed by the controller.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// Phase represents the current phase of cluster actuation.
+    /// phase represents the current phase of cluster actuation.
     /// E.g. Pending, Running, Terminating, Failed etc.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
 }
 
-/// FailureDomains is a slice of failure domain objects synced from the infrastructure provider.
+/// failureDomains is a slice of failure domain objects synced from the infrastructure provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterStatusFailureDomains {
-    /// Attributes is a free form map of attributes an infrastructure provider might use or require.
+    /// attributes is a free form map of attributes an infrastructure provider might use or require.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<BTreeMap<String, String>>,
-    /// ControlPlane determines if this failure domain is suitable for use by control plane machines.
+    /// controlPlane determines if this failure domain is suitable for use by control plane machines.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
     pub control_plane: Option<bool>,
 }

@@ -143,7 +143,6 @@ pub struct GslbIngressRules {
     /// IngressRuleValue. If the host is unspecified, the Ingress routes all
     /// traffic based on the specified IngressRuleValue.
     /// 
-    /// 
     /// Host can be "precise" which is a domain name without the terminating dot of
     /// a network host (e.g. "foo.bar.com") or "wildcard", which is a domain name
     /// prefixed with a single wildcard label (e.g. "*.foo.com").

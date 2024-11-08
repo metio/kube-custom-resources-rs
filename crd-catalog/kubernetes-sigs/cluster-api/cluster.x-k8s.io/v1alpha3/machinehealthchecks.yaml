@@ -49,7 +49,7 @@ spec:
               description: "Specification of machine health check policy"
               properties:
                 clusterName:
-                  description: "ClusterName is the name of the Cluster this object belongs to."
+                  description: "clusterName is the name of the Cluster this object belongs to."
                   minLength: 1
                   type: "string"
                 maxUnhealthy:
@@ -62,7 +62,7 @@ spec:
                   description: "Machines older than this duration without a node will be considered to have\nfailed and will be remediated."
                   type: "string"
                 remediationTemplate:
-                  description: "RemediationTemplate is a reference to a remediation template\nprovided by an infrastructure provider.\n\nThis field is completely optional, when filled, the MachineHealthCheck controller\ncreates a new object from the template referenced and hands off remediation of the machine to\na controller that lives outside of Cluster API."
+                  description: "remediationTemplate is a reference to a remediation template\nprovided by an infrastructure provider.\n\nThis field is completely optional, when filled, the MachineHealthCheck controller\ncreates a new object from the template referenced and hands off remediation of the machine to\na controller that lives outside of Cluster API."
                   properties:
                     apiVersion:
                       description: "API version of the referent."
@@ -121,7 +121,7 @@ spec:
                   type: "object"
                   x-kubernetes-map-type: "atomic"
                 unhealthyConditions:
-                  description: "UnhealthyConditions contains a list of the conditions that determine\nwhether a node is considered unhealthy.  The conditions are combined in a\nlogical OR, i.e. if any of the conditions is met, the node is unhealthy."
+                  description: "unhealthyConditions contains a list of the conditions that determine\nwhether a node is considered unhealthy.  The conditions are combined in a\nlogical OR, i.e. if any of the conditions is met, the node is unhealthy."
                   items:
                     description: "UnhealthyCondition represents a Node condition type and value with a timeout\nspecified as a duration.  When the named condition has been in the given\nstatus for at least the timeout value, a node is considered unhealthy."
                     properties:
@@ -149,7 +149,7 @@ spec:
               description: "Most recently observed status of MachineHealthCheck resource"
               properties:
                 conditions:
-                  description: "Conditions defines current service state of the MachineHealthCheck."
+                  description: "conditions defines current service state of the MachineHealthCheck."
                   items:
                     description: "Condition defines an observation of a Cluster API resource operational state."
                     properties:
@@ -164,13 +164,13 @@ spec:
                         description: "The reason for the condition's last transition in CamelCase.\nThe specific API may choose whether or not this field is considered a guaranteed API.\nThis field may not be empty."
                         type: "string"
                       severity:
-                        description: "Severity provides an explicit classification of Reason code, so the users or machines can immediately\nunderstand the current situation and act accordingly.\nThe Severity field MUST be set only when Status=False."
+                        description: "severity provides an explicit classification of Reason code, so the users or machines can immediately\nunderstand the current situation and act accordingly.\nThe Severity field MUST be set only when Status=False."
                         type: "string"
                       status:
-                        description: "Status of the condition, one of True, False, Unknown."
+                        description: "status of the condition, one of True, False, Unknown."
                         type: "string"
                       type:
-                        description: "Type of condition in CamelCase or in foo.example.com/CamelCase.\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions\ncan be useful (see .node.status.conditions), the ability to deconflict is important."
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase.\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions\ncan be useful (see .node.status.conditions), the ability to deconflict is important."
                         type: "string"
                     required:
                       - "status"
@@ -188,16 +188,16 @@ spec:
                   minimum: 0.0
                   type: "integer"
                 observedGeneration:
-                  description: "ObservedGeneration is the latest generation observed by the controller."
+                  description: "observedGeneration is the latest generation observed by the controller."
                   format: "int64"
                   type: "integer"
                 remediationsAllowed:
-                  description: "RemediationsAllowed is the number of further remediations allowed by this machine health check before\nmaxUnhealthy short circuiting will be applied"
+                  description: "remediationsAllowed is the number of further remediations allowed by this machine health check before\nmaxUnhealthy short circuiting will be applied"
                   format: "int32"
                   minimum: 0.0
                   type: "integer"
                 targets:
-                  description: "Targets shows the current list of machines the machine health check is watching"
+                  description: "targets shows the current list of machines the machine health check is watching"
                   items:
                     type: "string"
                   type: "array"

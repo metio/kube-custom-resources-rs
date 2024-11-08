@@ -2,7 +2,7 @@ apiVersion: "apiextensions.k8s.io/v1"
 kind: "CustomResourceDefinition"
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: "v0.16.4"
+    controller-gen.kubebuilder.io/version: "v0.16.5"
   name: "alertmanagerconfigs.monitoring.coreos.com"
 spec:
   group: "monitoring.coreos.com"
@@ -4625,6 +4625,10 @@ spec:
                             message:
                               description: "Message template"
                               type: "string"
+                            messageThreadID:
+                              description: "The Telegram Group Topic ID.\nIt requires Alertmanager >= 0.26.0."
+                              format: "int64"
+                              type: "integer"
                             parseMode:
                               description: "Parse mode for telegram message"
                               enum:

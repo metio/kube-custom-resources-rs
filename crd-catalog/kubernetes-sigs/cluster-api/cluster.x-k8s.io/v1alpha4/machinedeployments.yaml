@@ -64,7 +64,7 @@ spec:
               description: "MachineDeploymentSpec defines the desired state of MachineDeployment."
               properties:
                 clusterName:
-                  description: "ClusterName is the name of the Cluster this object belongs to."
+                  description: "clusterName is the name of the Cluster this object belongs to."
                   minLength: 1
                   type: "string"
                 minReadySeconds:
@@ -127,7 +127,7 @@ spec:
                       description: "Rolling update config params. Present only if\nMachineDeploymentStrategyType = RollingUpdate."
                       properties:
                         deletePolicy:
-                          description: "DeletePolicy defines the policy used by the MachineDeployment to identify nodes to delete when downscaling.\nValid values are \"Random, \"Newest\", \"Oldest\"\nWhen no value is supplied, the default DeletePolicy of MachineSet is used"
+                          description: "deletePolicy defines the policy used by the MachineDeployment to identify nodes to delete when downscaling.\nValid values are \"Random, \"Newest\", \"Oldest\"\nWhen no value is supplied, the default DeletePolicy of MachineSet is used"
                           enum:
                             - "Random"
                             - "Newest"
@@ -147,14 +147,14 @@ spec:
                           x-kubernetes-int-or-string: true
                       type: "object"
                     type:
-                      description: "Type of deployment.\nDefault is RollingUpdate."
+                      description: "type of deployment.\nDefault is RollingUpdate."
                       enum:
                         - "RollingUpdate"
                         - "OnDelete"
                       type: "string"
                   type: "object"
                 template:
-                  description: "Template describes the machines that will be created."
+                  description: "template describes the machines that will be created."
                   properties:
                     metadata:
                       description: "Standard object's metadata.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata"
@@ -162,7 +162,7 @@ spec:
                         annotations:
                           additionalProperties:
                             type: "string"
-                          description: "Annotations is an unstructured key value map stored with a resource that may be\nset by external tools to store and retrieve arbitrary metadata. They are not\nqueryable and should be preserved when modifying objects.\nMore info: http://kubernetes.io/docs/user-guide/annotations"
+                          description: "annotations is an unstructured key value map stored with a resource that may be\nset by external tools to store and retrieve arbitrary metadata. They are not\nqueryable and should be preserved when modifying objects.\nMore info: http://kubernetes.io/docs/user-guide/annotations"
                           type: "object"
                         labels:
                           additionalProperties:
@@ -174,10 +174,10 @@ spec:
                       description: "Specification of the desired behavior of the machine.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status"
                       properties:
                         bootstrap:
-                          description: "Bootstrap is a reference to a local struct which encapsulates\nfields to configure the Machine’s bootstrapping mechanism."
+                          description: "bootstrap is a reference to a local struct which encapsulates\nfields to configure the Machine’s bootstrapping mechanism."
                           properties:
                             configRef:
-                              description: "ConfigRef is a reference to a bootstrap provider-specific resource\nthat holds configuration details. The reference is optional to\nallow users/operators to specify Bootstrap.DataSecretName without\nthe need of a controller."
+                              description: "configRef is a reference to a bootstrap provider-specific resource\nthat holds configuration details. The reference is optional to\nallow users/operators to specify Bootstrap.DataSecretName without\nthe need of a controller."
                               properties:
                                 apiVersion:
                                   description: "API version of the referent."
@@ -203,18 +203,18 @@ spec:
                               type: "object"
                               x-kubernetes-map-type: "atomic"
                             dataSecretName:
-                              description: "DataSecretName is the name of the secret that stores the bootstrap data script.\nIf nil, the Machine should remain in the Pending state."
+                              description: "dataSecretName is the name of the secret that stores the bootstrap data script.\nIf nil, the Machine should remain in the Pending state."
                               type: "string"
                           type: "object"
                         clusterName:
-                          description: "ClusterName is the name of the Cluster this object belongs to."
+                          description: "clusterName is the name of the Cluster this object belongs to."
                           minLength: 1
                           type: "string"
                         failureDomain:
-                          description: "FailureDomain is the failure domain the machine will be created in.\nMust match a key in the FailureDomains map stored on the cluster object."
+                          description: "failureDomain is the failure domain the machine will be created in.\nMust match a key in the FailureDomains map stored on the cluster object."
                           type: "string"
                         infrastructureRef:
-                          description: "InfrastructureRef is a required reference to a custom resource\noffered by an infrastructure provider."
+                          description: "infrastructureRef is a required reference to a custom resource\noffered by an infrastructure provider."
                           properties:
                             apiVersion:
                               description: "API version of the referent."
@@ -240,13 +240,13 @@ spec:
                           type: "object"
                           x-kubernetes-map-type: "atomic"
                         nodeDrainTimeout:
-                          description: "NodeDrainTimeout is the total amount of time that the controller will spend on draining a node.\nThe default value is 0, meaning that the node can be drained without any time limitations.\nNOTE: NodeDrainTimeout is different from `kubectl drain --timeout`"
+                          description: "nodeDrainTimeout is the total amount of time that the controller will spend on draining a node.\nThe default value is 0, meaning that the node can be drained without any time limitations.\nNOTE: NodeDrainTimeout is different from `kubectl drain --timeout`"
                           type: "string"
                         providerID:
-                          description: "ProviderID is the identification ID of the machine provided by the provider.\nThis field must match the provider ID as seen on the node object corresponding to this machine.\nThis field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler\nwith cluster-api as provider. Clean-up logic in the autoscaler compares machines to nodes to find out\nmachines at provider which could not get registered as Kubernetes nodes. With cluster-api as a\ngeneric out-of-tree provider for autoscaler, this field is required by autoscaler to be\nable to have a provider view of the list of machines. Another list of nodes is queried from the k8s apiserver\nand then a comparison is done to find out unregistered machines and are marked for delete.\nThis field will be set by the actuators and consumed by higher level entities like autoscaler that will\nbe interfacing with cluster-api as generic provider."
+                          description: "providerID is the identification ID of the machine provided by the provider.\nThis field must match the provider ID as seen on the node object corresponding to this machine.\nThis field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler\nwith cluster-api as provider. Clean-up logic in the autoscaler compares machines to nodes to find out\nmachines at provider which could not get registered as Kubernetes nodes. With cluster-api as a\ngeneric out-of-tree provider for autoscaler, this field is required by autoscaler to be\nable to have a provider view of the list of machines. Another list of nodes is queried from the k8s apiserver\nand then a comparison is done to find out unregistered machines and are marked for delete.\nThis field will be set by the actuators and consumed by higher level entities like autoscaler that will\nbe interfacing with cluster-api as generic provider."
                           type: "string"
                         version:
-                          description: "Version defines the desired Kubernetes version.\nThis field is meant to be optionally used by bootstrap providers."
+                          description: "version defines the desired Kubernetes version.\nThis field is meant to be optionally used by bootstrap providers."
                           type: "string"
                       required:
                         - "bootstrap"
@@ -267,7 +267,7 @@ spec:
                   format: "int32"
                   type: "integer"
                 conditions:
-                  description: "Conditions defines current service state of the MachineDeployment."
+                  description: "conditions defines current service state of the MachineDeployment."
                   items:
                     description: "Condition defines an observation of a Cluster API resource operational state."
                     properties:
@@ -282,13 +282,13 @@ spec:
                         description: "The reason for the condition's last transition in CamelCase.\nThe specific API may choose whether or not this field is considered a guaranteed API.\nThis field may not be empty."
                         type: "string"
                       severity:
-                        description: "Severity provides an explicit classification of Reason code, so the users or machines can immediately\nunderstand the current situation and act accordingly.\nThe Severity field MUST be set only when Status=False."
+                        description: "severity provides an explicit classification of Reason code, so the users or machines can immediately\nunderstand the current situation and act accordingly.\nThe Severity field MUST be set only when Status=False."
                         type: "string"
                       status:
-                        description: "Status of the condition, one of True, False, Unknown."
+                        description: "status of the condition, one of True, False, Unknown."
                         type: "string"
                       type:
-                        description: "Type of condition in CamelCase or in foo.example.com/CamelCase.\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions\ncan be useful (see .node.status.conditions), the ability to deconflict is important."
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase.\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions\ncan be useful (see .node.status.conditions), the ability to deconflict is important."
                         type: "string"
                     required:
                       - "status"
@@ -300,7 +300,7 @@ spec:
                   format: "int64"
                   type: "integer"
                 phase:
-                  description: "Phase represents the current phase of a MachineDeployment (ScalingUp, ScalingDown, Running, Failed, or Unknown)."
+                  description: "phase represents the current phase of a MachineDeployment (ScalingUp, ScalingDown, Running, Failed, or Unknown)."
                   type: "string"
                 readyReplicas:
                   description: "Total number of ready machines targeted by this deployment."
@@ -311,7 +311,7 @@ spec:
                   format: "int32"
                   type: "integer"
                 selector:
-                  description: "Selector is the same as the label selector but in the string format to avoid introspection\nby clients. The string will be in the same format as the query-param syntax.\nMore info about label selectors: http://kubernetes.io/docs/user-guide/labels#label-selectors"
+                  description: "selector is the same as the label selector but in the string format to avoid introspection\nby clients. The string will be in the same format as the query-param syntax.\nMore info about label selectors: http://kubernetes.io/docs/user-guide/labels#label-selectors"
                   type: "string"
                 unavailableReplicas:
                   description: "Total number of unavailable machines targeted by this deployment.\nThis is the total number of machines that are still required for\nthe deployment to have 100% available capacity. They may either\nbe machines that are running but not yet available or machines\nthat still have not been created."

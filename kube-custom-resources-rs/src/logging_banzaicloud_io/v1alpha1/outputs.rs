@@ -4823,6 +4823,8 @@ pub struct OutputNewrelicLicenseKeyValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct OutputNullout {
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub never_flush: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4931,6 +4933,8 @@ pub struct OutputOpensearch {
     pub reload_connections: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reload_on_failure: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub remove_keys: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub remove_keys_on_update: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]

@@ -233,6 +233,8 @@ pub struct ScaledObjectTriggersAuthenticationRef {
 /// ScaledObjectStatus is the status for a ScaledObject resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScaledObjectStatus {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authenticationsTypes")]
+    pub authentications_types: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "compositeScalerName")]
     pub composite_scaler_name: Option<String>,
     /// Conditions an array representation to store multiple Conditions
@@ -257,6 +259,8 @@ pub struct ScaledObjectStatus {
     pub scale_target_gvkr: Option<ScaledObjectStatusScaleTargetGvkr>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleTargetKind")]
     pub scale_target_kind: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "triggersTypes")]
+    pub triggers_types: Option<String>,
 }
 
 /// Condition to store the condition state

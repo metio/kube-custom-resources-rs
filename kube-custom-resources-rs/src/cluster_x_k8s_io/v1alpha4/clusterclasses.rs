@@ -19,25 +19,25 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct ClusterClassSpec {
-    /// ControlPlane is a reference to a local struct that holds the details
+    /// controlPlane is a reference to a local struct that holds the details
     /// for provisioning the Control Plane for the Cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
     pub control_plane: Option<ClusterClassControlPlane>,
-    /// Infrastructure is a reference to a provider-specific template that holds
+    /// infrastructure is a reference to a provider-specific template that holds
     /// the details for provisioning infrastructure specific cluster
     /// for the underlying provider.
     /// The underlying provider is responsible for the implementation
     /// of the template to an infrastructure cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub infrastructure: Option<ClusterClassInfrastructure>,
-    /// Workers describes the worker nodes for the cluster.
+    /// workers describes the worker nodes for the cluster.
     /// It is a collection of node types which can be used to create
     /// the worker nodes of the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub workers: Option<ClusterClassWorkers>,
 }
 
-/// ControlPlane is a reference to a local struct that holds the details
+/// controlPlane is a reference to a local struct that holds the details
 /// for provisioning the Control Plane for the Cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassControlPlane {
@@ -48,14 +48,14 @@ pub struct ClusterClassControlPlane {
     /// referenced above is Machine based and supports setting replicas.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineInfrastructure")]
     pub machine_infrastructure: Option<ClusterClassControlPlaneMachineInfrastructure>,
-    /// Metadata is the metadata applied to the machines of the ControlPlane.
+    /// metadata is the metadata applied to the machines of the ControlPlane.
     /// At runtime this metadata is merged with the corresponding metadata from the topology.
     /// 
     /// This field is supported if and only if the control plane provider template
     /// referenced is Machine based.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<ClusterClassControlPlaneMetadata>,
-    /// Ref is a required reference to a custom resource
+    /// ref is a required reference to a custom resource
     /// offered by a provider.
     #[serde(rename = "ref")]
     pub r#ref: ObjectReference,
@@ -68,13 +68,13 @@ pub struct ClusterClassControlPlane {
 /// referenced above is Machine based and supports setting replicas.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassControlPlaneMachineInfrastructure {
-    /// Ref is a required reference to a custom resource
+    /// ref is a required reference to a custom resource
     /// offered by a provider.
     #[serde(rename = "ref")]
     pub r#ref: ObjectReference,
 }
 
-/// Ref is a required reference to a custom resource
+/// ref is a required reference to a custom resource
 /// offered by a provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassControlPlaneMachineInfrastructureRef {
@@ -112,14 +112,14 @@ pub struct ClusterClassControlPlaneMachineInfrastructureRef {
     pub uid: Option<String>,
 }
 
-/// Metadata is the metadata applied to the machines of the ControlPlane.
+/// metadata is the metadata applied to the machines of the ControlPlane.
 /// At runtime this metadata is merged with the corresponding metadata from the topology.
 /// 
 /// This field is supported if and only if the control plane provider template
 /// referenced is Machine based.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassControlPlaneMetadata {
-    /// Annotations is an unstructured key value map stored with a resource that may be
+    /// annotations is an unstructured key value map stored with a resource that may be
     /// set by external tools to store and retrieve arbitrary metadata. They are not
     /// queryable and should be preserved when modifying objects.
     /// More info: http://kubernetes.io/docs/user-guide/annotations
@@ -133,7 +133,7 @@ pub struct ClusterClassControlPlaneMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Ref is a required reference to a custom resource
+/// ref is a required reference to a custom resource
 /// offered by a provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassControlPlaneRef {
@@ -171,20 +171,20 @@ pub struct ClusterClassControlPlaneRef {
     pub uid: Option<String>,
 }
 
-/// Infrastructure is a reference to a provider-specific template that holds
+/// infrastructure is a reference to a provider-specific template that holds
 /// the details for provisioning infrastructure specific cluster
 /// for the underlying provider.
 /// The underlying provider is responsible for the implementation
 /// of the template to an infrastructure cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassInfrastructure {
-    /// Ref is a required reference to a custom resource
+    /// ref is a required reference to a custom resource
     /// offered by a provider.
     #[serde(rename = "ref")]
     pub r#ref: ObjectReference,
 }
 
-/// Ref is a required reference to a custom resource
+/// ref is a required reference to a custom resource
 /// offered by a provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassInfrastructureRef {
@@ -222,12 +222,12 @@ pub struct ClusterClassInfrastructureRef {
     pub uid: Option<String>,
 }
 
-/// Workers describes the worker nodes for the cluster.
+/// workers describes the worker nodes for the cluster.
 /// It is a collection of node types which can be used to create
 /// the worker nodes of the cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkers {
-    /// MachineDeployments is a list of machine deployment classes that can be used to create
+    /// machineDeployments is a list of machine deployment classes that can be used to create
     /// a set of worker nodes.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineDeployments")]
     pub machine_deployments: Option<Vec<ClusterClassWorkersMachineDeployments>>,
@@ -237,42 +237,42 @@ pub struct ClusterClassWorkers {
 /// provisioned using the `ClusterClass`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachineDeployments {
-    /// Class denotes a type of worker node present in the cluster,
+    /// class denotes a type of worker node present in the cluster,
     /// this name MUST be unique within a ClusterClass and can be referenced
     /// in the Cluster to create a managed MachineDeployment.
     pub class: String,
-    /// Template is a local struct containing a collection of templates for creation of
+    /// template is a local struct containing a collection of templates for creation of
     /// MachineDeployment objects representing a set of worker nodes.
     pub template: ClusterClassWorkersMachineDeploymentsTemplate,
 }
 
-/// Template is a local struct containing a collection of templates for creation of
+/// template is a local struct containing a collection of templates for creation of
 /// MachineDeployment objects representing a set of worker nodes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachineDeploymentsTemplate {
-    /// Bootstrap contains the bootstrap template reference to be used
+    /// bootstrap contains the bootstrap template reference to be used
     /// for the creation of worker Machines.
     pub bootstrap: ClusterClassWorkersMachineDeploymentsTemplateBootstrap,
-    /// Infrastructure contains the infrastructure template reference to be used
+    /// infrastructure contains the infrastructure template reference to be used
     /// for the creation of worker Machines.
     pub infrastructure: ClusterClassWorkersMachineDeploymentsTemplateInfrastructure,
-    /// Metadata is the metadata applied to the machines of the MachineDeployment.
+    /// metadata is the metadata applied to the machines of the MachineDeployment.
     /// At runtime this metadata is merged with the corresponding metadata from the topology.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<ClusterClassWorkersMachineDeploymentsTemplateMetadata>,
 }
 
-/// Bootstrap contains the bootstrap template reference to be used
+/// bootstrap contains the bootstrap template reference to be used
 /// for the creation of worker Machines.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachineDeploymentsTemplateBootstrap {
-    /// Ref is a required reference to a custom resource
+    /// ref is a required reference to a custom resource
     /// offered by a provider.
     #[serde(rename = "ref")]
     pub r#ref: ObjectReference,
 }
 
-/// Ref is a required reference to a custom resource
+/// ref is a required reference to a custom resource
 /// offered by a provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachineDeploymentsTemplateBootstrapRef {
@@ -310,17 +310,17 @@ pub struct ClusterClassWorkersMachineDeploymentsTemplateBootstrapRef {
     pub uid: Option<String>,
 }
 
-/// Infrastructure contains the infrastructure template reference to be used
+/// infrastructure contains the infrastructure template reference to be used
 /// for the creation of worker Machines.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachineDeploymentsTemplateInfrastructure {
-    /// Ref is a required reference to a custom resource
+    /// ref is a required reference to a custom resource
     /// offered by a provider.
     #[serde(rename = "ref")]
     pub r#ref: ObjectReference,
 }
 
-/// Ref is a required reference to a custom resource
+/// ref is a required reference to a custom resource
 /// offered by a provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachineDeploymentsTemplateInfrastructureRef {
@@ -358,11 +358,11 @@ pub struct ClusterClassWorkersMachineDeploymentsTemplateInfrastructureRef {
     pub uid: Option<String>,
 }
 
-/// Metadata is the metadata applied to the machines of the MachineDeployment.
+/// metadata is the metadata applied to the machines of the MachineDeployment.
 /// At runtime this metadata is merged with the corresponding metadata from the topology.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClassWorkersMachineDeploymentsTemplateMetadata {
-    /// Annotations is an unstructured key value map stored with a resource that may be
+    /// annotations is an unstructured key value map stored with a resource that may be
     /// set by external tools to store and retrieve arbitrary metadata. They are not
     /// queryable and should be preserved when modifying objects.
     /// More info: http://kubernetes.io/docs/user-guide/annotations

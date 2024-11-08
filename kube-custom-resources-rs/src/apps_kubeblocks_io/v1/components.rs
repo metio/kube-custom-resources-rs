@@ -6445,12 +6445,9 @@ pub struct ComponentStatus {
     /// 
     /// 
     /// - Creating: The initial phase for new Components, transitioning from 'empty'("").
-    /// - Running: All Pods in a Running state.
+    /// - Running: All Pods are up-to-date and in a Running state.
     /// - Updating: The Component is currently being updated, with no failed Pods present.
-    /// - Abnormal: Some Pods have failed, indicating a potentially unstable state.
-    ///   However, the cluster remains available as long as a quorum of members is functioning.
-    /// - Failed: A significant number of Pods or critical Pods have failed
-    ///   The cluster may be non-functional or may offer only limited services (e.g, read-only).
+    /// - Failed: A significant number of Pods have failed.
     /// - Stopping: All Pods are being terminated, with current replica count at zero.
     /// - Stopped: All associated Pods have been successfully deleted.
     /// - Deleting: The Component is being deleted.
@@ -6462,12 +6459,11 @@ pub struct ComponentStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ComponentStatusPhase {
     Creating,
-    Running,
+    Deleting,
     Updating,
     Stopping,
+    Running,
     Stopped,
-    Deleting,
     Failed,
-    Abnormal,
 }
 
