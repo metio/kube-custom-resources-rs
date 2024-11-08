@@ -22,7 +22,7 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct MachineHealthCheckSpec {
-    /// ClusterName is the name of the Cluster this object belongs to.
+    /// clusterName is the name of the Cluster this object belongs to.
     #[serde(rename = "clusterName")]
     pub cluster_name: String,
     /// Any further remediation is only allowed if at most "MaxUnhealthy" machines selected by
@@ -35,7 +35,7 @@ pub struct MachineHealthCheckSpec {
     /// If you wish to disable this feature, set the value explicitly to 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeStartupTimeout")]
     pub node_startup_timeout: Option<String>,
-    /// RemediationTemplate is a reference to a remediation template
+    /// remediationTemplate is a reference to a remediation template
     /// provided by an infrastructure provider.
     /// 
     /// This field is completely optional, when filled, the MachineHealthCheck controller
@@ -45,7 +45,7 @@ pub struct MachineHealthCheckSpec {
     pub remediation_template: Option<ObjectReference>,
     /// Label selector to match machines whose health will be exercised
     pub selector: MachineHealthCheckSelector,
-    /// UnhealthyConditions contains a list of the conditions that determine
+    /// unhealthyConditions contains a list of the conditions that determine
     /// whether a node is considered unhealthy.  The conditions are combined in a
     /// logical OR, i.e. if any of the conditions is met, the node is unhealthy.
     #[serde(rename = "unhealthyConditions")]
@@ -59,7 +59,7 @@ pub struct MachineHealthCheckSpec {
     pub unhealthy_range: Option<String>,
 }
 
-/// RemediationTemplate is a reference to a remediation template
+/// remediationTemplate is a reference to a remediation template
 /// provided by an infrastructure provider.
 /// 
 /// This field is completely optional, when filled, the MachineHealthCheck controller
@@ -145,7 +145,7 @@ pub struct MachineHealthCheckUnhealthyConditions {
 /// Most recently observed status of MachineHealthCheck resource
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineHealthCheckStatus {
-    /// Conditions defines current service state of the MachineHealthCheck.
+    /// conditions defines current service state of the MachineHealthCheck.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// total number of healthy machines counted by this machine health check
@@ -154,14 +154,14 @@ pub struct MachineHealthCheckStatus {
     /// total number of machines counted by this machine health check
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "expectedMachines")]
     pub expected_machines: Option<i32>,
-    /// ObservedGeneration is the latest generation observed by the controller.
+    /// observedGeneration is the latest generation observed by the controller.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// RemediationsAllowed is the number of further remediations allowed by this machine health check before
+    /// remediationsAllowed is the number of further remediations allowed by this machine health check before
     /// maxUnhealthy short circuiting will be applied
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remediationsAllowed")]
     pub remediations_allowed: Option<i32>,
-    /// Targets shows the current list of machines the machine health check is watching
+    /// targets shows the current list of machines the machine health check is watching
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub targets: Option<Vec<String>>,
 }

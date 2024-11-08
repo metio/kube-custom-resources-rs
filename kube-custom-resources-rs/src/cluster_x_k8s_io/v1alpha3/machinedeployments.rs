@@ -21,7 +21,7 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct MachineDeploymentSpec {
-    /// ClusterName is the name of the Cluster this object belongs to.
+    /// clusterName is the name of the Cluster this object belongs to.
     #[serde(rename = "clusterName")]
     pub cluster_name: String,
     /// Minimum number of seconds for which a newly created machine should
@@ -57,7 +57,7 @@ pub struct MachineDeploymentSpec {
     /// new ones.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<MachineDeploymentStrategy>,
-    /// Template describes the machines that will be created.
+    /// template describes the machines that will be created.
     pub template: MachineDeploymentTemplate,
 }
 
@@ -101,7 +101,7 @@ pub struct MachineDeploymentStrategy {
     /// MachineDeploymentStrategyType = RollingUpdate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<MachineDeploymentStrategyRollingUpdate>,
-    /// Type of deployment. Currently the only supported strategy is
+    /// type of deployment. Currently the only supported strategy is
     /// "RollingUpdate".
     /// Default is RollingUpdate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -143,7 +143,7 @@ pub struct MachineDeploymentStrategyRollingUpdate {
     pub max_unavailable: Option<IntOrString>,
 }
 
-/// Template describes the machines that will be created.
+/// template describes the machines that will be created.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineDeploymentTemplate {
     /// Standard object's metadata.
@@ -160,13 +160,13 @@ pub struct MachineDeploymentTemplate {
 /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineDeploymentTemplateMetadata {
-    /// Annotations is an unstructured key value map stored with a resource that may be
+    /// annotations is an unstructured key value map stored with a resource that may be
     /// set by external tools to store and retrieve arbitrary metadata. They are not
     /// queryable and should be preserved when modifying objects.
     /// More info: http://kubernetes.io/docs/user-guide/annotations
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// GenerateName is an optional prefix, used by the server, to generate a unique
+    /// generateName is an optional prefix, used by the server, to generate a unique
     /// name ONLY IF the Name field has not been provided.
     /// If this field is used, the name returned to the client will be different
     /// than the name passed. This value will also be combined with a unique suffix.
@@ -191,7 +191,7 @@ pub struct MachineDeploymentTemplateMetadata {
     /// More info: http://kubernetes.io/docs/user-guide/labels
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    /// Name must be unique within a namespace. Is required when creating resources, although
+    /// name must be unique within a namespace. Is required when creating resources, although
     /// some resources may allow a client to request the generation of an appropriate name
     /// automatically. Name is primarily intended for creation idempotence and configuration
     /// definition.
@@ -201,7 +201,7 @@ pub struct MachineDeploymentTemplateMetadata {
     /// Deprecated: This field has no function and is going to be removed in a next release.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Namespace defines the space within each name must be unique. An empty namespace is
+    /// namespace defines the space within each name must be unique. An empty namespace is
     /// equivalent to the "default" namespace, but "default" is the canonical representation.
     /// Not all objects are required to be scoped to a namespace - the value of this field for
     /// those objects will be empty.
@@ -259,26 +259,26 @@ pub struct MachineDeploymentTemplateMetadataOwnerReferences {
 /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineDeploymentTemplateSpec {
-    /// Bootstrap is a reference to a local struct which encapsulates
+    /// bootstrap is a reference to a local struct which encapsulates
     /// fields to configure the Machine’s bootstrapping mechanism.
     pub bootstrap: MachineDeploymentTemplateSpecBootstrap,
-    /// ClusterName is the name of the Cluster this object belongs to.
+    /// clusterName is the name of the Cluster this object belongs to.
     #[serde(rename = "clusterName")]
     pub cluster_name: String,
-    /// FailureDomain is the failure domain the machine will be created in.
+    /// failureDomain is the failure domain the machine will be created in.
     /// Must match a key in the FailureDomains map stored on the cluster object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomain")]
     pub failure_domain: Option<String>,
-    /// InfrastructureRef is a required reference to a custom resource
+    /// infrastructureRef is a required reference to a custom resource
     /// offered by an infrastructure provider.
     #[serde(rename = "infrastructureRef")]
     pub infrastructure_ref: ObjectReference,
-    /// NodeDrainTimeout is the total amount of time that the controller will spend on draining a node.
+    /// nodeDrainTimeout is the total amount of time that the controller will spend on draining a node.
     /// The default value is 0, meaning that the node can be drained without any time limitations.
     /// NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDrainTimeout")]
     pub node_drain_timeout: Option<String>,
-    /// ProviderID is the identification ID of the machine provided by the provider.
+    /// providerID is the identification ID of the machine provided by the provider.
     /// This field must match the provider ID as seen on the node object corresponding to this machine.
     /// This field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler
     /// with cluster-api as provider. Clean-up logic in the autoscaler compares machines to nodes to find out
@@ -290,35 +290,35 @@ pub struct MachineDeploymentTemplateSpec {
     /// be interfacing with cluster-api as generic provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerID")]
     pub provider_id: Option<String>,
-    /// Version defines the desired Kubernetes version.
+    /// version defines the desired Kubernetes version.
     /// This field is meant to be optionally used by bootstrap providers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
 
-/// Bootstrap is a reference to a local struct which encapsulates
+/// bootstrap is a reference to a local struct which encapsulates
 /// fields to configure the Machine’s bootstrapping mechanism.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineDeploymentTemplateSpecBootstrap {
-    /// ConfigRef is a reference to a bootstrap provider-specific resource
+    /// configRef is a reference to a bootstrap provider-specific resource
     /// that holds configuration details. The reference is optional to
     /// allow users/operators to specify Bootstrap.Data without
     /// the need of a controller.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configRef")]
     pub config_ref: Option<ObjectReference>,
-    /// Data contains the bootstrap data, such as cloud-init details scripts.
+    /// data contains the bootstrap data, such as cloud-init details scripts.
     /// If nil, the Machine should remain in the Pending state.
     /// 
     /// Deprecated: Switch to DataSecretName.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<String>,
-    /// DataSecretName is the name of the secret that stores the bootstrap data script.
+    /// dataSecretName is the name of the secret that stores the bootstrap data script.
     /// If nil, the Machine should remain in the Pending state.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSecretName")]
     pub data_secret_name: Option<String>,
 }
 
-/// ConfigRef is a reference to a bootstrap provider-specific resource
+/// configRef is a reference to a bootstrap provider-specific resource
 /// that holds configuration details. The reference is optional to
 /// allow users/operators to specify Bootstrap.Data without
 /// the need of a controller.
@@ -358,7 +358,7 @@ pub struct MachineDeploymentTemplateSpecBootstrapConfigRef {
     pub uid: Option<String>,
 }
 
-/// InfrastructureRef is a required reference to a custom resource
+/// infrastructureRef is a required reference to a custom resource
 /// offered by an infrastructure provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineDeploymentTemplateSpecInfrastructureRef {
@@ -406,7 +406,7 @@ pub struct MachineDeploymentStatus {
     /// The generation observed by the deployment controller.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// Phase represents the current phase of a MachineDeployment (ScalingUp, ScalingDown, Running, Failed, or Unknown).
+    /// phase represents the current phase of a MachineDeployment (ScalingUp, ScalingDown, Running, Failed, or Unknown).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
     /// Total number of ready machines targeted by this deployment.
@@ -416,7 +416,7 @@ pub struct MachineDeploymentStatus {
     /// (their labels match the selector).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// Selector is the same as the label selector but in the string format to avoid introspection
+    /// selector is the same as the label selector but in the string format to avoid introspection
     /// by clients. The string will be in the same format as the query-param syntax.
     /// More info about label selectors: http://kubernetes.io/docs/user-guide/labels#label-selectors
     #[serde(default, skip_serializing_if = "Option::is_none")]

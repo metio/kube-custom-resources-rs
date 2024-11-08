@@ -16,9 +16,11 @@ use self::prelude::*;
 #[kube(schema = "disabled")]
 #[kube(derive="PartialEq")]
 pub struct ListenerClassSpec {
-    /// Whether addresses should prefer using the IP address (`IP`) or the hostname (`Hostname`).
+    /// Whether addresses should prefer using the IP address (`IP`) or the hostname (`Hostname`). Can also be set to `HostnameConservative`, which will use `IP` for `NodePort` service types, but `Hostname` for everything else.
     /// 
-    /// The other type will be used if the preferred type is not available. By default `Hostname` is used.
+    /// The other type will be used if the preferred type is not available.
+    /// 
+    /// Defaults to `HostnameConservative`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredAddressType")]
     pub preferred_address_type: Option<ListenerClassPreferredAddressType>,
     /// Annotations that should be added to the Service object.
@@ -40,6 +42,7 @@ pub enum ListenerClassPreferredAddressType {
     Hostname,
     #[serde(rename = "IP")]
     Ip,
+    HostnameConservative,
 }
 
 /// Defines a policy for how [Listeners](https://docs.stackable.tech/home/nightly/listener-operator/listener) should be exposed. Read the [ListenerClass documentation](https://docs.stackable.tech/home/nightly/listener-operator/listenerclass) for more information.

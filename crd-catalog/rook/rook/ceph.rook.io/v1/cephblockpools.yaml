@@ -257,7 +257,7 @@ spec:
                   nullable: true
                   type: "object"
                 mirroringInfo:
-                  description: "MirroringInfoSpec is the status of the pool mirroring"
+                  description: "MirroringInfoSpec is the status of the pool/radosnamespace mirroring"
                   properties:
                     details:
                       type: "string"
@@ -295,7 +295,7 @@ spec:
                       type: "string"
                   type: "object"
                 mirroringStatus:
-                  description: "MirroringStatusSpec is the status of the pool mirroring"
+                  description: "MirroringStatusSpec is the status of the pool/radosNamespace mirroring"
                   properties:
                     details:
                       description: "Details contains potential status errors"

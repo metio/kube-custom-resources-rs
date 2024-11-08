@@ -30,18 +30,18 @@ pub struct ClusterSpec {
     /// Cluster network configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterNetwork")]
     pub cluster_network: Option<ClusterClusterNetwork>,
-    /// ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+    /// controlPlaneEndpoint represents the endpoint used to communicate with the control plane.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneEndpoint")]
     pub control_plane_endpoint: Option<ClusterControlPlaneEndpoint>,
-    /// ControlPlaneRef is an optional reference to a provider-specific resource that holds
+    /// controlPlaneRef is an optional reference to a provider-specific resource that holds
     /// the details for provisioning the Control Plane for a Cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneRef")]
     pub control_plane_ref: Option<ObjectReference>,
-    /// InfrastructureRef is a reference to a provider-specific resource that holds the details
+    /// infrastructureRef is a reference to a provider-specific resource that holds the details
     /// for provisioning infrastructure for a cluster in said provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "infrastructureRef")]
     pub infrastructure_ref: Option<ObjectReference>,
-    /// Paused can be used to prevent controllers from processing the Cluster and all its associated objects.
+    /// paused can be used to prevent controllers from processing the Cluster and all its associated objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub paused: Option<bool>,
     /// This encapsulates the topology for the cluster.
@@ -65,7 +65,7 @@ pub struct ClusterAvailabilityGates {
 /// Cluster network configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClusterNetwork {
-    /// APIServerPort specifies the port the API Server should bind to.
+    /// apiServerPort specifies the port the API Server should bind to.
     /// Defaults to 6443.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiServerPort")]
     pub api_server_port: Option<i32>,
@@ -94,7 +94,7 @@ pub struct ClusterClusterNetworkServices {
     pub cidr_blocks: Vec<String>,
 }
 
-/// ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+/// controlPlaneEndpoint represents the endpoint used to communicate with the control plane.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterControlPlaneEndpoint {
     /// The hostname on which the API server is serving.
@@ -103,7 +103,7 @@ pub struct ClusterControlPlaneEndpoint {
     pub port: i32,
 }
 
-/// ControlPlaneRef is an optional reference to a provider-specific resource that holds
+/// controlPlaneRef is an optional reference to a provider-specific resource that holds
 /// the details for provisioning the Control Plane for a Cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterControlPlaneRef {
@@ -141,7 +141,7 @@ pub struct ClusterControlPlaneRef {
     pub uid: Option<String>,
 }
 
-/// InfrastructureRef is a reference to a provider-specific resource that holds the details
+/// infrastructureRef is a reference to a provider-specific resource that holds the details
 /// for provisioning infrastructure for a cluster in said provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterInfrastructureRef {
@@ -187,71 +187,71 @@ pub struct ClusterInfrastructureRef {
 pub struct ClusterTopology {
     /// The name of the ClusterClass object to create the topology.
     pub class: String,
-    /// ControlPlane describes the cluster control plane.
+    /// controlPlane describes the cluster control plane.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
     pub control_plane: Option<ClusterTopologyControlPlane>,
-    /// RolloutAfter performs a rollout of the entire cluster one component at a time,
+    /// rolloutAfter performs a rollout of the entire cluster one component at a time,
     /// control plane first and then machine deployments.
     /// 
     /// Deprecated: This field has no function and is going to be removed in the next apiVersion.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rolloutAfter")]
     pub rollout_after: Option<String>,
-    /// Variables can be used to customize the Cluster through
+    /// variables can be used to customize the Cluster through
     /// patches. They must comply to the corresponding
     /// VariableClasses defined in the ClusterClass.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub variables: Option<Vec<ClusterTopologyVariables>>,
     /// The Kubernetes version of the cluster.
     pub version: String,
-    /// Workers encapsulates the different constructs that form the worker nodes
+    /// workers encapsulates the different constructs that form the worker nodes
     /// for the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub workers: Option<ClusterTopologyWorkers>,
 }
 
-/// ControlPlane describes the cluster control plane.
+/// controlPlane describes the cluster control plane.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyControlPlane {
-    /// MachineHealthCheck allows to enable, disable and override
+    /// machineHealthCheck allows to enable, disable and override
     /// the MachineHealthCheck configuration in the ClusterClass for this control plane.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineHealthCheck")]
     pub machine_health_check: Option<ClusterTopologyControlPlaneMachineHealthCheck>,
-    /// Metadata is the metadata applied to the ControlPlane and the Machines of the ControlPlane
+    /// metadata is the metadata applied to the ControlPlane and the Machines of the ControlPlane
     /// if the ControlPlaneTemplate referenced by the ClusterClass is machine based. If not, it
     /// is applied only to the ControlPlane.
     /// At runtime this metadata is merged with the corresponding metadata from the ClusterClass.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<ClusterTopologyControlPlaneMetadata>,
-    /// NodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine
+    /// nodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine
     /// hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely.
     /// Defaults to 10 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDeletionTimeout")]
     pub node_deletion_timeout: Option<String>,
-    /// NodeDrainTimeout is the total amount of time that the controller will spend on draining a node.
+    /// nodeDrainTimeout is the total amount of time that the controller will spend on draining a node.
     /// The default value is 0, meaning that the node can be drained without any time limitations.
     /// NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDrainTimeout")]
     pub node_drain_timeout: Option<String>,
-    /// NodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes
+    /// nodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes
     /// to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeVolumeDetachTimeout")]
     pub node_volume_detach_timeout: Option<String>,
-    /// Replicas is the number of control plane nodes.
+    /// replicas is the number of control plane nodes.
     /// If the value is nil, the ControlPlane object is created without the number of Replicas
     /// and it's assumed that the control plane controller does not implement support for this field.
     /// When specified against a control plane provider that lacks support for this field, this value will be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// Variables can be used to customize the ControlPlane through patches.
+    /// variables can be used to customize the ControlPlane through patches.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub variables: Option<ClusterTopologyControlPlaneVariables>,
 }
 
-/// MachineHealthCheck allows to enable, disable and override
+/// machineHealthCheck allows to enable, disable and override
 /// the MachineHealthCheck configuration in the ClusterClass for this control plane.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyControlPlaneMachineHealthCheck {
-    /// Enable controls if a MachineHealthCheck should be created for the target machines.
+    /// enable controls if a MachineHealthCheck should be created for the target machines.
     /// 
     /// If false: No MachineHealthCheck will be created.
     /// 
@@ -266,7 +266,7 @@ pub struct ClusterTopologyControlPlaneMachineHealthCheck {
     /// "selector" are not healthy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnhealthy")]
     pub max_unhealthy: Option<IntOrString>,
-    /// NodeStartupTimeout allows to set the maximum time for MachineHealthCheck
+    /// nodeStartupTimeout allows to set the maximum time for MachineHealthCheck
     /// to consider a Machine unhealthy if a corresponding Node isn't associated
     /// through a `Spec.ProviderID` field.
     /// 
@@ -280,7 +280,7 @@ pub struct ClusterTopologyControlPlaneMachineHealthCheck {
     /// If you wish to disable this feature, set the value explicitly to 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeStartupTimeout")]
     pub node_startup_timeout: Option<String>,
-    /// RemediationTemplate is a reference to a remediation template
+    /// remediationTemplate is a reference to a remediation template
     /// provided by an infrastructure provider.
     /// 
     /// This field is completely optional, when filled, the MachineHealthCheck controller
@@ -288,7 +288,7 @@ pub struct ClusterTopologyControlPlaneMachineHealthCheck {
     /// a controller that lives outside of Cluster API.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remediationTemplate")]
     pub remediation_template: Option<ObjectReference>,
-    /// UnhealthyConditions contains a list of the conditions that determine
+    /// unhealthyConditions contains a list of the conditions that determine
     /// whether a node is considered unhealthy. The conditions are combined in a
     /// logical OR, i.e. if any of the conditions is met, the node is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyConditions")]
@@ -302,7 +302,7 @@ pub struct ClusterTopologyControlPlaneMachineHealthCheck {
     pub unhealthy_range: Option<String>,
 }
 
-/// RemediationTemplate is a reference to a remediation template
+/// remediationTemplate is a reference to a remediation template
 /// provided by an infrastructure provider.
 /// 
 /// This field is completely optional, when filled, the MachineHealthCheck controller
@@ -355,13 +355,13 @@ pub struct ClusterTopologyControlPlaneMachineHealthCheckUnhealthyConditions {
     pub r#type: String,
 }
 
-/// Metadata is the metadata applied to the ControlPlane and the Machines of the ControlPlane
+/// metadata is the metadata applied to the ControlPlane and the Machines of the ControlPlane
 /// if the ControlPlaneTemplate referenced by the ClusterClass is machine based. If not, it
 /// is applied only to the ControlPlane.
 /// At runtime this metadata is merged with the corresponding metadata from the ClusterClass.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyControlPlaneMetadata {
-    /// Annotations is an unstructured key value map stored with a resource that may be
+    /// annotations is an unstructured key value map stored with a resource that may be
     /// set by external tools to store and retrieve arbitrary metadata. They are not
     /// queryable and should be preserved when modifying objects.
     /// More info: http://kubernetes.io/docs/user-guide/annotations
@@ -375,10 +375,10 @@ pub struct ClusterTopologyControlPlaneMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Variables can be used to customize the ControlPlane through patches.
+/// variables can be used to customize the ControlPlane through patches.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyControlPlaneVariables {
-    /// Overrides can be used to override Cluster level variables.
+    /// overrides can be used to override Cluster level variables.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub overrides: Option<Vec<ClusterTopologyControlPlaneVariablesOverrides>>,
 }
@@ -387,14 +387,14 @@ pub struct ClusterTopologyControlPlaneVariables {
 /// Variable definition in the ClusterClass `status` variables.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyControlPlaneVariablesOverrides {
-    /// DefinitionFrom specifies where the definition of this Variable is from.
+    /// definitionFrom specifies where the definition of this Variable is from.
     /// 
     /// Deprecated: This field is deprecated, must not be set anymore and is going to be removed in the next apiVersion.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "definitionFrom")]
     pub definition_from: Option<String>,
-    /// Name of the variable.
+    /// name of the variable.
     pub name: String,
-    /// Value of the variable.
+    /// value of the variable.
     /// Note: the value will be validated against the schema of the corresponding ClusterClassVariable
     /// from the ClusterClass.
     /// Note: We have to use apiextensionsv1.JSON instead of a custom JSON type, because controller-tools has a
@@ -408,14 +408,14 @@ pub struct ClusterTopologyControlPlaneVariablesOverrides {
 /// Variable definition in the ClusterClass `status` variables.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyVariables {
-    /// DefinitionFrom specifies where the definition of this Variable is from.
+    /// definitionFrom specifies where the definition of this Variable is from.
     /// 
     /// Deprecated: This field is deprecated, must not be set anymore and is going to be removed in the next apiVersion.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "definitionFrom")]
     pub definition_from: Option<String>,
-    /// Name of the variable.
+    /// name of the variable.
     pub name: String,
-    /// Value of the variable.
+    /// value of the variable.
     /// Note: the value will be validated against the schema of the corresponding ClusterClassVariable
     /// from the ClusterClass.
     /// Note: We have to use apiextensionsv1.JSON instead of a custom JSON type, because controller-tools has a
@@ -425,14 +425,14 @@ pub struct ClusterTopologyVariables {
     pub value: serde_json::Value,
 }
 
-/// Workers encapsulates the different constructs that form the worker nodes
+/// workers encapsulates the different constructs that form the worker nodes
 /// for the cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyWorkers {
-    /// MachineDeployments is a list of machine deployments in the cluster.
+    /// machineDeployments is a list of machine deployments in the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineDeployments")]
     pub machine_deployments: Option<Vec<ClusterTopologyWorkersMachineDeployments>>,
-    /// MachinePools is a list of machine pools in the cluster.
+    /// machinePools is a list of machine pools in the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "machinePools")]
     pub machine_pools: Option<Vec<ClusterTopologyWorkersMachinePools>>,
 }
@@ -441,19 +441,19 @@ pub struct ClusterTopologyWorkers {
 /// This set of nodes is managed by a MachineDeployment object whose lifecycle is managed by the Cluster controller.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyWorkersMachineDeployments {
-    /// Class is the name of the MachineDeploymentClass used to create the set of worker nodes.
+    /// class is the name of the MachineDeploymentClass used to create the set of worker nodes.
     /// This should match one of the deployment classes defined in the ClusterClass object
     /// mentioned in the `Cluster.Spec.Class` field.
     pub class: String,
-    /// FailureDomain is the failure domain the machines will be created in.
+    /// failureDomain is the failure domain the machines will be created in.
     /// Must match a key in the FailureDomains map stored on the cluster object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomain")]
     pub failure_domain: Option<String>,
-    /// MachineHealthCheck allows to enable, disable and override
+    /// machineHealthCheck allows to enable, disable and override
     /// the MachineHealthCheck configuration in the ClusterClass for this MachineDeployment.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineHealthCheck")]
     pub machine_health_check: Option<ClusterTopologyWorkersMachineDeploymentsMachineHealthCheck>,
-    /// Metadata is the metadata applied to the MachineDeployment and the machines of the MachineDeployment.
+    /// metadata is the metadata applied to the MachineDeployment and the machines of the MachineDeployment.
     /// At runtime this metadata is merged with the corresponding metadata from the ClusterClass.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<ClusterTopologyWorkersMachineDeploymentsMetadata>,
@@ -463,26 +463,26 @@ pub struct ClusterTopologyWorkersMachineDeployments {
     /// is ready)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
-    /// Name is the unique identifier for this MachineDeploymentTopology.
+    /// name is the unique identifier for this MachineDeploymentTopology.
     /// The value is used with other unique identifiers to create a MachineDeployment's Name
     /// (e.g. cluster's name, etc). In case the name is greater than the allowed maximum length,
     /// the values are hashed together.
     pub name: String,
-    /// NodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine
+    /// nodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine
     /// hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely.
     /// Defaults to 10 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDeletionTimeout")]
     pub node_deletion_timeout: Option<String>,
-    /// NodeDrainTimeout is the total amount of time that the controller will spend on draining a node.
+    /// nodeDrainTimeout is the total amount of time that the controller will spend on draining a node.
     /// The default value is 0, meaning that the node can be drained without any time limitations.
     /// NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDrainTimeout")]
     pub node_drain_timeout: Option<String>,
-    /// NodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes
+    /// nodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes
     /// to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeVolumeDetachTimeout")]
     pub node_volume_detach_timeout: Option<String>,
-    /// Replicas is the number of worker nodes belonging to this set.
+    /// replicas is the number of worker nodes belonging to this set.
     /// If the value is nil, the MachineDeployment is created without the number of Replicas (defaulting to 1)
     /// and it's assumed that an external entity (like cluster autoscaler) is responsible for the management
     /// of this value.
@@ -492,16 +492,16 @@ pub struct ClusterTopologyWorkersMachineDeployments {
     /// new ones.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<ClusterTopologyWorkersMachineDeploymentsStrategy>,
-    /// Variables can be used to customize the MachineDeployment through patches.
+    /// variables can be used to customize the MachineDeployment through patches.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub variables: Option<ClusterTopologyWorkersMachineDeploymentsVariables>,
 }
 
-/// MachineHealthCheck allows to enable, disable and override
+/// machineHealthCheck allows to enable, disable and override
 /// the MachineHealthCheck configuration in the ClusterClass for this MachineDeployment.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyWorkersMachineDeploymentsMachineHealthCheck {
-    /// Enable controls if a MachineHealthCheck should be created for the target machines.
+    /// enable controls if a MachineHealthCheck should be created for the target machines.
     /// 
     /// If false: No MachineHealthCheck will be created.
     /// 
@@ -516,7 +516,7 @@ pub struct ClusterTopologyWorkersMachineDeploymentsMachineHealthCheck {
     /// "selector" are not healthy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnhealthy")]
     pub max_unhealthy: Option<IntOrString>,
-    /// NodeStartupTimeout allows to set the maximum time for MachineHealthCheck
+    /// nodeStartupTimeout allows to set the maximum time for MachineHealthCheck
     /// to consider a Machine unhealthy if a corresponding Node isn't associated
     /// through a `Spec.ProviderID` field.
     /// 
@@ -530,7 +530,7 @@ pub struct ClusterTopologyWorkersMachineDeploymentsMachineHealthCheck {
     /// If you wish to disable this feature, set the value explicitly to 0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeStartupTimeout")]
     pub node_startup_timeout: Option<String>,
-    /// RemediationTemplate is a reference to a remediation template
+    /// remediationTemplate is a reference to a remediation template
     /// provided by an infrastructure provider.
     /// 
     /// This field is completely optional, when filled, the MachineHealthCheck controller
@@ -538,7 +538,7 @@ pub struct ClusterTopologyWorkersMachineDeploymentsMachineHealthCheck {
     /// a controller that lives outside of Cluster API.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "remediationTemplate")]
     pub remediation_template: Option<ObjectReference>,
-    /// UnhealthyConditions contains a list of the conditions that determine
+    /// unhealthyConditions contains a list of the conditions that determine
     /// whether a node is considered unhealthy. The conditions are combined in a
     /// logical OR, i.e. if any of the conditions is met, the node is unhealthy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyConditions")]
@@ -552,7 +552,7 @@ pub struct ClusterTopologyWorkersMachineDeploymentsMachineHealthCheck {
     pub unhealthy_range: Option<String>,
 }
 
-/// RemediationTemplate is a reference to a remediation template
+/// remediationTemplate is a reference to a remediation template
 /// provided by an infrastructure provider.
 /// 
 /// This field is completely optional, when filled, the MachineHealthCheck controller
@@ -605,11 +605,11 @@ pub struct ClusterTopologyWorkersMachineDeploymentsMachineHealthCheckUnhealthyCo
     pub r#type: String,
 }
 
-/// Metadata is the metadata applied to the MachineDeployment and the machines of the MachineDeployment.
+/// metadata is the metadata applied to the MachineDeployment and the machines of the MachineDeployment.
 /// At runtime this metadata is merged with the corresponding metadata from the ClusterClass.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyWorkersMachineDeploymentsMetadata {
-    /// Annotations is an unstructured key value map stored with a resource that may be
+    /// annotations is an unstructured key value map stored with a resource that may be
     /// set by external tools to store and retrieve arbitrary metadata. They are not
     /// queryable and should be preserved when modifying objects.
     /// More info: http://kubernetes.io/docs/user-guide/annotations
@@ -627,7 +627,7 @@ pub struct ClusterTopologyWorkersMachineDeploymentsMetadata {
 /// new ones.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyWorkersMachineDeploymentsStrategy {
-    /// Remediation controls the strategy of remediating unhealthy machines
+    /// remediation controls the strategy of remediating unhealthy machines
     /// and how remediating operations should occur during the lifecycle of the dependant MachineSets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub remediation: Option<ClusterTopologyWorkersMachineDeploymentsStrategyRemediation>,
@@ -635,17 +635,17 @@ pub struct ClusterTopologyWorkersMachineDeploymentsStrategy {
     /// MachineDeploymentStrategyType = RollingUpdate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<ClusterTopologyWorkersMachineDeploymentsStrategyRollingUpdate>,
-    /// Type of deployment. Allowed values are RollingUpdate and OnDelete.
+    /// type of deployment. Allowed values are RollingUpdate and OnDelete.
     /// The default is RollingUpdate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<ClusterTopologyWorkersMachineDeploymentsStrategyType>,
 }
 
-/// Remediation controls the strategy of remediating unhealthy machines
+/// remediation controls the strategy of remediating unhealthy machines
 /// and how remediating operations should occur during the lifecycle of the dependant MachineSets.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyWorkersMachineDeploymentsStrategyRemediation {
-    /// MaxInFlight determines how many in flight remediations should happen at the same time.
+    /// maxInFlight determines how many in flight remediations should happen at the same time.
     /// 
     /// Remediation only happens on the MachineSet with the most current revision, while
     /// older MachineSets (usually present during rollout operations) aren't allowed to remediate.
@@ -667,7 +667,7 @@ pub struct ClusterTopologyWorkersMachineDeploymentsStrategyRemediation {
 /// MachineDeploymentStrategyType = RollingUpdate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyWorkersMachineDeploymentsStrategyRollingUpdate {
-    /// DeletePolicy defines the policy used by the MachineDeployment to identify nodes to delete when downscaling.
+    /// deletePolicy defines the policy used by the MachineDeployment to identify nodes to delete when downscaling.
     /// Valid values are "Random, "Newest", "Oldest"
     /// When no value is supplied, the default DeletePolicy of MachineSet is used
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletePolicy")]
@@ -720,10 +720,10 @@ pub enum ClusterTopologyWorkersMachineDeploymentsStrategyType {
     OnDelete,
 }
 
-/// Variables can be used to customize the MachineDeployment through patches.
+/// variables can be used to customize the MachineDeployment through patches.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyWorkersMachineDeploymentsVariables {
-    /// Overrides can be used to override Cluster level variables.
+    /// overrides can be used to override Cluster level variables.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub overrides: Option<Vec<ClusterTopologyWorkersMachineDeploymentsVariablesOverrides>>,
 }
@@ -732,14 +732,14 @@ pub struct ClusterTopologyWorkersMachineDeploymentsVariables {
 /// Variable definition in the ClusterClass `status` variables.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyWorkersMachineDeploymentsVariablesOverrides {
-    /// DefinitionFrom specifies where the definition of this Variable is from.
+    /// definitionFrom specifies where the definition of this Variable is from.
     /// 
     /// Deprecated: This field is deprecated, must not be set anymore and is going to be removed in the next apiVersion.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "definitionFrom")]
     pub definition_from: Option<String>,
-    /// Name of the variable.
+    /// name of the variable.
     pub name: String,
-    /// Value of the variable.
+    /// value of the variable.
     /// Note: the value will be validated against the schema of the corresponding ClusterClassVariable
     /// from the ClusterClass.
     /// Note: We have to use apiextensionsv1.JSON instead of a custom JSON type, because controller-tools has a
@@ -753,15 +753,15 @@ pub struct ClusterTopologyWorkersMachineDeploymentsVariablesOverrides {
 /// This pool of nodes is managed by a MachinePool object whose lifecycle is managed by the Cluster controller.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyWorkersMachinePools {
-    /// Class is the name of the MachinePoolClass used to create the pool of worker nodes.
+    /// class is the name of the MachinePoolClass used to create the pool of worker nodes.
     /// This should match one of the deployment classes defined in the ClusterClass object
     /// mentioned in the `Cluster.Spec.Class` field.
     pub class: String,
-    /// FailureDomains is the list of failure domains the machine pool will be created in.
+    /// failureDomains is the list of failure domains the machine pool will be created in.
     /// Must match a key in the FailureDomains map stored on the cluster object.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomains")]
     pub failure_domains: Option<Vec<String>>,
-    /// Metadata is the metadata applied to the MachinePool.
+    /// metadata is the metadata applied to the MachinePool.
     /// At runtime this metadata is merged with the corresponding metadata from the ClusterClass.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<ClusterTopologyWorkersMachinePoolsMetadata>,
@@ -771,41 +771,41 @@ pub struct ClusterTopologyWorkersMachinePools {
     /// is ready)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
-    /// Name is the unique identifier for this MachinePoolTopology.
+    /// name is the unique identifier for this MachinePoolTopology.
     /// The value is used with other unique identifiers to create a MachinePool's Name
     /// (e.g. cluster's name, etc). In case the name is greater than the allowed maximum length,
     /// the values are hashed together.
     pub name: String,
-    /// NodeDeletionTimeout defines how long the controller will attempt to delete the Node that the MachinePool
+    /// nodeDeletionTimeout defines how long the controller will attempt to delete the Node that the MachinePool
     /// hosts after the MachinePool is marked for deletion. A duration of 0 will retry deletion indefinitely.
     /// Defaults to 10 seconds.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDeletionTimeout")]
     pub node_deletion_timeout: Option<String>,
-    /// NodeDrainTimeout is the total amount of time that the controller will spend on draining a node.
+    /// nodeDrainTimeout is the total amount of time that the controller will spend on draining a node.
     /// The default value is 0, meaning that the node can be drained without any time limitations.
     /// NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDrainTimeout")]
     pub node_drain_timeout: Option<String>,
-    /// NodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes
+    /// nodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes
     /// to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeVolumeDetachTimeout")]
     pub node_volume_detach_timeout: Option<String>,
-    /// Replicas is the number of nodes belonging to this pool.
+    /// replicas is the number of nodes belonging to this pool.
     /// If the value is nil, the MachinePool is created without the number of Replicas (defaulting to 1)
     /// and it's assumed that an external entity (like cluster autoscaler) is responsible for the management
     /// of this value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    /// Variables can be used to customize the MachinePool through patches.
+    /// variables can be used to customize the MachinePool through patches.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub variables: Option<ClusterTopologyWorkersMachinePoolsVariables>,
 }
 
-/// Metadata is the metadata applied to the MachinePool.
+/// metadata is the metadata applied to the MachinePool.
 /// At runtime this metadata is merged with the corresponding metadata from the ClusterClass.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyWorkersMachinePoolsMetadata {
-    /// Annotations is an unstructured key value map stored with a resource that may be
+    /// annotations is an unstructured key value map stored with a resource that may be
     /// set by external tools to store and retrieve arbitrary metadata. They are not
     /// queryable and should be preserved when modifying objects.
     /// More info: http://kubernetes.io/docs/user-guide/annotations
@@ -819,10 +819,10 @@ pub struct ClusterTopologyWorkersMachinePoolsMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Variables can be used to customize the MachinePool through patches.
+/// variables can be used to customize the MachinePool through patches.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyWorkersMachinePoolsVariables {
-    /// Overrides can be used to override Cluster level variables.
+    /// overrides can be used to override Cluster level variables.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub overrides: Option<Vec<ClusterTopologyWorkersMachinePoolsVariablesOverrides>>,
 }
@@ -831,14 +831,14 @@ pub struct ClusterTopologyWorkersMachinePoolsVariables {
 /// Variable definition in the ClusterClass `status` variables.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyWorkersMachinePoolsVariablesOverrides {
-    /// DefinitionFrom specifies where the definition of this Variable is from.
+    /// definitionFrom specifies where the definition of this Variable is from.
     /// 
     /// Deprecated: This field is deprecated, must not be set anymore and is going to be removed in the next apiVersion.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "definitionFrom")]
     pub definition_from: Option<String>,
-    /// Name of the variable.
+    /// name of the variable.
     pub name: String,
-    /// Value of the variable.
+    /// value of the variable.
     /// Note: the value will be validated against the schema of the corresponding ClusterClassVariable
     /// from the ClusterClass.
     /// Note: We have to use apiextensionsv1.JSON instead of a custom JSON type, because controller-tools has a
@@ -851,39 +851,39 @@ pub struct ClusterTopologyWorkersMachinePoolsVariablesOverrides {
 /// ClusterStatus defines the observed state of Cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterStatus {
-    /// Conditions defines current service state of the cluster.
+    /// conditions defines current service state of the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// ControlPlaneReady denotes if the control plane became ready during initial provisioning
+    /// controlPlaneReady denotes if the control plane became ready during initial provisioning
     /// to receive requests.
     /// NOTE: this field is part of the Cluster API contract and it is used to orchestrate provisioning.
     /// The value of this field is never updated after provisioning is completed. Please use conditions
     /// to check the operational state of the control plane.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneReady")]
     pub control_plane_ready: Option<bool>,
-    /// FailureDomains is a slice of failure domain objects synced from the infrastructure provider.
+    /// failureDomains is a slice of failure domain objects synced from the infrastructure provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomains")]
     pub failure_domains: Option<BTreeMap<String, ClusterStatusFailureDomains>>,
-    /// FailureMessage indicates that there is a fatal problem reconciling the
+    /// failureMessage indicates that there is a fatal problem reconciling the
     /// state, and will be set to a descriptive error message.
     /// 
     /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
     pub failure_message: Option<String>,
-    /// FailureReason indicates that there is a fatal problem reconciling the
+    /// failureReason indicates that there is a fatal problem reconciling the
     /// state, and will be set to a token value suitable for
     /// programmatic interpretation.
     /// 
     /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/blob/main/docs/proposals/20240916-improve-status-in-CAPI-resources.md for more details.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
-    /// InfrastructureReady is the state of the infrastructure provider.
+    /// infrastructureReady is the state of the infrastructure provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "infrastructureReady")]
     pub infrastructure_ready: Option<bool>,
-    /// ObservedGeneration is the latest generation observed by the controller.
+    /// observedGeneration is the latest generation observed by the controller.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// Phase represents the current phase of cluster actuation.
+    /// phase represents the current phase of cluster actuation.
     /// E.g. Pending, Running, Terminating, Failed etc.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
@@ -892,13 +892,13 @@ pub struct ClusterStatus {
     pub v1beta2: Option<ClusterStatusV1beta2>,
 }
 
-/// FailureDomains is a slice of failure domain objects synced from the infrastructure provider.
+/// failureDomains is a slice of failure domain objects synced from the infrastructure provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterStatusFailureDomains {
-    /// Attributes is a free form map of attributes an infrastructure provider might use or require.
+    /// attributes is a free form map of attributes an infrastructure provider might use or require.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<BTreeMap<String, String>>,
-    /// ControlPlane determines if this failure domain is suitable for use by control plane machines.
+    /// controlPlane determines if this failure domain is suitable for use by control plane machines.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
     pub control_plane: Option<bool>,
 }

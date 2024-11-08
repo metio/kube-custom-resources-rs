@@ -476,6 +476,10 @@ pub struct MachinePoolPlatformIbmcloudDedicatedHosts {
 /// OpenStack is the configuration used when installing on OpenStack.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachinePoolPlatformOpenstack {
+    /// AdditionalSecurityGroupIDs contains IDs of additional security groups for machines, where each ID
+    /// is presented in the format sg-xxxx.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalSecurityGroupIDs")]
+    pub additional_security_group_i_ds: Option<Vec<String>>,
     /// Flavor defines the OpenStack Nova flavor.
     /// eg. m1.large
     /// The json key here differs from the installer which uses both "computeFlavor" and type "type" depending on which

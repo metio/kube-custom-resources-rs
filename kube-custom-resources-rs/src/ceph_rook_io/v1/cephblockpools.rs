@@ -229,10 +229,10 @@ pub struct CephBlockPoolStatus {
     pub conditions: Option<Vec<Condition>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub info: Option<BTreeMap<String, String>>,
-    /// MirroringInfoSpec is the status of the pool mirroring
+    /// MirroringInfoSpec is the status of the pool/radosnamespace mirroring
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mirroringInfo")]
     pub mirroring_info: Option<CephBlockPoolStatusMirroringInfo>,
-    /// MirroringStatusSpec is the status of the pool mirroring
+    /// MirroringStatusSpec is the status of the pool/radosNamespace mirroring
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mirroringStatus")]
     pub mirroring_status: Option<CephBlockPoolStatusMirroringStatus>,
     /// ObservedGeneration is the latest generation observed by the controller.
@@ -246,7 +246,7 @@ pub struct CephBlockPoolStatus {
     pub snapshot_schedule_status: Option<CephBlockPoolStatusSnapshotScheduleStatus>,
 }
 
-/// MirroringInfoSpec is the status of the pool mirroring
+/// MirroringInfoSpec is the status of the pool/radosnamespace mirroring
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephBlockPoolStatusMirroringInfo {
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -286,7 +286,7 @@ pub struct CephBlockPoolStatusMirroringInfoPeers {
     pub uuid: Option<String>,
 }
 
-/// MirroringStatusSpec is the status of the pool mirroring
+/// MirroringStatusSpec is the status of the pool/radosNamespace mirroring
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephBlockPoolStatusMirroringStatus {
     /// Details contains potential status errors

@@ -19,34 +19,34 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct ExtensionConfigSpec {
-    /// ClientConfig defines how to communicate with the Extension server.
+    /// clientConfig defines how to communicate with the Extension server.
     #[serde(rename = "clientConfig")]
     pub client_config: ExtensionConfigClientConfig,
-    /// NamespaceSelector decides whether to call the hook for an object based
+    /// namespaceSelector decides whether to call the hook for an object based
     /// on whether the namespace for that object matches the selector.
     /// Defaults to the empty LabelSelector, which matches all objects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<ExtensionConfigNamespaceSelector>,
-    /// Settings defines key value pairs to be passed to all calls
+    /// settings defines key value pairs to be passed to all calls
     /// to all supported RuntimeExtensions.
     /// Note: Settings can be overridden on the ClusterClass.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub settings: Option<BTreeMap<String, String>>,
 }
 
-/// ClientConfig defines how to communicate with the Extension server.
+/// clientConfig defines how to communicate with the Extension server.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ExtensionConfigClientConfig {
-    /// CABundle is a PEM encoded CA bundle which will be used to validate the Extension server's server certificate.
+    /// caBundle is a PEM encoded CA bundle which will be used to validate the Extension server's server certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundle")]
     pub ca_bundle: Option<String>,
-    /// Service is a reference to the Kubernetes service for the Extension server.
+    /// service is a reference to the Kubernetes service for the Extension server.
     /// Note: Exactly one of `url` or `service` must be specified.
     /// 
     /// If the Extension server is running within a cluster, then you should use `service`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<ExtensionConfigClientConfigService>,
-    /// URL gives the location of the Extension server, in standard URL form
+    /// url gives the location of the Extension server, in standard URL form
     /// (`scheme://host:port/path`).
     /// Note: Exactly one of `url` or `service` must be specified.
     /// 
@@ -65,28 +65,28 @@ pub struct ExtensionConfigClientConfig {
     pub url: Option<String>,
 }
 
-/// Service is a reference to the Kubernetes service for the Extension server.
+/// service is a reference to the Kubernetes service for the Extension server.
 /// Note: Exactly one of `url` or `service` must be specified.
 /// 
 /// If the Extension server is running within a cluster, then you should use `service`.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ExtensionConfigClientConfigService {
-    /// Name is the name of the service.
+    /// name is the name of the service.
     pub name: String,
-    /// Namespace is the namespace of the service.
+    /// namespace is the namespace of the service.
     pub namespace: String,
-    /// Path is an optional URL path and if present may be any string permissible in
+    /// path is an optional URL path and if present may be any string permissible in
     /// a URL. If a path is set it will be used as prefix to the hook-specific path.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Port is the port on the service that's hosting the Extension server.
+    /// port is the port on the service that's hosting the Extension server.
     /// Defaults to 443.
     /// Port should be a valid port number (1-65535, inclusive).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
 }
 
-/// NamespaceSelector decides whether to call the hook for an object based
+/// namespaceSelector decides whether to call the hook for an object based
 /// on whether the namespace for that object matches the selector.
 /// Defaults to the empty LabelSelector, which matches all objects.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -121,10 +121,10 @@ pub struct ExtensionConfigNamespaceSelectorMatchExpressions {
 /// ExtensionConfigStatus is the current state of the ExtensionConfig
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ExtensionConfigStatus {
-    /// Conditions define the current service state of the ExtensionConfig.
+    /// conditions define the current service state of the ExtensionConfig.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// Handlers defines the current ExtensionHandlers supported by an Extension.
+    /// handlers defines the current ExtensionHandlers supported by an Extension.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub handlers: Option<Vec<ExtensionConfigStatusHandlers>>,
 }
@@ -132,28 +132,28 @@ pub struct ExtensionConfigStatus {
 /// ExtensionHandler specifies the details of a handler for a particular runtime hook registered by an Extension server.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ExtensionConfigStatusHandlers {
-    /// FailurePolicy defines how failures in calls to the ExtensionHandler should be handled by a client.
+    /// failurePolicy defines how failures in calls to the ExtensionHandler should be handled by a client.
     /// Defaults to Fail if not set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failurePolicy")]
     pub failure_policy: Option<String>,
-    /// Name is the unique name of the ExtensionHandler.
+    /// name is the unique name of the ExtensionHandler.
     pub name: String,
-    /// RequestHook defines the versioned runtime hook which this ExtensionHandler serves.
+    /// requestHook defines the versioned runtime hook which this ExtensionHandler serves.
     #[serde(rename = "requestHook")]
     pub request_hook: ExtensionConfigStatusHandlersRequestHook,
-    /// TimeoutSeconds defines the timeout duration for client calls to the ExtensionHandler.
+    /// timeoutSeconds defines the timeout duration for client calls to the ExtensionHandler.
     /// Defaults to 10 is not set.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
-/// RequestHook defines the versioned runtime hook which this ExtensionHandler serves.
+/// requestHook defines the versioned runtime hook which this ExtensionHandler serves.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ExtensionConfigStatusHandlersRequestHook {
-    /// APIVersion is the group and version of the Hook.
+    /// apiVersion is the group and version of the Hook.
     #[serde(rename = "apiVersion")]
     pub api_version: String,
-    /// Hook is the name of the hook.
+    /// hook is the name of the hook.
     pub hook: String,
 }
 

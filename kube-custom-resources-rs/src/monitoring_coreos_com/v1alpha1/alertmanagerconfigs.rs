@@ -5564,6 +5564,10 @@ pub struct AlertmanagerConfigReceiversTelegramConfigs {
     /// Message template
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
+    /// The Telegram Group Topic ID.
+    /// It requires Alertmanager >= 0.26.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "messageThreadID")]
+    pub message_thread_id: Option<i64>,
     /// Parse mode for telegram message
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "parseMode")]
     pub parse_mode: Option<AlertmanagerConfigReceiversTelegramConfigsParseMode>,

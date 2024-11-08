@@ -4727,6 +4727,9 @@ spec:
                       type: "object"
                   type: "object"
                 nullout:
+                  properties:
+                    never_flush:
+                      type: "boolean"
                   type: "object"
                 opensearch:
                   properties:
@@ -5342,6 +5345,8 @@ spec:
                       type: "boolean"
                     reload_on_failure:
                       type: "boolean"
+                    remove_keys:
+                      type: "string"
                     remove_keys_on_update:
                       type: "string"
                     remove_keys_on_update_key:

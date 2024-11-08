@@ -25,10 +25,10 @@ pub struct ClusterResourceSetSpec {
     /// It must match the Cluster labels. This field is immutable.
     #[serde(rename = "clusterSelector")]
     pub cluster_selector: ClusterResourceSetClusterSelector,
-    /// Resources is a list of Secrets/ConfigMaps where each contains 1 or more resources to be applied to remote clusters.
+    /// resources is a list of Secrets/ConfigMaps where each contains 1 or more resources to be applied to remote clusters.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<Vec<ClusterResourceSetResources>>,
-    /// Strategy is the strategy to be used during applying resources. Defaults to ApplyOnce. This field is immutable.
+    /// strategy is the strategy to be used during applying resources. Defaults to ApplyOnce. This field is immutable.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<ClusterResourceSetStrategy>,
 }
@@ -68,9 +68,9 @@ pub struct ClusterResourceSetClusterSelectorMatchExpressions {
 /// ResourceRef specifies a resource.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterResourceSetResources {
-    /// Kind of the resource. Supported kinds are: Secrets and ConfigMaps.
+    /// kind of the resource. Supported kinds are: Secrets and ConfigMaps.
     pub kind: ClusterResourceSetResourcesKind,
-    /// Name of the resource that is in the same namespace with ClusterResourceSet object.
+    /// name of the resource that is in the same namespace with ClusterResourceSet object.
     pub name: String,
 }
 
@@ -90,10 +90,10 @@ pub enum ClusterResourceSetStrategy {
 /// ClusterResourceSetStatus defines the observed state of ClusterResourceSet.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterResourceSetStatus {
-    /// Conditions defines current state of the ClusterResourceSet.
+    /// conditions defines current state of the ClusterResourceSet.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// ObservedGeneration reflects the generation of the most recently observed ClusterResourceSet.
+    /// observedGeneration reflects the generation of the most recently observed ClusterResourceSet.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
 }

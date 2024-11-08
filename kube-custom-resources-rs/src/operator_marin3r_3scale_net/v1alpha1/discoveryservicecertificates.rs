@@ -19,39 +19,47 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct DiscoveryServiceCertificateSpec {
-    /// CertificateRenewalConfig configures the certificate renewal process. If unset default behavior is to renew the certificate but not notify of renewals.
+    /// CertificateRenewalConfig configures the certificate renewal process. If unset default
+    /// behavior is to renew the certificate but not notify of renewals.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateRenewal")]
     pub certificate_renewal: Option<DiscoveryServiceCertificateCertificateRenewal>,
     /// CommonName is the CommonName of the certificate
     #[serde(rename = "commonName")]
     pub common_name: String,
-    /// Hosts is the list of hosts the certificate is valid for. Only use when 'IsServerCertificate' is true. If unset, the CommonName field will be used to populate the valid hosts of the certificate.
+    /// Hosts is the list of hosts the certificate is valid for. Only
+    /// use when 'IsServerCertificate' is true. If unset, the CommonName
+    /// field will be used to populate the valid hosts of the certificate.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hosts: Option<Vec<String>>,
     /// IsCA is a boolean specifying that the certificate is a CA
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isCA")]
     pub is_ca: Option<bool>,
-    /// SecretRef is a reference to the secret that will hold the certificate and the private key.
+    /// SecretRef is a reference to the secret that will hold the certificate
+    /// and the private key.
     #[serde(rename = "secretRef")]
     pub secret_ref: DiscoveryServiceCertificateSecretRef,
-    /// IsServerCertificate is a boolean specifying if the certificate should be issued with server auth usage enabled
+    /// IsServerCertificate is a boolean specifying if the certificate should be
+    /// issued with server auth usage enabled
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub server: Option<bool>,
-    /// Signer specifies  the signer to use to create this certificate. Supported signers are CertManager and SelfSigned.
+    /// Signer specifies  the signer to use to create this certificate. Supported
+    /// signers are CertManager and SelfSigned.
     pub signer: DiscoveryServiceCertificateSigner,
     /// ValidFor specifies the validity of the certificate in seconds
     #[serde(rename = "validFor")]
     pub valid_for: i64,
 }
 
-/// CertificateRenewalConfig configures the certificate renewal process. If unset default behavior is to renew the certificate but not notify of renewals.
+/// CertificateRenewalConfig configures the certificate renewal process. If unset default
+/// behavior is to renew the certificate but not notify of renewals.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DiscoveryServiceCertificateCertificateRenewal {
     /// Enabled is a flag to enable or disable renewal of the certificate
     pub enabled: bool,
 }
 
-/// SecretRef is a reference to the secret that will hold the certificate and the private key.
+/// SecretRef is a reference to the secret that will hold the certificate
+/// and the private key.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DiscoveryServiceCertificateSecretRef {
     /// name is unique within a namespace to reference a secret resource.
@@ -62,7 +70,8 @@ pub struct DiscoveryServiceCertificateSecretRef {
     pub namespace: Option<String>,
 }
 
-/// Signer specifies  the signer to use to create this certificate. Supported signers are CertManager and SelfSigned.
+/// Signer specifies  the signer to use to create this certificate. Supported
+/// signers are CertManager and SelfSigned.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DiscoveryServiceCertificateSigner {
     /// CASigned holds specific configuration for the CASigned signer
@@ -100,7 +109,8 @@ pub struct DiscoveryServiceCertificateSignerSelfSigned {
 /// DiscoveryServiceCertificateStatus defines the observed state of DiscoveryServiceCertificate
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DiscoveryServiceCertificateStatus {
-    /// CertificateHash stores the current hash of the certificate. It is used for other controllers to validate if a certificate has been re-issued.
+    /// CertificateHash stores the current hash of the certificate. It is used
+    /// for other controllers to validate if a certificate has been re-issued.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateHash")]
     pub certificate_hash: Option<String>,
     /// Conditions represent the latest available observations of an object's state
@@ -109,7 +119,8 @@ pub struct DiscoveryServiceCertificateStatus {
     /// NotAfter is the time at which the certificate expires
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "notAfter")]
     pub not_after: Option<String>,
-    /// NotBefore is the time at which the certificate starts being valid
+    /// NotBefore is the time at which the certificate starts
+    /// being valid
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "notBefore")]
     pub not_before: Option<String>,
     /// Ready is a boolean that specifies if the certificate is ready to be used

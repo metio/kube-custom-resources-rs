@@ -34,11 +34,13 @@ pub struct IngressRouteSpec {
 }
 
 /// Route holds the HTTP route configuration.
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IngressRouteRoutes {
     /// Kind defines the kind of the route.
     /// Rule is the only supported kind.
-    pub kind: IngressRouteRoutesKind,
+    /// If not defined, defaults to Rule.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub kind: Option<IngressRouteRoutesKind>,
     /// Match defines the router's rule.
     /// More info: https://doc.traefik.io/traefik/v3.2/routing/routers/#rule
     #[serde(rename = "match")]
@@ -215,7 +217,7 @@ pub struct IngressRouteRoutesServicesStickyCookie {
     /// HTTPOnly defines whether the cookie can be accessed by client-side APIs, such as JavaScript.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpOnly")]
     pub http_only: Option<bool>,
-    /// MaxAge indicates the number of seconds until the cookie expires.
+    /// MaxAge defines the number of seconds until the cookie expires.
     /// When set to a negative number, the cookie expires immediately.
     /// When set to zero, the cookie never expires.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxAge")]
@@ -223,6 +225,11 @@ pub struct IngressRouteRoutesServicesStickyCookie {
     /// Name defines the Cookie name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Path defines the path that must exist in the requested URL for the browser to send the Cookie header.
+    /// When not provided the cookie will be sent on every request to the domain.
+    /// More info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#pathpath-value
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
     /// SameSite defines the same site policy.
     /// More info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sameSite")]

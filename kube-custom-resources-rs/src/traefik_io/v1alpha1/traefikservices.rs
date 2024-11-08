@@ -292,7 +292,7 @@ pub struct TraefikServiceMirroringMirrorsStickyCookie {
     /// HTTPOnly defines whether the cookie can be accessed by client-side APIs, such as JavaScript.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpOnly")]
     pub http_only: Option<bool>,
-    /// MaxAge indicates the number of seconds until the cookie expires.
+    /// MaxAge defines the number of seconds until the cookie expires.
     /// When set to a negative number, the cookie expires immediately.
     /// When set to zero, the cookie never expires.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxAge")]
@@ -300,6 +300,11 @@ pub struct TraefikServiceMirroringMirrorsStickyCookie {
     /// Name defines the Cookie name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Path defines the path that must exist in the requested URL for the browser to send the Cookie header.
+    /// When not provided the cookie will be sent on every request to the domain.
+    /// More info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#pathpath-value
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
     /// SameSite defines the same site policy.
     /// More info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sameSite")]
@@ -336,7 +341,7 @@ pub struct TraefikServiceMirroringStickyCookie {
     /// HTTPOnly defines whether the cookie can be accessed by client-side APIs, such as JavaScript.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpOnly")]
     pub http_only: Option<bool>,
-    /// MaxAge indicates the number of seconds until the cookie expires.
+    /// MaxAge defines the number of seconds until the cookie expires.
     /// When set to a negative number, the cookie expires immediately.
     /// When set to zero, the cookie never expires.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxAge")]
@@ -344,6 +349,11 @@ pub struct TraefikServiceMirroringStickyCookie {
     /// Name defines the Cookie name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Path defines the path that must exist in the requested URL for the browser to send the Cookie header.
+    /// When not provided the cookie will be sent on every request to the domain.
+    /// More info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#pathpath-value
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
     /// SameSite defines the same site policy.
     /// More info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sameSite")]
@@ -503,7 +513,7 @@ pub struct TraefikServiceWeightedServicesStickyCookie {
     /// HTTPOnly defines whether the cookie can be accessed by client-side APIs, such as JavaScript.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpOnly")]
     pub http_only: Option<bool>,
-    /// MaxAge indicates the number of seconds until the cookie expires.
+    /// MaxAge defines the number of seconds until the cookie expires.
     /// When set to a negative number, the cookie expires immediately.
     /// When set to zero, the cookie never expires.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxAge")]
@@ -511,6 +521,11 @@ pub struct TraefikServiceWeightedServicesStickyCookie {
     /// Name defines the Cookie name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Path defines the path that must exist in the requested URL for the browser to send the Cookie header.
+    /// When not provided the cookie will be sent on every request to the domain.
+    /// More info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#pathpath-value
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
     /// SameSite defines the same site policy.
     /// More info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sameSite")]
@@ -535,7 +550,7 @@ pub struct TraefikServiceWeightedStickyCookie {
     /// HTTPOnly defines whether the cookie can be accessed by client-side APIs, such as JavaScript.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpOnly")]
     pub http_only: Option<bool>,
-    /// MaxAge indicates the number of seconds until the cookie expires.
+    /// MaxAge defines the number of seconds until the cookie expires.
     /// When set to a negative number, the cookie expires immediately.
     /// When set to zero, the cookie never expires.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxAge")]
@@ -543,6 +558,11 @@ pub struct TraefikServiceWeightedStickyCookie {
     /// Name defines the Cookie name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
+    /// Path defines the path that must exist in the requested URL for the browser to send the Cookie header.
+    /// When not provided the cookie will be sent on every request to the domain.
+    /// More info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#pathpath-value
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub path: Option<String>,
     /// SameSite defines the same site policy.
     /// More info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sameSite")]

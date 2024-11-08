@@ -357,6 +357,11 @@ spec:
                     openstack:
                       description: "OpenStack is the configuration used when installing on OpenStack."
                       properties:
+                        additionalSecurityGroupIDs:
+                          description: "AdditionalSecurityGroupIDs contains IDs of additional security groups for machines, where each ID\nis presented in the format sg-xxxx."
+                          items:
+                            type: "string"
+                          type: "array"
                         flavor:
                           description: "Flavor defines the OpenStack Nova flavor.\neg. m1.large\nThe json key here differs from the installer which uses both \"computeFlavor\" and type \"type\" depending on which\ntype you're looking at, and the resulting field on the MachineSet is \"flavor\". We are opting to stay consistent\nwith the end result."
                           type: "string"

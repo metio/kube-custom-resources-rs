@@ -17,7 +17,7 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct ClusterResourceSetBindingSpec {
-    /// Bindings is a list of ClusterResourceSets and their resources.
+    /// bindings is a list of ClusterResourceSets and their resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bindings: Option<Vec<ClusterResourceSetBindingBindings>>,
 }
@@ -25,10 +25,10 @@ pub struct ClusterResourceSetBindingSpec {
 /// ResourceSetBinding keeps info on all of the resources in a ClusterResourceSet.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterResourceSetBindingBindings {
-    /// ClusterResourceSetName is the name of the ClusterResourceSet that is applied to the owner cluster of the binding.
+    /// clusterResourceSetName is the name of the ClusterResourceSet that is applied to the owner cluster of the binding.
     #[serde(rename = "clusterResourceSetName")]
     pub cluster_resource_set_name: String,
-    /// Resources is a list of resources that the ClusterResourceSet has.
+    /// resources is a list of resources that the ClusterResourceSet has.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<Vec<ClusterResourceSetBindingBindingsResources>>,
 }
@@ -36,18 +36,18 @@ pub struct ClusterResourceSetBindingBindings {
 /// ResourceBinding shows the status of a resource that belongs to a ClusterResourceSet matched by the owner cluster of the ClusterResourceSetBinding object.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ClusterResourceSetBindingBindingsResources {
-    /// Applied is to track if a resource is applied to the cluster or not.
+    /// applied is to track if a resource is applied to the cluster or not.
     pub applied: bool,
-    /// Hash is the hash of a resource's data. This can be used to decide if a resource is changed.
+    /// hash is the hash of a resource's data. This can be used to decide if a resource is changed.
     /// For "ApplyOnce" ClusterResourceSet.spec.strategy, this is no-op as that strategy does not act on change.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hash: Option<String>,
-    /// Kind of the resource. Supported kinds are: Secrets and ConfigMaps.
+    /// kind of the resource. Supported kinds are: Secrets and ConfigMaps.
     pub kind: ClusterResourceSetBindingBindingsResourcesKind,
-    /// LastAppliedTime identifies when this resource was last applied to the cluster.
+    /// lastAppliedTime identifies when this resource was last applied to the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAppliedTime")]
     pub last_applied_time: Option<String>,
-    /// Name of the resource that is in the same namespace with ClusterResourceSet object.
+    /// name of the resource that is in the same namespace with ClusterResourceSet object.
     pub name: String,
 }
 

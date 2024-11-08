@@ -66,18 +66,18 @@ spec:
                   type: "object"
                   x-kubernetes-map-type: "atomic"
                 resources:
-                  description: "Resources is a list of Secrets/ConfigMaps where each contains 1 or more resources to be applied to remote clusters."
+                  description: "resources is a list of Secrets/ConfigMaps where each contains 1 or more resources to be applied to remote clusters."
                   items:
                     description: "ResourceRef specifies a resource."
                     properties:
                       kind:
-                        description: "Kind of the resource. Supported kinds are: Secrets and ConfigMaps."
+                        description: "kind of the resource. Supported kinds are: Secrets and ConfigMaps."
                         enum:
                           - "Secret"
                           - "ConfigMap"
                         type: "string"
                       name:
-                        description: "Name of the resource that is in the same namespace with ClusterResourceSet object."
+                        description: "name of the resource that is in the same namespace with ClusterResourceSet object."
                         minLength: 1
                         type: "string"
                     required:
@@ -86,7 +86,7 @@ spec:
                     type: "object"
                   type: "array"
                 strategy:
-                  description: "Strategy is the strategy to be used during applying resources. Defaults to ApplyOnce. This field is immutable."
+                  description: "strategy is the strategy to be used during applying resources. Defaults to ApplyOnce. This field is immutable."
                   enum:
                     - "ApplyOnce"
                   type: "string"
@@ -97,7 +97,7 @@ spec:
               description: "ClusterResourceSetStatus defines the observed state of ClusterResourceSet."
               properties:
                 conditions:
-                  description: "Conditions defines current state of the ClusterResourceSet."
+                  description: "conditions defines current state of the ClusterResourceSet."
                   items:
                     description: "Condition defines an observation of a Cluster API resource operational state."
                     properties:
@@ -112,13 +112,13 @@ spec:
                         description: "The reason for the condition's last transition in CamelCase.\nThe specific API may choose whether or not this field is considered a guaranteed API.\nThis field may not be empty."
                         type: "string"
                       severity:
-                        description: "Severity provides an explicit classification of Reason code, so the users or machines can immediately\nunderstand the current situation and act accordingly.\nThe Severity field MUST be set only when Status=False."
+                        description: "severity provides an explicit classification of Reason code, so the users or machines can immediately\nunderstand the current situation and act accordingly.\nThe Severity field MUST be set only when Status=False."
                         type: "string"
                       status:
-                        description: "Status of the condition, one of True, False, Unknown."
+                        description: "status of the condition, one of True, False, Unknown."
                         type: "string"
                       type:
-                        description: "Type of condition in CamelCase or in foo.example.com/CamelCase.\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions\ncan be useful (see .node.status.conditions), the ability to deconflict is important."
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase.\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions\ncan be useful (see .node.status.conditions), the ability to deconflict is important."
                         type: "string"
                     required:
                       - "status"
@@ -126,7 +126,7 @@ spec:
                     type: "object"
                   type: "array"
                 observedGeneration:
-                  description: "ObservedGeneration reflects the generation of the most recently observed ClusterResourceSet."
+                  description: "observedGeneration reflects the generation of the most recently observed ClusterResourceSet."
                   format: "int64"
                   type: "integer"
               type: "object"

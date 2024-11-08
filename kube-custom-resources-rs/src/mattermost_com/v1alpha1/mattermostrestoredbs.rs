@@ -24,16 +24,20 @@ pub struct MattermostRestoreDBSpec {
     /// MattermostClusterName defines the ClusterInstallation name.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mattermostClusterName")]
     pub mattermost_cluster_name: Option<String>,
-    /// MattermostDBName defines the database name. Need to set if different from `mattermost`.
+    /// MattermostDBName defines the database name.
+    /// Need to set if different from `mattermost`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mattermostDBName")]
     pub mattermost_db_name: Option<String>,
-    /// MattermostDBPassword defines the user password to access the database. Need to set if the user is different from the one created by the operator.
+    /// MattermostDBPassword defines the user password to access the database.
+    /// Need to set if the user is different from the one created by the operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mattermostDBPassword")]
     pub mattermost_db_password: Option<String>,
-    /// MattermostDBUser defines the user to access the database. Need to set if the user is different from `mmuser`.
+    /// MattermostDBUser defines the user to access the database.
+    /// Need to set if the user is different from `mmuser`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mattermostDBUser")]
     pub mattermost_db_user: Option<String>,
-    /// RestoreSecret defines the secret that holds the credentials to MySQL Operator be able to download the DB backup file
+    /// RestoreSecret defines the secret that holds the credentials to
+    /// MySQL Operator be able to download the DB backup file
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "restoreSecret")]
     pub restore_secret: Option<String>,
 }

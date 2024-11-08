@@ -50,6 +50,29 @@ spec:
                   maxLength: 253
                   pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
                   type: "string"
+                retryStrategy:
+                  default:
+                    backoffBaseSeconds: 60
+                    backoffLimitCount: 3
+                    backoffMaxSeconds: 1800
+                  description: "retryStrategy defines strategy for retrying ProvisioningRequest.\nIf null, then the default configuration is applied with the following parameter values:\nbackoffLimitCount:  3\nbackoffBaseSeconds: 60 - 1 min\nbackoffMaxSeconds:  1800 - 30 mins\n\nTo switch off retry mechanism\nset retryStrategy.backoffLimitCount to 0."
+                  properties:
+                    backoffBaseSeconds:
+                      default: 60
+                      description: "BackoffBaseSeconds defines the base for the exponential backoff for\nre-queuing an evicted workload.\n\nDefaults to 60."
+                      format: "int32"
+                      type: "integer"
+                    backoffLimitCount:
+                      default: 3
+                      description: "BackoffLimitCount defines the maximum number of re-queuing retries.\nOnce the number is reached, the workload is deactivated (`.spec.activate`=`false`).\n\nEvery backoff duration is about \"b*2^(n-1)+Rand\" where:\n- \"b\" represents the base set by \"BackoffBaseSeconds\" parameter,\n- \"n\" represents the \"workloadStatus.requeueState.count\",\n- \"Rand\" represents the random jitter.\nDuring this time, the workload is taken as an inadmissible and\nother workloads will have a chance to be admitted.\nBy default, the consecutive requeue delays are around: (60s, 120s, 240s, ...).\n\nDefaults to 3."
+                      format: "int32"
+                      type: "integer"
+                    backoffMaxSeconds:
+                      default: 1800
+                      description: "BackoffMaxSeconds defines the maximum backoff time to re-queue an evicted workload.\n\nDefaults to 1800."
+                      format: "int32"
+                      type: "integer"
+                  type: "object"
               required:
                 - "provisioningClassName"
               type: "object"

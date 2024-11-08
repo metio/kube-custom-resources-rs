@@ -64,26 +64,26 @@ spec:
               description: "MachineSetSpec defines the desired state of MachineSet."
               properties:
                 clusterName:
-                  description: "ClusterName is the name of the Cluster this object belongs to."
+                  description: "clusterName is the name of the Cluster this object belongs to."
                   minLength: 1
                   type: "string"
                 deletePolicy:
-                  description: "DeletePolicy defines the policy used to identify nodes to delete when downscaling.\nDefaults to \"Random\".  Valid values are \"Random, \"Newest\", \"Oldest\""
+                  description: "deletePolicy defines the policy used to identify nodes to delete when downscaling.\nDefaults to \"Random\".  Valid values are \"Random, \"Newest\", \"Oldest\""
                   enum:
                     - "Random"
                     - "Newest"
                     - "Oldest"
                   type: "string"
                 minReadySeconds:
-                  description: "MinReadySeconds is the minimum number of seconds for which a Node for a newly created machine should be ready before considering the replica available.\nDefaults to 0 (machine will be considered available as soon as the Node is ready)"
+                  description: "minReadySeconds is the minimum number of seconds for which a Node for a newly created machine should be ready before considering the replica available.\nDefaults to 0 (machine will be considered available as soon as the Node is ready)"
                   format: "int32"
                   type: "integer"
                 replicas:
-                  description: "Replicas is the number of desired replicas.\nThis is a pointer to distinguish between explicit zero and unspecified.\n\nDefaults to:\n* if the Kubernetes autoscaler min size and max size annotations are set:\n  - if it's a new MachineSet, use min size\n  - if the replicas field of the old MachineSet is < min size, use min size\n  - if the replicas field of the old MachineSet is > max size, use max size\n  - if the replicas field of the old MachineSet is in the (min size, max size) range, keep the value from the oldMS\n* otherwise use 1\nNote: Defaulting will be run whenever the replicas field is not set:\n* A new MachineSet is created with replicas not set.\n* On an existing MachineSet the replicas field was first set and is now unset.\nThose cases are especially relevant for the following Kubernetes autoscaler use cases:\n* A new MachineSet is created and replicas should be managed by the autoscaler\n* An existing MachineSet which initially wasn't controlled by the autoscaler\n  should be later controlled by the autoscaler"
+                  description: "replicas is the number of desired replicas.\nThis is a pointer to distinguish between explicit zero and unspecified.\n\nDefaults to:\n* if the Kubernetes autoscaler min size and max size annotations are set:\n  - if it's a new MachineSet, use min size\n  - if the replicas field of the old MachineSet is < min size, use min size\n  - if the replicas field of the old MachineSet is > max size, use max size\n  - if the replicas field of the old MachineSet is in the (min size, max size) range, keep the value from the oldMS\n* otherwise use 1\nNote: Defaulting will be run whenever the replicas field is not set:\n* A new MachineSet is created with replicas not set.\n* On an existing MachineSet the replicas field was first set and is now unset.\nThose cases are especially relevant for the following Kubernetes autoscaler use cases:\n* A new MachineSet is created and replicas should be managed by the autoscaler\n* An existing MachineSet which initially wasn't controlled by the autoscaler\n  should be later controlled by the autoscaler"
                   format: "int32"
                   type: "integer"
                 selector:
-                  description: "Selector is a label query over machines that should match the replica count.\nLabel keys and values that must match in order to be controlled by this MachineSet.\nIt must match the machine template's labels.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors"
+                  description: "selector is a label query over machines that should match the replica count.\nLabel keys and values that must match in order to be controlled by this MachineSet.\nIt must match the machine template's labels.\nMore info: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/#label-selectors"
                   properties:
                     matchExpressions:
                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
@@ -116,7 +116,7 @@ spec:
                   type: "object"
                   x-kubernetes-map-type: "atomic"
                 template:
-                  description: "Template is the object that describes the machine that will be created if\ninsufficient replicas are detected.\nObject references to custom resources are treated as templates."
+                  description: "template is the object that describes the machine that will be created if\ninsufficient replicas are detected.\nObject references to custom resources are treated as templates."
                   properties:
                     metadata:
                       description: "Standard object's metadata.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata"
@@ -124,7 +124,7 @@ spec:
                         annotations:
                           additionalProperties:
                             type: "string"
-                          description: "Annotations is an unstructured key value map stored with a resource that may be\nset by external tools to store and retrieve arbitrary metadata. They are not\nqueryable and should be preserved when modifying objects.\nMore info: http://kubernetes.io/docs/user-guide/annotations"
+                          description: "annotations is an unstructured key value map stored with a resource that may be\nset by external tools to store and retrieve arbitrary metadata. They are not\nqueryable and should be preserved when modifying objects.\nMore info: http://kubernetes.io/docs/user-guide/annotations"
                           type: "object"
                         labels:
                           additionalProperties:
@@ -136,10 +136,10 @@ spec:
                       description: "Specification of the desired behavior of the machine.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status"
                       properties:
                         bootstrap:
-                          description: "Bootstrap is a reference to a local struct which encapsulates\nfields to configure the Machine’s bootstrapping mechanism."
+                          description: "bootstrap is a reference to a local struct which encapsulates\nfields to configure the Machine’s bootstrapping mechanism."
                           properties:
                             configRef:
-                              description: "ConfigRef is a reference to a bootstrap provider-specific resource\nthat holds configuration details. The reference is optional to\nallow users/operators to specify Bootstrap.DataSecretName without\nthe need of a controller."
+                              description: "configRef is a reference to a bootstrap provider-specific resource\nthat holds configuration details. The reference is optional to\nallow users/operators to specify Bootstrap.DataSecretName without\nthe need of a controller."
                               properties:
                                 apiVersion:
                                   description: "API version of the referent."
@@ -165,18 +165,18 @@ spec:
                               type: "object"
                               x-kubernetes-map-type: "atomic"
                             dataSecretName:
-                              description: "DataSecretName is the name of the secret that stores the bootstrap data script.\nIf nil, the Machine should remain in the Pending state."
+                              description: "dataSecretName is the name of the secret that stores the bootstrap data script.\nIf nil, the Machine should remain in the Pending state."
                               type: "string"
                           type: "object"
                         clusterName:
-                          description: "ClusterName is the name of the Cluster this object belongs to."
+                          description: "clusterName is the name of the Cluster this object belongs to."
                           minLength: 1
                           type: "string"
                         failureDomain:
-                          description: "FailureDomain is the failure domain the machine will be created in.\nMust match a key in the FailureDomains map stored on the cluster object."
+                          description: "failureDomain is the failure domain the machine will be created in.\nMust match a key in the FailureDomains map stored on the cluster object."
                           type: "string"
                         infrastructureRef:
-                          description: "InfrastructureRef is a required reference to a custom resource\noffered by an infrastructure provider."
+                          description: "infrastructureRef is a required reference to a custom resource\noffered by an infrastructure provider."
                           properties:
                             apiVersion:
                               description: "API version of the referent."
@@ -202,16 +202,16 @@ spec:
                           type: "object"
                           x-kubernetes-map-type: "atomic"
                         nodeDeletionTimeout:
-                          description: "NodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine\nhosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely.\nDefaults to 10 seconds."
+                          description: "nodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine\nhosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely.\nDefaults to 10 seconds."
                           type: "string"
                         nodeDrainTimeout:
-                          description: "NodeDrainTimeout is the total amount of time that the controller will spend on draining a node.\nThe default value is 0, meaning that the node can be drained without any time limitations.\nNOTE: NodeDrainTimeout is different from `kubectl drain --timeout`"
+                          description: "nodeDrainTimeout is the total amount of time that the controller will spend on draining a node.\nThe default value is 0, meaning that the node can be drained without any time limitations.\nNOTE: NodeDrainTimeout is different from `kubectl drain --timeout`"
                           type: "string"
                         nodeVolumeDetachTimeout:
-                          description: "NodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes\nto be detached. The default value is 0, meaning that the volumes can be detached without any time limitations."
+                          description: "nodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes\nto be detached. The default value is 0, meaning that the volumes can be detached without any time limitations."
                           type: "string"
                         providerID:
-                          description: "ProviderID is the identification ID of the machine provided by the provider.\nThis field must match the provider ID as seen on the node object corresponding to this machine.\nThis field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler\nwith cluster-api as provider. Clean-up logic in the autoscaler compares machines to nodes to find out\nmachines at provider which could not get registered as Kubernetes nodes. With cluster-api as a\ngeneric out-of-tree provider for autoscaler, this field is required by autoscaler to be\nable to have a provider view of the list of machines. Another list of nodes is queried from the k8s apiserver\nand then a comparison is done to find out unregistered machines and are marked for delete.\nThis field will be set by the actuators and consumed by higher level entities like autoscaler that will\nbe interfacing with cluster-api as generic provider."
+                          description: "providerID is the identification ID of the machine provided by the provider.\nThis field must match the provider ID as seen on the node object corresponding to this machine.\nThis field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler\nwith cluster-api as provider. Clean-up logic in the autoscaler compares machines to nodes to find out\nmachines at provider which could not get registered as Kubernetes nodes. With cluster-api as a\ngeneric out-of-tree provider for autoscaler, this field is required by autoscaler to be\nable to have a provider view of the list of machines. Another list of nodes is queried from the k8s apiserver\nand then a comparison is done to find out unregistered machines and are marked for delete.\nThis field will be set by the actuators and consumed by higher level entities like autoscaler that will\nbe interfacing with cluster-api as generic provider."
                           type: "string"
                         readinessGates:
                           description: "readinessGates specifies additional conditions to include when evaluating Machine Ready condition.\n\nThis field can be used e.g. by Cluster API control plane providers to extend the semantic of the\nReady condition for the Machine they control, like the kubeadm control provider adding ReadinessGates\nfor the APIServerPodHealthy, SchedulerPodHealthy conditions, etc.\n\nAnother example are external controllers, e.g. responsible to install special software/hardware on the Machines;\nthey can include the status of those components with a new condition and add this condition to ReadinessGates.\n\nNOTE: this field is considered only for computing v1beta2 conditions."
@@ -233,7 +233,7 @@ spec:
                             - "conditionType"
                           x-kubernetes-list-type: "map"
                         version:
-                          description: "Version defines the desired Kubernetes version.\nThis field is meant to be optionally used by bootstrap providers."
+                          description: "version defines the desired Kubernetes version.\nThis field is meant to be optionally used by bootstrap providers."
                           type: "string"
                       required:
                         - "bootstrap"
@@ -253,7 +253,7 @@ spec:
                   format: "int32"
                   type: "integer"
                 conditions:
-                  description: "Conditions defines current service state of the MachineSet."
+                  description: "conditions defines current service state of the MachineSet."
                   items:
                     description: "Condition defines an observation of a Cluster API resource operational state."
                     properties:
@@ -268,13 +268,13 @@ spec:
                         description: "The reason for the condition's last transition in CamelCase.\nThe specific API may choose whether or not this field is considered a guaranteed API.\nThis field may be empty."
                         type: "string"
                       severity:
-                        description: "Severity provides an explicit classification of Reason code, so the users or machines can immediately\nunderstand the current situation and act accordingly.\nThe Severity field MUST be set only when Status=False."
+                        description: "severity provides an explicit classification of Reason code, so the users or machines can immediately\nunderstand the current situation and act accordingly.\nThe Severity field MUST be set only when Status=False."
                         type: "string"
                       status:
-                        description: "Status of the condition, one of True, False, Unknown."
+                        description: "status of the condition, one of True, False, Unknown."
                         type: "string"
                       type:
-                        description: "Type of condition in CamelCase or in foo.example.com/CamelCase.\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions\ncan be useful (see .node.status.conditions), the ability to deconflict is important."
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase.\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions\ncan be useful (see .node.status.conditions), the ability to deconflict is important."
                         type: "string"
                     required:
                       - "lastTransitionTime"
@@ -293,7 +293,7 @@ spec:
                   format: "int32"
                   type: "integer"
                 observedGeneration:
-                  description: "ObservedGeneration reflects the generation of the most recently observed MachineSet."
+                  description: "observedGeneration reflects the generation of the most recently observed MachineSet."
                   format: "int64"
                   type: "integer"
                 readyReplicas:
@@ -301,11 +301,11 @@ spec:
                   format: "int32"
                   type: "integer"
                 replicas:
-                  description: "Replicas is the most recently observed number of replicas."
+                  description: "replicas is the most recently observed number of replicas."
                   format: "int32"
                   type: "integer"
                 selector:
-                  description: "Selector is the same as the label selector but in the string format to avoid introspection\nby clients. The string will be in the same format as the query-param syntax.\nMore info about label selectors: http://kubernetes.io/docs/user-guide/labels#label-selectors"
+                  description: "selector is the same as the label selector but in the string format to avoid introspection\nby clients. The string will be in the same format as the query-param syntax.\nMore info about label selectors: http://kubernetes.io/docs/user-guide/labels#label-selectors"
                   type: "string"
                 v1beta2:
                   description: "v1beta2 groups all the fields that will be added or modified in MachineSet's status with the V1Beta2 version."

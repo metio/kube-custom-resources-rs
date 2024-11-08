@@ -296,6 +296,9 @@ pub struct MiniClusterFlux {
     /// name as curveCertSecret, below
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "curveCert")]
     pub curve_cert: Option<String>,
+    /// Disable specifying the socket path
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableSocket")]
+    pub disable_socket: Option<bool>,
     /// Log level to use for flux logging (only in non TestMode)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<i32>,
@@ -323,6 +326,9 @@ pub struct MiniClusterFlux {
     /// Modify flux submit to be something else
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "submitCommand")]
     pub submit_command: Option<String>,
+    /// Specify a custom Topology
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub topology: Option<String>,
     /// Commands for flux start --wrap
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub wrap: Option<String>,

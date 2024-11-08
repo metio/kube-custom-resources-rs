@@ -193,10 +193,13 @@ spec:
                                     description: "HTTPOnly defines whether the cookie can be accessed by client-side APIs, such as JavaScript."
                                     type: "boolean"
                                   maxAge:
-                                    description: "MaxAge indicates the number of seconds until the cookie expires.\nWhen set to a negative number, the cookie expires immediately.\nWhen set to zero, the cookie never expires."
+                                    description: "MaxAge defines the number of seconds until the cookie expires.\nWhen set to a negative number, the cookie expires immediately.\nWhen set to zero, the cookie never expires."
                                     type: "integer"
                                   name:
                                     description: "Name defines the Cookie name."
+                                    type: "string"
+                                  path:
+                                    description: "Path defines the path that must exist in the requested URL for the browser to send the Cookie header.\nWhen not provided the cookie will be sent on every request to the domain.\nMore info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#pathpath-value"
                                     type: "string"
                                   sameSite:
                                     description: "SameSite defines the same site policy.\nMore info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite"
@@ -260,10 +263,13 @@ spec:
                               description: "HTTPOnly defines whether the cookie can be accessed by client-side APIs, such as JavaScript."
                               type: "boolean"
                             maxAge:
-                              description: "MaxAge indicates the number of seconds until the cookie expires.\nWhen set to a negative number, the cookie expires immediately.\nWhen set to zero, the cookie never expires."
+                              description: "MaxAge defines the number of seconds until the cookie expires.\nWhen set to a negative number, the cookie expires immediately.\nWhen set to zero, the cookie never expires."
                               type: "integer"
                             name:
                               description: "Name defines the Cookie name."
+                              type: "string"
+                            path:
+                              description: "Path defines the path that must exist in the requested URL for the browser to send the Cookie header.\nWhen not provided the cookie will be sent on every request to the domain.\nMore info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#pathpath-value"
                               type: "string"
                             sameSite:
                               description: "SameSite defines the same site policy.\nMore info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite"
@@ -385,10 +391,13 @@ spec:
                                     description: "HTTPOnly defines whether the cookie can be accessed by client-side APIs, such as JavaScript."
                                     type: "boolean"
                                   maxAge:
-                                    description: "MaxAge indicates the number of seconds until the cookie expires.\nWhen set to a negative number, the cookie expires immediately.\nWhen set to zero, the cookie never expires."
+                                    description: "MaxAge defines the number of seconds until the cookie expires.\nWhen set to a negative number, the cookie expires immediately.\nWhen set to zero, the cookie never expires."
                                     type: "integer"
                                   name:
                                     description: "Name defines the Cookie name."
+                                    type: "string"
+                                  path:
+                                    description: "Path defines the path that must exist in the requested URL for the browser to send the Cookie header.\nWhen not provided the cookie will be sent on every request to the domain.\nMore info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#pathpath-value"
                                     type: "string"
                                   sameSite:
                                     description: "SameSite defines the same site policy.\nMore info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite"
@@ -418,10 +427,13 @@ spec:
                               description: "HTTPOnly defines whether the cookie can be accessed by client-side APIs, such as JavaScript."
                               type: "boolean"
                             maxAge:
-                              description: "MaxAge indicates the number of seconds until the cookie expires.\nWhen set to a negative number, the cookie expires immediately.\nWhen set to zero, the cookie never expires."
+                              description: "MaxAge defines the number of seconds until the cookie expires.\nWhen set to a negative number, the cookie expires immediately.\nWhen set to zero, the cookie never expires."
                               type: "integer"
                             name:
                               description: "Name defines the Cookie name."
+                              type: "string"
+                            path:
+                              description: "Path defines the path that must exist in the requested URL for the browser to send the Cookie header.\nWhen not provided the cookie will be sent on every request to the domain.\nMore info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#pathpath-value"
                               type: "string"
                             sameSite:
                               description: "SameSite defines the same site policy.\nMore info: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite"

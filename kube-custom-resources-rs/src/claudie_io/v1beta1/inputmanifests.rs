@@ -46,6 +46,9 @@ pub struct InputManifestKubernetes {
 /// Collection of data used to define a Kubernetes cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InputManifestKubernetesClusters {
+    /// General information about a proxy used to build a K8s cluster.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "installationProxy")]
+    pub installation_proxy: Option<InputManifestKubernetesClustersInstallationProxy>,
     /// Name of the Kubernetes cluster. Each cluster will have a random hash appended to the name, so the whole name will be of format <name>-<hash>.
     pub name: String,
     /// Network range for the VPN of the cluster. The value should be defined in format A.B.C.D/mask.
@@ -54,10 +57,20 @@ pub struct InputManifestKubernetesClusters {
     pub pools: InputManifestKubernetesClustersPools,
     /// Version should be defined in format vX.Y. In terms of supported versions of Kubernetes,
     /// Claudie follows kubeone releases and their supported versions.
-    /// The current kubeone version used in Claudie is 1.5.
+    /// The current kubeone version used in Claudie is 1.8.1.
     /// To see the list of supported versions, please refer to kubeone documentation.
     /// https://docs.kubermatic.com/kubeone/v1.8/architecture/compatibility/supported-versions/
     pub version: String,
+}
+
+/// General information about a proxy used to build a K8s cluster.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InputManifestKubernetesClustersInstallationProxy {
+    /// Endpoint defines the proxy endpoint. If undefined, the default value is http://proxy.claudie.io:8880.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub endpoint: Option<String>,
+    /// Mode defines if the proxy mode (on/off/default). If undefined, the default mode is used.
+    pub mode: String,
 }
 
 /// List of nodepool names this cluster will use.

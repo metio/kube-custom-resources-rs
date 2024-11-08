@@ -110,6 +110,10 @@ pub struct ClusterDeprovisionPlatformAwsCredentialsSecretRef {
 /// Azure contains Azure-specific deprovision settings
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDeprovisionPlatformAzure {
+    /// BaseDomainResourceGroupName is the name of the resource group where the cluster's DNS records
+    /// were created, if different from the default or the custom ResourceGroupName.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseDomainResourceGroupName")]
+    pub base_domain_resource_group_name: Option<String>,
     /// cloudName is the name of the Azure cloud environment which can be used to configure the Azure SDK
     /// with the appropriate Azure API endpoints.
     /// If empty, the value is equal to "AzurePublicCloud".

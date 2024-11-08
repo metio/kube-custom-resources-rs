@@ -48,11 +48,11 @@ spec:
               description: "MachinePoolSpec defines the desired state of MachinePool."
               properties:
                 clusterName:
-                  description: "ClusterName is the name of the Cluster this object belongs to."
+                  description: "clusterName is the name of the Cluster this object belongs to."
                   minLength: 1
                   type: "string"
                 failureDomains:
-                  description: "FailureDomains is the list of failure domains this MachinePool should be attached to."
+                  description: "failureDomains is the list of failure domains this MachinePool should be attached to."
                   items:
                     type: "string"
                   type: "array"
@@ -61,7 +61,7 @@ spec:
                   format: "int32"
                   type: "integer"
                 providerIDList:
-                  description: "ProviderIDList are the identification IDs of machine instances provided by the provider.\nThis field must match the provider IDs as seen on the node objects corresponding to a machine pool's machine instances."
+                  description: "providerIDList are the identification IDs of machine instances provided by the provider.\nThis field must match the provider IDs as seen on the node objects corresponding to a machine pool's machine instances."
                   items:
                     type: "string"
                   type: "array"
@@ -89,11 +89,11 @@ spec:
                           x-kubernetes-int-or-string: true
                       type: "object"
                     type:
-                      description: "Type of deployment. Currently the only supported strategy is\n\"RollingUpdate\".\nDefault is RollingUpdate."
+                      description: "type of deployment. Currently the only supported strategy is\n\"RollingUpdate\".\nDefault is RollingUpdate."
                       type: "string"
                   type: "object"
                 template:
-                  description: "Template describes the machines that will be created."
+                  description: "template describes the machines that will be created."
                   properties:
                     metadata:
                       description: "Standard object's metadata.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata"
@@ -101,10 +101,10 @@ spec:
                         annotations:
                           additionalProperties:
                             type: "string"
-                          description: "Annotations is an unstructured key value map stored with a resource that may be\nset by external tools to store and retrieve arbitrary metadata. They are not\nqueryable and should be preserved when modifying objects.\nMore info: http://kubernetes.io/docs/user-guide/annotations"
+                          description: "annotations is an unstructured key value map stored with a resource that may be\nset by external tools to store and retrieve arbitrary metadata. They are not\nqueryable and should be preserved when modifying objects.\nMore info: http://kubernetes.io/docs/user-guide/annotations"
                           type: "object"
                         generateName:
-                          description: "GenerateName is an optional prefix, used by the server, to generate a unique\nname ONLY IF the Name field has not been provided.\nIf this field is used, the name returned to the client will be different\nthan the name passed. This value will also be combined with a unique suffix.\nThe provided value has the same validation rules as the Name field,\nand may be truncated by the length of the suffix required to make the value\nunique on the server.\n\nIf this field is specified and the generated name exists, the server will\nNOT return a 409 - instead, it will either return 201 Created or 500 with Reason\nServerTimeout indicating a unique name could not be found in the time allotted, and the client\nshould retry (optionally after the time indicated in the Retry-After header).\n\nApplied only if Name is not specified.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#idempotency\n\nDeprecated: This field has no function and is going to be removed in a next release."
+                          description: "generateName is an optional prefix, used by the server, to generate a unique\nname ONLY IF the Name field has not been provided.\nIf this field is used, the name returned to the client will be different\nthan the name passed. This value will also be combined with a unique suffix.\nThe provided value has the same validation rules as the Name field,\nand may be truncated by the length of the suffix required to make the value\nunique on the server.\n\nIf this field is specified and the generated name exists, the server will\nNOT return a 409 - instead, it will either return 201 Created or 500 with Reason\nServerTimeout indicating a unique name could not be found in the time allotted, and the client\nshould retry (optionally after the time indicated in the Retry-After header).\n\nApplied only if Name is not specified.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#idempotency\n\nDeprecated: This field has no function and is going to be removed in a next release."
                           type: "string"
                         labels:
                           additionalProperties:
@@ -112,10 +112,10 @@ spec:
                           description: "Map of string keys and values that can be used to organize and categorize\n(scope and select) objects. May match selectors of replication controllers\nand services.\nMore info: http://kubernetes.io/docs/user-guide/labels"
                           type: "object"
                         name:
-                          description: "Name must be unique within a namespace. Is required when creating resources, although\nsome resources may allow a client to request the generation of an appropriate name\nautomatically. Name is primarily intended for creation idempotence and configuration\ndefinition.\nCannot be updated.\nMore info: http://kubernetes.io/docs/user-guide/identifiers#names\n\nDeprecated: This field has no function and is going to be removed in a next release."
+                          description: "name must be unique within a namespace. Is required when creating resources, although\nsome resources may allow a client to request the generation of an appropriate name\nautomatically. Name is primarily intended for creation idempotence and configuration\ndefinition.\nCannot be updated.\nMore info: http://kubernetes.io/docs/user-guide/identifiers#names\n\nDeprecated: This field has no function and is going to be removed in a next release."
                           type: "string"
                         namespace:
-                          description: "Namespace defines the space within each name must be unique. An empty namespace is\nequivalent to the \"default\" namespace, but \"default\" is the canonical representation.\nNot all objects are required to be scoped to a namespace - the value of this field for\nthose objects will be empty.\n\nMust be a DNS_LABEL.\nCannot be updated.\nMore info: http://kubernetes.io/docs/user-guide/namespaces\n\nDeprecated: This field has no function and is going to be removed in a next release."
+                          description: "namespace defines the space within each name must be unique. An empty namespace is\nequivalent to the \"default\" namespace, but \"default\" is the canonical representation.\nNot all objects are required to be scoped to a namespace - the value of this field for\nthose objects will be empty.\n\nMust be a DNS_LABEL.\nCannot be updated.\nMore info: http://kubernetes.io/docs/user-guide/namespaces\n\nDeprecated: This field has no function and is going to be removed in a next release."
                           type: "string"
                         ownerReferences:
                           description: "List of objects depended by this object. If ALL objects in the list have\nbeen deleted, this object will be garbage collected. If this object is managed by a controller,\nthen an entry in this list will point to this controller, with the controller field set to true.\nThere cannot be more than one managing controller.\n\nDeprecated: This field has no function and is going to be removed in a next release."
@@ -153,10 +153,10 @@ spec:
                       description: "Specification of the desired behavior of the machine.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status"
                       properties:
                         bootstrap:
-                          description: "Bootstrap is a reference to a local struct which encapsulates\nfields to configure the Machine’s bootstrapping mechanism."
+                          description: "bootstrap is a reference to a local struct which encapsulates\nfields to configure the Machine’s bootstrapping mechanism."
                           properties:
                             configRef:
-                              description: "ConfigRef is a reference to a bootstrap provider-specific resource\nthat holds configuration details. The reference is optional to\nallow users/operators to specify Bootstrap.Data without\nthe need of a controller."
+                              description: "configRef is a reference to a bootstrap provider-specific resource\nthat holds configuration details. The reference is optional to\nallow users/operators to specify Bootstrap.Data without\nthe need of a controller."
                               properties:
                                 apiVersion:
                                   description: "API version of the referent."
@@ -182,21 +182,21 @@ spec:
                               type: "object"
                               x-kubernetes-map-type: "atomic"
                             data:
-                              description: "Data contains the bootstrap data, such as cloud-init details scripts.\nIf nil, the Machine should remain in the Pending state.\n\nDeprecated: Switch to DataSecretName."
+                              description: "data contains the bootstrap data, such as cloud-init details scripts.\nIf nil, the Machine should remain in the Pending state.\n\nDeprecated: Switch to DataSecretName."
                               type: "string"
                             dataSecretName:
-                              description: "DataSecretName is the name of the secret that stores the bootstrap data script.\nIf nil, the Machine should remain in the Pending state."
+                              description: "dataSecretName is the name of the secret that stores the bootstrap data script.\nIf nil, the Machine should remain in the Pending state."
                               type: "string"
                           type: "object"
                         clusterName:
-                          description: "ClusterName is the name of the Cluster this object belongs to."
+                          description: "clusterName is the name of the Cluster this object belongs to."
                           minLength: 1
                           type: "string"
                         failureDomain:
-                          description: "FailureDomain is the failure domain the machine will be created in.\nMust match a key in the FailureDomains map stored on the cluster object."
+                          description: "failureDomain is the failure domain the machine will be created in.\nMust match a key in the FailureDomains map stored on the cluster object."
                           type: "string"
                         infrastructureRef:
-                          description: "InfrastructureRef is a required reference to a custom resource\noffered by an infrastructure provider."
+                          description: "infrastructureRef is a required reference to a custom resource\noffered by an infrastructure provider."
                           properties:
                             apiVersion:
                               description: "API version of the referent."
@@ -222,13 +222,13 @@ spec:
                           type: "object"
                           x-kubernetes-map-type: "atomic"
                         nodeDrainTimeout:
-                          description: "NodeDrainTimeout is the total amount of time that the controller will spend on draining a node.\nThe default value is 0, meaning that the node can be drained without any time limitations.\nNOTE: NodeDrainTimeout is different from `kubectl drain --timeout`"
+                          description: "nodeDrainTimeout is the total amount of time that the controller will spend on draining a node.\nThe default value is 0, meaning that the node can be drained without any time limitations.\nNOTE: NodeDrainTimeout is different from `kubectl drain --timeout`"
                           type: "string"
                         providerID:
-                          description: "ProviderID is the identification ID of the machine provided by the provider.\nThis field must match the provider ID as seen on the node object corresponding to this machine.\nThis field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler\nwith cluster-api as provider. Clean-up logic in the autoscaler compares machines to nodes to find out\nmachines at provider which could not get registered as Kubernetes nodes. With cluster-api as a\ngeneric out-of-tree provider for autoscaler, this field is required by autoscaler to be\nable to have a provider view of the list of machines. Another list of nodes is queried from the k8s apiserver\nand then a comparison is done to find out unregistered machines and are marked for delete.\nThis field will be set by the actuators and consumed by higher level entities like autoscaler that will\nbe interfacing with cluster-api as generic provider."
+                          description: "providerID is the identification ID of the machine provided by the provider.\nThis field must match the provider ID as seen on the node object corresponding to this machine.\nThis field is required by higher level consumers of cluster-api. Example use case is cluster autoscaler\nwith cluster-api as provider. Clean-up logic in the autoscaler compares machines to nodes to find out\nmachines at provider which could not get registered as Kubernetes nodes. With cluster-api as a\ngeneric out-of-tree provider for autoscaler, this field is required by autoscaler to be\nable to have a provider view of the list of machines. Another list of nodes is queried from the k8s apiserver\nand then a comparison is done to find out unregistered machines and are marked for delete.\nThis field will be set by the actuators and consumed by higher level entities like autoscaler that will\nbe interfacing with cluster-api as generic provider."
                           type: "string"
                         version:
-                          description: "Version defines the desired Kubernetes version.\nThis field is meant to be optionally used by bootstrap providers."
+                          description: "version defines the desired Kubernetes version.\nThis field is meant to be optionally used by bootstrap providers."
                           type: "string"
                       required:
                         - "bootstrap"
@@ -248,10 +248,10 @@ spec:
                   format: "int32"
                   type: "integer"
                 bootstrapReady:
-                  description: "BootstrapReady is the state of the bootstrap provider."
+                  description: "bootstrapReady is the state of the bootstrap provider."
                   type: "boolean"
                 conditions:
-                  description: "Conditions define the current service state of the MachinePool."
+                  description: "conditions define the current service state of the MachinePool."
                   items:
                     description: "Condition defines an observation of a Cluster API resource operational state."
                     properties:
@@ -266,13 +266,13 @@ spec:
                         description: "The reason for the condition's last transition in CamelCase.\nThe specific API may choose whether or not this field is considered a guaranteed API.\nThis field may not be empty."
                         type: "string"
                       severity:
-                        description: "Severity provides an explicit classification of Reason code, so the users or machines can immediately\nunderstand the current situation and act accordingly.\nThe Severity field MUST be set only when Status=False."
+                        description: "severity provides an explicit classification of Reason code, so the users or machines can immediately\nunderstand the current situation and act accordingly.\nThe Severity field MUST be set only when Status=False."
                         type: "string"
                       status:
-                        description: "Status of the condition, one of True, False, Unknown."
+                        description: "status of the condition, one of True, False, Unknown."
                         type: "string"
                       type:
-                        description: "Type of condition in CamelCase or in foo.example.com/CamelCase.\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions\ncan be useful (see .node.status.conditions), the ability to deconflict is important."
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase.\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions\ncan be useful (see .node.status.conditions), the ability to deconflict is important."
                         type: "string"
                     required:
                       - "status"
@@ -280,16 +280,16 @@ spec:
                     type: "object"
                   type: "array"
                 failureMessage:
-                  description: "FailureMessage indicates that there is a problem reconciling the state,\nand will be set to a descriptive error message."
+                  description: "failureMessage indicates that there is a problem reconciling the state,\nand will be set to a descriptive error message."
                   type: "string"
                 failureReason:
-                  description: "FailureReason indicates that there is a problem reconciling the state, and\nwill be set to a token value suitable for programmatic interpretation."
+                  description: "failureReason indicates that there is a problem reconciling the state, and\nwill be set to a token value suitable for programmatic interpretation."
                   type: "string"
                 infrastructureReady:
-                  description: "InfrastructureReady is the state of the infrastructure provider."
+                  description: "infrastructureReady is the state of the infrastructure provider."
                   type: "boolean"
                 nodeRefs:
-                  description: "NodeRefs will point to the corresponding Nodes if it they exist."
+                  description: "nodeRefs will point to the corresponding Nodes if it they exist."
                   items:
                     description: "ObjectReference contains enough information to let you inspect or modify the referred object."
                     properties:
@@ -318,18 +318,18 @@ spec:
                     x-kubernetes-map-type: "atomic"
                   type: "array"
                 observedGeneration:
-                  description: "ObservedGeneration is the latest generation observed by the controller."
+                  description: "observedGeneration is the latest generation observed by the controller."
                   format: "int64"
                   type: "integer"
                 phase:
-                  description: "Phase represents the current phase of cluster actuation.\nE.g. Pending, Running, Terminating, Failed etc."
+                  description: "phase represents the current phase of cluster actuation.\nE.g. Pending, Running, Terminating, Failed etc."
                   type: "string"
                 readyReplicas:
                   description: "The number of ready replicas for this MachinePool. A machine is considered ready when the node has been created and is \"Ready\"."
                   format: "int32"
                   type: "integer"
                 replicas:
-                  description: "Replicas is the most recently observed number of replicas."
+                  description: "replicas is the most recently observed number of replicas."
                   format: "int32"
                   type: "integer"
                 unavailableReplicas:

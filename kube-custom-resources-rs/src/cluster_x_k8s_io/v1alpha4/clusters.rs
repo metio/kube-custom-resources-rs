@@ -24,18 +24,18 @@ pub struct ClusterSpec {
     /// Cluster network configuration.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterNetwork")]
     pub cluster_network: Option<ClusterClusterNetwork>,
-    /// ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+    /// controlPlaneEndpoint represents the endpoint used to communicate with the control plane.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneEndpoint")]
     pub control_plane_endpoint: Option<ClusterControlPlaneEndpoint>,
-    /// ControlPlaneRef is an optional reference to a provider-specific resource that holds
+    /// controlPlaneRef is an optional reference to a provider-specific resource that holds
     /// the details for provisioning the Control Plane for a Cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneRef")]
     pub control_plane_ref: Option<ObjectReference>,
-    /// InfrastructureRef is a reference to a provider-specific resource that holds the details
+    /// infrastructureRef is a reference to a provider-specific resource that holds the details
     /// for provisioning infrastructure for a cluster in said provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "infrastructureRef")]
     pub infrastructure_ref: Option<ObjectReference>,
-    /// Paused can be used to prevent controllers from processing the Cluster and all its associated objects.
+    /// paused can be used to prevent controllers from processing the Cluster and all its associated objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub paused: Option<bool>,
     /// This encapsulates the topology for the cluster.
@@ -49,7 +49,7 @@ pub struct ClusterSpec {
 /// Cluster network configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClusterNetwork {
-    /// APIServerPort specifies the port the API Server should bind to.
+    /// apiServerPort specifies the port the API Server should bind to.
     /// Defaults to 6443.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiServerPort")]
     pub api_server_port: Option<i32>,
@@ -78,7 +78,7 @@ pub struct ClusterClusterNetworkServices {
     pub cidr_blocks: Vec<String>,
 }
 
-/// ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+/// controlPlaneEndpoint represents the endpoint used to communicate with the control plane.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterControlPlaneEndpoint {
     /// The hostname on which the API server is serving.
@@ -87,7 +87,7 @@ pub struct ClusterControlPlaneEndpoint {
     pub port: i32,
 }
 
-/// ControlPlaneRef is an optional reference to a provider-specific resource that holds
+/// controlPlaneRef is an optional reference to a provider-specific resource that holds
 /// the details for provisioning the Control Plane for a Cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterControlPlaneRef {
@@ -125,7 +125,7 @@ pub struct ClusterControlPlaneRef {
     pub uid: Option<String>,
 }
 
-/// InfrastructureRef is a reference to a provider-specific resource that holds the details
+/// infrastructureRef is a reference to a provider-specific resource that holds the details
 /// for provisioning infrastructure for a cluster in said provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterInfrastructureRef {
@@ -171,32 +171,32 @@ pub struct ClusterInfrastructureRef {
 pub struct ClusterTopology {
     /// The name of the ClusterClass object to create the topology.
     pub class: String,
-    /// ControlPlane describes the cluster control plane.
+    /// controlPlane describes the cluster control plane.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
     pub control_plane: Option<ClusterTopologyControlPlane>,
-    /// RolloutAfter performs a rollout of the entire cluster one component at a time,
+    /// rolloutAfter performs a rollout of the entire cluster one component at a time,
     /// control plane first and then machine deployments.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rolloutAfter")]
     pub rollout_after: Option<String>,
     /// The Kubernetes version of the cluster.
     pub version: String,
-    /// Workers encapsulates the different constructs that form the worker nodes
+    /// workers encapsulates the different constructs that form the worker nodes
     /// for the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub workers: Option<ClusterTopologyWorkers>,
 }
 
-/// ControlPlane describes the cluster control plane.
+/// controlPlane describes the cluster control plane.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyControlPlane {
-    /// Metadata is the metadata applied to the machines of the ControlPlane.
+    /// metadata is the metadata applied to the machines of the ControlPlane.
     /// At runtime this metadata is merged with the corresponding metadata from the ClusterClass.
     /// 
     /// This field is supported if and only if the control plane provider template
     /// referenced in the ClusterClass is Machine based.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<ClusterTopologyControlPlaneMetadata>,
-    /// Replicas is the number of control plane nodes.
+    /// replicas is the number of control plane nodes.
     /// If the value is nil, the ControlPlane object is created without the number of Replicas
     /// and it's assumed that the control plane controller does not implement support for this field.
     /// When specified against a control plane provider that lacks support for this field, this value will be ignored.
@@ -204,14 +204,14 @@ pub struct ClusterTopologyControlPlane {
     pub replicas: Option<i32>,
 }
 
-/// Metadata is the metadata applied to the machines of the ControlPlane.
+/// metadata is the metadata applied to the machines of the ControlPlane.
 /// At runtime this metadata is merged with the corresponding metadata from the ClusterClass.
 /// 
 /// This field is supported if and only if the control plane provider template
 /// referenced in the ClusterClass is Machine based.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyControlPlaneMetadata {
-    /// Annotations is an unstructured key value map stored with a resource that may be
+    /// annotations is an unstructured key value map stored with a resource that may be
     /// set by external tools to store and retrieve arbitrary metadata. They are not
     /// queryable and should be preserved when modifying objects.
     /// More info: http://kubernetes.io/docs/user-guide/annotations
@@ -225,11 +225,11 @@ pub struct ClusterTopologyControlPlaneMetadata {
     pub labels: Option<BTreeMap<String, String>>,
 }
 
-/// Workers encapsulates the different constructs that form the worker nodes
+/// workers encapsulates the different constructs that form the worker nodes
 /// for the cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyWorkers {
-    /// MachineDeployments is a list of machine deployments in the cluster.
+    /// machineDeployments is a list of machine deployments in the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineDeployments")]
     pub machine_deployments: Option<Vec<ClusterTopologyWorkersMachineDeployments>>,
 }
@@ -238,20 +238,20 @@ pub struct ClusterTopologyWorkers {
 /// This set of nodes is managed by a MachineDeployment object whose lifecycle is managed by the Cluster controller.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyWorkersMachineDeployments {
-    /// Class is the name of the MachineDeploymentClass used to create the set of worker nodes.
+    /// class is the name of the MachineDeploymentClass used to create the set of worker nodes.
     /// This should match one of the deployment classes defined in the ClusterClass object
     /// mentioned in the `Cluster.Spec.Class` field.
     pub class: String,
-    /// Metadata is the metadata applied to the machines of the MachineDeployment.
+    /// metadata is the metadata applied to the machines of the MachineDeployment.
     /// At runtime this metadata is merged with the corresponding metadata from the ClusterClass.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<ClusterTopologyWorkersMachineDeploymentsMetadata>,
-    /// Name is the unique identifier for this MachineDeploymentTopology.
+    /// name is the unique identifier for this MachineDeploymentTopology.
     /// The value is used with other unique identifiers to create a MachineDeployment's Name
     /// (e.g. cluster's name, etc). In case the name is greater than the allowed maximum length,
     /// the values are hashed together.
     pub name: String,
-    /// Replicas is the number of worker nodes belonging to this set.
+    /// replicas is the number of worker nodes belonging to this set.
     /// If the value is nil, the MachineDeployment is created without the number of Replicas (defaulting to zero)
     /// and it's assumed that an external entity (like cluster autoscaler) is responsible for the management
     /// of this value.
@@ -259,11 +259,11 @@ pub struct ClusterTopologyWorkersMachineDeployments {
     pub replicas: Option<i32>,
 }
 
-/// Metadata is the metadata applied to the machines of the MachineDeployment.
+/// metadata is the metadata applied to the machines of the MachineDeployment.
 /// At runtime this metadata is merged with the corresponding metadata from the ClusterClass.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyWorkersMachineDeploymentsMetadata {
-    /// Annotations is an unstructured key value map stored with a resource that may be
+    /// annotations is an unstructured key value map stored with a resource that may be
     /// set by external tools to store and retrieve arbitrary metadata. They are not
     /// queryable and should be preserved when modifying objects.
     /// More info: http://kubernetes.io/docs/user-guide/annotations
@@ -280,43 +280,43 @@ pub struct ClusterTopologyWorkersMachineDeploymentsMetadata {
 /// ClusterStatus defines the observed state of Cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterStatus {
-    /// Conditions defines current service state of the cluster.
+    /// conditions defines current service state of the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    /// ControlPlaneReady defines if the control plane is ready.
+    /// controlPlaneReady defines if the control plane is ready.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneReady")]
     pub control_plane_ready: Option<bool>,
-    /// FailureDomains is a slice of failure domain objects synced from the infrastructure provider.
+    /// failureDomains is a slice of failure domain objects synced from the infrastructure provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomains")]
     pub failure_domains: Option<BTreeMap<String, ClusterStatusFailureDomains>>,
-    /// FailureMessage indicates that there is a fatal problem reconciling the
+    /// failureMessage indicates that there is a fatal problem reconciling the
     /// state, and will be set to a descriptive error message.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
     pub failure_message: Option<String>,
-    /// FailureReason indicates that there is a fatal problem reconciling the
+    /// failureReason indicates that there is a fatal problem reconciling the
     /// state, and will be set to a token value suitable for
     /// programmatic interpretation.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
-    /// InfrastructureReady is the state of the infrastructure provider.
+    /// infrastructureReady is the state of the infrastructure provider.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "infrastructureReady")]
     pub infrastructure_ready: Option<bool>,
-    /// ObservedGeneration is the latest generation observed by the controller.
+    /// observedGeneration is the latest generation observed by the controller.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    /// Phase represents the current phase of cluster actuation.
+    /// phase represents the current phase of cluster actuation.
     /// E.g. Pending, Running, Terminating, Failed etc.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
 }
 
-/// FailureDomains is a slice of failure domain objects synced from the infrastructure provider.
+/// failureDomains is a slice of failure domain objects synced from the infrastructure provider.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterStatusFailureDomains {
-    /// Attributes is a free form map of attributes an infrastructure provider might use or require.
+    /// attributes is a free form map of attributes an infrastructure provider might use or require.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<BTreeMap<String, String>>,
-    /// ControlPlane determines if this failure domain is suitable for use by control plane machines.
+    /// controlPlane determines if this failure domain is suitable for use by control plane machines.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
     pub control_plane: Option<bool>,
 }

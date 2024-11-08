@@ -26,14 +26,19 @@ spec:
           name: "Enforced"
           priority: 2
           type: "string"
-        - description: "Type of the referenced Gateway API resource"
+        - description: "Kind of the object to which the policy aaplies"
           jsonPath: ".spec.targetRef.kind"
-          name: "TargetRefKind"
+          name: "TargetKind"
           priority: 2
           type: "string"
-        - description: "Name of the referenced Gateway API resource"
+        - description: "Name of the object to which the policy applies"
           jsonPath: ".spec.targetRef.name"
-          name: "TargetRefName"
+          name: "TargetName"
+          priority: 2
+          type: "string"
+        - description: "Name of the section within the object to which the policy applies "
+          jsonPath: ".spec.targetRef.sectionName"
+          name: "TargetSection"
           priority: 2
           type: "string"
         - jsonPath: ".metadata.creationTimestamp"
@@ -53,32 +58,36 @@ spec:
             metadata:
               type: "object"
             spec:
-              description: "Mutual Exclusivity Validation"
               properties:
                 defaults:
-                  description: "Defaults define explicit default values for this policy and for policies inheriting this policy.\nDefaults are mutually exclusive with implicit defaults defined by AuthPolicyCommonSpec."
+                  description: "Rules to apply as defaults. Can be overridden by more specific policiy rules lower in the hierarchy and by less specific policy overrides.\nUse one of: defaults, overrides, or bare set of policy rules (implicit defaults)."
                   properties:
                     patterns:
                       additionalProperties:
-                        items:
-                          properties:
-                            operator:
-                              description: "The binary operator to be applied to the content fetched from the authorization JSON, for comparison with \"value\".\nPossible values are: \"eq\" (equal to), \"neq\" (not equal to), \"incl\" (includes; for arrays), \"excl\" (excludes; for arrays), \"matches\" (regex)"
-                              enum:
-                                - "eq"
-                                - "neq"
-                                - "incl"
-                                - "excl"
-                                - "matches"
-                              type: "string"
-                            selector:
-                              description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
-                              type: "string"
-                            value:
-                              description: "The value of reference for the comparison with the content fetched from the authorization JSON.\nIf used with the \"matches\" operator, the value must compile to a valid Golang regex."
-                              type: "string"
-                          type: "object"
-                        type: "array"
+                        properties:
+                          allOf:
+                            items:
+                              properties:
+                                operator:
+                                  description: "The binary operator to be applied to the content fetched from the authorization JSON, for comparison with \"value\".\nPossible values are: \"eq\" (equal to), \"neq\" (not equal to), \"incl\" (includes; for arrays), \"excl\" (excludes; for arrays), \"matches\" (regex)"
+                                  enum:
+                                    - "eq"
+                                    - "neq"
+                                    - "incl"
+                                    - "excl"
+                                    - "matches"
+                                  type: "string"
+                                selector:
+                                  description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
+                                  type: "string"
+                                value:
+                                  description: "The value of reference for the comparison with the content fetched from the authorization JSON.\nIf used with the \"matches\" operator, the value must compile to a valid Golang regex."
+                                  type: "string"
+                              type: "object"
+                            type: "array"
+                        required:
+                          - "allOf"
+                        type: "object"
                       description: "Named sets of patterns that can be referred in `when` conditions and in pattern-matching authorization policy rules."
                       type: "object"
                     rules:
@@ -139,6 +148,8 @@ spec:
                                   key:
                                     description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                     properties:
+                                      expression:
+                                        type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                         type: "string"
@@ -186,6 +197,8 @@ spec:
                               defaults:
                                 additionalProperties:
                                   properties:
+                                    expression:
+                                      type: "string"
                                     selector:
                                       description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                       type: "string"
@@ -243,6 +256,8 @@ spec:
                               overrides:
                                 additionalProperties:
                                   properties:
+                                    expression:
+                                      type: "string"
                                     selector:
                                       description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                       type: "string"
@@ -255,11 +270,11 @@ spec:
                               plain:
                                 description: "Identity object extracted from the context.\nUse this method when authentication is performed beforehand by a proxy and the resulting object passed to Authorino as JSON in the auth request."
                                 properties:
+                                  expression:
+                                    type: "string"
                                   selector:
                                     description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                     type: "string"
-                                required:
-                                  - "selector"
                                 type: "object"
                               priority:
                                 default: 0
@@ -292,6 +307,8 @@ spec:
                                       type: "string"
                                     patternRef:
                                       description: "Reference to a named set of pattern expressions"
+                                      type: "string"
+                                    predicate:
                                       type: "string"
                                     selector:
                                       description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
@@ -346,6 +363,7 @@ spec:
                                 type: "object"
                             type: "object"
                           description: "Authentication configs.\nAt least one config MUST evaluate to a valid identity object for the auth request to be successful."
+                          maxProperties: 10
                           type: "object"
                         authorization:
                           additionalProperties:
@@ -356,6 +374,8 @@ spec:
                                   key:
                                     description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                     properties:
+                                      expression:
+                                        type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                         type: "string"
@@ -384,6 +404,8 @@ spec:
                                       group:
                                         description: "API group of the resource.\nUse '*' for all API groups."
                                         properties:
+                                          expression:
+                                            type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                             type: "string"
@@ -394,6 +416,8 @@ spec:
                                       name:
                                         description: "Resource name\nOmit it to check for authorization on all resources of the specified kind."
                                         properties:
+                                          expression:
+                                            type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                             type: "string"
@@ -404,6 +428,8 @@ spec:
                                       namespace:
                                         description: "Namespace where the user must have permissions on the resource."
                                         properties:
+                                          expression:
+                                            type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                             type: "string"
@@ -414,6 +440,8 @@ spec:
                                       resource:
                                         description: "Resource kind\nUse '*' for all resource kinds."
                                         properties:
+                                          expression:
+                                            type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                             type: "string"
@@ -424,6 +452,8 @@ spec:
                                       subresource:
                                         description: "Subresource kind"
                                         properties:
+                                          expression:
+                                            type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                             type: "string"
@@ -434,6 +464,8 @@ spec:
                                       verb:
                                         description: "Verb to check for authorization on the resource.\nUse '*' for all verbs."
                                         properties:
+                                          expression:
+                                            type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                             type: "string"
@@ -445,6 +477,8 @@ spec:
                                   user:
                                     description: "User to check for authorization in the Kubernetes RBAC.\nOmit it to check for group authorization only."
                                     properties:
+                                      expression:
+                                        type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                         type: "string"
@@ -470,6 +504,8 @@ spec:
                                       body:
                                         description: "Raw body of the HTTP request.\nSupersedes 'bodyParameters'; use either one or the other.\nUse it with method=POST; for GET requests, set parameters as query string in the 'endpoint' (placeholders can be used)."
                                         properties:
+                                          expression:
+                                            type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                             type: "string"
@@ -480,6 +516,8 @@ spec:
                                       bodyParameters:
                                         additionalProperties:
                                           properties:
+                                            expression:
+                                              type: "string"
                                             selector:
                                               description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                               type: "string"
@@ -529,6 +567,8 @@ spec:
                                       headers:
                                         additionalProperties:
                                           properties:
+                                            expression:
+                                              type: "string"
                                             selector:
                                               description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                               type: "string"
@@ -612,8 +652,8 @@ spec:
                                       url:
                                         description: "Endpoint URL of the HTTP service.\nThe value can include variable placeholders in the format \"{selector}\", where \"selector\" is any pattern supported\nby https://pkg.go.dev/github.com/tidwall/gjson and selects value from the authorization JSON.\nE.g. https://ext-auth-server.io/metadata?p={request.path}"
                                         type: "string"
-                                    required:
-                                      - "url"
+                                      urlExpression:
+                                        type: "string"
                                     type: "object"
                                   rego:
                                     description: "Authorization policy as a Rego language document.\nThe Rego document must include the \"allow\" condition, set by Authorino to \"false\" by default (i.e. requests are unauthorized unless changed).\nThe Rego document must NOT include the \"package\" declaration in line 1."
@@ -649,6 +689,8 @@ spec:
                                         patternRef:
                                           description: "Reference to a named set of pattern expressions"
                                           type: "string"
+                                        predicate:
+                                          type: "string"
                                         selector:
                                           description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
                                           type: "string"
@@ -676,6 +718,8 @@ spec:
                                   permission:
                                     description: "The name of the permission (or relation) on which to execute the check."
                                     properties:
+                                      expression:
+                                        type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                         type: "string"
@@ -688,6 +732,8 @@ spec:
                                     properties:
                                       kind:
                                         properties:
+                                          expression:
+                                            type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                             type: "string"
@@ -697,6 +743,8 @@ spec:
                                         type: "object"
                                       name:
                                         properties:
+                                          expression:
+                                            type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                             type: "string"
@@ -723,6 +771,8 @@ spec:
                                     properties:
                                       kind:
                                         properties:
+                                          expression:
+                                            type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                             type: "string"
@@ -732,6 +782,8 @@ spec:
                                         type: "object"
                                       name:
                                         properties:
+                                          expression:
+                                            type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                             type: "string"
@@ -771,6 +823,8 @@ spec:
                                     patternRef:
                                       description: "Reference to a named set of pattern expressions"
                                       type: "string"
+                                    predicate:
+                                      type: "string"
                                     selector:
                                       description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
                                       type: "string"
@@ -781,6 +835,7 @@ spec:
                                 type: "array"
                             type: "object"
                           description: "Authorization policies.\nAll policies MUST evaluate to \"allowed = true\" for the auth request be successful."
+                          maxProperties: 10
                           type: "object"
                         callbacks:
                           additionalProperties:
@@ -791,6 +846,8 @@ spec:
                                   key:
                                     description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                     properties:
+                                      expression:
+                                        type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                         type: "string"
@@ -811,6 +868,8 @@ spec:
                                   body:
                                     description: "Raw body of the HTTP request.\nSupersedes 'bodyParameters'; use either one or the other.\nUse it with method=POST; for GET requests, set parameters as query string in the 'endpoint' (placeholders can be used)."
                                     properties:
+                                      expression:
+                                        type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                         type: "string"
@@ -821,6 +880,8 @@ spec:
                                   bodyParameters:
                                     additionalProperties:
                                       properties:
+                                        expression:
+                                          type: "string"
                                         selector:
                                           description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                           type: "string"
@@ -870,6 +931,8 @@ spec:
                                   headers:
                                     additionalProperties:
                                       properties:
+                                        expression:
+                                          type: "string"
                                         selector:
                                           description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                           type: "string"
@@ -950,8 +1013,8 @@ spec:
                                   url:
                                     description: "Endpoint URL of the HTTP service.\nThe value can include variable placeholders in the format \"{selector}\", where \"selector\" is any pattern supported\nby https://pkg.go.dev/github.com/tidwall/gjson and selects value from the authorization JSON.\nE.g. https://ext-auth-server.io/metadata?p={request.path}"
                                     type: "string"
-                                required:
-                                  - "url"
+                                  urlExpression:
+                                    type: "string"
                                 type: "object"
                               metrics:
                                 default: false
@@ -989,6 +1052,8 @@ spec:
                                     patternRef:
                                       description: "Reference to a named set of pattern expressions"
                                       type: "string"
+                                    predicate:
+                                      type: "string"
                                     selector:
                                       description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
                                       type: "string"
@@ -1001,6 +1066,7 @@ spec:
                               - "http"
                             type: "object"
                           description: "Callback functions.\nAuthorino sends callbacks at the end of the auth pipeline to the endpoints specified in this config."
+                          maxProperties: 10
                           type: "object"
                         metadata:
                           additionalProperties:
@@ -1011,6 +1077,8 @@ spec:
                                   key:
                                     description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                     properties:
+                                      expression:
+                                        type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                         type: "string"
@@ -1031,6 +1099,8 @@ spec:
                                   body:
                                     description: "Raw body of the HTTP request.\nSupersedes 'bodyParameters'; use either one or the other.\nUse it with method=POST; for GET requests, set parameters as query string in the 'endpoint' (placeholders can be used)."
                                     properties:
+                                      expression:
+                                        type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                         type: "string"
@@ -1041,6 +1111,8 @@ spec:
                                   bodyParameters:
                                     additionalProperties:
                                       properties:
+                                        expression:
+                                          type: "string"
                                         selector:
                                           description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                           type: "string"
@@ -1090,6 +1162,8 @@ spec:
                                   headers:
                                     additionalProperties:
                                       properties:
+                                        expression:
+                                          type: "string"
                                         selector:
                                           description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                           type: "string"
@@ -1170,8 +1244,8 @@ spec:
                                   url:
                                     description: "Endpoint URL of the HTTP service.\nThe value can include variable placeholders in the format \"{selector}\", where \"selector\" is any pattern supported\nby https://pkg.go.dev/github.com/tidwall/gjson and selects value from the authorization JSON.\nE.g. https://ext-auth-server.io/metadata?p={request.path}"
                                     type: "string"
-                                required:
-                                  - "url"
+                                  urlExpression:
+                                    type: "string"
                                 type: "object"
                               metrics:
                                 default: false
@@ -1237,6 +1311,8 @@ spec:
                                     patternRef:
                                       description: "Reference to a named set of pattern expressions"
                                       type: "string"
+                                    predicate:
+                                      type: "string"
                                     selector:
                                       description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
                                       type: "string"
@@ -1247,6 +1323,7 @@ spec:
                                 type: "array"
                             type: "object"
                           description: "Metadata sources.\nAuthorino fetches auth metadata as JSON from sources specified in this config."
+                          maxProperties: 10
                           type: "object"
                         response:
                           description: "Response items.\nAuthorino builds custom responses to the client of the auth request."
@@ -1254,9 +1331,8 @@ spec:
                             success:
                               description: "Response items to be included in the auth response when the request is authenticated and authorized.\nFor integration of Authorino via proxy, the proxy must use these settings to propagate dynamic metadata and/or inject data in the request."
                               properties:
-                                dynamicMetadata:
+                                filters:
                                   additionalProperties:
-                                    description: "Settings of the success custom response item."
                                     properties:
                                       cache:
                                         description: "Caching options for the resolved object returned when applying this config.\nOmit it to avoid caching objects for this config."
@@ -1264,6 +1340,8 @@ spec:
                                           key:
                                             description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                             properties:
+                                              expression:
+                                                type: "string"
                                               selector:
                                                 description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                                 type: "string"
@@ -1284,6 +1362,8 @@ spec:
                                           properties:
                                             additionalProperties:
                                               properties:
+                                                expression:
+                                                  type: "string"
                                                 selector:
                                                   description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                                   type: "string"
@@ -1305,6 +1385,8 @@ spec:
                                       plain:
                                         description: "Plain text content"
                                         properties:
+                                          expression:
+                                            type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                             type: "string"
@@ -1344,6 +1426,8 @@ spec:
                                             patternRef:
                                               description: "Reference to a named set of pattern expressions"
                                               type: "string"
+                                            predicate:
+                                              type: "string"
                                             selector:
                                               description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
                                               type: "string"
@@ -1358,6 +1442,8 @@ spec:
                                           customClaims:
                                             additionalProperties:
                                               properties:
+                                                expression:
+                                                  type: "string"
                                                 selector:
                                                   description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                                   type: "string"
@@ -1401,7 +1487,7 @@ spec:
                                           - "signingKeyRefs"
                                         type: "object"
                                     type: "object"
-                                  description: "Custom success response items wrapped as HTTP headers.\nFor integration of Authorino via proxy, the proxy must use these settings to propagate dynamic metadata.\nSee https://www.envoyproxy.io/docs/envoy/latest/configuration/advanced/well_known_dynamic_metadata"
+                                  description: "Custom data made available to other filters managed by Kuadrant (i.e. Rate Limit)"
                                   type: "object"
                                 headers:
                                   additionalProperties:
@@ -1412,6 +1498,8 @@ spec:
                                           key:
                                             description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                             properties:
+                                              expression:
+                                                type: "string"
                                               selector:
                                                 description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                                 type: "string"
@@ -1432,6 +1520,8 @@ spec:
                                           properties:
                                             additionalProperties:
                                               properties:
+                                                expression:
+                                                  type: "string"
                                                 selector:
                                                   description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                                   type: "string"
@@ -1453,6 +1543,8 @@ spec:
                                       plain:
                                         description: "Plain text content"
                                         properties:
+                                          expression:
+                                            type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                             type: "string"
@@ -1492,6 +1584,8 @@ spec:
                                             patternRef:
                                               description: "Reference to a named set of pattern expressions"
                                               type: "string"
+                                            predicate:
+                                              type: "string"
                                             selector:
                                               description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
                                               type: "string"
@@ -1506,6 +1600,8 @@ spec:
                                           customClaims:
                                             additionalProperties:
                                               properties:
+                                                expression:
+                                                  type: "string"
                                                 selector:
                                                   description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                                   type: "string"
@@ -1549,7 +1645,7 @@ spec:
                                           - "signingKeyRefs"
                                         type: "object"
                                     type: "object"
-                                  description: "Custom success response items wrapped as HTTP headers.\nFor integration of Authorino via proxy, the proxy must use these settings to inject data in the request."
+                                  description: "Custom headers to inject in the request."
                                   type: "object"
                               type: "object"
                             unauthenticated:
@@ -1558,6 +1654,8 @@ spec:
                                 body:
                                   description: "HTTP response body to override the default denial body."
                                   properties:
+                                    expression:
+                                      type: "string"
                                     selector:
                                       description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                       type: "string"
@@ -1574,6 +1672,8 @@ spec:
                                 headers:
                                   additionalProperties:
                                     properties:
+                                      expression:
+                                        type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                         type: "string"
@@ -1586,6 +1686,8 @@ spec:
                                 message:
                                   description: "HTTP message to override the default denial message."
                                   properties:
+                                    expression:
+                                      type: "string"
                                     selector:
                                       description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                       type: "string"
@@ -1600,6 +1702,8 @@ spec:
                                 body:
                                   description: "HTTP response body to override the default denial body."
                                   properties:
+                                    expression:
+                                      type: "string"
                                     selector:
                                       description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                       type: "string"
@@ -1616,6 +1720,8 @@ spec:
                                 headers:
                                   additionalProperties:
                                     properties:
+                                      expression:
+                                        type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                         type: "string"
@@ -1628,6 +1734,8 @@ spec:
                                 message:
                                   description: "HTTP message to override the default denial message."
                                   properties:
+                                    expression:
+                                      type: "string"
                                     selector:
                                       description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                       type: "string"
@@ -1638,67 +1746,55 @@ spec:
                               type: "object"
                           type: "object"
                       type: "object"
+                    strategy:
+                      default: "atomic"
+                      description: "Strategy defines the merge strategy to apply when merging this policy with other policies."
+                      enum:
+                        - "atomic"
+                        - "merge"
+                      type: "string"
                     when:
-                      description: "Overall conditions for the AuthPolicy to be enforced.\nIf omitted, the AuthPolicy will be enforced at all requests to the protected routes.\nIf present, all conditions must match for the AuthPolicy to be enforced; otherwise, the authorization service skips the AuthPolicy and returns to the auth request with status OK."
+                      description: "Overall conditions for the policy to be enforced.\nIf omitted, the policy will be enforced at all requests to the protected routes.\nIf present, all conditions must match for the policy to be enforced."
                       items:
+                        description: "Predicate defines one CEL expression that must be evaluated to bool"
                         properties:
-                          all:
-                            description: "A list of pattern expressions to be evaluated as a logical AND."
-                            items:
-                              type: "object"
-                              x-kubernetes-preserve-unknown-fields: true
-                            type: "array"
-                          any:
-                            description: "A list of pattern expressions to be evaluated as a logical OR."
-                            items:
-                              type: "object"
-                              x-kubernetes-preserve-unknown-fields: true
-                            type: "array"
-                          operator:
-                            description: "The binary operator to be applied to the content fetched from the authorization JSON, for comparison with \"value\".\nPossible values are: \"eq\" (equal to), \"neq\" (not equal to), \"incl\" (includes; for arrays), \"excl\" (excludes; for arrays), \"matches\" (regex)"
-                            enum:
-                              - "eq"
-                              - "neq"
-                              - "incl"
-                              - "excl"
-                              - "matches"
+                          predicate:
+                            minLength: 1
                             type: "string"
-                          patternRef:
-                            description: "Reference to a named set of pattern expressions"
-                            type: "string"
-                          selector:
-                            description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
-                            type: "string"
-                          value:
-                            description: "The value of reference for the comparison with the content fetched from the authorization JSON.\nIf used with the \"matches\" operator, the value must compile to a valid Golang regex."
-                            type: "string"
+                        required:
+                          - "predicate"
                         type: "object"
                       type: "array"
                   type: "object"
                 overrides:
-                  description: "Overrides define explicit override values for this policy.\nOverrides are mutually exclusive with explicit and implicit defaults defined by AuthPolicyCommonSpec."
+                  description: "Rules to apply as overrides. Override all policy rules lower in the hierarchy. Can be overridden by less specific policy overrides.\nUse one of: defaults, overrides, or bare set of policy rules (implicit defaults)."
                   properties:
                     patterns:
                       additionalProperties:
-                        items:
-                          properties:
-                            operator:
-                              description: "The binary operator to be applied to the content fetched from the authorization JSON, for comparison with \"value\".\nPossible values are: \"eq\" (equal to), \"neq\" (not equal to), \"incl\" (includes; for arrays), \"excl\" (excludes; for arrays), \"matches\" (regex)"
-                              enum:
-                                - "eq"
-                                - "neq"
-                                - "incl"
-                                - "excl"
-                                - "matches"
-                              type: "string"
-                            selector:
-                              description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
-                              type: "string"
-                            value:
-                              description: "The value of reference for the comparison with the content fetched from the authorization JSON.\nIf used with the \"matches\" operator, the value must compile to a valid Golang regex."
-                              type: "string"
-                          type: "object"
-                        type: "array"
+                        properties:
+                          allOf:
+                            items:
+                              properties:
+                                operator:
+                                  description: "The binary operator to be applied to the content fetched from the authorization JSON, for comparison with \"value\".\nPossible values are: \"eq\" (equal to), \"neq\" (not equal to), \"incl\" (includes; for arrays), \"excl\" (excludes; for arrays), \"matches\" (regex)"
+                                  enum:
+                                    - "eq"
+                                    - "neq"
+                                    - "incl"
+                                    - "excl"
+                                    - "matches"
+                                  type: "string"
+                                selector:
+                                  description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
+                                  type: "string"
+                                value:
+                                  description: "The value of reference for the comparison with the content fetched from the authorization JSON.\nIf used with the \"matches\" operator, the value must compile to a valid Golang regex."
+                                  type: "string"
+                              type: "object"
+                            type: "array"
+                        required:
+                          - "allOf"
+                        type: "object"
                       description: "Named sets of patterns that can be referred in `when` conditions and in pattern-matching authorization policy rules."
                       type: "object"
                     rules:
@@ -1759,6 +1855,8 @@ spec:
                                   key:
                                     description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                     properties:
+                                      expression:
+                                        type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                         type: "string"
@@ -1806,6 +1904,8 @@ spec:
                               defaults:
                                 additionalProperties:
                                   properties:
+                                    expression:
+                                      type: "string"
                                     selector:
                                       description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                       type: "string"
@@ -1863,6 +1963,8 @@ spec:
                               overrides:
                                 additionalProperties:
                                   properties:
+                                    expression:
+                                      type: "string"
                                     selector:
                                       description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                       type: "string"
@@ -1875,11 +1977,11 @@ spec:
                               plain:
                                 description: "Identity object extracted from the context.\nUse this method when authentication is performed beforehand by a proxy and the resulting object passed to Authorino as JSON in the auth request."
                                 properties:
+                                  expression:
+                                    type: "string"
                                   selector:
                                     description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                     type: "string"
-                                required:
-                                  - "selector"
                                 type: "object"
                               priority:
                                 default: 0
@@ -1912,6 +2014,8 @@ spec:
                                       type: "string"
                                     patternRef:
                                       description: "Reference to a named set of pattern expressions"
+                                      type: "string"
+                                    predicate:
                                       type: "string"
                                     selector:
                                       description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
@@ -1966,6 +2070,7 @@ spec:
                                 type: "object"
                             type: "object"
                           description: "Authentication configs.\nAt least one config MUST evaluate to a valid identity object for the auth request to be successful."
+                          maxProperties: 10
                           type: "object"
                         authorization:
                           additionalProperties:
@@ -1976,6 +2081,8 @@ spec:
                                   key:
                                     description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                     properties:
+                                      expression:
+                                        type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                         type: "string"
@@ -2004,6 +2111,8 @@ spec:
                                       group:
                                         description: "API group of the resource.\nUse '*' for all API groups."
                                         properties:
+                                          expression:
+                                            type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                             type: "string"
@@ -2014,6 +2123,8 @@ spec:
                                       name:
                                         description: "Resource name\nOmit it to check for authorization on all resources of the specified kind."
                                         properties:
+                                          expression:
+                                            type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                             type: "string"
@@ -2024,6 +2135,8 @@ spec:
                                       namespace:
                                         description: "Namespace where the user must have permissions on the resource."
                                         properties:
+                                          expression:
+                                            type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                             type: "string"
@@ -2034,6 +2147,8 @@ spec:
                                       resource:
                                         description: "Resource kind\nUse '*' for all resource kinds."
                                         properties:
+                                          expression:
+                                            type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                             type: "string"
@@ -2044,6 +2159,8 @@ spec:
                                       subresource:
                                         description: "Subresource kind"
                                         properties:
+                                          expression:
+                                            type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                             type: "string"
@@ -2054,6 +2171,8 @@ spec:
                                       verb:
                                         description: "Verb to check for authorization on the resource.\nUse '*' for all verbs."
                                         properties:
+                                          expression:
+                                            type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                             type: "string"
@@ -2065,6 +2184,8 @@ spec:
                                   user:
                                     description: "User to check for authorization in the Kubernetes RBAC.\nOmit it to check for group authorization only."
                                     properties:
+                                      expression:
+                                        type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                         type: "string"
@@ -2090,6 +2211,8 @@ spec:
                                       body:
                                         description: "Raw body of the HTTP request.\nSupersedes 'bodyParameters'; use either one or the other.\nUse it with method=POST; for GET requests, set parameters as query string in the 'endpoint' (placeholders can be used)."
                                         properties:
+                                          expression:
+                                            type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                             type: "string"
@@ -2100,6 +2223,8 @@ spec:
                                       bodyParameters:
                                         additionalProperties:
                                           properties:
+                                            expression:
+                                              type: "string"
                                             selector:
                                               description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                               type: "string"
@@ -2149,6 +2274,8 @@ spec:
                                       headers:
                                         additionalProperties:
                                           properties:
+                                            expression:
+                                              type: "string"
                                             selector:
                                               description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                               type: "string"
@@ -2232,8 +2359,8 @@ spec:
                                       url:
                                         description: "Endpoint URL of the HTTP service.\nThe value can include variable placeholders in the format \"{selector}\", where \"selector\" is any pattern supported\nby https://pkg.go.dev/github.com/tidwall/gjson and selects value from the authorization JSON.\nE.g. https://ext-auth-server.io/metadata?p={request.path}"
                                         type: "string"
-                                    required:
-                                      - "url"
+                                      urlExpression:
+                                        type: "string"
                                     type: "object"
                                   rego:
                                     description: "Authorization policy as a Rego language document.\nThe Rego document must include the \"allow\" condition, set by Authorino to \"false\" by default (i.e. requests are unauthorized unless changed).\nThe Rego document must NOT include the \"package\" declaration in line 1."
@@ -2269,6 +2396,8 @@ spec:
                                         patternRef:
                                           description: "Reference to a named set of pattern expressions"
                                           type: "string"
+                                        predicate:
+                                          type: "string"
                                         selector:
                                           description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
                                           type: "string"
@@ -2296,6 +2425,8 @@ spec:
                                   permission:
                                     description: "The name of the permission (or relation) on which to execute the check."
                                     properties:
+                                      expression:
+                                        type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                         type: "string"
@@ -2308,6 +2439,8 @@ spec:
                                     properties:
                                       kind:
                                         properties:
+                                          expression:
+                                            type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                             type: "string"
@@ -2317,6 +2450,8 @@ spec:
                                         type: "object"
                                       name:
                                         properties:
+                                          expression:
+                                            type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                             type: "string"
@@ -2343,6 +2478,8 @@ spec:
                                     properties:
                                       kind:
                                         properties:
+                                          expression:
+                                            type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                             type: "string"
@@ -2352,6 +2489,8 @@ spec:
                                         type: "object"
                                       name:
                                         properties:
+                                          expression:
+                                            type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                             type: "string"
@@ -2391,6 +2530,8 @@ spec:
                                     patternRef:
                                       description: "Reference to a named set of pattern expressions"
                                       type: "string"
+                                    predicate:
+                                      type: "string"
                                     selector:
                                       description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
                                       type: "string"
@@ -2401,6 +2542,7 @@ spec:
                                 type: "array"
                             type: "object"
                           description: "Authorization policies.\nAll policies MUST evaluate to \"allowed = true\" for the auth request be successful."
+                          maxProperties: 10
                           type: "object"
                         callbacks:
                           additionalProperties:
@@ -2411,6 +2553,8 @@ spec:
                                   key:
                                     description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                     properties:
+                                      expression:
+                                        type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                         type: "string"
@@ -2431,6 +2575,8 @@ spec:
                                   body:
                                     description: "Raw body of the HTTP request.\nSupersedes 'bodyParameters'; use either one or the other.\nUse it with method=POST; for GET requests, set parameters as query string in the 'endpoint' (placeholders can be used)."
                                     properties:
+                                      expression:
+                                        type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                         type: "string"
@@ -2441,6 +2587,8 @@ spec:
                                   bodyParameters:
                                     additionalProperties:
                                       properties:
+                                        expression:
+                                          type: "string"
                                         selector:
                                           description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                           type: "string"
@@ -2490,6 +2638,8 @@ spec:
                                   headers:
                                     additionalProperties:
                                       properties:
+                                        expression:
+                                          type: "string"
                                         selector:
                                           description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                           type: "string"
@@ -2570,8 +2720,8 @@ spec:
                                   url:
                                     description: "Endpoint URL of the HTTP service.\nThe value can include variable placeholders in the format \"{selector}\", where \"selector\" is any pattern supported\nby https://pkg.go.dev/github.com/tidwall/gjson and selects value from the authorization JSON.\nE.g. https://ext-auth-server.io/metadata?p={request.path}"
                                     type: "string"
-                                required:
-                                  - "url"
+                                  urlExpression:
+                                    type: "string"
                                 type: "object"
                               metrics:
                                 default: false
@@ -2609,6 +2759,8 @@ spec:
                                     patternRef:
                                       description: "Reference to a named set of pattern expressions"
                                       type: "string"
+                                    predicate:
+                                      type: "string"
                                     selector:
                                       description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
                                       type: "string"
@@ -2621,6 +2773,7 @@ spec:
                               - "http"
                             type: "object"
                           description: "Callback functions.\nAuthorino sends callbacks at the end of the auth pipeline to the endpoints specified in this config."
+                          maxProperties: 10
                           type: "object"
                         metadata:
                           additionalProperties:
@@ -2631,6 +2784,8 @@ spec:
                                   key:
                                     description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                     properties:
+                                      expression:
+                                        type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                         type: "string"
@@ -2651,6 +2806,8 @@ spec:
                                   body:
                                     description: "Raw body of the HTTP request.\nSupersedes 'bodyParameters'; use either one or the other.\nUse it with method=POST; for GET requests, set parameters as query string in the 'endpoint' (placeholders can be used)."
                                     properties:
+                                      expression:
+                                        type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                         type: "string"
@@ -2661,6 +2818,8 @@ spec:
                                   bodyParameters:
                                     additionalProperties:
                                       properties:
+                                        expression:
+                                          type: "string"
                                         selector:
                                           description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                           type: "string"
@@ -2710,6 +2869,8 @@ spec:
                                   headers:
                                     additionalProperties:
                                       properties:
+                                        expression:
+                                          type: "string"
                                         selector:
                                           description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                           type: "string"
@@ -2790,8 +2951,8 @@ spec:
                                   url:
                                     description: "Endpoint URL of the HTTP service.\nThe value can include variable placeholders in the format \"{selector}\", where \"selector\" is any pattern supported\nby https://pkg.go.dev/github.com/tidwall/gjson and selects value from the authorization JSON.\nE.g. https://ext-auth-server.io/metadata?p={request.path}"
                                     type: "string"
-                                required:
-                                  - "url"
+                                  urlExpression:
+                                    type: "string"
                                 type: "object"
                               metrics:
                                 default: false
@@ -2857,6 +3018,8 @@ spec:
                                     patternRef:
                                       description: "Reference to a named set of pattern expressions"
                                       type: "string"
+                                    predicate:
+                                      type: "string"
                                     selector:
                                       description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
                                       type: "string"
@@ -2867,6 +3030,7 @@ spec:
                                 type: "array"
                             type: "object"
                           description: "Metadata sources.\nAuthorino fetches auth metadata as JSON from sources specified in this config."
+                          maxProperties: 10
                           type: "object"
                         response:
                           description: "Response items.\nAuthorino builds custom responses to the client of the auth request."
@@ -2874,9 +3038,8 @@ spec:
                             success:
                               description: "Response items to be included in the auth response when the request is authenticated and authorized.\nFor integration of Authorino via proxy, the proxy must use these settings to propagate dynamic metadata and/or inject data in the request."
                               properties:
-                                dynamicMetadata:
+                                filters:
                                   additionalProperties:
-                                    description: "Settings of the success custom response item."
                                     properties:
                                       cache:
                                         description: "Caching options for the resolved object returned when applying this config.\nOmit it to avoid caching objects for this config."
@@ -2884,6 +3047,8 @@ spec:
                                           key:
                                             description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                             properties:
+                                              expression:
+                                                type: "string"
                                               selector:
                                                 description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                                 type: "string"
@@ -2904,6 +3069,8 @@ spec:
                                           properties:
                                             additionalProperties:
                                               properties:
+                                                expression:
+                                                  type: "string"
                                                 selector:
                                                   description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                                   type: "string"
@@ -2925,6 +3092,8 @@ spec:
                                       plain:
                                         description: "Plain text content"
                                         properties:
+                                          expression:
+                                            type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                             type: "string"
@@ -2964,6 +3133,8 @@ spec:
                                             patternRef:
                                               description: "Reference to a named set of pattern expressions"
                                               type: "string"
+                                            predicate:
+                                              type: "string"
                                             selector:
                                               description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
                                               type: "string"
@@ -2978,6 +3149,8 @@ spec:
                                           customClaims:
                                             additionalProperties:
                                               properties:
+                                                expression:
+                                                  type: "string"
                                                 selector:
                                                   description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                                   type: "string"
@@ -3021,7 +3194,7 @@ spec:
                                           - "signingKeyRefs"
                                         type: "object"
                                     type: "object"
-                                  description: "Custom success response items wrapped as HTTP headers.\nFor integration of Authorino via proxy, the proxy must use these settings to propagate dynamic metadata.\nSee https://www.envoyproxy.io/docs/envoy/latest/configuration/advanced/well_known_dynamic_metadata"
+                                  description: "Custom data made available to other filters managed by Kuadrant (i.e. Rate Limit)"
                                   type: "object"
                                 headers:
                                   additionalProperties:
@@ -3032,6 +3205,8 @@ spec:
                                           key:
                                             description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                             properties:
+                                              expression:
+                                                type: "string"
                                               selector:
                                                 description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                                 type: "string"
@@ -3052,6 +3227,8 @@ spec:
                                           properties:
                                             additionalProperties:
                                               properties:
+                                                expression:
+                                                  type: "string"
                                                 selector:
                                                   description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                                   type: "string"
@@ -3073,6 +3250,8 @@ spec:
                                       plain:
                                         description: "Plain text content"
                                         properties:
+                                          expression:
+                                            type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                             type: "string"
@@ -3112,6 +3291,8 @@ spec:
                                             patternRef:
                                               description: "Reference to a named set of pattern expressions"
                                               type: "string"
+                                            predicate:
+                                              type: "string"
                                             selector:
                                               description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
                                               type: "string"
@@ -3126,6 +3307,8 @@ spec:
                                           customClaims:
                                             additionalProperties:
                                               properties:
+                                                expression:
+                                                  type: "string"
                                                 selector:
                                                   description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                                   type: "string"
@@ -3169,7 +3352,7 @@ spec:
                                           - "signingKeyRefs"
                                         type: "object"
                                     type: "object"
-                                  description: "Custom success response items wrapped as HTTP headers.\nFor integration of Authorino via proxy, the proxy must use these settings to inject data in the request."
+                                  description: "Custom headers to inject in the request."
                                   type: "object"
                               type: "object"
                             unauthenticated:
@@ -3178,6 +3361,8 @@ spec:
                                 body:
                                   description: "HTTP response body to override the default denial body."
                                   properties:
+                                    expression:
+                                      type: "string"
                                     selector:
                                       description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                       type: "string"
@@ -3194,6 +3379,8 @@ spec:
                                 headers:
                                   additionalProperties:
                                     properties:
+                                      expression:
+                                        type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                         type: "string"
@@ -3206,6 +3393,8 @@ spec:
                                 message:
                                   description: "HTTP message to override the default denial message."
                                   properties:
+                                    expression:
+                                      type: "string"
                                     selector:
                                       description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                       type: "string"
@@ -3220,6 +3409,8 @@ spec:
                                 body:
                                   description: "HTTP response body to override the default denial body."
                                   properties:
+                                    expression:
+                                      type: "string"
                                     selector:
                                       description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                       type: "string"
@@ -3236,6 +3427,8 @@ spec:
                                 headers:
                                   additionalProperties:
                                     properties:
+                                      expression:
+                                        type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                         type: "string"
@@ -3248,6 +3441,8 @@ spec:
                                 message:
                                   description: "HTTP message to override the default denial message."
                                   properties:
+                                    expression:
+                                      type: "string"
                                     selector:
                                       description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                       type: "string"
@@ -3258,64 +3453,52 @@ spec:
                               type: "object"
                           type: "object"
                       type: "object"
+                    strategy:
+                      default: "atomic"
+                      description: "Strategy defines the merge strategy to apply when merging this policy with other policies."
+                      enum:
+                        - "atomic"
+                        - "merge"
+                      type: "string"
                     when:
-                      description: "Overall conditions for the AuthPolicy to be enforced.\nIf omitted, the AuthPolicy will be enforced at all requests to the protected routes.\nIf present, all conditions must match for the AuthPolicy to be enforced; otherwise, the authorization service skips the AuthPolicy and returns to the auth request with status OK."
+                      description: "Overall conditions for the policy to be enforced.\nIf omitted, the policy will be enforced at all requests to the protected routes.\nIf present, all conditions must match for the policy to be enforced."
                       items:
+                        description: "Predicate defines one CEL expression that must be evaluated to bool"
                         properties:
-                          all:
-                            description: "A list of pattern expressions to be evaluated as a logical AND."
-                            items:
-                              type: "object"
-                              x-kubernetes-preserve-unknown-fields: true
-                            type: "array"
-                          any:
-                            description: "A list of pattern expressions to be evaluated as a logical OR."
-                            items:
-                              type: "object"
-                              x-kubernetes-preserve-unknown-fields: true
-                            type: "array"
-                          operator:
-                            description: "The binary operator to be applied to the content fetched from the authorization JSON, for comparison with \"value\".\nPossible values are: \"eq\" (equal to), \"neq\" (not equal to), \"incl\" (includes; for arrays), \"excl\" (excludes; for arrays), \"matches\" (regex)"
-                            enum:
-                              - "eq"
-                              - "neq"
-                              - "incl"
-                              - "excl"
-                              - "matches"
+                          predicate:
+                            minLength: 1
                             type: "string"
-                          patternRef:
-                            description: "Reference to a named set of pattern expressions"
-                            type: "string"
-                          selector:
-                            description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
-                            type: "string"
-                          value:
-                            description: "The value of reference for the comparison with the content fetched from the authorization JSON.\nIf used with the \"matches\" operator, the value must compile to a valid Golang regex."
-                            type: "string"
+                        required:
+                          - "predicate"
                         type: "object"
                       type: "array"
                   type: "object"
                 patterns:
                   additionalProperties:
-                    items:
-                      properties:
-                        operator:
-                          description: "The binary operator to be applied to the content fetched from the authorization JSON, for comparison with \"value\".\nPossible values are: \"eq\" (equal to), \"neq\" (not equal to), \"incl\" (includes; for arrays), \"excl\" (excludes; for arrays), \"matches\" (regex)"
-                          enum:
-                            - "eq"
-                            - "neq"
-                            - "incl"
-                            - "excl"
-                            - "matches"
-                          type: "string"
-                        selector:
-                          description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
-                          type: "string"
-                        value:
-                          description: "The value of reference for the comparison with the content fetched from the authorization JSON.\nIf used with the \"matches\" operator, the value must compile to a valid Golang regex."
-                          type: "string"
-                      type: "object"
-                    type: "array"
+                    properties:
+                      allOf:
+                        items:
+                          properties:
+                            operator:
+                              description: "The binary operator to be applied to the content fetched from the authorization JSON, for comparison with \"value\".\nPossible values are: \"eq\" (equal to), \"neq\" (not equal to), \"incl\" (includes; for arrays), \"excl\" (excludes; for arrays), \"matches\" (regex)"
+                              enum:
+                                - "eq"
+                                - "neq"
+                                - "incl"
+                                - "excl"
+                                - "matches"
+                              type: "string"
+                            selector:
+                              description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
+                              type: "string"
+                            value:
+                              description: "The value of reference for the comparison with the content fetched from the authorization JSON.\nIf used with the \"matches\" operator, the value must compile to a valid Golang regex."
+                              type: "string"
+                          type: "object"
+                        type: "array"
+                    required:
+                      - "allOf"
+                    type: "object"
                   description: "Named sets of patterns that can be referred in `when` conditions and in pattern-matching authorization policy rules."
                   type: "object"
                 rules:
@@ -3376,6 +3559,8 @@ spec:
                               key:
                                 description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                 properties:
+                                  expression:
+                                    type: "string"
                                   selector:
                                     description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                     type: "string"
@@ -3423,6 +3608,8 @@ spec:
                           defaults:
                             additionalProperties:
                               properties:
+                                expression:
+                                  type: "string"
                                 selector:
                                   description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                   type: "string"
@@ -3480,6 +3667,8 @@ spec:
                           overrides:
                             additionalProperties:
                               properties:
+                                expression:
+                                  type: "string"
                                 selector:
                                   description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                   type: "string"
@@ -3492,11 +3681,11 @@ spec:
                           plain:
                             description: "Identity object extracted from the context.\nUse this method when authentication is performed beforehand by a proxy and the resulting object passed to Authorino as JSON in the auth request."
                             properties:
+                              expression:
+                                type: "string"
                               selector:
                                 description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                 type: "string"
-                            required:
-                              - "selector"
                             type: "object"
                           priority:
                             default: 0
@@ -3529,6 +3718,8 @@ spec:
                                   type: "string"
                                 patternRef:
                                   description: "Reference to a named set of pattern expressions"
+                                  type: "string"
+                                predicate:
                                   type: "string"
                                 selector:
                                   description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
@@ -3583,6 +3774,7 @@ spec:
                             type: "object"
                         type: "object"
                       description: "Authentication configs.\nAt least one config MUST evaluate to a valid identity object for the auth request to be successful."
+                      maxProperties: 10
                       type: "object"
                     authorization:
                       additionalProperties:
@@ -3593,6 +3785,8 @@ spec:
                               key:
                                 description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                 properties:
+                                  expression:
+                                    type: "string"
                                   selector:
                                     description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                     type: "string"
@@ -3621,6 +3815,8 @@ spec:
                                   group:
                                     description: "API group of the resource.\nUse '*' for all API groups."
                                     properties:
+                                      expression:
+                                        type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                         type: "string"
@@ -3631,6 +3827,8 @@ spec:
                                   name:
                                     description: "Resource name\nOmit it to check for authorization on all resources of the specified kind."
                                     properties:
+                                      expression:
+                                        type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                         type: "string"
@@ -3641,6 +3839,8 @@ spec:
                                   namespace:
                                     description: "Namespace where the user must have permissions on the resource."
                                     properties:
+                                      expression:
+                                        type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                         type: "string"
@@ -3651,6 +3851,8 @@ spec:
                                   resource:
                                     description: "Resource kind\nUse '*' for all resource kinds."
                                     properties:
+                                      expression:
+                                        type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                         type: "string"
@@ -3661,6 +3863,8 @@ spec:
                                   subresource:
                                     description: "Subresource kind"
                                     properties:
+                                      expression:
+                                        type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                         type: "string"
@@ -3671,6 +3875,8 @@ spec:
                                   verb:
                                     description: "Verb to check for authorization on the resource.\nUse '*' for all verbs."
                                     properties:
+                                      expression:
+                                        type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                         type: "string"
@@ -3682,6 +3888,8 @@ spec:
                               user:
                                 description: "User to check for authorization in the Kubernetes RBAC.\nOmit it to check for group authorization only."
                                 properties:
+                                  expression:
+                                    type: "string"
                                   selector:
                                     description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                     type: "string"
@@ -3707,6 +3915,8 @@ spec:
                                   body:
                                     description: "Raw body of the HTTP request.\nSupersedes 'bodyParameters'; use either one or the other.\nUse it with method=POST; for GET requests, set parameters as query string in the 'endpoint' (placeholders can be used)."
                                     properties:
+                                      expression:
+                                        type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                         type: "string"
@@ -3717,6 +3927,8 @@ spec:
                                   bodyParameters:
                                     additionalProperties:
                                       properties:
+                                        expression:
+                                          type: "string"
                                         selector:
                                           description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                           type: "string"
@@ -3766,6 +3978,8 @@ spec:
                                   headers:
                                     additionalProperties:
                                       properties:
+                                        expression:
+                                          type: "string"
                                         selector:
                                           description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                           type: "string"
@@ -3849,8 +4063,8 @@ spec:
                                   url:
                                     description: "Endpoint URL of the HTTP service.\nThe value can include variable placeholders in the format \"{selector}\", where \"selector\" is any pattern supported\nby https://pkg.go.dev/github.com/tidwall/gjson and selects value from the authorization JSON.\nE.g. https://ext-auth-server.io/metadata?p={request.path}"
                                     type: "string"
-                                required:
-                                  - "url"
+                                  urlExpression:
+                                    type: "string"
                                 type: "object"
                               rego:
                                 description: "Authorization policy as a Rego language document.\nThe Rego document must include the \"allow\" condition, set by Authorino to \"false\" by default (i.e. requests are unauthorized unless changed).\nThe Rego document must NOT include the \"package\" declaration in line 1."
@@ -3886,6 +4100,8 @@ spec:
                                     patternRef:
                                       description: "Reference to a named set of pattern expressions"
                                       type: "string"
+                                    predicate:
+                                      type: "string"
                                     selector:
                                       description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
                                       type: "string"
@@ -3913,6 +4129,8 @@ spec:
                               permission:
                                 description: "The name of the permission (or relation) on which to execute the check."
                                 properties:
+                                  expression:
+                                    type: "string"
                                   selector:
                                     description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                     type: "string"
@@ -3925,6 +4143,8 @@ spec:
                                 properties:
                                   kind:
                                     properties:
+                                      expression:
+                                        type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                         type: "string"
@@ -3934,6 +4154,8 @@ spec:
                                     type: "object"
                                   name:
                                     properties:
+                                      expression:
+                                        type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                         type: "string"
@@ -3960,6 +4182,8 @@ spec:
                                 properties:
                                   kind:
                                     properties:
+                                      expression:
+                                        type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                         type: "string"
@@ -3969,6 +4193,8 @@ spec:
                                     type: "object"
                                   name:
                                     properties:
+                                      expression:
+                                        type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                         type: "string"
@@ -4008,6 +4234,8 @@ spec:
                                 patternRef:
                                   description: "Reference to a named set of pattern expressions"
                                   type: "string"
+                                predicate:
+                                  type: "string"
                                 selector:
                                   description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
                                   type: "string"
@@ -4018,6 +4246,7 @@ spec:
                             type: "array"
                         type: "object"
                       description: "Authorization policies.\nAll policies MUST evaluate to \"allowed = true\" for the auth request be successful."
+                      maxProperties: 10
                       type: "object"
                     callbacks:
                       additionalProperties:
@@ -4028,6 +4257,8 @@ spec:
                               key:
                                 description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                 properties:
+                                  expression:
+                                    type: "string"
                                   selector:
                                     description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                     type: "string"
@@ -4048,6 +4279,8 @@ spec:
                               body:
                                 description: "Raw body of the HTTP request.\nSupersedes 'bodyParameters'; use either one or the other.\nUse it with method=POST; for GET requests, set parameters as query string in the 'endpoint' (placeholders can be used)."
                                 properties:
+                                  expression:
+                                    type: "string"
                                   selector:
                                     description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                     type: "string"
@@ -4058,6 +4291,8 @@ spec:
                               bodyParameters:
                                 additionalProperties:
                                   properties:
+                                    expression:
+                                      type: "string"
                                     selector:
                                       description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                       type: "string"
@@ -4107,6 +4342,8 @@ spec:
                               headers:
                                 additionalProperties:
                                   properties:
+                                    expression:
+                                      type: "string"
                                     selector:
                                       description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                       type: "string"
@@ -4187,8 +4424,8 @@ spec:
                               url:
                                 description: "Endpoint URL of the HTTP service.\nThe value can include variable placeholders in the format \"{selector}\", where \"selector\" is any pattern supported\nby https://pkg.go.dev/github.com/tidwall/gjson and selects value from the authorization JSON.\nE.g. https://ext-auth-server.io/metadata?p={request.path}"
                                 type: "string"
-                            required:
-                              - "url"
+                              urlExpression:
+                                type: "string"
                             type: "object"
                           metrics:
                             default: false
@@ -4226,6 +4463,8 @@ spec:
                                 patternRef:
                                   description: "Reference to a named set of pattern expressions"
                                   type: "string"
+                                predicate:
+                                  type: "string"
                                 selector:
                                   description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
                                   type: "string"
@@ -4238,6 +4477,7 @@ spec:
                           - "http"
                         type: "object"
                       description: "Callback functions.\nAuthorino sends callbacks at the end of the auth pipeline to the endpoints specified in this config."
+                      maxProperties: 10
                       type: "object"
                     metadata:
                       additionalProperties:
@@ -4248,6 +4488,8 @@ spec:
                               key:
                                 description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                 properties:
+                                  expression:
+                                    type: "string"
                                   selector:
                                     description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                     type: "string"
@@ -4268,6 +4510,8 @@ spec:
                               body:
                                 description: "Raw body of the HTTP request.\nSupersedes 'bodyParameters'; use either one or the other.\nUse it with method=POST; for GET requests, set parameters as query string in the 'endpoint' (placeholders can be used)."
                                 properties:
+                                  expression:
+                                    type: "string"
                                   selector:
                                     description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                     type: "string"
@@ -4278,6 +4522,8 @@ spec:
                               bodyParameters:
                                 additionalProperties:
                                   properties:
+                                    expression:
+                                      type: "string"
                                     selector:
                                       description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                       type: "string"
@@ -4327,6 +4573,8 @@ spec:
                               headers:
                                 additionalProperties:
                                   properties:
+                                    expression:
+                                      type: "string"
                                     selector:
                                       description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                       type: "string"
@@ -4407,8 +4655,8 @@ spec:
                               url:
                                 description: "Endpoint URL of the HTTP service.\nThe value can include variable placeholders in the format \"{selector}\", where \"selector\" is any pattern supported\nby https://pkg.go.dev/github.com/tidwall/gjson and selects value from the authorization JSON.\nE.g. https://ext-auth-server.io/metadata?p={request.path}"
                                 type: "string"
-                            required:
-                              - "url"
+                              urlExpression:
+                                type: "string"
                             type: "object"
                           metrics:
                             default: false
@@ -4474,6 +4722,8 @@ spec:
                                 patternRef:
                                   description: "Reference to a named set of pattern expressions"
                                   type: "string"
+                                predicate:
+                                  type: "string"
                                 selector:
                                   description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
                                   type: "string"
@@ -4484,6 +4734,7 @@ spec:
                             type: "array"
                         type: "object"
                       description: "Metadata sources.\nAuthorino fetches auth metadata as JSON from sources specified in this config."
+                      maxProperties: 10
                       type: "object"
                     response:
                       description: "Response items.\nAuthorino builds custom responses to the client of the auth request."
@@ -4491,9 +4742,8 @@ spec:
                         success:
                           description: "Response items to be included in the auth response when the request is authenticated and authorized.\nFor integration of Authorino via proxy, the proxy must use these settings to propagate dynamic metadata and/or inject data in the request."
                           properties:
-                            dynamicMetadata:
+                            filters:
                               additionalProperties:
-                                description: "Settings of the success custom response item."
                                 properties:
                                   cache:
                                     description: "Caching options for the resolved object returned when applying this config.\nOmit it to avoid caching objects for this config."
@@ -4501,6 +4751,8 @@ spec:
                                       key:
                                         description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                         properties:
+                                          expression:
+                                            type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                             type: "string"
@@ -4521,6 +4773,8 @@ spec:
                                       properties:
                                         additionalProperties:
                                           properties:
+                                            expression:
+                                              type: "string"
                                             selector:
                                               description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                               type: "string"
@@ -4542,6 +4796,8 @@ spec:
                                   plain:
                                     description: "Plain text content"
                                     properties:
+                                      expression:
+                                        type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                         type: "string"
@@ -4581,6 +4837,8 @@ spec:
                                         patternRef:
                                           description: "Reference to a named set of pattern expressions"
                                           type: "string"
+                                        predicate:
+                                          type: "string"
                                         selector:
                                           description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
                                           type: "string"
@@ -4595,6 +4853,8 @@ spec:
                                       customClaims:
                                         additionalProperties:
                                           properties:
+                                            expression:
+                                              type: "string"
                                             selector:
                                               description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                               type: "string"
@@ -4638,7 +4898,7 @@ spec:
                                       - "signingKeyRefs"
                                     type: "object"
                                 type: "object"
-                              description: "Custom success response items wrapped as HTTP headers.\nFor integration of Authorino via proxy, the proxy must use these settings to propagate dynamic metadata.\nSee https://www.envoyproxy.io/docs/envoy/latest/configuration/advanced/well_known_dynamic_metadata"
+                              description: "Custom data made available to other filters managed by Kuadrant (i.e. Rate Limit)"
                               type: "object"
                             headers:
                               additionalProperties:
@@ -4649,6 +4909,8 @@ spec:
                                       key:
                                         description: "Key used to store the entry in the cache.\nThe resolved key must be unique within the scope of this particular config."
                                         properties:
+                                          expression:
+                                            type: "string"
                                           selector:
                                             description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                             type: "string"
@@ -4669,6 +4931,8 @@ spec:
                                       properties:
                                         additionalProperties:
                                           properties:
+                                            expression:
+                                              type: "string"
                                             selector:
                                               description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                               type: "string"
@@ -4690,6 +4954,8 @@ spec:
                                   plain:
                                     description: "Plain text content"
                                     properties:
+                                      expression:
+                                        type: "string"
                                       selector:
                                         description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                         type: "string"
@@ -4729,6 +4995,8 @@ spec:
                                         patternRef:
                                           description: "Reference to a named set of pattern expressions"
                                           type: "string"
+                                        predicate:
+                                          type: "string"
                                         selector:
                                           description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
                                           type: "string"
@@ -4743,6 +5011,8 @@ spec:
                                       customClaims:
                                         additionalProperties:
                                           properties:
+                                            expression:
+                                              type: "string"
                                             selector:
                                               description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                               type: "string"
@@ -4786,7 +5056,7 @@ spec:
                                       - "signingKeyRefs"
                                     type: "object"
                                 type: "object"
-                              description: "Custom success response items wrapped as HTTP headers.\nFor integration of Authorino via proxy, the proxy must use these settings to inject data in the request."
+                              description: "Custom headers to inject in the request."
                               type: "object"
                           type: "object"
                         unauthenticated:
@@ -4795,6 +5065,8 @@ spec:
                             body:
                               description: "HTTP response body to override the default denial body."
                               properties:
+                                expression:
+                                  type: "string"
                                 selector:
                                   description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                   type: "string"
@@ -4811,6 +5083,8 @@ spec:
                             headers:
                               additionalProperties:
                                 properties:
+                                  expression:
+                                    type: "string"
                                   selector:
                                     description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                     type: "string"
@@ -4823,6 +5097,8 @@ spec:
                             message:
                               description: "HTTP message to override the default denial message."
                               properties:
+                                expression:
+                                  type: "string"
                                 selector:
                                   description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                   type: "string"
@@ -4837,6 +5113,8 @@ spec:
                             body:
                               description: "HTTP response body to override the default denial body."
                               properties:
+                                expression:
+                                  type: "string"
                                 selector:
                                   description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                   type: "string"
@@ -4853,6 +5131,8 @@ spec:
                             headers:
                               additionalProperties:
                                 properties:
+                                  expression:
+                                    type: "string"
                                   selector:
                                     description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                     type: "string"
@@ -4865,6 +5145,8 @@ spec:
                             message:
                               description: "HTTP message to override the default denial message."
                               properties:
+                                expression:
+                                  type: "string"
                                 selector:
                                   description: "Simple path selector to fetch content from the authorization JSON (e.g. 'request.method') or a string template with variables that resolve to patterns (e.g. \"Hello, {auth.identity.name}!\").\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nThe following Authorino custom modifiers are supported: @extract:{sep:\" \",pos:0}, @replace{old:\"\",new:\"\"}, @case:upper|lower, @base64:encode|decode and @strip."
                                   type: "string"
@@ -4876,7 +5158,7 @@ spec:
                       type: "object"
                   type: "object"
                 targetRef:
-                  description: "TargetRef identifies an API object to apply policy to."
+                  description: "Reference to the object to which this policy applies."
                   properties:
                     group:
                       description: "Group is the group of the target resource."
@@ -4894,6 +5176,12 @@ spec:
                       maxLength: 253
                       minLength: 1
                       type: "string"
+                    sectionName:
+                      description: "SectionName is the name of a section within the target resource. When\nunspecified, this targetRef targets the entire resource. In the following\nresources, SectionName is interpreted as the following:\n\n\n* Gateway: Listener name\n* HTTPRoute: HTTPRouteRule name\n* Service: Port name\n\n\nIf a SectionName is specified, but does not exist on the targeted object,\nthe Policy must fail to attach, and the policy implementation should record\na `ResolvedRefs` or similar Condition in the Policy's status."
+                      maxLength: 253
+                      minLength: 1
+                      pattern: "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+                      type: "string"
                   required:
                     - "group"
                     - "kind"
@@ -4905,39 +5193,15 @@ spec:
                     - message: "Invalid targetRef.kind. The only supported values are 'HTTPRoute' and 'Gateway'"
                       rule: "self.kind == 'HTTPRoute' || self.kind == 'Gateway'"
                 when:
-                  description: "Overall conditions for the AuthPolicy to be enforced.\nIf omitted, the AuthPolicy will be enforced at all requests to the protected routes.\nIf present, all conditions must match for the AuthPolicy to be enforced; otherwise, the authorization service skips the AuthPolicy and returns to the auth request with status OK."
+                  description: "Overall conditions for the policy to be enforced.\nIf omitted, the policy will be enforced at all requests to the protected routes.\nIf present, all conditions must match for the policy to be enforced."
                   items:
+                    description: "Predicate defines one CEL expression that must be evaluated to bool"
                     properties:
-                      all:
-                        description: "A list of pattern expressions to be evaluated as a logical AND."
-                        items:
-                          type: "object"
-                          x-kubernetes-preserve-unknown-fields: true
-                        type: "array"
-                      any:
-                        description: "A list of pattern expressions to be evaluated as a logical OR."
-                        items:
-                          type: "object"
-                          x-kubernetes-preserve-unknown-fields: true
-                        type: "array"
-                      operator:
-                        description: "The binary operator to be applied to the content fetched from the authorization JSON, for comparison with \"value\".\nPossible values are: \"eq\" (equal to), \"neq\" (not equal to), \"incl\" (includes; for arrays), \"excl\" (excludes; for arrays), \"matches\" (regex)"
-                        enum:
-                          - "eq"
-                          - "neq"
-                          - "incl"
-                          - "excl"
-                          - "matches"
+                      predicate:
+                        minLength: 1
                         type: "string"
-                      patternRef:
-                        description: "Reference to a named set of pattern expressions"
-                        type: "string"
-                      selector:
-                        description: "Path selector to fetch content from the authorization JSON (e.g. 'request.method').\nAny pattern supported by https://pkg.go.dev/github.com/tidwall/gjson can be used.\nAuthorino custom JSON path modifiers are also supported."
-                        type: "string"
-                      value:
-                        description: "The value of reference for the comparison with the content fetched from the authorization JSON.\nIf used with the \"matches\" operator, the value must compile to a valid Golang regex."
-                        type: "string"
+                    required:
+                      - "predicate"
                     type: "object"
                   type: "array"
               required:
@@ -4950,8 +5214,6 @@ spec:
                   rule: "!(has(self.overrides) && (has(self.patterns) || has(self.when) || has(self.rules)))"
                 - message: "Explicit overrides and explicit defaults are mutually exclusive"
                   rule: "!(has(self.overrides) && has(self.defaults))"
-                - message: "Overrides are not allowed for policies targeting a HTTPRoute resource"
-                  rule: "!(has(self.overrides) && self.targetRef.kind == 'HTTPRoute')"
             status:
               properties:
                 conditions:

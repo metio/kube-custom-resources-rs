@@ -39,26 +39,26 @@ spec:
               description: "ExtensionConfigSpec is the desired state of the ExtensionConfig"
               properties:
                 clientConfig:
-                  description: "ClientConfig defines how to communicate with the Extension server."
+                  description: "clientConfig defines how to communicate with the Extension server."
                   properties:
                     caBundle:
-                      description: "CABundle is a PEM encoded CA bundle which will be used to validate the Extension server's server certificate."
+                      description: "caBundle is a PEM encoded CA bundle which will be used to validate the Extension server's server certificate."
                       format: "byte"
                       type: "string"
                     service:
-                      description: "Service is a reference to the Kubernetes service for the Extension server.\nNote: Exactly one of `url` or `service` must be specified.\n\nIf the Extension server is running within a cluster, then you should use `service`."
+                      description: "service is a reference to the Kubernetes service for the Extension server.\nNote: Exactly one of `url` or `service` must be specified.\n\nIf the Extension server is running within a cluster, then you should use `service`."
                       properties:
                         name:
-                          description: "Name is the name of the service."
+                          description: "name is the name of the service."
                           type: "string"
                         namespace:
-                          description: "Namespace is the namespace of the service."
+                          description: "namespace is the namespace of the service."
                           type: "string"
                         path:
-                          description: "Path is an optional URL path and if present may be any string permissible in\na URL. If a path is set it will be used as prefix to the hook-specific path."
+                          description: "path is an optional URL path and if present may be any string permissible in\na URL. If a path is set it will be used as prefix to the hook-specific path."
                           type: "string"
                         port:
-                          description: "Port is the port on the service that's hosting the Extension server.\nDefaults to 443.\nPort should be a valid port number (1-65535, inclusive)."
+                          description: "port is the port on the service that's hosting the Extension server.\nDefaults to 443.\nPort should be a valid port number (1-65535, inclusive)."
                           format: "int32"
                           type: "integer"
                       required:
@@ -66,11 +66,11 @@ spec:
                         - "namespace"
                       type: "object"
                     url:
-                      description: "URL gives the location of the Extension server, in standard URL form\n(`scheme://host:port/path`).\nNote: Exactly one of `url` or `service` must be specified.\n\nThe scheme must be \"https\".\n\nThe `host` should not refer to a service running in the cluster; use\nthe `service` field instead.\n\nA path is optional, and if present may be any string permissible in\na URL. If a path is set it will be used as prefix to the hook-specific path.\n\nAttempting to use a user or basic auth e.g. \"user:password@\" is not\nallowed. Fragments (\"#...\") and query parameters (\"?...\") are not\nallowed either."
+                      description: "url gives the location of the Extension server, in standard URL form\n(`scheme://host:port/path`).\nNote: Exactly one of `url` or `service` must be specified.\n\nThe scheme must be \"https\".\n\nThe `host` should not refer to a service running in the cluster; use\nthe `service` field instead.\n\nA path is optional, and if present may be any string permissible in\na URL. If a path is set it will be used as prefix to the hook-specific path.\n\nAttempting to use a user or basic auth e.g. \"user:password@\" is not\nallowed. Fragments (\"#...\") and query parameters (\"?...\") are not\nallowed either."
                       type: "string"
                   type: "object"
                 namespaceSelector:
-                  description: "NamespaceSelector decides whether to call the hook for an object based\non whether the namespace for that object matches the selector.\nDefaults to the empty LabelSelector, which matches all objects."
+                  description: "namespaceSelector decides whether to call the hook for an object based\non whether the namespace for that object matches the selector.\nDefaults to the empty LabelSelector, which matches all objects."
                   properties:
                     matchExpressions:
                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
@@ -105,7 +105,7 @@ spec:
                 settings:
                   additionalProperties:
                     type: "string"
-                  description: "Settings defines key value pairs to be passed to all calls\nto all supported RuntimeExtensions.\nNote: Settings can be overridden on the ClusterClass."
+                  description: "settings defines key value pairs to be passed to all calls\nto all supported RuntimeExtensions.\nNote: Settings can be overridden on the ClusterClass."
                   type: "object"
               required:
                 - "clientConfig"
@@ -114,7 +114,7 @@ spec:
               description: "ExtensionConfigStatus is the current state of the ExtensionConfig"
               properties:
                 conditions:
-                  description: "Conditions define the current service state of the ExtensionConfig."
+                  description: "conditions define the current service state of the ExtensionConfig."
                   items:
                     description: "Condition defines an observation of a Cluster API resource operational state."
                     properties:
@@ -129,13 +129,13 @@ spec:
                         description: "The reason for the condition's last transition in CamelCase.\nThe specific API may choose whether or not this field is considered a guaranteed API.\nThis field may be empty."
                         type: "string"
                       severity:
-                        description: "Severity provides an explicit classification of Reason code, so the users or machines can immediately\nunderstand the current situation and act accordingly.\nThe Severity field MUST be set only when Status=False."
+                        description: "severity provides an explicit classification of Reason code, so the users or machines can immediately\nunderstand the current situation and act accordingly.\nThe Severity field MUST be set only when Status=False."
                         type: "string"
                       status:
-                        description: "Status of the condition, one of True, False, Unknown."
+                        description: "status of the condition, one of True, False, Unknown."
                         type: "string"
                       type:
-                        description: "Type of condition in CamelCase or in foo.example.com/CamelCase.\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions\ncan be useful (see .node.status.conditions), the ability to deconflict is important."
+                        description: "type of condition in CamelCase or in foo.example.com/CamelCase.\nMany .condition.type values are consistent across resources like Available, but because arbitrary conditions\ncan be useful (see .node.status.conditions), the ability to deconflict is important."
                         type: "string"
                     required:
                       - "lastTransitionTime"
@@ -144,31 +144,31 @@ spec:
                     type: "object"
                   type: "array"
                 handlers:
-                  description: "Handlers defines the current ExtensionHandlers supported by an Extension."
+                  description: "handlers defines the current ExtensionHandlers supported by an Extension."
                   items:
                     description: "ExtensionHandler specifies the details of a handler for a particular runtime hook registered by an Extension server."
                     properties:
                       failurePolicy:
-                        description: "FailurePolicy defines how failures in calls to the ExtensionHandler should be handled by a client.\nDefaults to Fail if not set."
+                        description: "failurePolicy defines how failures in calls to the ExtensionHandler should be handled by a client.\nDefaults to Fail if not set."
                         type: "string"
                       name:
-                        description: "Name is the unique name of the ExtensionHandler."
+                        description: "name is the unique name of the ExtensionHandler."
                         type: "string"
                       requestHook:
-                        description: "RequestHook defines the versioned runtime hook which this ExtensionHandler serves."
+                        description: "requestHook defines the versioned runtime hook which this ExtensionHandler serves."
                         properties:
                           apiVersion:
-                            description: "APIVersion is the group and version of the Hook."
+                            description: "apiVersion is the group and version of the Hook."
                             type: "string"
                           hook:
-                            description: "Hook is the name of the hook."
+                            description: "hook is the name of the hook."
                             type: "string"
                         required:
                           - "apiVersion"
                           - "hook"
                         type: "object"
                       timeoutSeconds:
-                        description: "TimeoutSeconds defines the timeout duration for client calls to the ExtensionHandler.\nDefaults to 10 is not set."
+                        description: "timeoutSeconds defines the timeout duration for client calls to the ExtensionHandler.\nDefaults to 10 is not set."
                         format: "int32"
                         type: "integer"
                     required:
