@@ -1,97 +1,61 @@
 // SPDX-FileCopyrightText: The kube-custom-resources-rs Authors
 // SPDX-License-Identifier: 0BSD
 
-use std::collections::HashMap;
 use std::fs;
 use std::fs::OpenOptions;
-use std::io::BufWriter;
-use std::io::{Result, Write};
-use std::path::Path;
+use std::io::Result;
 
-use glob::glob;
-use itertools::Itertools;
-use k8s_openapi::apiextensions_apiserver::pkg::apis::apiextensions::v1::CustomResourceDefinition;
+use code_generator::{group_name, read_all_existing_custom_resources};
+use handlebars::{to_json, Handlebars};
+use serde_json::Map;
 
 fn main() -> Result<()> {
     let root = concat!(env!("CARGO_MANIFEST_DIR"), "/..");
     let crd_catalog = format!("{}/crd-catalog", root);
-    let sources = format!("{}/kube-custom-resources-rs/src", root);
-    let lib_rs_file = format!("{}/lib.rs", sources);
-    let file = OpenOptions::new()
-        .write(true)
-        .truncate(true)
-        .open(lib_rs_file)
-        .expect("unable to open file");
-    let mut buffer = BufWriter::new(file);
+    let custom_resources_root =
+        fs::canonicalize(format!("{}/custom-resources", root)).expect("canonicalize failed");
+    let template_path = format!("{}/code-generator/src/templates/lib.rs.hbs", root);
 
-    writeln!(buffer, "/*!")?;
-    writeln!(buffer, "This crate contains [kube-rs](https://kube.rs/) compatible bindings for Kubernetes [custom resources](https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definitions/). Each binding is generated with [kopium](https://github.com/kube-rs/kopium), updated weekly, and released monthly.")?;
-    writeln!(buffer, "")?;
-    writeln!(buffer, "# Available Features")?;
-    writeln!(buffer, "")?;
-    writeln!(buffer, "Every group has its own feature in this crate. The available features are as follows:")?;
+    let mut handlebars = Handlebars::new();
+    handlebars.set_strict_mode(true);
 
-    let mut entries: HashMap<String, HashMap<String, Vec<CustomResourceDefinition>>> = HashMap::new();
+    handlebars
+        .register_template_file("lib.rs", &template_path)
+        .expect("register template failed");
 
-    let yaml_files = format!("{}/**/*.yaml", crd_catalog);
-    for entry in glob(&yaml_files).expect("Failed to read glob pattern") {
-        match entry {
-            Ok(path) => {
-                let content = fs::read_to_string(path).expect("should be able to read file");
-                let crd = serde_yaml::from_str::<CustomResourceDefinition>(&content)
-                    .expect("should be able to parse YAML");
+    let entries = read_all_existing_custom_resources(&crd_catalog, &custom_resources_root);
 
-                let group = &crd.spec.group;
-                let version = &crd.spec.versions[0].name;
-                let feature = group.replace(".", "_").replace("-", "_");
+    for (group, versions) in &entries {
+        let group_snake_case = group_name(group);
 
-                let resource_target = format!(
-                    "{}/{}/{}/{}.rs",
-                    sources,
-                    feature,
-                    version,
-                    crd.spec.names.plural.replace(".", "_").replace("-", "_")
-                );
-                if Path::new(&resource_target).exists() {
-                    entries.entry(group.to_string())
-                        .or_insert_with(HashMap::new)
-                        .entry(version.to_string())
-                        .or_insert_with(Vec::new)
-                        .push(crd);
-                } else {
-                    println!("missing {}/{} -> {}", group, version, crd.spec.names.plural)
-                }
+        let lib_rs_file = custom_resources_root
+            .join(&group_snake_case)
+            .join("src/lib.rs");
+
+        if versions.is_empty() {
+            if lib_rs_file.exists() {
+                fs::remove_file(lib_rs_file)?;
             }
-            Err(e) => println!("{:?}", e),
+        } else {
+            let mut data = Map::new();
+            data.insert("group_name".to_string(), to_json(group));
+            data.insert(
+                "group_name_snake_case".to_string(),
+                to_json(&group_snake_case),
+            );
+            data.insert("versions".to_string(), to_json(versions));
+
+            let file = OpenOptions::new()
+                .create(true)
+                .write(true)
+                .truncate(true)
+                .open(lib_rs_file)
+                .expect("unable to open file");
+
+            handlebars
+                .render_to_write("lib.rs", &data, &file)
+                .expect("error rendering template");
         }
-    }
-
-    for (group, versions) in entries.iter().sorted_by_key(|x| x.0) {
-        let feature = group
-            .replace(".", "_")
-            .replace("-", "_");
-        writeln!(buffer, "")?;
-        writeln!(buffer, "## {}", feature)?;
-
-        for (version, kinds) in versions.iter().sorted_by_key(|x| x.0) {
-            writeln!(buffer, "")?;
-            writeln!(buffer, "apiVersion `{}/{}`:", group, version)?;
-
-            for crd in kinds {
-                writeln!(buffer, "- `{}`", crd.spec.names.kind)?;
-            }
-        }
-    }
-
-    writeln!(buffer, " */")?;
-    writeln!(buffer, "")?;
-
-    for (group, _) in entries.iter().sorted_by_key(|x| x.0) {
-        let feature = group
-            .replace(".", "_")
-            .replace("-", "_");
-        writeln!(buffer, "#[cfg(feature = \"{}\")]", feature)?;
-        writeln!(buffer, "pub mod {};", feature)?;
     }
 
     Ok(())

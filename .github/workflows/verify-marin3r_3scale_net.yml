@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: The kube-custom-resources-rs Authors
+# SPDX-License-Identifier: 0BSD
+
+name: Verify marin3r_3scale_net
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - custom-resources/marin3r_3scale_net/**
+      - .github/workflows/verify-marin3r_3scale_net.yml
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Cache Dependencies
+        uses: Swatinem/rust-cache@v2
+      - name: Check changed CRDs
+        run: cargo check --lib --package kcr_marin3r_3scale_net --locked
+        env:
+          RUSTFLAGS: "--deny warnings"
+          K8S_OPENAPI_ENABLED_VERSION: "1.31"
+      - name: Set up Rust nightly
+        uses: dtolnay/rust-toolchain@nightly
+      - name: Set up docs.rs environment
+        uses: dtolnay/install@cargo-docs-rs
+      - name: Verify docs can be generated
+        run: cargo +nightly docs-rs --package kcr_marin3r_3scale_net

@@ -1,0 +1,62 @@
+# SPDX-FileCopyrightText: The kube-custom-resources-rs Authors
+# SPDX-License-Identifier: 0BSD
+
+name: Release operator_open_cluster_management_io
+on:
+  schedule:
+    - cron: 31 19 * * SUN
+  workflow_dispatch:
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - id: checkout
+        name: Checkout
+        uses: actions/checkout@v4
+      - id: commits
+        name: Count Commits
+        run: echo "count=$(git rev-list --count HEAD --since='last Sunday' -- custom-resources/operator_open_cluster_management_io)" >> $GITHUB_OUTPUT
+      - id: release
+        name: Create Release Version
+        if: steps.commits.outputs.count > 0
+        run: echo "version=$(date +'%Y.%-m.%-d')" >> $GITHUB_OUTPUT
+      - name: Set up Rust
+        if: steps.commits.outputs.count > 0
+        uses: dtolnay/rust-toolchain@stable
+      - name: Cargo Version
+        if: steps.commits.outputs.count > 0
+        run: sed -i -e '0,/edition/s/^version = .*/version = "${{ steps.release.outputs.version }}"/' custom-resources/operator_open_cluster_management_io/Cargo.toml
+      - name: Publish to crates.io
+        if: steps.commits.outputs.count > 0
+        run: >
+          cargo publish
+          --allow-dirty
+          --token ${{ secrets.CRATES_IO_TOKEN }}
+          --package kcr_operator_open_cluster_management_io
+          --all-features
+          --jobs 1
+          --no-verify
+        env:
+          RUSTFLAGS: "-A warnings"
+      - id: mail
+        name: Send Mail
+        if: steps.commits.outputs.count > 0
+        uses: dawidd6/action-send-mail@v4
+        with:
+          server_address: ${{ secrets.MAIL_SERVER }}
+          server_port: ${{ secrets.MAIL_PORT }}
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: ${{ github.event.repository.name }}/operator_open_cluster_management_io version ${{ steps.release.outputs.version }} published
+          body: See ${{ steps.create_release.outputs.url }} for details.
+          to: ${{ secrets.MAIL_RECIPIENT }}
+          from: ${{ secrets.MAIL_SENDER }}
+      - id: matrix
+        name: Send Matrix Message
+        if: steps.commits.outputs.count > 0
+        uses: s3krit/matrix-message-action@v0.0.3
+        with:
+          room_id: ${{ secrets.MATRIX_ROOM_ID }}
+          access_token: ${{ secrets.MATRIX_ACCESS_TOKEN }}
+          message: ${{ github.event.repository.name }}/operator_open_cluster_management_io version [${{ steps.release.outputs.version }}](${{ steps.create_release.outputs.url }}) published
+          server: ${{ secrets.MATRIX_SERVER }}

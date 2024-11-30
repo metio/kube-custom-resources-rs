@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: The kube-custom-resources-rs Authors
 // SPDX-License-Identifier: 0BSD
 
+use serde::Serialize;
+
 pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
     UpstreamSource {
         project_name: "1Password/onepassword-operator",
@@ -3628,6 +3630,7 @@ pub const CRD_V1_SOURCES: &'static [UpstreamSource] = &[
     },
 ];
 
+#[derive(Serialize)]
 pub struct UpstreamSource<'a> {
     pub project_name: &'a str,
     pub license: &'a str,
@@ -3635,6 +3638,7 @@ pub struct UpstreamSource<'a> {
     pub ignores: &'a [&'a IgnoreCRD<'a>],
 }
 
+#[derive(Serialize)]
 pub struct IgnoreCRD<'a> {
     pub group: &'a str,
     pub version: &'a str,
