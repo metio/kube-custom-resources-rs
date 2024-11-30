@@ -17,32 +17,50 @@ if ! cargo run --package code-generator --bin dep5_generator; then
   exit 1
 fi
 
-# fix YAML quoting
-if ! ./code-generator/quote-yaml-strings.sh "${FILTER}"; then
-  echo 'could not quote strings'
-  exit 1
-fi
-
 # generate Rust code
-if ! ./code-generator/create-custom-resources.sh "${FILTER}"; then
+if ! cargo run --package code-generator --bin custom_resource_generator "${FILTER}"; then
   echo 'could not generate resources'
   exit 1
 fi
 
 # generate mod.rs files
-if ! ./code-generator/create-mod-rs-files.sh; then
+if ! cargo run --package code-generator --bin mod_rs_generator; then
   echo 'could not generate mod.rs files'
   exit 1
 fi
 
-# adjust [features] in Cargo.toml
-if ! cargo run --package code-generator --bin cargo_toml_adjuster; then
-  echo 'could not adjust Cargo.toml'
+# generate lib.rs files
+if ! cargo run --package code-generator --bin lib_rs_generator; then
+  echo 'could not generate lib.rs files'
   exit 1
 fi
 
-# generate lib.rs
-if ! cargo run --package code-generator --bin lib_rs_generator; then
-  echo 'could not generate lib.rs'
+# generate Cargo.toml files
+if ! cargo run --package code-generator --bin cargo_toml_generator; then
+  echo 'could not generate Cargo.toml files'
+  exit 1
+fi
+
+# generate project README.md
+if ! cargo run --package code-generator --bin project_readme_generator; then
+  echo 'could not generate project README.md file'
+  exit 1
+fi
+
+# generate crate README.md files
+if ! cargo run --package code-generator --bin crate_readme_generator; then
+  echo 'could not generate crate README.md files'
+  exit 1
+fi
+
+# generate workspace Cargo.toml
+if ! cargo run --package code-generator --bin workspace_toml_generator; then
+  echo 'could not generate workspace Cargo.toml'
+  exit 1
+fi
+
+# generate GitHub actions
+if ! cargo run --package code-generator --bin github_actions_generator; then
+  echo 'could not generate workspace Cargo.toml'
   exit 1
 fi

@@ -1,0 +1,48 @@
+<!--
+SPDX-FileCopyrightText: The kube-custom-resources-rs Authors
+SPDX-License-Identifier: 0BSD
+ -->
+
+# Kubernetes Custom Resource Bindings for Rust [![Chat](https://img.shields.io/badge/matrix-%23talk.metio:matrix.org-brightgreen.svg?style=social&label=Matrix)](https://matrix.to/#/#talk.metio:matrix.org)
+
+This repository contains [kube-rs](https://kube.rs/) compatible bindings for Kubernetes [custom resources](https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definitions/) generated with [kopium](https://github.com/kube-rs/kopium).
+
+Feel free to add your own CRD to the [catalog](https://github.com/metio/kube-custom-resources-rs/blob/main/code-generator/src/catalog.rs)!
+
+## Structure
+
+Originally, this repository contained a single crate for all generated custom resources. However, crates.io has a size limit of 10MiB which we reached and thus this repository was split into multiple smaller crates, one for each custom resource group. Since there are no namespaces on crates.io, we prefix every crate in this repository with `kcr_` (kube-custom-resource) and hope that no name conflict will happen in the future.
+
+## Custom Resources
+
+Each group of a Kubernetes custom resource has a corresponding crate in this repository. The group of a custom resource can be seen in the `apiVersion` field of a resource, e.g.:
+
+```yaml
+apiVersion: chaos-mesh.org/v1alpha1
+kind: PodNetworkChaos
+metadata:
+  ...
+```
+
+In the above example, `chaos-mesh.org` is the group and `v1alpha1` is the version. Since Cargo imposes certain rules on how crates can be named, `.` and `-` are mapped to `_`. Therefore, the crate that contains the custom resource from the example above is called `chaos_mesh_org` and can be enabled like this (using the previously mentioned `kcr_` prefix):
+
+```toml
+[dependencies]
+kcr_chaos_mesh_org = "<version>"
+```
+
+Replace `<version>` with the latest available release of that crate. Each version within a group has a corresponding module in the associated crate, e.g. there is a module called `v1alpha1` in the crate `kcr_chaos_mesh_org`.
+
+## Versioning
+
+This crate uses a calendar based versioning scheme because resources in Kubernetes are versioned themselves.
+
+Updates to all CRDs are fetched [automatically](https://github.com/metio/kube-custom-resources-rs/blob/main/.github/workflows/update-crds.yml) and released every sunday if any changes were detected.
+
+## Available Groups
+
+The following groups are available:
+
+{{#each crates as |crate| }}
+- [{{@key}}](https://crates.io/crates/{{crate}})
+{{/each}}
