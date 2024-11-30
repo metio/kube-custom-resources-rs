@@ -6,15 +6,16 @@
 FILTER="${1:-}"
 
 ### Fix cargo warnings
-# read all features declared in the Cargo manifest
-for feature in $(cargo read-manifest --manifest-path ./kube-custom-resources-rs/Cargo.toml | yq -p json '.features | keys | .[]'); do
+for group_level_directory in ./custom-resources/*; do
+  group=$(basename "${group_level_directory}")
+
   if [ -n "${FILTER}" ]; then
-    if ! printf '%s' "${feature}" | grep --quiet --word-regexp "${FILTER}"; then
+    if ! printf '%s' "${group}" | grep --quiet --word-regexp "${FILTER}"; then
       continue
     fi
   fi
 
   # apply auto-fixable fixes
-  echo "fixing ${feature}"
-  K8S_OPENAPI_ENABLED_VERSION=1.31 cargo fix --lib --package kube-custom-resources-rs --features "${feature}" --allow-no-vcs
+  echo "fixing ${group}"
+  K8S_OPENAPI_ENABLED_VERSION=1.31 cargo fix --lib --package "kcr_${group}" --allow-no-vcs
 done

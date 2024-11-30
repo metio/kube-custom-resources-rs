@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: The kube-custom-resources-rs Authors
+# SPDX-License-Identifier: 0BSD
+
+[package]
+name = "kcr_beegfs_csi_netapp_com"
+version = "9999.99.99"
+edition = "2021"
+authors = ["The kube-custom-resources-rs authors"]
+description = "Kubernetes Custom Resource Bindings"
+homepage = "https://github.com/metio/kube-custom-resources-rs/"
+readme = "../../README.md"
+keywords = ["kubernetes", "custom-resources"]
+categories = ["api-bindings"]
+license = "0BSD"
+repository = "https://github.com/metio/kube-custom-resources-rs"
+
+[dependencies]
+schemars = { version = "~0" }
+serde = { version = "~1" }
+serde_json = { version = "~1" }
+k8s-openapi = { version = "~0" }
+kube = { version = "~0", features = ["derive"] }
+
+[dev-dependencies]
+k8s-openapi = { version = "~0", features = ["v1_31"] }
+
+[package.metadata.docs.rs]
+features = ["k8s-openapi/v1_31"]

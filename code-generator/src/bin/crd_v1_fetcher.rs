@@ -1,12 +1,13 @@
 // SPDX-FileCopyrightText: The kube-custom-resources-rs Authors
 // SPDX-License-Identifier: 0BSD
 
-use std::{env, fs};
-
 use k8s_openapi::apiextensions_apiserver::pkg::apis::apiextensions::v1::CustomResourceDefinition;
 use k8s_openapi::serde::Deserialize;
 use reqwest::blocking::Client;
-use serde_yaml::Value;
+use serde_yml::Value;
+use std::io::Write;
+use std::process::{Command, Stdio};
+use std::{env, fs};
 
 use code_generator::catalog;
 
@@ -25,9 +26,15 @@ fn main() {
                     if response.status().is_success() {
                         if let Ok(content) = response.text() {
                             for crd in parse_crds(content) {
-                                if source.ignores.iter().any(|&ignore| ignore.group == crd.spec.group && ignore.version == crd.spec.versions[0].name) {
-                                    println!("  Ignoring {}/{}", crd.spec.group, crd.spec.versions[0].name);
-                                    continue
+                                if source.ignores.iter().any(|&ignore| {
+                                    ignore.group == crd.spec.group
+                                        && ignore.version == crd.spec.versions[0].name
+                                }) {
+                                    println!(
+                                        "  Ignoring {}/{}",
+                                        crd.spec.group, crd.spec.versions[0].name
+                                    );
+                                    continue;
                                 }
                                 number_of_matched_crds += 1;
                                 let directory = format!(
@@ -43,8 +50,24 @@ fn main() {
                                     println!("! {:?}", why);
                                 });
 
-                                if let Ok(data) = serde_yaml::to_string(&crd) {
-                                    fs::write(file, data).unwrap_or_else(|why| {
+                                if let Ok(data) = serde_yml::to_string(&crd) {
+                                    let mut child = Command::new("yq")
+                                        .args(&[r#"(.. | select(tag == "!!str") ) style="double""#])
+                                        .stdin(Stdio::piped())
+                                        .stdout(Stdio::piped())
+                                        .spawn()
+                                        .expect("should be able to run yq");
+                                    child
+                                        .stdin
+                                        .take()
+                                        .expect("should have stdin")
+                                        .write_all(data.as_bytes())
+                                        .expect("should be able to write to stdin");
+                                    let output = child
+                                        .wait_with_output()
+                                        .expect("should be able to read from stdout");
+
+                                    fs::write(file, output.stdout).unwrap_or_else(|why| {
                                         println!("! {:?}", why);
                                     });
                                 }
@@ -65,9 +88,9 @@ fn main() {
 fn parse_crds(content: String) -> Vec<CustomResourceDefinition> {
     let mut crds: Vec<CustomResourceDefinition> = vec![];
 
-    for document in serde_yaml::Deserializer::from_str(&content) {
+    for document in serde_yml::Deserializer::from_str(&content) {
         if let Ok(yaml) = Value::deserialize(document) {
-            if let Ok(crd) = serde_yaml::from_value::<CustomResourceDefinition>(yaml) {
+            if let Ok(crd) = serde_yml::from_value::<CustomResourceDefinition>(yaml) {
                 for version in &crd.spec.versions {
                     let mut cloned = crd.clone();
                     cloned.spec.versions = vec![version.to_owned()];

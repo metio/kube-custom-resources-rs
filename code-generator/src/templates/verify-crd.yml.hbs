@@ -1,0 +1,36 @@
+# SPDX-FileCopyrightText: The kube-custom-resources-rs Authors
+# SPDX-License-Identifier: 0BSD
+
+name: Verify {{group_name_snake_case}}
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - custom-resources/{{group_name_snake_case}}/**
+      - .github/workflows/verify-{{group_name_snake_case}}.yml
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Cache Dependencies
+        uses: Swatinem/rust-cache@v2
+      - name: Check changed CRDs
+        run: cargo check --lib --package {{package_name}} --locked
+        env:
+          RUSTFLAGS: "--deny warnings"
+          K8S_OPENAPI_ENABLED_VERSION: "{{k8s_openapi_kubernetes_version}}"
+      - name: Try-run Cargo Version Update
+        if: steps.commits.outputs.count > 0
+        run: sed -i -e '0,/edition/s/^version = .*/version = "${{ steps.release.outputs.version }}"/' kube-custom-resources-rs/Cargo.toml
+      - name: Print modified Cargo.toml
+        run: cat kube-custom-resources-rs/Cargo.toml
+      - name: Set up Rust nightly
+        uses: dtolnay/rust-toolchain@nightly
+      - name: Set up docs.rs environment
+        uses: dtolnay/install@cargo-docs-rs
+      - name: Verify docs can be generated
+        run: cargo +nightly docs-rs --package {{package_name}}

@@ -3,10 +3,6 @@ Upstream-Name: kube-custom-resources-rs
 Upstream-Contact: Sebastian Hoß <seb@hoß.de>
 Source: https://github.com/metio/kube-custom-resources-rs
 
-Files: kube-custom-resources-rs/src/*
-Copyright: The kube-custom-resources-rs Authors
-License: 0BSD
-
 Files: crd-catalog/1Password/onepassword-operator/*
 Copyright: The 1Password/onepassword-operator Authors
 License: MIT
@@ -1326,3 +1322,7 @@ License: Apache-2.0
 Files: crd-catalog/zalando/postgres-operator/*
 Copyright: The zalando/postgres-operator Authors
 License: MIT
+
+Files: kube-custom-resources-rs/custom-resources/*
+Copyright: The kube-custom-resources-rs Authors
+License: 0BSD
