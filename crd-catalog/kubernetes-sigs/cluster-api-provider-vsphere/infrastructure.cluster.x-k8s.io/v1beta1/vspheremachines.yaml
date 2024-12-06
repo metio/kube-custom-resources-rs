@@ -68,10 +68,10 @@ spec:
                   description: "CustomVMXKeys is a dictionary of advanced VMX options that can be set on VM\nDefaults to empty map"
                   type: "object"
                 datacenter:
-                  description: "Datacenter is the name or inventory path of the datacenter in which the\nvirtual machine is created/located.\nDefaults to * which selects the default datacenter."
+                  description: "Datacenter is the name, inventory path, managed object reference or the managed\nobject ID of the datacenter in which the virtual machine is created/located.\nDefaults to * which selects the default datacenter."
                   type: "string"
                 datastore:
-                  description: "Datastore is the name or inventory path of the datastore in which the\nvirtual machine is created/located."
+                  description: "Datastore is the name, inventory path, managed object reference or the managed\nobject ID of the datastore in which the virtual machine is created/located."
                   type: "string"
                 diskGiB:
                   description: "DiskGiB is the size of a virtual machine's disk, in GiB.\nDefaults to the eponymous property value in the template from which the\nvirtual machine is cloned."
@@ -81,7 +81,7 @@ spec:
                   description: "FailureDomain is the failure domain unique identifier this Machine should be attached to, as defined in Cluster API.\nFor this infrastructure provider, the name is equivalent to the name of the VSphereDeploymentZone."
                   type: "string"
                 folder:
-                  description: "Folder is the name or inventory path of the folder in which the\nvirtual machine is created/located."
+                  description: "Folder is the name, inventory path, managed object reference or the managed\nobject ID of the folder in which the virtual machine is created/located."
                   type: "string"
                 guestSoftPowerOffTimeout:
                   description: "GuestSoftPowerOffTimeout sets the wait timeout for shutdown in the VM guest.\nThe VM will be powered off forcibly after the timeout if the VM is still\nup and running when the PowerOffMode is set to trySoft.\n\nThis parameter only applies when the PowerOffMode is set to trySoft.\n\nIf omitted, the timeout defaults to 5 minutes."
@@ -216,7 +216,7 @@ spec:
                               type: "string"
                             type: "array"
                           networkName:
-                            description: "NetworkName is the name of the vSphere network to which the device\nwill be connected."
+                            description: "NetworkName is the name, managed object reference or the managed\nobject ID of the vSphere network to which the device will be connected."
                             type: "string"
                           routes:
                             description: "Routes is a list of optional, static routes applied to the device."
@@ -322,7 +322,7 @@ spec:
                   description: "ProviderID is the virtual machine's BIOS UUID formated as\nvsphere://12345678-1234-1234-1234-123456789abc"
                   type: "string"
                 resourcePool:
-                  description: "ResourcePool is the name or inventory path of the resource pool in which\nthe virtual machine is created/located."
+                  description: "ResourcePool is the name, inventory path, managed object reference or the managed\nobject ID in which the virtual machine is created/located."
                   type: "string"
                 server:
                   description: "Server is the IP address or FQDN of the vSphere server on which\nthe virtual machine is created/located."
@@ -339,7 +339,7 @@ spec:
                     type: "string"
                   type: "array"
                 template:
-                  description: "Template is the name or inventory path of the template used to clone\nthe virtual machine."
+                  description: "Template is the name, inventory path, managed object reference or the managed\nobject ID of the template used to clone the virtual machine."
                   minLength: 1
                   type: "string"
                 thumbprint:

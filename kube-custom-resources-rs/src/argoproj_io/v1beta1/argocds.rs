@@ -2087,6 +2087,9 @@ pub struct ArgoCDController {
     /// Resources defines the Compute Resources required by the container for the Application Controller.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ArgoCDControllerResources>,
+    /// RespectRBAC restricts controller from discovering/syncing specific resources, Defaults is empty if not configured. Valid options are strict and normal.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "respectRBAC")]
+    pub respect_rbac: Option<String>,
     /// Sharding contains the options for the Application Controller sharding configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sharding: Option<ArgoCDControllerSharding>,

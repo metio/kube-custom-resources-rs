@@ -172,9 +172,12 @@ pub struct ComponentSpec {
     /// The version should follow the syntax and semantics of the "Semantic Versioning" specification (http://semver.org/).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceVersion")]
     pub service_version: Option<String>,
-    /// Overrides Services defined in referenced ComponentDefinition and exposes endpoints that can be accessed by clients.
+    /// Overrides Services defined in referenced ComponentDefinition.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<ComponentServices>>,
+    /// Specifies the sidecars to be injected into the Component.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sidecars: Option<Vec<ComponentSidecars>>,
     /// Stop the Component.
     /// If set, all the computing resources will be released.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4630,6 +4633,23 @@ pub struct ComponentServicesSpecSessionAffinityConfigClientIp {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct ComponentSidecars {
+    /// Name specifies the unique name of the sidecar.
+    /// 
+    /// 
+    /// The name will be used as the name of the sidecar container in the Pod.
+    pub name: String,
+    /// Specifies the exact component definition that the sidecar belongs to.
+    /// 
+    /// 
+    /// A sidecar will be updated when the owner component definition is updated only.
+    pub owner: String,
+    /// Specifies the sidecar definition CR to be used to create the sidecar.
+    #[serde(rename = "sidecarDef")]
+    pub sidecar_def: String,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ComponentSystemAccounts {
     /// The name of the system account.
     pub name: String,
@@ -6450,6 +6470,7 @@ pub struct ComponentStatus {
     /// - Failed: A significant number of Pods have failed.
     /// - Stopping: All Pods are being terminated, with current replica count at zero.
     /// - Stopped: All associated Pods have been successfully deleted.
+    /// - Starting: Pods are being started.
     /// - Deleting: The Component is being deleted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<ComponentStatusPhase>,
@@ -6462,6 +6483,7 @@ pub enum ComponentStatusPhase {
     Deleting,
     Updating,
     Stopping,
+    Starting,
     Running,
     Stopped,
     Failed,

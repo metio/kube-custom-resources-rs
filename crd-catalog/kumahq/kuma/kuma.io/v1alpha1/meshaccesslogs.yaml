@@ -12,6 +12,8 @@ spec:
     kind: "MeshAccessLog"
     listKind: "MeshAccessLogList"
     plural: "meshaccesslogs"
+    shortNames:
+      - "mal"
     singular: "meshaccesslog"
   scope: "Namespaced"
   versions:

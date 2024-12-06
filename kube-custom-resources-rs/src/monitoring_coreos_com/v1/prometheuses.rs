@@ -151,6 +151,8 @@ pub struct PrometheusSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<PrometheusContainers>>,
     /// When true, the Prometheus compaction is disabled.
+    /// When `spec.thanos.objectStorageConfig` or `spec.objectStorageConfigFile` are defined, the operator automatically
+    /// disables block compaction to avoid race conditions during block uploads (as the Thanos documentation recommends).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableCompaction")]
     pub disable_compaction: Option<bool>,
     /// Defines the DNS configuration for the pods.
@@ -179,6 +181,13 @@ pub struct PrometheusSpec {
     /// For more information see https://prometheus.io/docs/prometheus/latest/feature_flags/
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableFeatures")]
     pub enable_features: Option<Vec<String>>,
+    /// Enable Prometheus to be used as a receiver for the OTLP Metrics protocol.
+    /// 
+    /// Note that the OTLP receiver endpoint is automatically enabled if `.spec.otlpConfig` is defined.
+    /// 
+    /// It requires Prometheus >= v2.47.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableOTLPReceiver")]
+    pub enable_otlp_receiver: Option<bool>,
     /// Enable Prometheus to be used as a receiver for the Prometheus remote
     /// write protocol.
     /// 
@@ -441,6 +450,9 @@ pub struct PrometheusSpec {
     /// enabling the StatefulSetMinReadySeconds feature gate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
+    /// Specifies the validation scheme for metric and label names.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nameValidationScheme")]
+    pub name_validation_scheme: Option<PrometheusNameValidationScheme>,
     /// Defines on which Nodes the Pods are scheduled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
@@ -664,6 +676,11 @@ pub struct PrometheusSpec {
     /// Note that the ScrapeConfig custom resource definition is currently at Alpha level.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeConfigSelector")]
     pub scrape_config_selector: Option<PrometheusScrapeConfigSelector>,
+    /// The protocol to use if a scrape returns blank, unparseable, or otherwise invalid Content-Type.
+    /// 
+    /// It requires Prometheus >= v3.0.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeFallbackProtocol")]
+    pub scrape_fallback_protocol: Option<PrometheusScrapeFallbackProtocol>,
     /// Interval between consecutive scrapes.
     /// 
     /// Default: "30s"
@@ -675,6 +692,8 @@ pub struct PrometheusSpec {
     /// If unset, Prometheus uses its default value.
     /// 
     /// It requires Prometheus >= v2.49.0.
+    /// 
+    /// `PrometheusText1.0.0` requires Prometheus >= v3.0.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeProtocols")]
     pub scrape_protocols: Option<Vec<String>>,
     /// Number of seconds to wait until a scrape request times out.
@@ -722,19 +741,28 @@ pub struct PrometheusSpec {
     /// Deprecated: use 'spec.image' instead. The image's digest can be specified as part of the image name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sha: Option<String>,
-    /// Number of shards to distribute targets onto. `spec.replicas`
-    /// multiplied by `spec.shards` is the total number of Pods created.
+    /// Number of shards to distribute scraped targets onto.
     /// 
-    /// Note that scaling down shards will not reshard data onto remaining
+    /// `spec.replicas` multiplied by `spec.shards` is the total number of Pods
+    /// being created.
+    /// 
+    /// When not defined, the operator assumes only one shard.
+    /// 
+    /// Note that scaling down shards will not reshard data onto the remaining
     /// instances, it must be manually moved. Increasing shards will not reshard
     /// data either but it will continue to be available from the same
     /// instances. To query globally, use Thanos sidecar and Thanos querier or
     /// remote write data to a central location.
+    /// Alerting and recording rules
     /// 
-    /// Sharding is performed on the content of the `__address__` target meta-label
-    /// for PodMonitors and ServiceMonitors and `__param_target__` for Probes.
+    /// By default, the sharding is performed on:
+    /// * The `__address__` target's metadata label for PodMonitor,
+    /// ServiceMonitor and ScrapeConfig resources.
+    /// * The `__param_target__` label for Probe resources.
     /// 
-    /// Default: 1
+    /// Users can define their own sharding implementation by setting the
+    /// `__tmp_hash` label during the target discovery with relabeling
+    /// configuration (either in the monitoring resources or via scrape class).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub shards: Option<i32>,
     /// Storage defines the storage used by Prometheus.
@@ -1614,9 +1642,10 @@ pub struct PrometheusAlertingAlertmanagers {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "alertRelabelings")]
     pub alert_relabelings: Option<Vec<PrometheusAlertingAlertmanagersAlertRelabelings>>,
     /// Version of the Alertmanager API that Prometheus uses to send alerts.
-    /// It can be "v1" or "v2".
+    /// It can be "V1" or "V2".
+    /// The field has no effect for Prometheus >= v3.0.0 because only the v2 API is supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
-    pub api_version: Option<String>,
+    pub api_version: Option<PrometheusAlertingAlertmanagersApiVersion>,
     /// Authorization section for Alertmanager.
     /// 
     /// Cannot be set at the same time as `basicAuth`, `bearerTokenFile` or `sigv4`.
@@ -1761,6 +1790,20 @@ pub enum PrometheusAlertingAlertmanagersAlertRelabelingsAction {
     #[serde(rename = "dropequal")]
     Dropequal,
     DropEqual,
+}
+
+/// AlertmanagerEndpoints defines a selection of a single Endpoints object
+/// containing Alertmanager IPs to fire alerts against.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PrometheusAlertingAlertmanagersApiVersion {
+    #[serde(rename = "v1")]
+    V1,
+    #[serde(rename = "V1")]
+    V1X,
+    #[serde(rename = "v2")]
+    V2,
+    #[serde(rename = "V2")]
+    V2X,
 }
 
 /// Authorization section for Alertmanager.
@@ -5080,6 +5123,15 @@ pub enum PrometheusLogLevel {
     Error,
 }
 
+/// Specification of the desired behavior of the Prometheus cluster. More info:
+/// https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PrometheusNameValidationScheme {
+    #[serde(rename = "UTF8")]
+    Utf8,
+    Legacy,
+}
+
 /// Settings related to the OTLP receiver feature.
 /// It requires Prometheus >= v2.55.0.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -5087,6 +5139,21 @@ pub struct PrometheusOtlp {
     /// List of OpenTelemetry Attributes that should be promoted to metric labels, defaults to none.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "promoteResourceAttributes")]
     pub promote_resource_attributes: Option<Vec<String>>,
+    /// Configures how the OTLP receiver endpoint translates the incoming metrics.
+    /// If unset, Prometheus uses its default value.
+    /// 
+    /// It requires Prometheus >= v3.0.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "translationStrategy")]
+    pub translation_strategy: Option<PrometheusOtlpTranslationStrategy>,
+}
+
+/// Settings related to the OTLP receiver feature.
+/// It requires Prometheus >= v2.55.0.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PrometheusOtlpTranslationStrategy {
+    #[serde(rename = "NoUTF8EscapingWithSuffixes")]
+    NoUtf8EscapingWithSuffixes,
+    UnderscoreEscapingWithSuffixes,
 }
 
 /// The field controls if and how PVCs are deleted during the lifecycle of a StatefulSet.
@@ -7668,6 +7735,21 @@ pub struct PrometheusScrapeConfigSelectorMatchExpressions {
     /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+/// Specification of the desired behavior of the Prometheus cluster. More info:
+/// https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PrometheusScrapeFallbackProtocol {
+    PrometheusProto,
+    #[serde(rename = "OpenMetricsText0.0.1")]
+    OpenMetricsText001,
+    #[serde(rename = "OpenMetricsText1.0.0")]
+    OpenMetricsText100,
+    #[serde(rename = "PrometheusText0.0.4")]
+    PrometheusText004,
+    #[serde(rename = "PrometheusText1.0.0")]
+    PrometheusText100,
 }
 
 /// SecurityContext holds pod-level security attributes and common container settings.

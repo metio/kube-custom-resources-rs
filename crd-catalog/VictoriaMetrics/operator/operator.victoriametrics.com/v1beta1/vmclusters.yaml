@@ -40,7 +40,7 @@ spec:
           name: "Age"
           type: "date"
         - description: "Current status of cluster"
-          jsonPath: ".status.clusterStatus"
+          jsonPath: ".status.updateStatus"
           name: "Status"
           type: "string"
       name: "v1beta1"
@@ -2481,17 +2481,22 @@ spec:
             status:
               description: "VMClusterStatus defines the observed state of VMCluster"
               properties:
-                clusterStatus:
-                  description: "UpdateStatus defines status for application"
-                  type: "string"
                 lastSync:
                   description: "Deprecated."
                   type: "string"
+                observedGeneration:
+                  description: "ObservedGeneration defines current generation picked by operator for the\nreconcile"
+                  format: "int64"
+                  type: "integer"
                 reason:
+                  description: "Reason defines fail reason for reconcile process"
                   type: "string"
                 updateFailCount:
                   description: "Deprecated."
                   type: "integer"
+                updateStatus:
+                  description: "UpdateStatus defines a status for update rollout"
+                  type: "string"
               required:
                 - "updateFailCount"
               type: "object"

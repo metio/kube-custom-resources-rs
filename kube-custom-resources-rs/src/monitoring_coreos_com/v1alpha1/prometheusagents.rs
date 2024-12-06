@@ -121,6 +121,13 @@ pub struct PrometheusAgentSpec {
     /// For more information see https://prometheus.io/docs/prometheus/latest/feature_flags/
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableFeatures")]
     pub enable_features: Option<Vec<String>>,
+    /// Enable Prometheus to be used as a receiver for the OTLP Metrics protocol.
+    /// 
+    /// Note that the OTLP receiver endpoint is automatically enabled if `.spec.otlpConfig` is defined.
+    /// 
+    /// It requires Prometheus >= v2.47.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableOTLPReceiver")]
+    pub enable_otlp_receiver: Option<bool>,
     /// Enable Prometheus to be used as a receiver for the Prometheus remote
     /// write protocol.
     /// 
@@ -381,6 +388,9 @@ pub struct PrometheusAgentSpec {
     /// (Alpha) Using this field requires the `PrometheusAgentDaemonSet` feature gate to be enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<PrometheusAgentMode>,
+    /// Specifies the validation scheme for metric and label names.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nameValidationScheme")]
+    pub name_validation_scheme: Option<PrometheusAgentNameValidationScheme>,
     /// Defines on which Nodes the Pods are scheduled.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
@@ -515,6 +525,9 @@ pub struct PrometheusAgentSpec {
     /// for use with `kubectl proxy`.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "routePrefix")]
     pub route_prefix: Option<String>,
+    /// RuntimeConfig configures the values for the Prometheus process behavior
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub runtime: Option<PrometheusAgentRuntime>,
     /// SampleLimit defines per-scrape limit on number of scraped samples that will be accepted.
     /// Only valid in Prometheus versions 2.45.0 and newer.
     /// 
@@ -551,6 +564,11 @@ pub struct PrometheusAgentSpec {
     /// Note that the ScrapeConfig custom resource definition is currently at Alpha level.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeConfigSelector")]
     pub scrape_config_selector: Option<PrometheusAgentScrapeConfigSelector>,
+    /// The protocol to use if a scrape returns blank, unparseable, or otherwise invalid Content-Type.
+    /// 
+    /// It requires Prometheus >= v3.0.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeFallbackProtocol")]
+    pub scrape_fallback_protocol: Option<PrometheusAgentScrapeFallbackProtocol>,
     /// Interval between consecutive scrapes.
     /// 
     /// Default: "30s"
@@ -562,6 +580,8 @@ pub struct PrometheusAgentSpec {
     /// If unset, Prometheus uses its default value.
     /// 
     /// It requires Prometheus >= v2.49.0.
+    /// 
+    /// `PrometheusText1.0.0` requires Prometheus >= v3.0.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeProtocols")]
     pub scrape_protocols: Option<Vec<String>>,
     /// Number of seconds to wait until a scrape request times out.
@@ -606,19 +626,28 @@ pub struct PrometheusAgentSpec {
     /// `spec.additionalScrapeConfigs` instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceMonitorSelector")]
     pub service_monitor_selector: Option<PrometheusAgentServiceMonitorSelector>,
-    /// Number of shards to distribute targets onto. `spec.replicas`
-    /// multiplied by `spec.shards` is the total number of Pods created.
+    /// Number of shards to distribute scraped targets onto.
     /// 
-    /// Note that scaling down shards will not reshard data onto remaining
+    /// `spec.replicas` multiplied by `spec.shards` is the total number of Pods
+    /// being created.
+    /// 
+    /// When not defined, the operator assumes only one shard.
+    /// 
+    /// Note that scaling down shards will not reshard data onto the remaining
     /// instances, it must be manually moved. Increasing shards will not reshard
     /// data either but it will continue to be available from the same
     /// instances. To query globally, use Thanos sidecar and Thanos querier or
     /// remote write data to a central location.
+    /// Alerting and recording rules
     /// 
-    /// Sharding is performed on the content of the `__address__` target meta-label
-    /// for PodMonitors and ServiceMonitors and `__param_target__` for Probes.
+    /// By default, the sharding is performed on:
+    /// * The `__address__` target's metadata label for PodMonitor,
+    /// ServiceMonitor and ScrapeConfig resources.
+    /// * The `__param_target__` label for Probe resources.
     /// 
-    /// Default: 1
+    /// Users can define their own sharding implementation by setting the
+    /// `__tmp_hash` label during the target discovery with relabeling
+    /// configuration (either in the monitoring resources or via scrape class).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub shards: Option<i32>,
     /// Storage defines the storage used by Prometheus.
@@ -4315,6 +4344,15 @@ pub enum PrometheusAgentMode {
     DaemonSet,
 }
 
+/// Specification of the desired behavior of the Prometheus agent. More info:
+/// https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PrometheusAgentNameValidationScheme {
+    #[serde(rename = "UTF8")]
+    Utf8,
+    Legacy,
+}
+
 /// Settings related to the OTLP receiver feature.
 /// It requires Prometheus >= v2.55.0.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4322,6 +4360,21 @@ pub struct PrometheusAgentOtlp {
     /// List of OpenTelemetry Attributes that should be promoted to metric labels, defaults to none.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "promoteResourceAttributes")]
     pub promote_resource_attributes: Option<Vec<String>>,
+    /// Configures how the OTLP receiver endpoint translates the incoming metrics.
+    /// If unset, Prometheus uses its default value.
+    /// 
+    /// It requires Prometheus >= v3.0.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "translationStrategy")]
+    pub translation_strategy: Option<PrometheusAgentOtlpTranslationStrategy>,
+}
+
+/// Settings related to the OTLP receiver feature.
+/// It requires Prometheus >= v2.55.0.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PrometheusAgentOtlpTranslationStrategy {
+    #[serde(rename = "NoUTF8EscapingWithSuffixes")]
+    NoUtf8EscapingWithSuffixes,
+    UnderscoreEscapingWithSuffixes,
 }
 
 /// The field controls if and how PVCs are deleted during the lifecycle of a StatefulSet.
@@ -5595,6 +5648,15 @@ pub struct PrometheusAgentResourcesClaims {
     pub request: Option<String>,
 }
 
+/// RuntimeConfig configures the values for the Prometheus process behavior
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PrometheusAgentRuntime {
+    /// The Go garbage collection target percentage. Lowering this number may increase the CPU usage.
+    /// See: https://tip.golang.org/doc/gc-guide#GOGC
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "goGC")]
+    pub go_gc: Option<i32>,
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusAgentScrapeClasses {
     /// AttachMetadata configures additional metadata to the discovered targets.
@@ -6094,6 +6156,21 @@ pub struct PrometheusAgentScrapeConfigSelectorMatchExpressions {
     /// merge patch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub values: Option<Vec<String>>,
+}
+
+/// Specification of the desired behavior of the Prometheus agent. More info:
+/// https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PrometheusAgentScrapeFallbackProtocol {
+    PrometheusProto,
+    #[serde(rename = "OpenMetricsText0.0.1")]
+    OpenMetricsText001,
+    #[serde(rename = "OpenMetricsText1.0.0")]
+    OpenMetricsText100,
+    #[serde(rename = "PrometheusText0.0.4")]
+    PrometheusText004,
+    #[serde(rename = "PrometheusText1.0.0")]
+    PrometheusText100,
 }
 
 /// SecurityContext holds pod-level security attributes and common container settings.

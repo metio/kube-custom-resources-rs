@@ -12,6 +12,8 @@ spec:
     kind: "MeshTrafficPermission"
     listKind: "MeshTrafficPermissionList"
     plural: "meshtrafficpermissions"
+    shortNames:
+      - "mtp"
     singular: "meshtrafficpermission"
   scope: "Namespaced"
   versions:

@@ -28,10 +28,13 @@ spec:
           jsonPath: ".status.status"
           name: "Status"
           type: "string"
+        - jsonPath: ".metadata.creationTimestamp"
+          name: "Age"
+          type: "date"
       name: "v1beta1"
       schema:
         openAPIV3Schema:
-          description: "VLogs is the Schema for the vlogs API"
+          description: "VLogs is fast, cost-effective and scalable logs database.\nVLogs is the Schema for the vlogs API"
           properties:
             apiVersion:
               description: "APIVersion defines the versioned schema of this representation of an object.\nServers should convert recognized schemas to the latest internal value, and\nmay reject unrecognized values.\nMore info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
@@ -605,25 +608,29 @@ spec:
               description: "VLogsStatus defines the observed state of VLogs"
               properties:
                 availableReplicas:
-                  description: "AvailableReplicas Total number of available pods (ready for at least minReadySeconds) targeted by this VLogs."
+                  description: "deprecated"
                   format: "int32"
+                  type: "integer"
+                observedGeneration:
+                  description: "ObservedGeneration defines current generation picked by operator for the\nreconcile"
+                  format: "int64"
                   type: "integer"
                 reason:
-                  description: "Reason defines a reason in case of update failure"
+                  description: "Reason defines fail reason for reconcile process"
                   type: "string"
                 replicas:
-                  description: "ReplicaCount Total number of non-terminated pods targeted by this VLogs."
+                  description: "deprecated"
                   format: "int32"
                   type: "integer"
-                status:
-                  description: "UpdateStatus defines a status of vlogs instance rollout"
-                  type: "string"
                 unavailableReplicas:
-                  description: "UnavailableReplicas Total number of unavailable pods targeted by this VLogs."
+                  description: "deprecated"
                   format: "int32"
                   type: "integer"
+                updateStatus:
+                  description: "UpdateStatus defines a status for update rollout"
+                  type: "string"
                 updatedReplicas:
-                  description: "UpdatedReplicas Total number of non-terminated pods targeted by this VLogs."
+                  description: "deprecated"
                   format: "int32"
                   type: "integer"
               type: "object"

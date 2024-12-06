@@ -783,10 +783,19 @@ pub struct PlanStatusMigrationVmsWarm {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PlanStatusMigrationVmsWarmPrecopies {
     #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deltas: Option<Vec<PlanStatusMigrationVmsWarmPrecopiesDeltas>>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub end: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub snapshot: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub start: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct PlanStatusMigrationVmsWarmPrecopiesDeltas {
+    #[serde(rename = "deltaId")]
+    pub delta_id: String,
+    pub disk: String,
 }
 

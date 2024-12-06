@@ -358,7 +358,7 @@ spec:
                       description: "OpenStack is the configuration used when installing on OpenStack."
                       properties:
                         additionalSecurityGroupIDs:
-                          description: "AdditionalSecurityGroupIDs contains IDs of additional security groups for machines, where each ID\nis presented in the format sg-xxxx."
+                          description: "AdditionalSecurityGroupIDs contains IDs of additional security groups for machines, where each ID\nis presented in the UUID format."
                           items:
                             type: "string"
                           type: "array"

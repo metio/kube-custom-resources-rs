@@ -4093,6 +4093,9 @@ spec:
                         properties:
                           groupName:
                             type: "string"
+                          idleTimeoutSeconds:
+                            format: "int32"
+                            type: "integer"
                           maxReplicas:
                             default: 2147483647
                             format: "int32"
@@ -7929,6 +7932,8 @@ spec:
                 serviceUnhealthySecondThreshold:
                   format: "int32"
                   type: "integer"
+                upgradeStrategy:
+                  type: "string"
               type: "object"
             status:
               properties:

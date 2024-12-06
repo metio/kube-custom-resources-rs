@@ -20,6 +20,9 @@ use self::prelude::*;
 #[kube(derive="Default")]
 #[kube(derive="PartialEq")]
 pub struct InstallationSpec {
+    /// Azure is used to configure azure provider specific options.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub azure: Option<InstallationAzure>,
     /// CalicoKubeControllersDeployment configures the calico-kube-controllers Deployment. If used in
     /// conjunction with the deprecated ComponentResources, then these overrides take precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "calicoKubeControllersDeployment")]
@@ -156,6 +159,24 @@ pub struct InstallationSpec {
     /// Windows Configuration
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsNodes")]
     pub windows_nodes: Option<InstallationWindowsNodes>,
+}
+
+/// Azure is used to configure azure provider specific options.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstallationAzure {
+    /// PolicyMode determines whether the "control-plane" label is applied to namespaces. It offers two options: Default and Manual.
+    /// The Default option adds the "control-plane" label to the required namespaces.
+    /// The Manual option does not apply the "control-plane" label to any namespace.
+    /// Default: Default
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "policyMode")]
+    pub policy_mode: Option<InstallationAzurePolicyMode>,
+}
+
+/// Azure is used to configure azure provider specific options.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum InstallationAzurePolicyMode {
+    Default,
+    Manual,
 }
 
 /// CalicoKubeControllersDeployment configures the calico-kube-controllers Deployment. If used in
@@ -6711,6 +6732,9 @@ pub struct InstallationStatus {
 /// Computed is the final installation including overlaid resources.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputed {
+    /// Azure is used to configure azure provider specific options.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub azure: Option<InstallationStatusComputedAzure>,
     /// CalicoKubeControllersDeployment configures the calico-kube-controllers Deployment. If used in
     /// conjunction with the deprecated ComponentResources, then these overrides take precedence.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "calicoKubeControllersDeployment")]
@@ -6847,6 +6871,24 @@ pub struct InstallationStatusComputed {
     /// Windows Configuration
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsNodes")]
     pub windows_nodes: Option<InstallationStatusComputedWindowsNodes>,
+}
+
+/// Azure is used to configure azure provider specific options.
+#[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
+pub struct InstallationStatusComputedAzure {
+    /// PolicyMode determines whether the "control-plane" label is applied to namespaces. It offers two options: Default and Manual.
+    /// The Default option adds the "control-plane" label to the required namespaces.
+    /// The Manual option does not apply the "control-plane" label to any namespace.
+    /// Default: Default
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "policyMode")]
+    pub policy_mode: Option<InstallationStatusComputedAzurePolicyMode>,
+}
+
+/// Azure is used to configure azure provider specific options.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum InstallationStatusComputedAzurePolicyMode {
+    Default,
+    Manual,
 }
 
 /// CalicoKubeControllersDeployment configures the calico-kube-controllers Deployment. If used in

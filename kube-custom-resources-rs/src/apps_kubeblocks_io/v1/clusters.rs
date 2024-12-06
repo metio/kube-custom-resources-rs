@@ -332,7 +332,7 @@ pub struct ClusterComponentSpecs {
     /// If no version is specified, the latest available version will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceVersion")]
     pub service_version: Option<String>,
-    /// Overrides services defined in referenced ComponentDefinition and expose endpoints that can be accessed by clients.
+    /// Overrides services defined in referenced ComponentDefinition.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<ClusterComponentSpecsServices>>,
     /// Stop the Component.
@@ -7724,7 +7724,7 @@ pub struct ClusterShardingsTemplate {
     /// If no version is specified, the latest available version will be used.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceVersion")]
     pub service_version: Option<String>,
-    /// Overrides services defined in referenced ComponentDefinition and expose endpoints that can be accessed by clients.
+    /// Overrides services defined in referenced ComponentDefinition.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<ClusterShardingsTemplateServices>>,
     /// Stop the Component.
@@ -13668,6 +13668,7 @@ pub enum ClusterStatusComponentsPhase {
     Deleting,
     Updating,
     Stopping,
+    Starting,
     Running,
     Stopped,
     Failed,
@@ -13705,6 +13706,7 @@ pub enum ClusterStatusShardingsPhase {
     Deleting,
     Updating,
     Stopping,
+    Starting,
     Running,
     Stopped,
     Failed,

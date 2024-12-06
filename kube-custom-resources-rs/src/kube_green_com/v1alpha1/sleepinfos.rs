@@ -44,8 +44,8 @@ pub struct SleepInfoSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "suspendDeployments")]
     pub suspend_deployments: Option<bool>,
     /// If SuspendStatefulSets is set to false, on sleep the statefulset of the namespace will not be suspended. By default StatefulSet will be suspended.
-    #[serde(default, skip_serializing_if = "Option::is_none", rename = "suspendStatefulsets")]
-    pub suspend_statefulsets: Option<bool>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "suspendStatefulSets")]
+    pub suspend_stateful_sets: Option<bool>,
     /// Time zone to set the schedule, in IANA time zone identifier.
     /// It is not required, default to UTC.
     /// For example, for the Italy time zone set Europe/Rome.

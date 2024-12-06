@@ -96,6 +96,11 @@ pub struct PodMonitorSpec {
     /// It requires Prometheus >= v2.45.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeClassicHistograms")]
     pub scrape_classic_histograms: Option<bool>,
+    /// The protocol to use if a scrape returns blank, unparseable, or otherwise invalid Content-Type.
+    /// 
+    /// It requires Prometheus >= v3.0.0.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeFallbackProtocol")]
+    pub scrape_fallback_protocol: Option<PodMonitorScrapeFallbackProtocol>,
     /// `scrapeProtocols` defines the protocols to negotiate during a scrape. It tells clients the
     /// protocols supported by Prometheus in order of preference (from most to least preferred).
     /// 
@@ -210,11 +215,14 @@ pub struct PodMonitorPodMetricsEndpoints {
     /// If empty, Prometheus uses the default value (e.g. `/metrics`).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    /// Name of the Pod port which this endpoint refers to.
+    /// The `Pod` port name which exposes the endpoint.
     /// 
-    /// It takes precedence over `targetPort`.
+    /// It takes precedence over the `portNumber` and `targetPort` fields.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<String>,
+    /// The `Pod` port number which exposes the endpoint.
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portNumber")]
+    pub port_number: Option<i32>,
     /// `proxyURL` configures the HTTP Proxy URL (e.g.
     /// "http://proxyserver:2195") to go through when scraping the target.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -246,7 +254,7 @@ pub struct PodMonitorPodMetricsEndpoints {
     /// Name or number of the target port of the `Pod` object behind the Service, the
     /// port must be specified with container port property.
     /// 
-    /// Deprecated: use 'port' instead.
+    /// Deprecated: use 'port' or 'portNumber' instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
     pub target_port: Option<IntOrString>,
     /// TLS configuration to use when scraping the target.
@@ -1023,6 +1031,20 @@ pub enum PodMonitorPodMetricsEndpointsTlsConfigMinVersion {
     Tls12,
     #[serde(rename = "TLS13")]
     Tls13,
+}
+
+/// Specification of desired Pod selection for target discovery by Prometheus.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
+pub enum PodMonitorScrapeFallbackProtocol {
+    PrometheusProto,
+    #[serde(rename = "OpenMetricsText0.0.1")]
+    OpenMetricsText001,
+    #[serde(rename = "OpenMetricsText1.0.0")]
+    OpenMetricsText100,
+    #[serde(rename = "PrometheusText0.0.4")]
+    PrometheusText004,
+    #[serde(rename = "PrometheusText1.0.0")]
+    PrometheusText100,
 }
 
 /// Label selector to select the Kubernetes `Pod` objects to scrape metrics from.

@@ -28,6 +28,13 @@ spec:
           jsonPath: ".status.updateStatus"
           name: "Status"
           type: "string"
+        - description: "The desired replicas number of Alertmanagers"
+          jsonPath: ".spec.replicaCount"
+          name: "ReplicaCount"
+          type: "integer"
+        - jsonPath: ".metadata.creationTimestamp"
+          name: "Age"
+          type: "date"
       name: "v1beta1"
       schema:
         openAPIV3Schema:
@@ -1221,25 +1228,29 @@ spec:
               description: "VMAlertStatus defines the observed state of VMAlert"
               properties:
                 availableReplicas:
-                  description: "AvailableReplicas Total number of available pods (ready for at least minReadySeconds)\ntargeted by this VMAlert cluster."
+                  description: "Deprecated"
                   format: "int32"
                   type: "integer"
+                observedGeneration:
+                  description: "ObservedGeneration defines current generation picked by operator for the\nreconcile"
+                  format: "int64"
+                  type: "integer"
                 reason:
-                  description: "Reason defines fail reason for update process, effective only for statefulMode"
+                  description: "Reason defines fail reason for reconcile process"
                   type: "string"
                 replicas:
-                  description: "ReplicaCount Total number of non-terminated pods targeted by this VMAlert\ncluster (their labels match the selector)."
+                  description: "Deprecated"
                   format: "int32"
                   type: "integer"
                 unavailableReplicas:
-                  description: "UnavailableReplicas Total number of unavailable pods targeted by this VMAlert cluster."
+                  description: "Deprecated"
                   format: "int32"
                   type: "integer"
                 updateStatus:
-                  description: "UpdateStatus defines a status for update rollout, effective only for statefulMode"
+                  description: "UpdateStatus defines a status for update rollout"
                   type: "string"
                 updatedReplicas:
-                  description: "UpdatedReplicas Total number of non-terminated pods targeted by this VMAlert\ncluster that have the desired version spec."
+                  description: "Deprecated"
                   format: "int32"
                   type: "integer"
               type: "object"

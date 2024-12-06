@@ -477,7 +477,7 @@ pub struct MachinePoolPlatformIbmcloudDedicatedHosts {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachinePoolPlatformOpenstack {
     /// AdditionalSecurityGroupIDs contains IDs of additional security groups for machines, where each ID
-    /// is presented in the format sg-xxxx.
+    /// is presented in the UUID format.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalSecurityGroupIDs")]
     pub additional_security_group_i_ds: Option<Vec<String>>,
     /// Flavor defines the OpenStack Nova flavor.

@@ -36,6 +36,9 @@ spec:
           jsonPath: ".status.updateStatus"
           name: "Status"
           type: "string"
+        - jsonPath: ".metadata.creationTimestamp"
+          name: "Age"
+          type: "date"
       name: "v1beta1"
       schema:
         openAPIV3Schema:
@@ -2529,7 +2532,7 @@ spec:
                     type: "object"
                   type: "array"
                 staticScrapeSelector:
-                  description: "StaticScrapeSelector defines PodScrapes to be selected for target discovery.\nWorks in combination with NamespaceSelector.\nIf both nil - match everything.\nNamespaceSelector nil - only objects at VMAgent namespace.\nSelector nil - only objects at NamespaceSelector namespaces."
+                  description: "StaticScrapeSelector defines VMStaticScrape to be selected for target discovery.\nWorks in combination with NamespaceSelector.\nIf both nil - match everything.\nNamespaceSelector nil - only objects at VMAgent namespace.\nSelector nil - only objects at NamespaceSelector namespaces."
                   properties:
                     matchExpressions:
                       description: "matchExpressions is a list of label selector requirements. The requirements are ANDed."
@@ -2861,11 +2864,15 @@ spec:
               description: "VMAgentStatus defines the observed state of VMAgent"
               properties:
                 availableReplicas:
-                  description: "AvailableReplicas Total number of available pods (ready for at least minReadySeconds)\ntargeted by this VMAlert cluster."
+                  description: "Deprecated"
                   format: "int32"
                   type: "integer"
+                observedGeneration:
+                  description: "ObservedGeneration defines current generation picked by operator for the\nreconcile"
+                  format: "int64"
+                  type: "integer"
                 reason:
-                  description: "Reason defines fail reason for update process, effective only for statefulMode"
+                  description: "Reason defines fail reason for reconcile process"
                   type: "string"
                 replicas:
                   description: "ReplicaCount Total number of pods targeted by this VMAgent"
@@ -2879,14 +2886,14 @@ spec:
                   format: "int32"
                   type: "integer"
                 unavailableReplicas:
-                  description: "UnavailableReplicas Total number of unavailable pods targeted by this VMAgent cluster."
+                  description: "Deprecated"
                   format: "int32"
                   type: "integer"
                 updateStatus:
-                  description: "UpdateStatus defines a status for update rollout, effective only for statefulMode"
+                  description: "UpdateStatus defines a status for update rollout"
                   type: "string"
                 updatedReplicas:
-                  description: "UpdatedReplicas Total number of non-terminated pods targeted by this VMAgent\ncluster that have the desired version spec."
+                  description: "Deprecated"
                   format: "int32"
                   type: "integer"
               type: "object"

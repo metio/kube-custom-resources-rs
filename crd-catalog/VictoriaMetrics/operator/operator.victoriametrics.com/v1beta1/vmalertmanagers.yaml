@@ -26,10 +26,6 @@ spec:
   scope: "Namespaced"
   versions:
     - additionalPrinterColumns:
-        - description: "The version of VMAlertmanager"
-          jsonPath: ".spec.image.tag"
-          name: "Version"
-          type: "string"
         - description: "The desired replicas number of Alertmanagers"
           jsonPath: ".spec.replicaCount"
           name: "ReplicaCount"
@@ -1426,11 +1422,15 @@ spec:
             status:
               description: "Most recent observed status of the VMAlertmanager cluster.\nOperator API itself. More info:\nhttps://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status"
               properties:
+                observedGeneration:
+                  description: "ObservedGeneration defines current generation picked by operator for the\nreconcile"
+                  format: "int64"
+                  type: "integer"
                 reason:
-                  description: "Reason has non empty reason for update failure"
+                  description: "Reason defines fail reason for reconcile process"
                   type: "string"
                 updateStatus:
-                  description: "Status defines a status of object update"
+                  description: "UpdateStatus defines a status for update rollout"
                   type: "string"
               type: "object"
           required:

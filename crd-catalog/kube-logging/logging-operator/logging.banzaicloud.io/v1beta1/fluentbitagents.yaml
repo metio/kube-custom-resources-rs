@@ -1163,6 +1163,8 @@ spec:
                   type: "string"
                 enableUpstream:
                   type: "boolean"
+                enabledIPv6:
+                  type: "boolean"
                 envVars:
                   items:
                     properties:
@@ -2465,6 +2467,8 @@ spec:
                   type: "object"
                 security:
                   properties:
+                    createOpenShiftSCC:
+                      type: "boolean"
                     podSecurityContext:
                       properties:
                         appArmorProfile:

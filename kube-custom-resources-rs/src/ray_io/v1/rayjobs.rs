@@ -3430,6 +3430,8 @@ pub struct RayJobRayClusterSpecHeadGroupSpecTemplateSpecVolumesVsphereVolume {
 pub struct RayJobRayClusterSpecWorkerGroupSpecs {
     #[serde(rename = "groupName")]
     pub group_name: String,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleTimeoutSeconds")]
+    pub idle_timeout_seconds: Option<i32>,
     #[serde(rename = "maxReplicas")]
     pub max_replicas: i32,
     #[serde(rename = "minReplicas")]
