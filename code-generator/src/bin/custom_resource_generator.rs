@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: The kube-custom-resources-rs Authors
 // SPDX-License-Identifier: 0BSD
 
-use code_generator::{group_name, last_path_segment, path_contains};
+use code_generator::{group_name, kind_name, last_path_segment, path_contains};
 use glob::glob;
 use std::process::{Command, Stdio};
 use std::{env, fs};
@@ -32,20 +32,21 @@ fn main() {
                             .expect("parent should exist"),
                     );
                     let group_snake_case = group_name(&group);
+                    let kind = kind_name(plural);
 
                     let group_version_directory = custom_resources_root
                         .join(group_snake_case)
                         .join("src")
                         .join(version);
-                    fs::create_dir_all(&group_version_directory).unwrap();
-                    let resource_target = group_version_directory.join(format!("{plural}.rs"));
+                    let resource_target = group_version_directory.join(format!("{kind}.rs"));
 
-                    let mut ignore_file = path.with_extension("ignore");
+                    let ignore_file = path.with_extension("ignore");
                     if ignore_file.exists() {
                         if resource_target.exists() {
                             fs::remove_file(resource_target).expect("remove failed");
                         }
                     } else {
+                        fs::create_dir_all(&group_version_directory).unwrap();
                         let absolute_yaml_path = path.to_string_lossy();
                         let relative_yaml_path = absolute_yaml_path
                             .chars()
