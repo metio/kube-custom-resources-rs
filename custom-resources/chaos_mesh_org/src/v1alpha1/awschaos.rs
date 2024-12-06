@@ -5,21 +5,16 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// AWSChaosSpec is the content of the specification for an AWSChaos
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "chaos-mesh.org",
-    version = "v1alpha1",
-    kind = "AWSChaos",
-    plural = "awschaos"
-)]
+#[kube(group = "chaos-mesh.org", version = "v1alpha1", kind = "AWSChaos", plural = "awschaos")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct AWSChaosSpec {
     /// Action defines the specific aws chaos action. Supported action: ec2-stop / ec2-restart / detach-volume Default action: ec2-stop
     pub action: AWSChaosAction,
@@ -27,11 +22,7 @@ pub struct AWSChaosSpec {
     #[serde(rename = "awsRegion")]
     pub aws_region: String,
     /// DeviceName indicates the name of the device. Needed in detach-volume.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deviceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceName")]
     pub device_name: Option<String>,
     /// Duration represents the duration of the chaos action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -43,18 +34,10 @@ pub struct AWSChaosSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// SecretName defines the name of kubernetes secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
     /// EbsVolume indicates the ID of the EBS volume. Needed in detach-volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeID")]
@@ -95,17 +78,9 @@ pub struct AWSChaosStatusConditions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AWSChaosStatusExperiment {
     /// Records are used to track the running status
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerRecords"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerRecords")]
     pub container_records: Option<Vec<AWSChaosStatusExperimentContainerRecords>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "desiredPhase"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredPhase")]
     pub desired_phase: Option<AWSChaosStatusExperimentDesiredPhase>,
 }
 
@@ -146,3 +121,4 @@ pub enum AWSChaosStatusExperimentDesiredPhase {
     Run,
     Stop,
 }
+

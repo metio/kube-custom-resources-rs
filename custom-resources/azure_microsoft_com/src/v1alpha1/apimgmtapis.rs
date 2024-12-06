@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// APIMgmtSpec defines the desired state of APIMgmt
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "azure.microsoft.com",
-    version = "v1alpha1",
-    kind = "APIMgmtAPI",
-    plural = "apimgmtapis"
-)]
+#[kube(group = "azure.microsoft.com", version = "v1alpha1", kind = "APIMgmtAPI", plural = "apimgmtapis")]
 #[kube(namespaced)]
 #[kube(status = "APIMgmtAPIStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct APIMgmtAPISpec {
     #[serde(rename = "apiId")]
     pub api_id: String,
@@ -36,56 +31,28 @@ pub struct APIMgmtAPISpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct APIMgmtAPIProperties {
     /// APIRevision - Describes the Revision of the Api. If no value is provided, default revision 1 is created
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiRevision"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiRevision")]
     pub api_revision: Option<String>,
     /// APIRevisionDescription - Description of the Api Revision.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiRevisionDescription"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiRevisionDescription")]
     pub api_revision_description: Option<String>,
     /// APIVersion - Indicates the Version identifier of the API if the API is versioned
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// APIVersionDescription - Description of the Api Version.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersionDescription"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersionDescription")]
     pub api_version_description: Option<String>,
     /// APIVersionSetID - A resource identifier for the related ApiVersionSet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersionSetId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersionSetId")]
     pub api_version_set_id: Option<String>,
     /// APIVersionSet - APIVersionSetContractDetails an API Version Set contains the common configuration for a set of API versions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersionSets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersionSets")]
     pub api_version_sets: Option<APIMgmtAPIPropertiesApiVersionSets>,
     /// Description - Description of the API. May include HTML formatting tags.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// DisplayName - API name. Must be 1 to 300 characters long.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "displayName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "displayName")]
     pub display_name: Option<String>,
     /// Format - Format of the Content in which the API is getting imported. Possible values include: 'WadlXML', 'WadlLinkJSON', 'SwaggerJSON', 'SwaggerLinkJSON', 'Wsdl', 'WsdlLink', 'Openapi', 'Openapijson', 'OpenapiLink'
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -103,25 +70,13 @@ pub struct APIMgmtAPIProperties {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocols: Option<Vec<String>>,
     /// ServiceURL - Absolute URL of the backend service implementing this API. Cannot be more than 2000 characters long.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceUrl")]
     pub service_url: Option<String>,
     /// SourceAPIID - API identifier of the source API.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceApiId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceApiId")]
     pub source_api_id: Option<String>,
     /// SubscriptionRequired - Specifies whether an API or Product subscription is required for accessing the API.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subscriptionRequired"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subscriptionRequired")]
     pub subscription_required: Option<bool>,
 }
 
@@ -144,39 +99,19 @@ pub struct APIMgmtAPIPropertiesApiVersionSets {
 pub struct APIMgmtAPIStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub completed: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containsUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containsUpdate")]
     pub contains_update: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failedProvisioning"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failedProvisioning")]
     pub failed_provisioning: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flattenedSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flattenedSecrets")]
     pub flattened_secrets: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub output: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pollingUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pollingUrl")]
     pub polling_url: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pollingUrlKind"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pollingUrlKind")]
     pub polling_url_kind: Option<APIMgmtAPIStatusPollingUrlKind>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub provisioned: Option<bool>,
@@ -184,11 +119,7 @@ pub struct APIMgmtAPIStatus {
     pub provisioning: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requested: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceId")]
     pub resource_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "specHash")]
     pub spec_hash: Option<String>,
@@ -202,3 +133,4 @@ pub enum APIMgmtAPIStatusPollingUrlKind {
     CreateOrUpdate,
     Delete,
 }
+

@@ -5,20 +5,15 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "operator.tigera.io",
-    version = "v1",
-    kind = "TLSTerminatedRoute",
-    plural = "tlsterminatedroutes"
-)]
+#[kube(group = "operator.tigera.io", version = "v1", kind = "TLSTerminatedRoute", plural = "tlsterminatedroutes")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct TLSTerminatedRouteSpec {
     /// CABundle is where we read the CA bundle from to authenticate the
     /// destination (if non-empty)
@@ -112,18 +107,10 @@ pub struct TLSTerminatedRoutePathMatch {
     /// Path is the path portion of the URL based on which we proxy.
     pub path: String,
     /// PathRegexp, if not nil, checks if Regexp matches the path.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pathRegexp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pathRegexp")]
     pub path_regexp: Option<String>,
     /// PathReplace if not nil will be used to replace PathRegexp matches.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pathReplace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pathReplace")]
     pub path_replace: Option<String>,
 }
 
@@ -133,3 +120,4 @@ pub enum TLSTerminatedRouteTarget {
     #[serde(rename = "UI")]
     Ui,
 }
+

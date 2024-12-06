@@ -5,42 +5,26 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "acid.zalan.do",
-    version = "v1",
-    kind = "PostgresTeam",
-    plural = "postgresteams"
-)]
+#[kube(group = "acid.zalan.do", version = "v1", kind = "PostgresTeam", plural = "postgresteams")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PostgresTeamSpec {
     /// Map for teamId and associated additional users
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalMembers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalMembers")]
     pub additional_members: Option<BTreeMap<String, String>>,
     /// Map for teamId and associated additional superuser teams
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalSuperuserTeams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalSuperuserTeams")]
     pub additional_superuser_teams: Option<BTreeMap<String, String>>,
     /// Map for teamId and associated additional teams
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalTeams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalTeams")]
     pub additional_teams: Option<BTreeMap<String, String>>,
 }
+

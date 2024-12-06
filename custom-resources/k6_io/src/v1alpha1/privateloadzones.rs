@@ -4,47 +4,30 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "k6.io",
-    version = "v1alpha1",
-    kind = "PrivateLoadZone",
-    plural = "privateloadzones"
-)]
+#[kube(group = "k6.io", version = "v1alpha1", kind = "PrivateLoadZone", plural = "privateloadzones")]
 #[kube(namespaced)]
 #[kube(status = "PrivateLoadZoneStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PrivateLoadZoneSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<PrivateLoadZoneImagePullSecrets>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     pub resources: PrivateLoadZoneResources,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
     pub token: String,
 }
@@ -77,3 +60,4 @@ pub struct PrivateLoadZoneStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

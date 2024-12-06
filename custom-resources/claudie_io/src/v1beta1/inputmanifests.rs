@@ -5,34 +5,25 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// Specification of the desired behaviour of the InputManifest
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "claudie.io",
-    version = "v1beta1",
-    kind = "InputManifest",
-    plural = "inputmanifests"
-)]
+#[kube(group = "claudie.io", version = "v1beta1", kind = "InputManifest", plural = "inputmanifests")]
 #[kube(namespaced)]
 #[kube(status = "InputManifestStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct InputManifestSpec {
     /// Kubernetes list of Kubernetes cluster this manifest will manage.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kubernetes: Option<InputManifestKubernetes>,
     /// LoadBalancers list of loadbalancer clusters the Kubernetes clusters may use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancers")]
     pub load_balancers: Option<InputManifestLoadBalancers>,
     /// NodePool is a map of dynamic nodepools and static nodepools which will be used to
     /// form kubernetes or loadbalancer clusters.
@@ -56,11 +47,7 @@ pub struct InputManifestKubernetes {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InputManifestKubernetesClusters {
     /// General information about a proxy used to build a K8s cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "installationProxy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "installationProxy")]
     pub installation_proxy: Option<InputManifestKubernetesClustersInstallationProxy>,
     /// Name of the Kubernetes cluster. Each cluster will have a random hash appended to the name, so the whole name will be of format <name>-<hash>.
     pub name: String,
@@ -177,8 +164,8 @@ pub struct InputManifestNodePools {
 
 /// DynamicNodePool List of dynamically to-be-created nodepools of not yet existing machines, used for Kubernetes or loadbalancer clusters.
 /// These are only blueprints, and will only be created per reference in kubernetes or loadBalancer clusters.
-///
-///
+/// 
+/// 
 /// E.g. if the nodepool isn't used, it won't even be created. Or if the same nodepool is used in two different clusters,
 /// it will be created twice. In OOP analogy, a dynamic nodepool would be a class
 /// that would get instantiated N >= 0 times depending on which clusters reference it.
@@ -199,11 +186,7 @@ pub struct InputManifestNodePoolsDynamic {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// MachineSpec further describe the properties of the selected server type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "machineSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineSpec")]
     pub machine_spec: Option<InputManifestNodePoolsDynamicMachineSpec>,
     /// Name of the nodepool. Each nodepool will have a random hash appended to the name, so the whole name will be of format <name>-<hash>.
     pub name: String,
@@ -216,11 +199,7 @@ pub struct InputManifestNodePoolsDynamic {
     /// Size of the storage disk on the nodes in the nodepool in GB. The OS disk is created automatically
     /// with predefined size of 100GB for kubernetes nodes and 50GB for Loadbalancer nodes.
     /// The value must be either -1 (no disk is created), or >= 50. If no value is specified, 50 is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageDiskSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageDiskSize")]
     pub storage_disk_size: Option<i32>,
     /// User defined taints for this nodepool.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -416,3 +395,4 @@ pub struct InputManifestStatusClusters {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+

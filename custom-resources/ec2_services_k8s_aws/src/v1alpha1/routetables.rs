@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// RouteTableSpec defines the desired state of RouteTable.
-///
+/// 
 /// Describes a route table.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "ec2.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "RouteTable",
-    plural = "routetables"
-)]
+#[kube(group = "ec2.services.k8s.aws", version = "v1alpha1", kind = "RouteTable", plural = "routetables")]
 #[kube(namespaced)]
 #[kube(status = "RouteTableStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct RouteTableSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub routes: Option<Vec<RouteTableRoutes>>,
@@ -40,7 +35,7 @@ pub struct RouteTableSpec {
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcRef")]
@@ -49,120 +44,48 @@ pub struct RouteTableSpec {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RouteTableRoutes {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "carrierGatewayID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "carrierGatewayID")]
     pub carrier_gateway_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "coreNetworkARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "coreNetworkARN")]
     pub core_network_arn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "destinationCIDRBlock"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationCIDRBlock")]
     pub destination_cidr_block: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "destinationIPv6CIDRBlock"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationIPv6CIDRBlock")]
     pub destination_i_pv6_cidr_block: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "destinationPrefixListID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationPrefixListID")]
     pub destination_prefix_list_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "egressOnlyInternetGatewayID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressOnlyInternetGatewayID")]
     pub egress_only_internet_gateway_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gatewayID")]
     pub gateway_id: Option<String>,
     /// Reference field for GatewayID
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gatewayRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gatewayRef")]
     pub gateway_ref: Option<RouteTableRoutesGatewayRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceID")]
     pub instance_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localGatewayID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localGatewayID")]
     pub local_gateway_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "natGatewayID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "natGatewayID")]
     pub nat_gateway_id: Option<String>,
     /// Reference field for NATGatewayID
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "natGatewayRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "natGatewayRef")]
     pub nat_gateway_ref: Option<RouteTableRoutesNatGatewayRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkInterfaceID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkInterfaceID")]
     pub network_interface_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "transitGatewayID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "transitGatewayID")]
     pub transit_gateway_id: Option<String>,
     /// Reference field for TransitGatewayID
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "transitGatewayRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "transitGatewayRef")]
     pub transit_gateway_ref: Option<RouteTableRoutesTransitGatewayRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vpcEndpointID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcEndpointID")]
     pub vpc_endpoint_id: Option<String>,
     /// Reference field for VPCEndpointID
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vpcEndpointRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcEndpointRef")]
     pub vpc_endpoint_ref: Option<RouteTableRoutesVpcEndpointRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vpcPeeringConnectionID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcPeeringConnectionID")]
     pub vpc_peering_connection_id: Option<String>,
     /// Reference field for VPCPeeringConnectionID
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vpcPeeringConnectionRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcPeeringConnectionRef")]
     pub vpc_peering_connection_ref: Option<RouteTableRoutesVpcPeeringConnectionRef>,
 }
 
@@ -274,7 +197,7 @@ pub struct RouteTableTags {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -301,11 +224,7 @@ pub struct RouteTableStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<RouteTableStatusAckResourceMetadata>,
     /// The associations between the route table and one or more subnets or a gateway.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -320,25 +239,13 @@ pub struct RouteTableStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerID")]
     pub owner_id: Option<String>,
     /// Any virtual private gateway (VGW) propagating routes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "propagatingVGWs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "propagatingVGWs")]
     pub propagating_vg_ws: Option<Vec<RouteTableStatusPropagatingVgWs>>,
     /// The routes in the route table.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "routeStatuses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routeStatuses")]
     pub route_statuses: Option<Vec<RouteTableStatusRouteStatuses>>,
     /// The ID of the route table.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "routeTableID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routeTableID")]
     pub route_table_id: Option<String>,
 }
 
@@ -369,27 +276,15 @@ pub struct RouteTableStatusAckResourceMetadata {
 pub struct RouteTableStatusAssociations {
     /// Describes the state of an association between a route table and a subnet
     /// or gateway.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "associationState"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "associationState")]
     pub association_state: Option<RouteTableStatusAssociationsAssociationState>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gatewayID")]
     pub gateway_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub main: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "routeTableAssociationID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routeTableAssociationID")]
     pub route_table_association_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "routeTableID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routeTableID")]
     pub route_table_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetID")]
     pub subnet_id: Option<String>,
@@ -401,11 +296,7 @@ pub struct RouteTableStatusAssociations {
 pub struct RouteTableStatusAssociationsAssociationState {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusMessage")]
     pub status_message: Option<String>,
 }
 
@@ -419,88 +310,37 @@ pub struct RouteTableStatusPropagatingVgWs {
 /// Describes a route in a route table.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RouteTableStatusRouteStatuses {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "carrierGatewayID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "carrierGatewayID")]
     pub carrier_gateway_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "coreNetworkARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "coreNetworkARN")]
     pub core_network_arn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "destinationCIDRBlock"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationCIDRBlock")]
     pub destination_cidr_block: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "destinationIPv6CIDRBlock"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationIPv6CIDRBlock")]
     pub destination_i_pv6_cidr_block: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "destinationPrefixListID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "destinationPrefixListID")]
     pub destination_prefix_list_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "egressOnlyInternetGatewayID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressOnlyInternetGatewayID")]
     pub egress_only_internet_gateway_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gatewayID")]
     pub gateway_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceID")]
     pub instance_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceOwnerID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceOwnerID")]
     pub instance_owner_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localGatewayID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localGatewayID")]
     pub local_gateway_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "natGatewayID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "natGatewayID")]
     pub nat_gateway_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkInterfaceID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkInterfaceID")]
     pub network_interface_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub origin: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "transitGatewayID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "transitGatewayID")]
     pub transit_gateway_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vpcPeeringConnectionID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcPeeringConnectionID")]
     pub vpc_peering_connection_id: Option<String>,
 }
+

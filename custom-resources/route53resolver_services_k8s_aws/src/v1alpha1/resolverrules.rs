@@ -4,14 +4,14 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ResolverRuleSpec defines the desired state of ResolverRule.
-///
+/// 
 /// For queries that originate in your VPC, detailed information about a Resolver
 /// rule, which specifies how to route DNS queries out of the VPC. The ResolverRule
 /// parameter appears in the response to a CreateResolverRule (https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_CreateResolverRule.html),
@@ -21,17 +21,12 @@ use self::prelude::*;
 /// or UpdateResolverRule (https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_UpdateResolverRule.html)
 /// request.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "route53resolver.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "ResolverRule",
-    plural = "resolverrules"
-)]
+#[kube(group = "route53resolver.services.k8s.aws", version = "v1alpha1", kind = "ResolverRule", plural = "resolverrules")]
 #[kube(namespaced)]
 #[kube(status = "ResolverRuleStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ResolverRuleSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub associations: Option<Vec<ResolverRuleAssociations>>,
@@ -47,24 +42,20 @@ pub struct ResolverRuleSpec {
     pub name: Option<String>,
     /// The ID of the outbound Resolver endpoint that you want to use to route DNS
     /// queries to the IP addresses that you specify in TargetIps.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resolverEndpointID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resolverEndpointID")]
     pub resolver_endpoint_id: Option<String>,
     /// When you want to forward DNS queries for specified domain name to resolvers
     /// on your network, specify FORWARD.
-    ///
+    /// 
     /// When you have a forwarding rule to forward DNS queries for a domain to your
     /// network and you want Resolver to process queries for a subdomain of that
     /// domain, specify SYSTEM.
-    ///
+    /// 
     /// For example, to forward DNS queries for example.com to resolvers on your
     /// network, you create a rule and specify FORWARD for RuleType. To then have
     /// Resolver process queries for apex.example.com, you create a rule and specify
     /// SYSTEM for RuleType.
-    ///
+    /// 
     /// Currently, only Resolver can create rules that have a value of RECURSIVE
     /// for RuleType.
     #[serde(rename = "ruleType")]
@@ -74,7 +65,7 @@ pub struct ResolverRuleSpec {
     pub tags: Option<Vec<ResolverRuleTags>>,
     /// The IPs that you want Resolver to forward DNS queries to. You can specify
     /// only IPv4 addresses. Separate IP addresses with a space.
-    ///
+    /// 
     /// TargetIps is available only when the value of Rule type is FORWARD.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetIPs")]
     pub target_i_ps: Option<Vec<ResolverRuleTargetIPs>>,
@@ -92,19 +83,11 @@ pub struct ResolverRuleAssociations {
     pub id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resolverRuleID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resolverRuleID")]
     pub resolver_rule_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusMessage")]
     pub status_message: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcID")]
     pub vpc_id: Option<String>,
@@ -138,11 +121,7 @@ pub struct ResolverRuleStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<ResolverRuleStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -152,31 +131,19 @@ pub struct ResolverRuleStatus {
     pub conditions: Option<Vec<Condition>>,
     /// The date and time that the Resolver rule was created, in Unix time format
     /// and Coordinated Universal Time (UTC).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "creationTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "creationTime")]
     pub creation_time: Option<String>,
     /// A unique string that you specified when you created the Resolver rule. CreatorRequestId
     /// identifies the request and allows failed requests to be retried without the
     /// risk of running the operation twice.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "creatorRequestID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "creatorRequestID")]
     pub creator_request_id: Option<String>,
     /// The ID that Resolver assigned to the Resolver rule when you created it.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// The date and time that the Resolver rule was last updated, in Unix time format
     /// and Coordinated Universal Time (UTC).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modificationTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modificationTime")]
     pub modification_time: Option<String>,
     /// When a rule is shared with another Amazon Web Services account, the account
     /// ID of the account that the rule is shared with.
@@ -185,21 +152,13 @@ pub struct ResolverRuleStatus {
     /// Whether the rule is shared and, if so, whether the current account is sharing
     /// the rule with another account, or another account is sharing the rule with
     /// the current account.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "shareStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shareStatus")]
     pub share_status: Option<String>,
     /// A code that specifies the current status of the Resolver rule.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
     /// A detailed description of the status of a Resolver rule.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusMessage")]
     pub status_message: Option<String>,
 }
 
@@ -224,3 +183,4 @@ pub struct ResolverRuleStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

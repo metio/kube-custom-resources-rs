@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// PulpBackupSpec defines the desired state of PulpBackup
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "repo-manager.pulpproject.org",
-    version = "v1beta2",
-    kind = "PulpBackup",
-    plural = "pulpbackups"
-)]
+#[kube(group = "repo-manager.pulpproject.org", version = "v1beta2", kind = "PulpBackup", plural = "pulpbackups")]
 #[kube(namespaced)]
 #[kube(status = "PulpBackupStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PulpBackupSpec {
     /// Secret where the administrator password can be found
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -61,25 +56,13 @@ pub struct PulpBackupSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpBackupAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<PulpBackupAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<PulpBackupAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<PulpBackupAffinityPodAntiAffinity>,
 }
 
@@ -95,25 +78,15 @@ pub struct PulpBackupAffinityNodeAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node matches the corresponding matchExpressions; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution:
-        Option<Vec<PulpBackupAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<PulpBackupAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
     /// at some point during pod execution (e.g. due to an update), the system
     /// may or may not try to eventually evict the pod from its node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<PulpBackupAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<PulpBackupAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
 /// An empty preferred scheduling term matches all objects with implicit weight 0
@@ -121,8 +94,7 @@ pub struct PulpBackupAffinityNodeAffinity {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpBackupAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// A node selector term, associated with the corresponding weight.
-    pub preference:
-        PulpBackupAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
+    pub preference: PulpBackupAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
     /// Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.
     pub weight: i32,
 }
@@ -141,8 +113,7 @@ pub struct PulpBackupAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringE
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpBackupAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct PulpBackupAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -160,8 +131,7 @@ pub struct PulpBackupAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringE
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpBackupAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct PulpBackupAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -204,8 +174,7 @@ pub struct PulpBackupAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringEx
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpBackupAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct PulpBackupAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -223,8 +192,7 @@ pub struct PulpBackupAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringEx
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpBackupAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct PulpBackupAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -251,13 +219,8 @@ pub struct PulpBackupAffinityPodAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution:
-        Option<Vec<PulpBackupAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<PulpBackupAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
@@ -265,13 +228,8 @@ pub struct PulpBackupAffinityPodAffinity {
     /// system may or may not try to eventually evict the pod from its node.
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<Vec<PulpBackupAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<PulpBackupAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -279,8 +237,7 @@ pub struct PulpBackupAffinityPodAffinity {
 pub struct PulpBackupAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// Required. A pod affinity term, associated with the corresponding weight.
     #[serde(rename = "podAffinityTerm")]
-    pub pod_affinity_term:
-        PulpBackupAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    pub pod_affinity_term: PulpBackupAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
     /// weight associated with matching the corresponding podAffinityTerm,
     /// in the range 1-100.
     pub weight: i32,
@@ -354,8 +311,7 @@ pub struct PulpBackupAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringEx
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpBackupAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct PulpBackupAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -389,8 +345,7 @@ pub struct PulpBackupAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringEx
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpBackupAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct PulpBackupAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -477,8 +432,7 @@ pub struct PulpBackupAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExe
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpBackupAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct PulpBackupAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -512,8 +466,7 @@ pub struct PulpBackupAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExe
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpBackupAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct PulpBackupAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -539,14 +492,8 @@ pub struct PulpBackupAffinityPodAntiAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<PulpBackupAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<PulpBackupAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the anti-affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the anti-affinity requirements specified by this field cease to be met
@@ -554,14 +501,8 @@ pub struct PulpBackupAffinityPodAntiAffinity {
     /// system may or may not try to eventually evict the pod from its node.
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution: Option<
-        Vec<PulpBackupAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<PulpBackupAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -643,8 +584,7 @@ pub struct PulpBackupAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuri
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpBackupAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct PulpBackupAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -678,8 +618,7 @@ pub struct PulpBackupAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuri
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpBackupAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct PulpBackupAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -766,8 +705,7 @@ pub struct PulpBackupAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDurin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpBackupAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct PulpBackupAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -801,8 +739,7 @@ pub struct PulpBackupAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDurin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpBackupAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct PulpBackupAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -836,3 +773,4 @@ pub struct PulpBackupStatus {
     #[serde(rename = "deploymentName")]
     pub deployment_name: String,
 }
+

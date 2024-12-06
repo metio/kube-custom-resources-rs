@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ApicurioRegistrySpec defines the desired state of ApicurioRegistry
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "registry.apicur.io",
-    version = "v1",
-    kind = "ApicurioRegistry",
-    plural = "apicurioregistries"
-)]
+#[kube(group = "registry.apicur.io", version = "v1", kind = "ApicurioRegistry", plural = "apicurioregistries")]
 #[kube(namespaced)]
 #[kube(status = "ApicurioRegistryStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ApicurioRegistrySpec {
     /// Apicurio Registry application configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -37,7 +32,7 @@ pub struct ApicurioRegistrySpec {
 /// Apicurio Registry application configuration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryConfiguration {
-    /// Environment variables:
+    /// Environment variables: 
     ///  List of additional environment variables that will be provided to the Apicurio Registry application.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ApicurioRegistryConfigurationEnv>>,
@@ -47,16 +42,12 @@ pub struct ApicurioRegistryConfiguration {
     /// Third-party (non-Apicurio) library log level
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<String>,
-    /// Storage:
+    /// Storage: 
     ///  Type of storage used by Apicurio Registry, one of: mem, sql, kafkasql. Default value is `mem`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub persistence: Option<String>,
     /// Apicurio Registry application log level
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "registryLogLevel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "registryLogLevel")]
     pub registry_log_level: Option<String>,
     /// Security configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -86,28 +77,16 @@ pub struct ApicurioRegistryConfigurationEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryConfigurationEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<ApicurioRegistryConfigurationEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ApicurioRegistryConfigurationEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<ApicurioRegistryConfigurationEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ApicurioRegistryConfigurationEnvValueFromSecretKeyRef>,
 }
 
@@ -128,11 +107,7 @@ pub struct ApicurioRegistryConfigurationEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryConfigurationEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -143,11 +118,7 @@ pub struct ApicurioRegistryConfigurationEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryConfigurationEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -172,142 +143,106 @@ pub struct ApicurioRegistryConfigurationEnvValueFromSecretKeyRef {
 /// Configuration of Apicurio Registry KafkaSQL storage
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryConfigurationKafkasql {
-    /// Kafka bootstrap servers URL:
+    /// Kafka bootstrap servers URL: 
     ///  URL of one of the Kafka brokers, which provide initial metadata about the Kafka cluster, for example: `<service name>.<namespace>.svc:9092`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bootstrapServers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootstrapServers")]
     pub bootstrap_servers: Option<String>,
-    /// Kafka security configuration:
+    /// Kafka security configuration: 
     ///  Provide the following configuration options if your Kafka cluster is secured using TLS or SCRAM.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub security: Option<ApicurioRegistryConfigurationKafkasqlSecurity>,
 }
 
-/// Kafka security configuration:
+/// Kafka security configuration: 
 ///  Provide the following configuration options if your Kafka cluster is secured using TLS or SCRAM.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryConfigurationKafkasqlSecurity {
-    /// SCRAM:
+    /// SCRAM: 
     ///  Kafka is secured using SCRAM.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scram: Option<ApicurioRegistryConfigurationKafkasqlSecurityScram>,
-    /// TLS:
+    /// TLS: 
     ///  Kafka is secured using TLS.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<ApicurioRegistryConfigurationKafkasqlSecurityTls>,
 }
 
-/// SCRAM:
+/// SCRAM: 
 ///  Kafka is secured using SCRAM.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryConfigurationKafkasqlSecurityScram {
-    /// Mechanism:
+    /// Mechanism: 
     ///  Name of the SCRAM mechanism, default value is SCRAM-SHA-512.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mechanism: Option<String>,
-    /// User password Secret name:
+    /// User password Secret name: 
     ///  Name of a Secret that contains password of the SCRAM user under the `password` key.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passwordSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordSecretName")]
     pub password_secret_name: Option<String>,
-    /// Truststore Secret name:
+    /// Truststore Secret name: 
     ///  Name of a Secret that contains TLS truststore (in PKCS12 format) under the `ca.p12` key, and truststore password under the `ca.password` key.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "truststoreSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "truststoreSecretName")]
     pub truststore_secret_name: Option<String>,
     /// User name
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
 }
 
-/// TLS:
+/// TLS: 
 ///  Kafka is secured using TLS.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryConfigurationKafkasqlSecurityTls {
-    /// Keystore Secret name:
+    /// Keystore Secret name: 
     ///  Name of a Secret that contains TLS keystore (in PKCS12 format) under the `user.p12` key, and keystore password under the `user.password` key.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keystoreSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keystoreSecretName")]
     pub keystore_secret_name: Option<String>,
-    /// Truststore Secret name:
+    /// Truststore Secret name: 
     ///  Name of a Secret that contains TLS truststore (in PKCS12 format) under the `ca.p12` key, and truststore password under the `ca.password` key.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "truststoreSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "truststoreSecretName")]
     pub truststore_secret_name: Option<String>,
 }
 
 /// Security configuration
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryConfigurationSecurity {
-    /// HTTPS:
+    /// HTTPS: 
     ///  Configure Apicurio Registry to be accessible using HTTPS.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub https: Option<ApicurioRegistryConfigurationSecurityHttps>,
-    /// Keycloak:
+    /// Keycloak: 
     ///  Configure Apicurio Registry to use Keycloak for Identity and Access Management (IAM).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub keycloak: Option<ApicurioRegistryConfigurationSecurityKeycloak>,
 }
 
-/// HTTPS:
+/// HTTPS: 
 ///  Configure Apicurio Registry to be accessible using HTTPS.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryConfigurationSecurityHttps {
-    /// Disable HTTP:
+    /// Disable HTTP: 
     ///  Disable HTTP if HTTPS is enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableHttp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableHttp")]
     pub disable_http: Option<bool>,
-    /// HTTPS certificate and private key Secret name:
+    /// HTTPS certificate and private key Secret name: 
     ///  Name of a Secret that contains HTTPS certificate under the `tls.crt` key, and the private key under the `tls.key` key.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
-/// Keycloak:
+/// Keycloak: 
 ///  Configure Apicurio Registry to use Keycloak for Identity and Access Management (IAM).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryConfigurationSecurityKeycloak {
     /// Client ID for the REST API
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiClientId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiClientId")]
     pub api_client_id: Option<String>,
     /// Keycloak realm
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub realm: Option<String>,
     /// Client ID for the UI
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "uiClientId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "uiClientId")]
     pub ui_client_id: Option<String>,
-    /// Keycloak auth URL:
+    /// Keycloak auth URL: 
     ///  URL of the Keycloak auth endpoint, must end with `/auth`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
@@ -317,11 +252,7 @@ pub struct ApicurioRegistryConfigurationSecurityKeycloak {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryConfigurationSql {
     /// SQL data source
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
     pub data_source: Option<ApicurioRegistryConfigurationSqlDataSource>,
 }
 
@@ -331,7 +262,7 @@ pub struct ApicurioRegistryConfigurationSqlDataSource {
     /// Data source password
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<String>,
-    /// Data source URL:
+    /// Data source URL: 
     ///  URL of the PostgreSQL database, for example: `jdbc:postgresql://<service name>.<namespace>.svc:5432/<database name>`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
@@ -343,7 +274,7 @@ pub struct ApicurioRegistryConfigurationSqlDataSource {
 /// Configuration of Apicurio Registry web console
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryConfigurationUi {
-    /// Read-only:
+    /// Read-only: 
     ///  Set the web console to read-only mode. WARNING: This does not affect access to the Apicurio REST API.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
@@ -355,40 +286,28 @@ pub struct ApicurioRegistryDeployment {
     /// Affinity
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<ApicurioRegistryDeploymentAffinity>,
-    /// Hostname:
+    /// Hostname: 
     ///  Apicurio Registry application hostname (part of the URL without the protocol and path).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    /// Apicurio Registry image:
+    /// Apicurio Registry image: 
     ///  Replaces the default Apicurio Registry application image. Overrides the values in the REGISTRY_IMAGE_MEM, REGISTRY_IMAGE_KAFKASQL and REGISTRY_IMAGE_SQL Operator environment variables.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    /// Apicurio Registry image pull secrets:
+    /// Apicurio Registry image pull secrets: 
     ///  List of Secrets to use when pulling the Apicurio Registry image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<ApicurioRegistryDeploymentImagePullSecrets>>,
-    /// Apicurio Registry managed resources:
+    /// Apicurio Registry managed resources: 
     ///  Configure how the Operator manages Kubernetes resources.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "managedResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedResources")]
     pub managed_resources: Option<ApicurioRegistryDeploymentManagedResources>,
     /// Metadata of the Apicurio Registry pod
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<ApicurioRegistryDeploymentMetadata>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podTemplateSpecPreview"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podTemplateSpecPreview")]
     pub pod_template_spec_preview: Option<ApicurioRegistryDeploymentPodTemplateSpecPreview>,
-    /// Replicas:
+    /// Replicas: 
     ///  The required number of Apicurio Registry pods. Default value is 1.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
@@ -401,25 +320,13 @@ pub struct ApicurioRegistryDeployment {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<ApicurioRegistryDeploymentAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<ApicurioRegistryDeploymentAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<ApicurioRegistryDeploymentAffinityPodAntiAffinity>,
 }
 
@@ -456,8 +363,7 @@ pub struct ApicurioRegistryDeploymentAffinityNodeAffinityPreferredDuringScheduli
 
 /// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct ApicurioRegistryDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
@@ -469,8 +375,7 @@ pub struct ApicurioRegistryDeploymentAffinityNodeAffinityPreferredDuringScheduli
 
 /// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct ApicurioRegistryDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
@@ -501,8 +406,7 @@ pub struct ApicurioRegistryDeploymentAffinityNodeAffinityRequiredDuringSchedulin
 
 /// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct ApicurioRegistryDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
@@ -514,8 +418,7 @@ pub struct ApicurioRegistryDeploymentAffinityNodeAffinityRequiredDuringSchedulin
 
 /// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct ApicurioRegistryDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
@@ -582,8 +485,7 @@ pub struct ApicurioRegistryDeploymentAffinityPodAffinityPreferredDuringSchedulin
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct ApicurioRegistryDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -606,8 +508,7 @@ pub struct ApicurioRegistryDeploymentAffinityPodAffinityPreferredDuringSchedulin
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct ApicurioRegistryDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -653,8 +554,7 @@ pub struct ApicurioRegistryDeploymentAffinityPodAffinityRequiredDuringScheduling
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct ApicurioRegistryDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -677,8 +577,7 @@ pub struct ApicurioRegistryDeploymentAffinityPodAffinityRequiredDuringScheduling
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct ApicurioRegistryDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -745,8 +644,7 @@ pub struct ApicurioRegistryDeploymentAffinityPodAntiAffinityPreferredDuringSched
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct ApicurioRegistryDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -769,8 +667,7 @@ pub struct ApicurioRegistryDeploymentAffinityPodAntiAffinityPreferredDuringSched
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct ApicurioRegistryDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -816,8 +713,7 @@ pub struct ApicurioRegistryDeploymentAffinityPodAntiAffinityRequiredDuringSchedu
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct ApicurioRegistryDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -840,8 +736,7 @@ pub struct ApicurioRegistryDeploymentAffinityPodAntiAffinityRequiredDuringSchedu
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct ApicurioRegistryDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -859,44 +754,32 @@ pub struct ApicurioRegistryDeploymentImagePullSecrets {
     pub name: Option<String>,
 }
 
-/// Apicurio Registry managed resources:
+/// Apicurio Registry managed resources: 
 ///  Configure how the Operator manages Kubernetes resources.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentManagedResources {
-    /// Disable Ingress:
+    /// Disable Ingress: 
     ///  Operator will not create or manage an Ingress for Apicurio Registry, so it can be done manually.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableIngress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableIngress")]
     pub disable_ingress: Option<bool>,
-    /// Disable NetworkPolicy:
+    /// Disable NetworkPolicy: 
     ///  Operator will not create or manage a NetworkPolicy for Apicurio Registry, so it can be done manually.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableNetworkPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableNetworkPolicy")]
     pub disable_network_policy: Option<bool>,
-    /// Disable PodDisruptionBudget:
+    /// Disable PodDisruptionBudget: 
     ///  Operator will not create or manage a PodDisruptionBudget for Apicurio Registry, so it can be done manually.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disablePodDisruptionBudget"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disablePodDisruptionBudget")]
     pub disable_pod_disruption_budget: Option<bool>,
 }
 
 /// Metadata of the Apicurio Registry pod
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentMetadata {
-    /// Annotations:
+    /// Annotations: 
     ///  Additional Apicurio Registry Pod annotations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    /// Labels:
+    /// Labels: 
     ///  Additional Apicurio Registry Pod labels.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
@@ -914,65 +797,31 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreview {
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewMetadata {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
     pub cluster_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "creationTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "creationTimestamp")]
     pub creation_timestamp: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deletionGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletionGracePeriodSeconds")]
     pub deletion_grace_period_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deletionTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletionTimestamp")]
     pub deletion_timestamp: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub finalizers: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "generateName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateName")]
     pub generate_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub generation: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "managedFields"
-    )]
-    pub managed_fields:
-        Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewMetadataManagedFields>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedFields")]
+    pub managed_fields: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewMetadataManagedFields>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ownerReferences"
-    )]
-    pub owner_references:
-        Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewMetadataOwnerReferences>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerReferences")]
+    pub owner_references: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewMetadataOwnerReferences>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "selfLink")]
     pub self_link: Option<String>,
@@ -982,21 +831,12 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewMetadata {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewMetadataManagedFields {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldsType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldsType")]
     pub fields_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldsV1")]
-    pub fields_v1:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewMetadataManagedFieldsFieldsV1>,
+    pub fields_v1: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewMetadataManagedFieldsFieldsV1>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub manager: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1008,17 +848,14 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewMetadataManagedFields
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewMetadataManagedFieldsFieldsV1 {}
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewMetadataManagedFieldsFieldsV1 {
+}
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewMetadataOwnerReferences {
     #[serde(rename = "apiVersion")]
     pub api_version: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "blockOwnerDeletion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockOwnerDeletion")]
     pub block_owner_deletion: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub controller: Option<bool>,
@@ -1029,19 +866,11 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewMetadataOwnerReferenc
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "activeDeadlineSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeDeadlineSeconds")]
     pub active_deadline_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "automountServiceAccountToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "automountServiceAccountToken")]
     pub automount_service_account_token: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainers>>,
@@ -1049,177 +878,76 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpec {
     pub dns_config: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecDnsConfig>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
     pub dns_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableServiceLinks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableServiceLinks")]
     pub enable_service_links: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ephemeralContainers"
-    )]
-    pub ephemeral_containers:
-        Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainers>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostAliases"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ephemeralContainers")]
+    pub ephemeral_containers: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainers>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecHostAliases>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostIPC")]
     pub host_ipc: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostNetwork"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
     pub host_network: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPID")]
     pub host_pid: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
-    pub image_pull_secrets:
-        Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecImagePullSecrets>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
-    pub init_containers:
-        Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainers>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
+    pub image_pull_secrets: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecImagePullSecrets>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
+    pub init_containers: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainers>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeName")]
     pub node_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub os: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecOs>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub overhead: Option<BTreeMap<String, IntOrString>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preemptionPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preemptionPolicy")]
     pub preemption_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub priority: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessGates"
-    )]
-    pub readiness_gates:
-        Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecReadinessGates>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessGates")]
+    pub readiness_gates: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecReadinessGates>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runtimeClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeClassName")]
     pub runtime_class_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schedulerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
-    pub security_context:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecSecurityContext>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
+    pub security_context: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecSecurityContext>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "setHostnameAsFQDN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "setHostnameAsFQDN")]
     pub set_hostname_as_fqdn: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "shareProcessNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shareProcessNamespace")]
     pub share_process_namespace: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subdomain: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecTolerations>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologySpreadConstraints"
-    )]
-    pub topology_spread_constraints:
-        Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecTopologySpreadConstraints>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
+    pub topology_spread_constraints: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecTopologySpreadConstraints>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumes>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinity {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
-    pub node_affinity:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityNodeAffinity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
-    pub pod_affinity:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAffinity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
-    pub pod_anti_affinity:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAntiAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
+    pub node_affinity: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityNodeAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
+    pub pod_affinity: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAntiAffinity>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1245,8 +973,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityNodeAffin
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1254,8 +981,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityNodeAffin
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1277,8 +1003,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityNodeAffin
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1286,8 +1011,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityNodeAffin
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1334,8 +1058,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAffini
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1351,8 +1074,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAffini
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1384,8 +1106,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAffini
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1401,8 +1122,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAffini
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1449,8 +1169,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAntiAf
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1466,8 +1185,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAntiAf
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1499,8 +1217,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAntiAf
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1516,8 +1233,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAntiAf
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1533,101 +1249,45 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersEnv>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envFrom")]
-    pub env_from:
-        Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersEnvFrom>>,
+    pub env_from: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersEnvFrom>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lifecycle: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecycle>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
-    pub liveness_probe:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLivenessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
+    pub liveness_probe: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLivenessProbe>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersPorts>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
-    pub readiness_probe:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersReadinessProbe>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resizePolicy"
-    )]
-    pub resize_policy:
-        Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersResizePolicy>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
+    pub readiness_probe: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersReadinessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
+    pub resize_policy: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersResizePolicy>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersResources>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
-    pub security_context:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersSecurityContext>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
-    pub startup_probe:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersStartupProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
+    pub security_context: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersSecurityContext>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
+    pub startup_probe: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersStartupProbe>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub stdin: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stdinOnce")]
     pub stdin_once: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
-    pub volume_devices:
-        Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersVolumeDevices>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
-    pub volume_mounts:
-        Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersVolumeMounts>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
+    pub volume_devices: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersVolumeDevices>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersVolumeMounts>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -1637,44 +1297,23 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersEnv {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersEnvValueFrom>,
+    pub value_from: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersEnvValueFrom>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersEnvValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersEnvValueFromConfigMapKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersEnvValueFromConfigMapKeyRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersEnvValueFromFieldRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersEnvValueFromResourceFieldRef,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersEnvValueFromSecretKeyRef,
-    >,
+    pub field_ref: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersEnvValueFromFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersEnvValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersEnvValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersEnvValueFromConfigMapKeyRef
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersEnvValueFromConfigMapKeyRef {
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -1684,24 +1323,15 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersEnvValu
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersEnvValueFromFieldRef {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersEnvValueFromResourceFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersEnvValueFromResourceFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
@@ -1719,18 +1349,12 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersEnvValu
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersEnvFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
-    pub config_map_ref:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersEnvFromConfigMapRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersEnvFromConfigMapRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersEnvFromSecretRef>,
+    pub secret_ref: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersEnvFromSecretRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1752,31 +1376,21 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersEnvFrom
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecycle {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
-    pub post_start:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePostStart>,
+    pub post_start: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePostStart>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
-    pub pre_stop:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePreStop>,
+    pub pre_stop: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePreStop>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePostStart {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePostStartExec,
-    >,
+    pub exec: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePostStartExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePostStartHttpGet,
-    >,
+    pub http_get: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePostStartHttpGet>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sleep: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePostStartSleep,
-    >,
+    pub sleep: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePostStartSleep>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePostStartTcpSocket,
-    >,
+    pub tcp_socket: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePostStartTcpSocket>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1799,8 +1413,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyc
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePostStartHttpGetHttpHeaders
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePostStartHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
 }
@@ -1811,8 +1424,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyc
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePostStartTcpSocket
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePostStartTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     pub port: IntOrString,
@@ -1821,19 +1433,13 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyc
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePreStop {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePreStopExec>,
+    pub exec: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePreStopExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePreStopHttpGet,
-    >,
+    pub http_get: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePreStopHttpGet>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sleep:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePreStopSleep>,
+    pub sleep: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePreStopSleep>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePreStopTcpSocket,
-    >,
+    pub tcp_socket: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePreStopTcpSocket>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1856,8 +1462,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyc
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePreStopHttpGetHttpHeaders
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyclePreStopHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
 }
@@ -1877,53 +1482,24 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLifecyc
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLivenessProbe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLivenessProbeExec>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    pub exec: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLivenessProbeExec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub grpc:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLivenessProbeGrpc>,
+    pub grpc: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLivenessProbeGrpc>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLivenessProbeHttpGet>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    pub http_get: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLivenessProbeHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLivenessProbeTcpSocket,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    pub tcp_socket: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLivenessProbeTcpSocket>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -1954,8 +1530,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLivenes
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLivenessProbeHttpGetHttpHeaders
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersLivenessProbeHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
 }
@@ -1984,53 +1559,24 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersPorts {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersReadinessProbe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersReadinessProbeExec>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    pub exec: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersReadinessProbeExec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub grpc:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersReadinessProbeGrpc>,
+    pub grpc: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersReadinessProbeGrpc>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersReadinessProbeHttpGet>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    pub http_get: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersReadinessProbeHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersReadinessProbeTcpSocket,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    pub tcp_socket: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersReadinessProbeTcpSocket>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2061,8 +1607,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersReadine
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersReadinessProbeHttpGetHttpHeaders
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersReadinessProbeHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
 }
@@ -2085,8 +1630,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersResizeP
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims:
-        Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersResourcesClaims>>,
+    pub claims: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersResourcesClaims>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2100,69 +1644,32 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersResourc
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersSecurityContext {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub capabilities: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersSecurityContextCapabilities,
-    >,
+    pub capabilities: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersSecurityContextCapabilities>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub privileged: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "procMount")]
     pub proc_mount: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersSecurityContextSeLinuxOptions,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersSecurityContextSeccompProfile,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersSecurityContextWindowsOptions,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersSecurityContextSeccompProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersSecurityContextWindowsOptions>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersSecurityContextCapabilities
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersSecurityContextCapabilities {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub add: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2170,8 +1677,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersSecurit
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersSecurityContextSeLinuxOptions
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersSecurityContextSeLinuxOptions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2183,96 +1689,46 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersSecurit
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersSecurityContextSeccompProfile
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersSecurityContextSeccompProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     #[serde(rename = "type")]
     pub r#type: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersSecurityContextWindowsOptions
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersSecurityContextWindowsOptions {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersStartupProbe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersStartupProbeExec>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    pub exec: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersStartupProbeExec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub grpc:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersStartupProbeGrpc>,
+    pub grpc: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersStartupProbeGrpc>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersStartupProbeHttpGet>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    pub http_get: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersStartupProbeHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersStartupProbeTcpSocket>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    pub tcp_socket: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersStartupProbeTcpSocket>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2303,8 +1759,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersStartup
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersStartupProbeHttpGetHttpHeaders
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersStartupProbeHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
 }
@@ -2327,22 +1782,14 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersVolumeD
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecContainersVolumeMounts {
     #[serde(rename = "mountPath")]
     pub mount_path: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -2371,119 +1818,49 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContaine
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub env:
-        Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersEnv>>,
+    pub env: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersEnv>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envFrom")]
-    pub env_from:
-        Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersEnvFrom>>,
+    pub env_from: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersEnvFrom>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub lifecycle:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecycle>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
-    pub liveness_probe: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLivenessProbe,
-    >,
+    pub lifecycle: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecycle>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
+    pub liveness_probe: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLivenessProbe>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ports:
-        Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersPorts>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
-    pub readiness_probe: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersReadinessProbe,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resizePolicy"
-    )]
-    pub resize_policy: Option<
-        Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersResizePolicy>,
-    >,
+    pub ports: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersPorts>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
+    pub readiness_probe: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersReadinessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
+    pub resize_policy: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersResizePolicy>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersResources>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    pub resources: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersResources>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
-    pub security_context: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersSecurityContext,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
-    pub startup_probe:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersStartupProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
+    pub security_context: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersSecurityContext>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
+    pub startup_probe: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersStartupProbe>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub stdin: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stdinOnce")]
     pub stdin_once: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetContainerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetContainerName")]
     pub target_container_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
-    pub volume_devices: Option<
-        Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersVolumeDevices>,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
-    pub volume_mounts: Option<
-        Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersVolumeMounts>,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
+    pub volume_devices: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersVolumeDevices>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersVolumeMounts>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -2493,8 +1870,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContaine
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersEnvValueFrom>,
+    pub value_from: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersEnvValueFrom>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2510,8 +1886,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContaine
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersEnvValueFromConfigMapKeyRef
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersEnvValueFromConfigMapKeyRef {
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -2520,26 +1895,16 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContaine
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersEnvValueFromFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersEnvValueFromFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersEnvValueFromResourceFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersEnvValueFromResourceFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
@@ -2547,8 +1912,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContaine
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersEnvValueFromSecretKeyRef
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersEnvValueFromSecretKeyRef {
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -2558,25 +1922,16 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContaine
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersEnvFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
-    pub config_map_ref: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersEnvFromConfigMapRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersEnvFromConfigMapRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersEnvFromSecretRef,
-    >,
+    pub secret_ref: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersEnvFromSecretRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersEnvFromConfigMapRef
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersEnvFromConfigMapRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2594,13 +1949,9 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContaine
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecycle {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
-    pub post_start: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecyclePostStart,
-    >,
+    pub post_start: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecyclePostStart>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
-    pub pre_stop: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecyclePreStop,
-    >,
+    pub pre_stop: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecyclePreStop>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2616,8 +1967,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContaine
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecyclePostStartExec
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecyclePostStartExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -2636,21 +1986,18 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContaine
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecyclePostStartHttpGetHttpHeaders
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecyclePostStartHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecyclePostStartSleep
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecyclePostStartSleep {
     pub seconds: i64,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecyclePostStartTcpSocket
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecyclePostStartTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     pub port: IntOrString,
@@ -2669,8 +2016,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContaine
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecyclePreStopExec
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecyclePreStopExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -2689,21 +2035,18 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContaine
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecyclePreStopHttpGetHttpHeaders
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecyclePreStopHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecyclePreStopSleep
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecyclePreStopSleep {
     pub seconds: i64,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecyclePreStopTcpSocket
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLifecyclePreStopTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     pub port: IntOrString,
@@ -2734,15 +2077,13 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContaine
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLivenessProbeExec
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLivenessProbeExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLivenessProbeGrpc
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLivenessProbeGrpc {
     pub port: i32,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -2762,15 +2103,13 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContaine
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLivenessProbeHttpGetHttpHeaders
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLivenessProbeHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLivenessProbeTcpSocket
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersLivenessProbeTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     pub port: IntOrString,
@@ -2815,15 +2154,13 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContaine
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersReadinessProbeExec
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersReadinessProbeExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersReadinessProbeGrpc
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersReadinessProbeGrpc {
     pub port: i32,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -2843,15 +2180,13 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContaine
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersReadinessProbeHttpGetHttpHeaders
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersReadinessProbeHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersReadinessProbeTcpSocket
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersReadinessProbeTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     pub port: IntOrString,
@@ -2868,9 +2203,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContaine
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<
-        Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersResourcesClaims>,
-    >,
+    pub claims: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersResourcesClaims>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2909,8 +2242,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContaine
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersSecurityContextCapabilities
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersSecurityContextCapabilities {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub add: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2918,8 +2250,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContaine
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersSecurityContextSeLinuxOptions
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersSecurityContextSeLinuxOptions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2931,44 +2262,22 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContaine
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersSecurityContextSeccompProfile
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersSecurityContextSeccompProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     #[serde(rename = "type")]
     pub r#type: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersSecurityContextWindowsOptions
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersSecurityContextWindowsOptions {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -3023,15 +2332,13 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContaine
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersStartupProbeHttpGetHttpHeaders
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersStartupProbeHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersStartupProbeTcpSocket
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersStartupProbeTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     pub port: IntOrString,
@@ -3048,22 +2355,14 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContaine
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecEphemeralContainersVolumeMounts {
     #[serde(rename = "mountPath")]
     pub mount_path: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -3090,104 +2389,45 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersEnv>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envFrom")]
-    pub env_from:
-        Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersEnvFrom>>,
+    pub env_from: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersEnvFrom>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub lifecycle:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecycle>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
-    pub liveness_probe:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLivenessProbe>,
+    pub lifecycle: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecycle>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
+    pub liveness_probe: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLivenessProbe>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersPorts>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
-    pub readiness_probe:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersReadinessProbe>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resizePolicy"
-    )]
-    pub resize_policy:
-        Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersResizePolicy>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
+    pub readiness_probe: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersReadinessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
+    pub resize_policy: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersResizePolicy>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersResources>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    pub resources: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersResources>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
-    pub security_context:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersSecurityContext>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
-    pub startup_probe:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersStartupProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
+    pub security_context: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersSecurityContext>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
+    pub startup_probe: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersStartupProbe>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub stdin: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stdinOnce")]
     pub stdin_once: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
-    pub volume_devices: Option<
-        Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersVolumeDevices>,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
-    pub volume_mounts:
-        Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersVolumeMounts>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
+    pub volume_devices: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersVolumeDevices>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersVolumeMounts>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -3197,8 +2437,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersEnv
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersEnvValueFrom>,
+    pub value_from: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersEnvValueFrom>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3214,8 +2453,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersEnv
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersEnvValueFromConfigMapKeyRef
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersEnvValueFromConfigMapKeyRef {
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -3225,24 +2463,15 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersEnv
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersEnvValueFromFieldRef {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersEnvValueFromResourceFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersEnvValueFromResourceFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
@@ -3250,8 +2479,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersEnv
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersEnvValueFromSecretKeyRef
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersEnvValueFromSecretKeyRef {
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -3261,19 +2489,12 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersEnv
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersEnvFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
-    pub config_map_ref: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersEnvFromConfigMapRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersEnvFromConfigMapRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersEnvFromSecretRef>,
+    pub secret_ref: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersEnvFromSecretRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3295,12 +2516,9 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersEnv
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecycle {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
-    pub post_start: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePostStart,
-    >,
+    pub post_start: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePostStart>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
-    pub pre_stop:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePreStop>,
+    pub pre_stop: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePreStop>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3316,8 +2534,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLif
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePostStartExec
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePostStartExec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<Vec<String>>,
 }
@@ -3336,21 +2553,18 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLif
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePostStartHttpGetHttpHeaders
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePostStartHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePostStartSleep
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePostStartSleep {
     pub seconds: i64,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePostStartTcpSocket
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePostStartTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     pub port: IntOrString,
@@ -3359,21 +2573,13 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLif
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePreStop {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePreStopExec,
-    >,
+    pub exec: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePreStopExec>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePreStopHttpGet,
-    >,
+    pub http_get: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePreStopHttpGet>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sleep: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePreStopSleep,
-    >,
+    pub sleep: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePreStopSleep>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePreStopTcpSocket,
-    >,
+    pub tcp_socket: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePreStopTcpSocket>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3396,8 +2602,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLif
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePreStopHttpGetHttpHeaders
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePreStopHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
 }
@@ -3408,8 +2613,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLif
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePreStopTcpSocket
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLifecyclePreStopTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     pub port: IntOrString,
@@ -3418,54 +2622,24 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLif
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLivenessProbe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLivenessProbeExec>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    pub exec: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLivenessProbeExec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub grpc:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLivenessProbeGrpc>,
+    pub grpc: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLivenessProbeGrpc>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLivenessProbeHttpGet,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    pub http_get: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLivenessProbeHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLivenessProbeTcpSocket,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    pub tcp_socket: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLivenessProbeTcpSocket>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -3496,15 +2670,13 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLiv
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLivenessProbeHttpGetHttpHeaders
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLivenessProbeHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLivenessProbeTcpSocket
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersLivenessProbeTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     pub port: IntOrString,
@@ -3527,56 +2699,24 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersPor
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersReadinessProbe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersReadinessProbeExec,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    pub exec: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersReadinessProbeExec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub grpc: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersReadinessProbeGrpc,
-    >,
+    pub grpc: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersReadinessProbeGrpc>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersReadinessProbeHttpGet,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    pub http_get: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersReadinessProbeHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersReadinessProbeTcpSocket,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    pub tcp_socket: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersReadinessProbeTcpSocket>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -3607,15 +2747,13 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersRea
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersReadinessProbeHttpGetHttpHeaders
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersReadinessProbeHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersReadinessProbeTcpSocket
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersReadinessProbeTcpSocket {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     pub port: IntOrString,
@@ -3632,9 +2770,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersRes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<
-        Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersResourcesClaims>,
-    >,
+    pub claims: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersResourcesClaims>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3673,8 +2809,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersSec
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersSecurityContextCapabilities
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersSecurityContextCapabilities {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub add: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3682,8 +2817,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersSec
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersSecurityContextSeLinuxOptions
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersSecurityContextSeLinuxOptions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3695,98 +2829,46 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersSec
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersSecurityContextSeccompProfile
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersSecurityContextSeccompProfile {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     #[serde(rename = "type")]
     pub r#type: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersSecurityContextWindowsOptions
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersSecurityContextWindowsOptions {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersStartupProbe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersStartupProbeExec>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    pub exec: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersStartupProbeExec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub grpc:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersStartupProbeGrpc>,
+    pub grpc: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersStartupProbeGrpc>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersStartupProbeHttpGet,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    pub http_get: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersStartupProbeHttpGet>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersStartupProbeTcpSocket,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    pub tcp_socket: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersStartupProbeTcpSocket>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -3817,8 +2899,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersSta
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersStartupProbeHttpGetHttpHeaders
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersStartupProbeHttpGetHttpHeaders {
     pub name: String,
     pub value: String,
 }
@@ -3841,22 +2922,14 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersVol
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecInitContainersVolumeMounts {
     #[serde(rename = "mountPath")]
     pub mount_path: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -3875,56 +2948,24 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecReadinessGates {
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecSecurityContextSeLinuxOptions>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecSecurityContextSeccompProfile>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecSecurityContextSeccompProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sysctls:
-        Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecSecurityContextSysctls>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecSecurityContextWindowsOptions>,
+    pub sysctls: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecSecurityContextSysctls>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecSecurityContextWindowsOptions>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3941,11 +2982,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecSecurityContextSe
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecSecurityContextSeccompProfile {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     #[serde(rename = "type")]
     pub r#type: String,
@@ -3959,29 +2996,13 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecSecurityContextSy
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecSecurityContextWindowsOptions {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -3993,11 +3014,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecTolerations {
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
@@ -4005,39 +3022,17 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecTolerations {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecTopologySpreadConstraints {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecTopologySpreadConstraintsLabelSelector,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabelKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecTopologySpreadConstraintsLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     #[serde(rename = "maxSkew")]
     pub max_skew: i32,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinityPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeTaintsPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
@@ -4054,8 +3049,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecTopologySpreadCon
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecTopologySpreadConstraintsLabelSelectorMatchExpressions
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecTopologySpreadConstraintsLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4064,13 +3058,8 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecTopologySpreadCon
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumes {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsElasticBlockStore"
-    )]
-    pub aws_elastic_block_store:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesAwsElasticBlockStore>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
+    pub aws_elastic_block_store: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesAwsElasticBlockStore>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
     pub azure_disk: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesAzureDisk>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureFile")]
@@ -4083,34 +3072,20 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumes {
     pub config_map: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesConfigMap>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesCsi>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
-    pub downward_api:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesDownwardApi>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
+    pub downward_api: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesDownwardApi>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesEmptyDir>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ephemeral: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesEphemeral>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fc: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesFc>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flexVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesFlexVolume>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flocker: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesFlocker>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gcePersistentDisk"
-    )]
-    pub gce_persistent_disk:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesGcePersistentDisk>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
+    pub gce_persistent_disk: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesGcePersistentDisk>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepo")]
     pub git_repo: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesGitRepo>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4122,27 +3097,12 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumes {
     pub name: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nfs: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesNfs>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
-    pub persistent_volume_claim:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesPersistentVolumeClaim>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "photonPersistentDisk"
-    )]
-    pub photon_persistent_disk:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesPhotonPersistentDisk>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portworxVolume"
-    )]
-    pub portworx_volume:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesPortworxVolume>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesPersistentVolumeClaim>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
+    pub photon_persistent_disk: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesPhotonPersistentDisk>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
+    pub portworx_volume: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesPortworxVolume>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projected: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesProjected>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4155,13 +3115,8 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumes {
     pub secret: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesSecret>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storageos: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesStorageos>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vsphereVolume"
-    )]
-    pub vsphere_volume:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesVsphereVolume>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
+    pub vsphere_volume: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesVsphereVolume>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4178,11 +3133,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesAwsElastic
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesAzureDisk {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachingMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
     pub caching_mode: Option<String>,
     #[serde(rename = "diskName")]
     pub disk_name: String,
@@ -4213,15 +3164,10 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesCephfs {
     pub path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
     pub secret_file: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesCephfsSecretRef>,
+    pub secret_ref: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesCephfsSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
 }
@@ -4239,8 +3185,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesCinder {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesCinderSecretRef>,
+    pub secret_ref: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesCinderSecretRef>,
     #[serde(rename = "volumeID")]
     pub volume_id: String,
 }
@@ -4253,15 +3198,10 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesCinderSecr
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesConfigMap {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesConfigMapItems>>,
+    pub items: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesConfigMapItems>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4281,20 +3221,11 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesCsi {
     pub driver: String,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePublishSecretRef"
-    )]
-    pub node_publish_secret_ref:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesCsiNodePublishSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
+    pub node_publish_secret_ref: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesCsiNodePublishSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
@@ -4306,55 +3237,34 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesCsiNodePub
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesDownwardApi {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesDownwardApiItems>>,
+    pub items: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesDownwardApiItems>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesDownwardApiItems {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesDownwardApiItemsFieldRef>,
+    pub field_ref: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesDownwardApiItemsFieldRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
     pub path: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesDownwardApiItemsResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesDownwardApiItemsResourceFieldRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesDownwardApiItemsFieldRef {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesDownwardApiItemsResourceFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesDownwardApiItemsResourceFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
@@ -4371,14 +3281,8 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesEmptyDir {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesEphemeral {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimTemplate"
-    )]
-    pub volume_claim_template: Option<
-        ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesEphemeralVolumeClaimTemplate,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
+    pub volume_claim_template: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesEphemeralVolumeClaimTemplate>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4389,8 +3293,8 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesEphemeralV
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesEphemeralVolumeClaimTemplateMetadata
-{}
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesEphemeralVolumeClaimTemplateMetadata {
+}
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesEphemeralVolumeClaimTemplateSpec {
@@ -4415,8 +3319,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesEphemeralV
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesEphemeralVolumeClaimTemplateSpecDataSource
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesEphemeralVolumeClaimTemplateSpecDataSource {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
     pub kind: String,
@@ -4424,8 +3327,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesEphemeralV
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGroup")]
     pub api_group: Option<String>,
     pub kind: String,
@@ -4435,8 +3337,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesEphemeralV
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesEphemeralVolumeClaimTemplateSpecResources
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesEphemeralVolumeClaimTemplateSpecResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4452,8 +3353,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesEphemeralV
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4468,11 +3368,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesFc {
     pub lun: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetWWNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
     pub target_ww_ns: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub wwids: Option<Vec<String>>,
@@ -4488,8 +3384,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesFlexVolume
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesFlexVolumeSecretRef>,
+    pub secret_ref: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesFlexVolumeSecretRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4500,17 +3395,9 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesFlexVolume
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesFlocker {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
     pub dataset_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetUUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
     pub dataset_uuid: Option<String>,
 }
 
@@ -4552,32 +3439,16 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesHostPath {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesIscsi {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthDiscovery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthSession"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
     pub chap_auth_session: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initiatorName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
     pub initiator_name: Option<String>,
     pub iqn: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "iscsiInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
     pub iscsi_interface: Option<String>,
     pub lun: i32,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4585,8 +3456,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesIscsi {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesIscsiSecretRef>,
+    pub secret_ref: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesIscsiSecretRef>,
     #[serde(rename = "targetPortal")]
     pub target_portal: String,
 }
@@ -4633,15 +3503,10 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesPortworxVo
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesProjected {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sources:
-        Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesProjectedSources>>,
+    pub sources: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesProjectedSources>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4680,8 +3545,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesProjectedS
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4699,8 +3563,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesProjectedS
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesProjectedSourcesConfigMapItems
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesProjectedSourcesConfigMapItems {
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
@@ -4725,26 +3588,16 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesProjectedS
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesProjectedSourcesDownwardApiItemsFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesProjectedSourcesDownwardApiItemsFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesProjectedSourcesDownwardApiItemsResourceFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
@@ -4754,9 +3607,7 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesProjectedS
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesProjectedSourcesSecret {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<
-        Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesProjectedSourcesSecretItems>,
-    >,
+    pub items: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesProjectedSourcesSecretItems>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4772,15 +3623,10 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesProjectedS
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesProjectedSourcesServiceAccountToken
-{
+pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesProjectedSourcesServiceAccountToken {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
     pub path: String,
 }
@@ -4828,40 +3674,20 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesScaleIo {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     pub gateway: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protectionDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
     pub protection_domain: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(rename = "secretRef")]
     pub secret_ref: ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesScaleIoSecretRef,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
     pub storage_mode: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
     pub storage_pool: Option<String>,
     pub system: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -4873,21 +3699,13 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesScaleIoSec
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesSecret {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesSecretItems>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -4906,19 +3724,10 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesStorageos 
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesStorageosSecretRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    pub secret_ref: Option<ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesStorageosSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
     pub volume_namespace: Option<String>,
 }
 
@@ -4932,17 +3741,9 @@ pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesStorageosS
 pub struct ApicurioRegistryDeploymentPodTemplateSpecPreviewSpecVolumesVsphereVolume {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
     pub storage_policy_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
     pub storage_policy_name: Option<String>,
     #[serde(rename = "volumePath")]
     pub volume_path: String,
@@ -4961,11 +3762,7 @@ pub struct ApicurioRegistryDeploymentTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4974,20 +3771,16 @@ pub struct ApicurioRegistryDeploymentTolerations {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ApicurioRegistryStatus {
-    /// Conditions:
+    /// Conditions: 
     ///  Apicurio Registry application and Operator conditions.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// Information about the Apicurio Registry application
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub info: Option<ApicurioRegistryStatusInfo>,
-    /// Managed Resources:
+    /// Managed Resources: 
     ///  Kubernetes resources managed by the Apicurio Registry Operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "managedResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managedResources")]
     pub managed_resources: Option<Vec<ApicurioRegistryStatusManagedResources>>,
 }
 
@@ -5008,3 +3801,4 @@ pub struct ApicurioRegistryStatusManagedResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
+

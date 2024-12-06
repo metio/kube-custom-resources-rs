@@ -5,40 +5,27 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// SecretMirrorSpec defines the desired behaviour of Secret mirroring
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "mirrors.kts.studio",
-    version = "v1alpha2",
-    kind = "SecretMirror",
-    plural = "secretmirrors"
-)]
+#[kube(group = "mirrors.kts.studio", version = "v1alpha2", kind = "SecretMirror", plural = "secretmirrors")]
 #[kube(namespaced)]
 #[kube(status = "SecretMirrorStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SecretMirrorSpec {
     /// What to do with Secret objects created by a SecretMirror. Two policies exist – delete (deletes all created secrets) and retain (leaves them in the cluster). Default: delete
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deletePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletePolicy")]
     pub delete_policy: Option<SecretMirrorDeletePolicy>,
     /// SecretMirrorDestination defines where to sync a secret data to
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub destination: Option<SecretMirrorDestination>,
     /// How often to check for secret changes. Default: 180 seconds
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pollPeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pollPeriodSeconds")]
     pub poll_period_seconds: Option<i64>,
     /// SecretMirrorSource defines where to extract a secret data from
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -106,21 +93,13 @@ pub struct SecretMirrorDestinationVaultAuth {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretMirrorDestinationVaultAuthApprole {
     /// approle Vault prefix. Default: approle
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appRolePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appRolePath")]
     pub app_role_path: Option<String>,
     /// A key in the SecretRef which contains role-id value. Default: role-id
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleIDKey")]
     pub role_id_key: Option<String>,
     /// A key in the SecretRef which contains secret-id value. Default: secret-id
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretIDKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretIDKey")]
     pub secret_id_key: Option<String>,
     /// Reference to a Secret containing role-id and secret-id
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
@@ -210,21 +189,13 @@ pub struct SecretMirrorSourceVaultAuth {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretMirrorSourceVaultAuthApprole {
     /// approle Vault prefix. Default: approle
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appRolePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appRolePath")]
     pub app_role_path: Option<String>,
     /// A key in the SecretRef which contains role-id value. Default: role-id
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleIDKey")]
     pub role_id_key: Option<String>,
     /// A key in the SecretRef which contains secret-id value. Default: secret-id
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretIDKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretIDKey")]
     pub secret_id_key: Option<String>,
     /// Reference to a Secret containing role-id and secret-id
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
@@ -268,25 +239,13 @@ pub struct SecretMirrorSourceVaultAuthTokenSecretRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretMirrorStatus {
     /// Timestamp of last successful mirrorring
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastSyncTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSyncTime")]
     pub last_sync_time: Option<String>,
     /// Mirroring status - Active, Pending or Error
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mirrorStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mirrorStatus")]
     pub mirror_status: Option<SecretMirrorStatusMirrorStatus>,
     /// VaultSourceStatusSpec describes Vault-specific status
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vaultSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vaultSource")]
     pub vault_source: Option<SecretMirrorStatusVaultSource>,
 }
 
@@ -302,13 +261,10 @@ pub enum SecretMirrorStatusMirrorStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretMirrorStatusVaultSource {
     /// Contains lease duration of a Vault dynamic secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "leaseDuration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "leaseDuration")]
     pub lease_duration: Option<i64>,
     /// Contains LeaseID of a Vault dynamic secret
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "leaseID")]
     pub lease_id: Option<String>,
 }
+

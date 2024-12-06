@@ -4,26 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ClusterSyncSpec defines the desired state of ClusterSync
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "hiveinternal.openshift.io",
-    version = "v1alpha1",
-    kind = "ClusterSync",
-    plural = "clustersyncs"
-)]
+#[kube(group = "hiveinternal.openshift.io", version = "v1alpha1", kind = "ClusterSync", plural = "clustersyncs")]
 #[kube(namespaced)]
 #[kube(status = "ClusterSyncStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
-pub struct ClusterSyncSpec {}
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
+pub struct ClusterSyncSpec {
+}
 
 /// ClusterSyncStatus defines the observed state of ClusterSync
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -35,25 +31,13 @@ pub struct ClusterSyncStatus {
     /// for (the CD related to) this clustersync. Note that this value indicates the replica that most
     /// recently handled the ClusterSync. If the hive-clustersync statefulset is scaled up or down, the
     /// controlling replica can change, potentially causing logs to be spread across multiple pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlledByReplica"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlledByReplica")]
     pub controlled_by_replica: Option<i64>,
     /// FirstSuccessTime is the time we first successfully applied all (selector)syncsets to a cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "firstSuccessTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "firstSuccessTime")]
     pub first_success_time: Option<String>,
     /// SelectorSyncSets is the sync status of all of the SelectorSyncSets for the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "selectorSyncSets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "selectorSyncSets")]
     pub selector_sync_sets: Option<Vec<ClusterSyncStatusSelectorSyncSets>>,
     /// SyncSets is the sync status of all of the SyncSets for the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncSets")]
@@ -65,18 +49,10 @@ pub struct ClusterSyncStatus {
 pub struct ClusterSyncStatusSelectorSyncSets {
     /// FailureMessage is a message describing why the SyncSet or SelectorSyncSet could not be applied. This is only
     /// set when Result is Failure.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
     pub failure_message: Option<String>,
     /// FirstSuccessTime is the time when the SyncSet or SelectorSyncSet was first successfully applied to the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "firstSuccessTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "firstSuccessTime")]
     pub first_success_time: Option<String>,
     /// LastTransitionTime is the time when this status last changed.
     #[serde(rename = "lastTransitionTime")]
@@ -88,11 +64,7 @@ pub struct ClusterSyncStatusSelectorSyncSets {
     pub observed_generation: i64,
     /// ResourcesToDelete is the list of resources in the cluster that should be deleted when the SyncSet or SelectorSyncSet
     /// is deleted or is no longer matched to the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourcesToDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourcesToDelete")]
     pub resources_to_delete: Option<Vec<ClusterSyncStatusSelectorSyncSetsResourcesToDelete>>,
     /// Result is the result of the last attempt to apply the SyncSet or SelectorSyncSet to the cluster.
     pub result: ClusterSyncStatusSelectorSyncSetsResult,
@@ -126,18 +98,10 @@ pub enum ClusterSyncStatusSelectorSyncSetsResult {
 pub struct ClusterSyncStatusSyncSets {
     /// FailureMessage is a message describing why the SyncSet or SelectorSyncSet could not be applied. This is only
     /// set when Result is Failure.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
     pub failure_message: Option<String>,
     /// FirstSuccessTime is the time when the SyncSet or SelectorSyncSet was first successfully applied to the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "firstSuccessTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "firstSuccessTime")]
     pub first_success_time: Option<String>,
     /// LastTransitionTime is the time when this status last changed.
     #[serde(rename = "lastTransitionTime")]
@@ -149,11 +113,7 @@ pub struct ClusterSyncStatusSyncSets {
     pub observed_generation: i64,
     /// ResourcesToDelete is the list of resources in the cluster that should be deleted when the SyncSet or SelectorSyncSet
     /// is deleted or is no longer matched to the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourcesToDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourcesToDelete")]
     pub resources_to_delete: Option<Vec<ClusterSyncStatusSyncSetsResourcesToDelete>>,
     /// Result is the result of the last attempt to apply the SyncSet or SelectorSyncSet to the cluster.
     pub result: ClusterSyncStatusSyncSetsResult,
@@ -181,3 +141,4 @@ pub enum ClusterSyncStatusSyncSetsResult {
     Success,
     Failure,
 }
+

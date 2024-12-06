@@ -4,56 +4,35 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ExportSpec defines the desired state of Export
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "oracle.db.anthosapis.com",
-    version = "v1alpha1",
-    kind = "Export",
-    plural = "exports"
-)]
+#[kube(group = "oracle.db.anthosapis.com", version = "v1alpha1", kind = "Export", plural = "exports")]
 #[kube(namespaced)]
 #[kube(status = "ExportStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ExportSpec {
     /// DatabaseName is the database resource name within Instance to export from.
     #[serde(rename = "databaseName")]
     pub database_name: String,
     /// ExportObjectType is the type of objects to export. If omitted, the default of Schemas is assumed. Supported options at this point are: Schemas or Tables.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "exportObjectType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exportObjectType")]
     pub export_object_type: Option<ExportExportObjectType>,
     /// ExportObjects are objects, schemas or tables, exported by DataPump.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "exportObjects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exportObjects")]
     pub export_objects: Option<Vec<String>>,
     /// FlashbackTime is an optional time. If this time is set, the SCN that most closely matches the time is found, and this SCN is used to enable the Flashback utility. The export operation is performed with data that is consistent up to this SCN.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flashbackTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flashbackTime")]
     pub flashback_time: Option<String>,
     /// GcsLogPath is an optional full path in GCS. If set up ahead of time, export logs can be optionally transferred to set GCS bucket. A user is to ensure proper write access to the bucket from within the Oracle Operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gcsLogPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcsLogPath")]
     pub gcs_log_path: Option<String>,
     /// GcsPath is a full path in GCS bucket to transfer exported files to. A user is to ensure proper write access to the bucket from within the Oracle Operator.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcsPath")]
@@ -85,3 +64,4 @@ pub struct ExportStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

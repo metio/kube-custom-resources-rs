@@ -4,33 +4,24 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// HelmRepositorySpec defines the reference to a Helm repository.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "source.toolkit.fluxcd.io",
-    version = "v1beta1",
-    kind = "HelmRepository",
-    plural = "helmrepositories"
-)]
+#[kube(group = "source.toolkit.fluxcd.io", version = "v1beta1", kind = "HelmRepository", plural = "helmrepositories")]
 #[kube(namespaced)]
 #[kube(status = "HelmRepositoryStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct HelmRepositorySpec {
     /// AccessFrom defines an Access Control List for allowing cross-namespace references to this object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessFrom"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessFrom")]
     pub access_from: Option<HelmRepositoryAccessFrom>,
     /// The interval at which to check the upstream for updates.
     pub interval: String,
@@ -40,11 +31,7 @@ pub struct HelmRepositorySpec {
     /// differ from the defined URL.
     /// Enabling this should be done with caution, as it can potentially result in
     /// credentials getting stolen in a MITM-attack.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passCredentials"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passCredentials")]
     pub pass_credentials: Option<bool>,
     /// The name of the secret containing authentication credentials for the Helm
     /// repository.
@@ -80,11 +67,7 @@ pub struct HelmRepositoryAccessFromNamespaceSelectors {
     /// MatchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -112,18 +95,10 @@ pub struct HelmRepositoryStatus {
     /// LastHandledReconcileAt holds the value of the most recent
     /// reconcile request value, so a change of the annotation value
     /// can be detected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastHandledReconcileAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastHandledReconcileAt")]
     pub last_handled_reconcile_at: Option<String>,
     /// ObservedGeneration is the last observed generation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// URL is the download link for the last index fetched.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -150,3 +125,4 @@ pub struct HelmRepositoryStatusArtifact {
     /// URL is the HTTP address of this artifact.
     pub url: String,
 }
+

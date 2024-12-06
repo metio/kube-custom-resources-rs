@@ -4,35 +4,26 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Specification of the desired state for the Tigera API server.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "operator.tigera.io",
-    version = "v1",
-    kind = "APIServer",
-    plural = "apiservers"
-)]
+#[kube(group = "operator.tigera.io", version = "v1", kind = "APIServer", plural = "apiservers")]
 #[kube(status = "APIServerStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct APIServerSpec {
     /// APIServerDeployment configures the calico-apiserver (or tigera-apiserver in Enterprise) Deployment. If
     /// used in conjunction with ControlPlaneNodeSelector or ControlPlaneTolerations, then these overrides
     /// take precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiServerDeployment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiServerDeployment")]
     pub api_server_deployment: Option<APIServerApiServerDeployment>,
 }
 
@@ -71,11 +62,7 @@ pub struct APIServerApiServerDeploymentSpec {
     /// be ready without any of its container crashing, for it to be considered available.
     /// If specified, this overrides any minReadySeconds value that may be set on the API server Deployment.
     /// If omitted, the API server Deployment will use its default value for minReadySeconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minReadySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
     /// Template describes the API server Deployment pod that will be created.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -127,11 +114,7 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpec {
     /// InitContainers is a list of API server init containers.
     /// If specified, this overrides the specified API server Deployment init containers.
     /// If omitted, the API server Deployment will use its default values for its init containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<APIServerApiServerDeploymentSpecTemplateSpecInitContainers>>,
     /// NodeSelector is the API server pod's scheduling constraints.
     /// If specified, each of the key/value pairs are added to the API server Deployment nodeSelector provided
@@ -141,11 +124,7 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpec {
     /// the key does not already exist in the object's nodeSelector.
     /// If omitted, the API server Deployment will use its default value for nodeSelector.
     /// WARNING: Please note that this field will modify the default API server Deployment nodeSelector.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Tolerations is the API server pod's tolerations.
     /// If specified, this overrides any tolerations that may be set on the API server Deployment.
@@ -156,13 +135,8 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpec {
     /// TopologySpreadConstraints describes how a group of pods ought to spread across topology
     /// domains. Scheduler will schedule pods in a way which abides by the constraints.
     /// All topologySpreadConstraints are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologySpreadConstraints"
-    )]
-    pub topology_spread_constraints:
-        Option<Vec<APIServerApiServerDeploymentSpecTemplateSpecTopologySpreadConstraints>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
+    pub topology_spread_constraints: Option<Vec<APIServerApiServerDeploymentSpecTemplateSpecTopologySpreadConstraints>>,
 }
 
 /// Affinity is a group of affinity scheduling rules for the API server pods.
@@ -172,27 +146,14 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<APIServerApiServerDeploymentSpecTemplateSpecAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
-    pub pod_anti_affinity:
-        Option<APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAntiAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAntiAffinity>,
 }
 
 /// Describes node affinity scheduling rules for the pod.
@@ -242,8 +203,7 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityNodeAffinityPrefe
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -261,8 +221,7 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityNodeAffinityPrefe
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -305,8 +264,7 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityNodeAffinityRequi
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -324,8 +282,7 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityNodeAffinityRequi
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -444,8 +401,7 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAffinityPrefer
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -479,8 +435,7 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAffinityPrefer
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -567,8 +522,7 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAffinityRequir
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -602,8 +556,7 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAffinityRequir
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -721,8 +674,7 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAntiAffinityPr
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -756,8 +708,7 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAntiAffinityPr
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -844,8 +795,7 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAntiAffinityRe
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -879,8 +829,7 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAntiAffinityRe
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct APIServerApiServerDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -984,8 +933,7 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecInitContainersResources {
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims:
-        Option<Vec<APIServerApiServerDeploymentSpecTemplateSpecInitContainersResourcesClaims>>,
+    pub claims: Option<Vec<APIServerApiServerDeploymentSpecTemplateSpecInitContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1029,11 +977,7 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -1047,13 +991,8 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecTopologySpreadConstraints
     /// LabelSelector is used to find matching pods.
     /// Pods that match this label selector are counted to determine the number of pods
     /// in their corresponding topology domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector:
-        Option<APIServerApiServerDeploymentSpecTemplateSpecTopologySpreadConstraintsLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<APIServerApiServerDeploymentSpecTemplateSpecTopologySpreadConstraintsLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select the pods over which
     /// spreading will be calculated. The keys are used to lookup values from the
     /// incoming pod labels, those key-value labels are ANDed with labelSelector
@@ -1063,11 +1002,7 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecTopologySpreadConstraints
     /// Keys that don't exist in the incoming pod labels will
     /// be ignored. A null or empty list means only match against labelSelector.
     /// This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabelKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MaxSkew describes the degree to which pods may be unevenly distributed.
     /// When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference
@@ -1106,11 +1041,7 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecTopologySpreadConstraints
     /// In this situation, new pod with the same labelSelector cannot be scheduled,
     /// because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,
     /// it will violate MaxSkew.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
     /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector
     /// when calculating pod topology spread skew. Options are:
@@ -1118,11 +1049,7 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecTopologySpreadConstraints
     /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
     /// If this value is nil, the behavior is equivalent to the Honor policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinityPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
     /// NodeTaintsPolicy indicates how we will treat node taints when calculating
     /// pod topology spread skew. Options are:
@@ -1131,11 +1058,7 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecTopologySpreadConstraints
     /// - Ignore: node taints are ignored. All nodes are included.
     /// If this value is nil, the behavior is equivalent to the Ignore policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeTaintsPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
     /// TopologyKey is the key of node labels. Nodes that have a label with this key
     /// and identical values are considered to be in the same topology.
@@ -1189,8 +1112,7 @@ pub struct APIServerApiServerDeploymentSpecTemplateSpecTopologySpreadConstraints
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct APIServerApiServerDeploymentSpecTemplateSpecTopologySpreadConstraintsLabelSelectorMatchExpressions
-{
+pub struct APIServerApiServerDeploymentSpecTemplateSpecTopologySpreadConstraintsLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1215,3 +1137,4 @@ pub struct APIServerStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+

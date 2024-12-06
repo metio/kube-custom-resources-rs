@@ -4,139 +4,78 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// SubnetSpec defines the desired state of Subnet.
-///
+/// 
 /// Describes a subnet.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "ec2.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "Subnet",
-    plural = "subnets"
-)]
+#[kube(group = "ec2.services.k8s.aws", version = "v1alpha1", kind = "Subnet", plural = "subnets")]
 #[kube(namespaced)]
 #[kube(status = "SubnetStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SubnetSpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "assignIPv6AddressOnCreation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "assignIPv6AddressOnCreation")]
     pub assign_i_pv6_address_on_creation: Option<bool>,
     /// The Availability Zone or Local Zone for the subnet.
-    ///
+    /// 
     /// Default: Amazon Web Services selects one for you. If you create more than
     /// one subnet in your VPC, we do not necessarily select a different zone for
     /// each subnet.
-    ///
+    /// 
     /// To create a subnet in a Local Zone, set this value to the Local Zone ID,
     /// for example us-west-2-lax-1a. For information about the Regions that support
     /// Local Zones, see Available Regions (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-available-regions)
     /// in the Amazon Elastic Compute Cloud User Guide.
-    ///
+    /// 
     /// To create a subnet in an Outpost, set this value to the Availability Zone
     /// for the Outpost and specify the Outpost ARN.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availabilityZone"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availabilityZone")]
     pub availability_zone: Option<String>,
     /// The AZ ID or the Local Zone ID of the subnet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availabilityZoneID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availabilityZoneID")]
     pub availability_zone_id: Option<String>,
     /// The IPv4 network range for the subnet, in CIDR notation. For example, 10.0.0.0/24.
     /// We modify the specified CIDR block to its canonical form; for example, if
     /// you specify 100.68.0.18/18, we modify it to 100.68.0.0/18.
-    ///
+    /// 
     /// This parameter is not supported for an IPv6 only subnet.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrBlock")]
     pub cidr_block: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customerOwnedIPv4Pool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customerOwnedIPv4Pool")]
     pub customer_owned_i_pv4_pool: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableDNS64"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableDNS64")]
     pub enable_dns64: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableResourceNameDNSAAAARecord"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableResourceNameDNSAAAARecord")]
     pub enable_resource_name_dnsaaaa_record: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableResourceNameDNSARecord"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableResourceNameDNSARecord")]
     pub enable_resource_name_dnsa_record: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostnameType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostnameType")]
     pub hostname_type: Option<String>,
     /// The IPv6 network range for the subnet, in CIDR notation. The subnet size
     /// must use a /64 prefix length.
-    ///
+    /// 
     /// This parameter is required for an IPv6 only subnet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipv6CIDRBlock"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipv6CIDRBlock")]
     pub ipv6_cidr_block: Option<String>,
     /// Indicates whether to create an IPv6 only subnet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipv6Native"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipv6Native")]
     pub ipv6_native: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mapPublicIPOnLaunch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mapPublicIPOnLaunch")]
     pub map_public_ip_on_launch: Option<bool>,
     /// The Amazon Resource Name (ARN) of the Outpost. If you specify an Outpost
     /// ARN, you must also specify the Availability Zone of the Outpost subnet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "outpostARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "outpostARN")]
     pub outpost_arn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "routeTableRefs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routeTableRefs")]
     pub route_table_refs: Option<Vec<SubnetRouteTableRefs>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "routeTables"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routeTables")]
     pub route_tables: Option<Vec<String>>,
     /// The tags. The value parameter is required, but if you don't want the tag
     /// to have a value, specify the parameter with no value, and we set the value
@@ -150,7 +89,7 @@ pub struct SubnetSpec {
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcRef")]
@@ -161,7 +100,7 @@ pub struct SubnetSpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -195,7 +134,7 @@ pub struct SubnetTags {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -222,19 +161,11 @@ pub struct SubnetStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<SubnetStatusAckResourceMetadata>,
     /// The number of unused private IPv4 addresses in the subnet. The IPv4 addresses
     /// for any stopped instances are considered unavailable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availableIPAddressCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableIPAddressCount")]
     pub available_ip_address_count: Option<i64>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -243,47 +174,27 @@ pub struct SubnetStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// Indicates whether this is the default subnet for the Availability Zone.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultForAZ"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultForAZ")]
     pub default_for_az: Option<bool>,
     /// Indicates the device position for local network interfaces in this subnet.
     /// For example, 1 indicates local network interfaces in this subnet are the
     /// secondary network interface (eth1).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableLniAtDeviceIndex"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableLniAtDeviceIndex")]
     pub enable_lni_at_device_index: Option<i64>,
     /// Information about the IPv6 CIDR blocks associated with the subnet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipv6CIDRBlockAssociationSet"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipv6CIDRBlockAssociationSet")]
     pub ipv6_cidr_block_association_set: Option<Vec<SubnetStatusIpv6CidrBlockAssociationSet>>,
     /// Indicates whether a network interface created in this subnet (including a
     /// network interface created by RunInstances) receives a customer-owned IPv4
     /// address.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mapCustomerOwnedIPOnLaunch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mapCustomerOwnedIPOnLaunch")]
     pub map_customer_owned_ip_on_launch: Option<bool>,
     /// The ID of the Amazon Web Services account that owns the subnet.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerID")]
     pub owner_id: Option<String>,
     /// The type of hostnames to assign to instances in the subnet at launch. An
     /// instance hostname is based on the IPv4 address or ID of the instance.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateDNSNameOptionsOnLaunch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateDNSNameOptionsOnLaunch")]
     pub private_dns_name_options_on_launch: Option<SubnetStatusPrivateDnsNameOptionsOnLaunch>,
     /// The current state of the subnet.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -318,24 +229,12 @@ pub struct SubnetStatusAckResourceMetadata {
 /// Describes an association between a subnet and an IPv6 CIDR block.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SubnetStatusIpv6CidrBlockAssociationSet {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "associationID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "associationID")]
     pub association_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipv6CIDRBlock"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipv6CIDRBlock")]
     pub ipv6_cidr_block: Option<String>,
     /// Describes the state of a CIDR block.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipv6CIDRBlockState"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipv6CIDRBlockState")]
     pub ipv6_cidr_block_state: Option<SubnetStatusIpv6CidrBlockAssociationSetIpv6CidrBlockState>,
 }
 
@@ -344,11 +243,7 @@ pub struct SubnetStatusIpv6CidrBlockAssociationSet {
 pub struct SubnetStatusIpv6CidrBlockAssociationSetIpv6CidrBlockState {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusMessage")]
     pub status_message: Option<String>,
 }
 
@@ -356,22 +251,11 @@ pub struct SubnetStatusIpv6CidrBlockAssociationSetIpv6CidrBlockState {
 /// instance hostname is based on the IPv4 address or ID of the instance.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SubnetStatusPrivateDnsNameOptionsOnLaunch {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableResourceNameDNSAAAARecord"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableResourceNameDNSAAAARecord")]
     pub enable_resource_name_dnsaaaa_record: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableResourceNameDNSARecord"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableResourceNameDNSARecord")]
     pub enable_resource_name_dnsa_record: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostnameType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostnameType")]
     pub hostname_type: Option<String>,
 }
+

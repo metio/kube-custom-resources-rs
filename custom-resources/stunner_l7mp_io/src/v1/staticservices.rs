@@ -5,23 +5,19 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// Spec defines the behavior of a service.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "stunner.l7mp.io",
-    version = "v1",
-    kind = "StaticService",
-    plural = "staticservices"
-)]
+#[kube(group = "stunner.l7mp.io", version = "v1", kind = "StaticService", plural = "staticservices")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct StaticServiceSpec {
     /// Prefixes is a list of IP address prefixes reachable via this route.
     pub prefixes: Vec<String>,
 }
+

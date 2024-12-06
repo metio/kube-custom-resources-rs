@@ -5,93 +5,44 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// KubernetesImagePullerSpec defines the desired state of KubernetesImagePuller
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "che.eclipse.org",
-    version = "v1alpha1",
-    kind = "KubernetesImagePuller",
-    plural = "kubernetesimagepullers"
-)]
+#[kube(group = "che.eclipse.org", version = "v1alpha1", kind = "KubernetesImagePuller", plural = "kubernetesimagepullers")]
 #[kube(namespaced)]
 #[kube(status = "KubernetesImagePullerStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct KubernetesImagePullerSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachingCPULimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingCPULimit")]
     pub caching_cpu_limit: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachingCPURequest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingCPURequest")]
     pub caching_cpu_request: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachingIntervalHours"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingIntervalHours")]
     pub caching_interval_hours: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachingMemoryLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMemoryLimit")]
     pub caching_memory_limit: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachingMemoryRequest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMemoryRequest")]
     pub caching_memory_request: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapName")]
     pub config_map_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "daemonsetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "daemonsetName")]
     pub daemonset_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deploymentName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentName")]
     pub deployment_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullerImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullerImage")]
     pub image_puller_image: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub images: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<String>,
 }
 
@@ -99,10 +50,7 @@ pub struct KubernetesImagePullerSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KubernetesImagePullerStatus {
     /// KubernetesImagePuller image in use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullerImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullerImage")]
     pub image_puller_image: Option<String>,
 }
+

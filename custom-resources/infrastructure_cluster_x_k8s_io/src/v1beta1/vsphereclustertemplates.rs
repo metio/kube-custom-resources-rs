@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// VSphereClusterTemplateSpec defines the desired state of VSphereClusterTemplate.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "infrastructure.cluster.x-k8s.io",
-    version = "v1beta1",
-    kind = "VSphereClusterTemplate",
-    plural = "vsphereclustertemplates"
-)]
+#[kube(group = "infrastructure.cluster.x-k8s.io", version = "v1beta1", kind = "VSphereClusterTemplate", plural = "vsphereclustertemplates")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct VSphereClusterTemplateSpec {
     /// VSphereClusterTemplateResource describes the data for creating a VSphereCluster from a template.
     pub template: VSphereClusterTemplateTemplate,
@@ -39,46 +34,26 @@ pub struct VSphereClusterTemplateTemplate {
 pub struct VSphereClusterTemplateTemplateSpec {
     /// ClusterModules hosts information regarding the anti-affinity vSphere constructs
     /// for each of the objects responsible for creation of VM objects belonging to the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterModules"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterModules")]
     pub cluster_modules: Option<Vec<VSphereClusterTemplateTemplateSpecClusterModules>>,
     /// ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneEndpoint")]
     pub control_plane_endpoint: Option<VSphereClusterTemplateTemplateSpecControlPlaneEndpoint>,
     /// DisableClusterModule is used to explicitly turn off the ClusterModule feature.
     /// This should work along side NodeAntiAffinity feature flag.
     /// If the NodeAntiAffinity feature flag is turned off, this will be disregarded.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableClusterModule"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableClusterModule")]
     pub disable_cluster_module: Option<bool>,
     /// FailureDomainSelector is the label selector to use for failure domain selection
     /// for the control plane nodes of the cluster.
     /// If not set (`nil`), selecting failure domains will be disabled.
     /// An empty value (`{}`) selects all existing failure domains.
     /// A valid selector will select all failure domains which match the selector.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureDomainSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomainSelector")]
     pub failure_domain_selector: Option<VSphereClusterTemplateTemplateSpecFailureDomainSelector>,
     /// IdentityRef is a reference to either a Secret or VSphereClusterIdentity that contains
     /// the identity to use when reconciling the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identityRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityRef")]
     pub identity_ref: Option<VSphereClusterTemplateTemplateSpecIdentityRef>,
     /// Server is the address of the vSphere endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -123,21 +98,12 @@ pub struct VSphereClusterTemplateTemplateSpecControlPlaneEndpoint {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereClusterTemplateTemplateSpecFailureDomainSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<VSphereClusterTemplateTemplateSpecFailureDomainSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<VSphereClusterTemplateTemplateSpecFailureDomainSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -175,3 +141,4 @@ pub enum VSphereClusterTemplateTemplateSpecIdentityRefKind {
     VSphereClusterIdentity,
     Secret,
 }
+

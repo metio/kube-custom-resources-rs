@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// HostFirmwareComponentsSpec defines the desired state of HostFirmwareComponents.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "metal3.io",
-    version = "v1alpha1",
-    kind = "HostFirmwareComponents",
-    plural = "hostfirmwarecomponents"
-)]
+#[kube(group = "metal3.io", version = "v1alpha1", kind = "HostFirmwareComponents", plural = "hostfirmwarecomponents")]
 #[kube(namespaced)]
 #[kube(status = "HostFirmwareComponentsStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct HostFirmwareComponentsSpec {
     pub updates: Vec<HostFirmwareComponentsUpdates>,
 }
@@ -44,11 +39,7 @@ pub struct HostFirmwareComponentsStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// Time that the status was last updated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdated"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdated")]
     pub last_updated: Option<String>,
     /// Updates is the list of all firmware components that should be updated
     /// they are specified via name and url fields.
@@ -60,19 +51,11 @@ pub struct HostFirmwareComponentsStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HostFirmwareComponentsStatusComponents {
     pub component: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentVersion")]
     pub current_version: Option<String>,
     #[serde(rename = "initialVersion")]
     pub initial_version: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastVersionFlashed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastVersionFlashed")]
     pub last_version_flashed: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatedAt")]
     pub updated_at: Option<String>,
@@ -84,3 +67,4 @@ pub struct HostFirmwareComponentsStatusUpdates {
     pub component: String,
     pub url: String,
 }
+

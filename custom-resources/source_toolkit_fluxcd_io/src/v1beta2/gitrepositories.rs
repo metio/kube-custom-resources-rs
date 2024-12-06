@@ -4,46 +4,33 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// GitRepositorySpec specifies the required configuration to produce an
 /// Artifact for a Git repository.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "source.toolkit.fluxcd.io",
-    version = "v1beta2",
-    kind = "GitRepository",
-    plural = "gitrepositories"
-)]
+#[kube(group = "source.toolkit.fluxcd.io", version = "v1beta2", kind = "GitRepository", plural = "gitrepositories")]
 #[kube(namespaced)]
 #[kube(status = "GitRepositoryStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct GitRepositorySpec {
     /// AccessFrom specifies an Access Control List for allowing cross-namespace
     /// references to this object.
     /// NOTE: Not implemented, provisional as of https://github.com/fluxcd/flux2/pull/2092
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessFrom"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessFrom")]
     pub access_from: Option<GitRepositoryAccessFrom>,
     /// GitImplementation specifies which Git client library implementation to
     /// use. Defaults to 'go-git', valid values are ('go-git', 'libgit2').
     /// Deprecated: gitImplementation is deprecated now that 'go-git' is the
     /// only supported implementation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gitImplementation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitImplementation")]
     pub git_implementation: Option<GitRepositoryGitImplementation>,
     /// Ignore overrides the set of excluded patterns in the .sourceignore format
     /// (which is the same as .gitignore). If not provided, a default will be used,
@@ -58,11 +45,7 @@ pub struct GitRepositorySpec {
     pub interval: String,
     /// RecurseSubmodules enables the initialization of all submodules within
     /// the GitRepository as cloned from the URL, using their default settings.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recurseSubmodules"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recurseSubmodules")]
     pub recurse_submodules: Option<bool>,
     /// Reference specifies the Git reference to resolve and monitor for
     /// changes, defaults to the 'master' branch.
@@ -109,11 +92,7 @@ pub struct GitRepositoryAccessFromNamespaceSelectors {
     /// MatchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -160,13 +139,13 @@ pub struct GitRepositoryRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub branch: Option<String>,
     /// Commit SHA to check out, takes precedence over all reference fields.
-    ///
+    /// 
     /// This can be combined with Branch to shallow clone the branch, in which
     /// the commit is expected to exist.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub commit: Option<String>,
     /// Name of the reference to check out; takes precedence over Branch, Tag and SemVer.
-    ///
+    /// 
     /// It must be a valid Git reference: https://git-scm.com/docs/git-check-ref-format#_description
     /// Examples: "refs/heads/main", "refs/tags/v0.1.0", "refs/pull/420/head", "refs/merge-requests/1/head"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -237,63 +216,35 @@ pub struct GitRepositoryStatus {
     /// be used to determine if the content of the included repository has
     /// changed.
     /// It has the format of `<algo>:<checksum>`, for example: `sha256:<checksum>`.
-    ///
+    /// 
     /// Deprecated: Replaced with explicit fields for observed artifact content
     /// config in the status.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentConfigChecksum"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentConfigChecksum")]
     pub content_config_checksum: Option<String>,
     /// IncludedArtifacts contains a list of the last successfully included
     /// Artifacts as instructed by GitRepositorySpec.Include.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includedArtifacts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includedArtifacts")]
     pub included_artifacts: Option<Vec<GitRepositoryStatusIncludedArtifacts>>,
     /// LastHandledReconcileAt holds the value of the most recent
     /// reconcile request value, so a change of the annotation value
     /// can be detected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastHandledReconcileAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastHandledReconcileAt")]
     pub last_handled_reconcile_at: Option<String>,
     /// ObservedGeneration is the last observed generation of the GitRepository
     /// object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// ObservedIgnore is the observed exclusion patterns used for constructing
     /// the source artifact.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedIgnore"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedIgnore")]
     pub observed_ignore: Option<String>,
     /// ObservedInclude is the observed list of GitRepository resources used to
     /// to produce the current Artifact.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedInclude"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedInclude")]
     pub observed_include: Option<Vec<GitRepositoryStatusObservedInclude>>,
     /// ObservedRecurseSubmodules is the observed resource submodules
     /// configuration used to produce the current Artifact.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedRecurseSubmodules"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedRecurseSubmodules")]
     pub observed_recurse_submodules: Option<bool>,
     /// URL is the dynamic fetch link for the latest Artifact.
     /// It is provided on a "best effort" basis, and using the precise
@@ -384,3 +335,4 @@ pub struct GitRepositoryStatusObservedIncludeRepository {
     /// Name of the referent.
     pub name: String,
 }
+

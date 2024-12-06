@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// APIMaticSpec defines the desired state of APIMatic
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "apicodegen.apimatic.io",
-    version = "v1beta1",
-    kind = "APIMatic",
-    plural = "apimatics"
-)]
+#[kube(group = "apicodegen.apimatic.io", version = "v1beta1", kind = "APIMatic", plural = "apimatics")]
 #[kube(namespaced)]
 #[kube(status = "APIMaticStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct APIMaticSpec {
     /// APIMaticVolumeSpec contains configuration for volumes associated with created APIMatic pods
     pub licensespec: APIMaticLicensespec,
@@ -61,28 +56,16 @@ pub enum APIMaticLicensespecLicenseSourceType {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct APIMaticPodplacementspec {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<APIMaticPodplacementspecNodeAffinity>,
     /// NodeName is a request to schedule this pod onto a specific node. If it is non-empty, the scheduler simply schedules this pod onto that node, assuming that it fits resource requirements.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeName")]
     pub node_name: Option<String>,
     /// NodeSelector is a selector which must be true for the pod to fit on a node. Selector which must match a node's labels for the pod to be scheduled on that node. More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<APIMaticPodplacementspecPodAffinity>,
     /// If specified, the pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -93,22 +76,11 @@ pub struct APIMaticPodplacementspec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct APIMaticPodplacementspecNodeAffinity {
     /// The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node matches the corresponding matchExpressions; the node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<APIMaticPodplacementspecNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<APIMaticPodplacementspecNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to an update), the system may or may not try to eventually evict the pod from its node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<APIMaticPodplacementspecNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<APIMaticPodplacementspecNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
 /// An empty preferred scheduling term matches all objects with implicit weight 0 (i.e. it's a no-op). A null preferred scheduling term matches no objects (i.e. is also a no-op).
@@ -133,8 +105,7 @@ pub struct APIMaticPodplacementspecNodeAffinityPreferredDuringSchedulingIgnoredD
 
 /// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct APIMaticPodplacementspecNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct APIMaticPodplacementspecNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
@@ -146,8 +117,7 @@ pub struct APIMaticPodplacementspecNodeAffinityPreferredDuringSchedulingIgnoredD
 
 /// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct APIMaticPodplacementspecNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct APIMaticPodplacementspecNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
@@ -178,8 +148,7 @@ pub struct APIMaticPodplacementspecNodeAffinityRequiredDuringSchedulingIgnoredDu
 
 /// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct APIMaticPodplacementspecNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct APIMaticPodplacementspecNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
@@ -191,8 +160,7 @@ pub struct APIMaticPodplacementspecNodeAffinityRequiredDuringSchedulingIgnoredDu
 
 /// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct APIMaticPodplacementspecNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct APIMaticPodplacementspecNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
@@ -206,23 +174,11 @@ pub struct APIMaticPodplacementspecNodeAffinityRequiredDuringSchedulingIgnoredDu
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct APIMaticPodplacementspecPodAffinity {
     /// The scheduler will prefer to schedule pods to nodes that satisfy the affinity expressions specified by this field, but it may choose a node that violates one or more of the expressions. The node that is most preferred is the one with the greatest sum of weights, i.e. for each node that meets all of the scheduling requirements (resource request, requiredDuringScheduling affinity expressions, etc.), compute a sum by iterating through the elements of this field and adding "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<APIMaticPodplacementspecPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<APIMaticPodplacementspecPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at scheduling time, the pod will not be scheduled onto the node. If the affinity requirements specified by this field cease to be met at some point during pod execution (e.g. due to a pod label update), the system may or may not try to eventually evict the pod from its node. When there are multiple elements, the lists of nodes corresponding to each podAffinityTerm are intersected, i.e. all terms must be satisfied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution: Option<
-        Vec<APIMaticPodplacementspecPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<APIMaticPodplacementspecPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -265,8 +221,7 @@ pub struct APIMaticPodplacementspecPodAffinityPreferredDuringSchedulingIgnoredDu
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct APIMaticPodplacementspecPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct APIMaticPodplacementspecPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -289,8 +244,7 @@ pub struct APIMaticPodplacementspecPodAffinityPreferredDuringSchedulingIgnoredDu
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct APIMaticPodplacementspecPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct APIMaticPodplacementspecPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -330,8 +284,7 @@ pub struct APIMaticPodplacementspecPodAffinityRequiredDuringSchedulingIgnoredDur
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct APIMaticPodplacementspecPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct APIMaticPodplacementspecPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -354,8 +307,7 @@ pub struct APIMaticPodplacementspecPodAffinityRequiredDuringSchedulingIgnoredDur
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct APIMaticPodplacementspecPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct APIMaticPodplacementspecPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -378,11 +330,7 @@ pub struct APIMaticPodplacementspecTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -393,21 +341,13 @@ pub struct APIMaticPodplacementspecTolerations {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct APIMaticPodspec {
     /// Optional duration in seconds the pod may be active on the node relative to StartTime before the system will actively try to mark it failed and kill associated containers. Value must be a positive integer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "activeDeadlineSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeDeadlineSeconds")]
     pub active_deadline_seconds: Option<i64>,
     /// APIMaticContainerSpec defines the configurations used for the APIMatic CodeGen container
     #[serde(rename = "apimaticContainerSpec")]
     pub apimatic_container_spec: APIMaticPodspecApimaticContainerSpec,
     /// AutomountServiceAccountToken indicates whether a service account token should be automatically mounted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "automountServiceAccountToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "automountServiceAccountToken")]
     pub automount_service_account_token: Option<bool>,
     /// Specifies the DNS parameters of a pod. Parameters specified here will be merged to the generated DNS configuration based on DNSPolicy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsConfig")]
@@ -416,28 +356,16 @@ pub struct APIMaticPodspec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
     pub dns_policy: Option<APIMaticPodspecDnsPolicy>,
     /// EnableServiceLinks indicates whether information about services should be injected into pod's environment variables, matching the syntax of Docker links. Optional: Defaults to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableServiceLinks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableServiceLinks")]
     pub enable_service_links: Option<bool>,
     /// HostAliases is an optional list of hosts and IPs that will be injected into the pod's hosts file if specified. This is only valid for non-hostNetwork pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostAliases"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<APIMaticPodspecHostAliases>>,
     /// Use the host's ipc namespace. Optional: Default to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostIPC")]
     pub host_ipc: Option<bool>,
     /// Host networking requested for this pod. Use the host's network namespace. If this option is set, the ports that will be used must be specified. Default to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostNetwork"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
     pub host_network: Option<bool>,
     /// Use the host's pid namespace. Optional: Default to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPID")]
@@ -449,63 +377,31 @@ pub struct APIMaticPodspec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub priority: Option<i32>,
     /// If specified, indicates the pod's priority. "system-node-critical" and "system-cluster-critical" are two special keywords which indicate the highest priorities with the former being the highest priority. Any other name must be defined by creating a PriorityClass object with that name. If not specified, the pod priority will be default or zero if there is no default.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// If specified, all readiness gates will be evaluated for pod readiness. A pod is ready when all its containers are ready AND all conditions specified in the readiness gates have status equal to "True" More info: https://git.k8s.io/enhancements/keps/sig-network/0007-pod-ready%2B%2B.md
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessGates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessGates")]
     pub readiness_gates: Option<Vec<APIMaticPodspecReadinessGates>>,
     /// Restart policy for all containers within the pod. One of Always, OnFailure, Never. Default to Always. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<APIMaticPodspecRestartPolicy>,
     /// If specified, the pod will be dispatched by specified scheduler. If not specified, the pod will be dispatched by default scheduler.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schedulerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
     /// SecurityContext holds pod-level security attributes and common container settings. Optional: Defaults to empty.  See type description for default values of each field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<APIMaticPodspecSecurityContext>,
     /// ServiceAccountName is the name of the ServiceAccount to use to run this pod. More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
     /// If a pod does not have FQDN, this has no effect. Default to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "setHostnameAsFQDN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "setHostnameAsFQDN")]
     pub set_hostname_as_fqdn: Option<bool>,
     /// If specified, the fully qualified Pod hostname will be "<hostname>.<subdomain>.<pod namespace>.svc.<cluster domain>". If not specified, the pod will not have a domainname at all.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subdomain: Option<String>,
     /// Optional duration in seconds the pod needs to terminate gracefully. May be decreased in delete request. Value must be non-negative integer. The value zero indicates delete immediately. If this value is nil, the default grace period will be used instead. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. Defaults to 30 seconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
 }
 
@@ -515,18 +411,10 @@ pub struct APIMaticPodspecApimaticContainerSpec {
     /// APIMatic container image
     pub image: String,
     /// Image pull policy. One of Always, Never, IfNotPresent. Defaults to Always if :latest tag is specified, or IfNotPresent otherwise. Cannot be updated.More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<APIMaticPodspecApimaticContainerSpecImagePullPolicy>,
     /// ImagePullSecret is an optional reference to a secret in the same namespace to use for pulling the APIMatic CodeGen container image. If specified, this secrets will be passed to the puller implementation to use. For example, in the case of docker, only DockerConfig type secrets are honored. More info: https://kubernetes.io/docs/concepts/containers/images#specifying-imagepullsecrets-on-a-pod
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecret")]
     pub image_pull_secret: Option<String>,
     /// Resource Requirements represents the compute resource requirements of the APIMatic container
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -615,65 +503,37 @@ pub enum APIMaticPodspecRestartPolicy {
 /// SecurityContext holds pod-level security attributes and common container settings. Optional: Defaults to empty.  See type description for default values of each field.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct APIMaticPodspecSecurityContext {
-    /// A special supplemental group that applies to all containers in a pod. Some volume types allow the Kubelet to change the ownership of that volume to be owned by the pod:
-    ///  1. The owning GID will be the FSGroup 2. The setgid bit is set (new files created in the volume will be owned by FSGroup) 3. The permission bits are OR'd with rw-rw----
+    /// A special supplemental group that applies to all containers in a pod. Some volume types allow the Kubelet to change the ownership of that volume to be owned by the pod: 
+    ///  1. The owning GID will be the FSGroup 2. The setgid bit is set (new files created in the volume will be owned by FSGroup) 3. The permission bits are OR'd with rw-rw---- 
     ///  If unset, the Kubelet will not modify the ownership and permissions of any volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
     pub fs_group: Option<i64>,
     /// fsGroupChangePolicy defines behavior of changing ownership and permission of the volume before being exposed inside Pod. This field will only apply to volume types which support fsGroup based ownership(and permissions). It will have no effect on ephemeral volume types such as: secret, configmaps and emptydir. Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
     /// The GID to run the entrypoint of the container process. Uses runtime default if unset. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user. If true, the Kubelet will validate the image at runtime to ensure that it does not run as UID 0 (root) and fail to start the container if it does. If unset or false, no such validation will be performed. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
     /// The SELinux context to be applied to all containers. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in SecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence for that container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<APIMaticPodspecSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by the containers in this pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<APIMaticPodspecSecurityContextSeccompProfile>,
     /// A list of groups applied to the first process run in each container, in addition to the container's primary GID.  If unspecified, no groups will be added to any container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported sysctls (by the container runtime) might fail to launch.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctls: Option<Vec<APIMaticPodspecSecurityContextSysctls>>,
     /// The Windows specific settings applied to all containers. If unspecified, the options within a container's SecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<APIMaticPodspecSecurityContextWindowsOptions>,
 }
 
@@ -698,13 +558,9 @@ pub struct APIMaticPodspecSecurityContextSeLinuxOptions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct APIMaticPodspecSecurityContextSeccompProfile {
     /// localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must only be set if type is "Localhost".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
-    /// type indicates which kind of seccomp profile will be applied. Valid options are:
+    /// type indicates which kind of seccomp profile will be applied. Valid options are: 
     ///  Localhost - a profile defined in a file on the node should be used. RuntimeDefault - the container runtime default profile should be used. Unconfined - no profile should be applied.
     #[serde(rename = "type")]
     pub r#type: String,
@@ -723,25 +579,13 @@ pub struct APIMaticPodspecSecurityContextSysctls {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct APIMaticPodspecSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// The UserName in Windows to run the entrypoint of the container process. Defaults to the user specified in image metadata if unspecified. May also be set in PodSecurityContext. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -754,85 +598,41 @@ pub struct APIMaticServicespec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterIP")]
     pub cluster_ip: Option<String>,
     /// externalIPs is a list of IP addresses for which nodes in the cluster will also accept traffic for this service.  These IPs are not managed by Kubernetes.  The user is responsible for ensuring that traffic arrives at a node with this IP.  A common example is external load-balancers that are not part of the Kubernetes system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalIPs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalIPs")]
     pub external_i_ps: Option<Vec<String>>,
     /// externalName is the external reference that discovery mechanisms will return as an alias for this service (e.g. a DNS CNAME record). No proxying will be involved.  Must be a lowercase RFC-1123 hostname (https://tools.ietf.org/html/rfc1123) and requires Type to be ExternalName
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalName")]
     pub external_name: Option<String>,
     /// externalTrafficPolicy denotes if this Service desires to route external traffic to node-local or cluster-wide endpoints. "Local" preserves the client source IP and avoids a second hop for LoadBalancer and Nodeport type services, but risks potentially imbalanced traffic spreading. "Cluster" obscures the client source IP and may cause a second hop to another node, but should have good overall load-spreading. Only set if Type is LoadBalancer or Nodeport. If not defined for LoadBalancer or Nodeport type, defaults to Cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalTrafficPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
     pub external_traffic_policy: Option<APIMaticServicespecExternalTrafficPolicy>,
     /// healthCheckNodePort specifies the healthcheck nodePort for the service. This only applies when type is set to LoadBalancer and externalTrafficPolicy is set to Local. If a value is specified, is in-range, and is not in use, it will be used.  If not specified, a value will be automatically allocated.  External systems (e.g. load-balancers) can use this port to determine if a given node holds endpoints for this service or not.  If this field is specified when creating a Service which does not need it, creation will fail. This field will be wiped when updating a Service to no longer need it (e.g. changing type).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthCheckNodePort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheckNodePort")]
     pub health_check_node_port: Option<i32>,
-    /// IPFamilies is a list of IP families (e.g. IPv4, IPv6) assigned to this service, and is gated by the "IPv6DualStack" feature gate.  This field is usually assigned automatically based on cluster configuration and the ipFamilyPolicy field. If this field is specified manually, the requested family is available in the cluster, and ipFamilyPolicy allows it, it will be used; otherwise creation of the service will fail.  This field is conditionally mutable: it allows for adding or removing a secondary IP family, but it does not allow changing the primary IP family of the Service.  Valid values are "IPv4" and "IPv6".  This field only applies to Services of types ClusterIP, NodePort, and LoadBalancer, and does apply to "headless" services.  This field will be wiped when updating a Service to type ExternalName.
+    /// IPFamilies is a list of IP families (e.g. IPv4, IPv6) assigned to this service, and is gated by the "IPv6DualStack" feature gate.  This field is usually assigned automatically based on cluster configuration and the ipFamilyPolicy field. If this field is specified manually, the requested family is available in the cluster, and ipFamilyPolicy allows it, it will be used; otherwise creation of the service will fail.  This field is conditionally mutable: it allows for adding or removing a secondary IP family, but it does not allow changing the primary IP family of the Service.  Valid values are "IPv4" and "IPv6".  This field only applies to Services of types ClusterIP, NodePort, and LoadBalancer, and does apply to "headless" services.  This field will be wiped when updating a Service to type ExternalName. 
     ///  This field may hold a maximum of two entries (dual-stack families, in either order).  These families must correspond to the values of the clusterIPs field, if specified. Both clusterIPs and ipFamilies are governed by the ipFamilyPolicy field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipFamilies"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilies")]
     pub ip_families: Option<Vec<String>>,
     /// IPFamilyPolicy represents the dual-stack-ness requested or required by this Service, and is gated by the "IPv6DualStack" feature gate.  If there is no value provided, then this field will be set to SingleStack. Services can be "SingleStack" (a single IP family), "PreferDualStack" (two IP families on dual-stack configured clusters or a single IP family on single-stack clusters), or "RequireDualStack" (two IP families on dual-stack configured clusters, otherwise fail). The ipFamilies and clusterIPs fields depend on the value of this field.  This field will be wiped when updating a service to type ExternalName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipFamilyPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilyPolicy")]
     pub ip_family_policy: Option<APIMaticServicespecIpFamilyPolicy>,
     /// Only applies to Service Type: LoadBalancer LoadBalancer will get created with the IP specified in this field. This feature depends on whether the underlying cloud-provider supports specifying the loadBalancerIP when a load balancer is created. This field will be ignored if the cloud-provider does not support the feature.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerIP"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerIP")]
     pub load_balancer_ip: Option<String>,
     /// publishNotReadyAddresses indicates that any agent which deals with endpoints for this Service should disregard any indications of ready/not-ready. The primary use case for setting this field is for a StatefulSet's Headless Service to propagate SRV DNS records for its Pods for the purpose of peer discovery. The Kubernetes controllers that generate Endpoints and EndpointSlice resources for Services interpret this to mean that all endpoints are considered "ready" even if the Pods themselves are not. Agents which consume only Kubernetes generated endpoints through the Endpoints or EndpointSlice resources can safely assume this behavior. Defaults to false
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "publishNotReadyAddresses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "publishNotReadyAddresses")]
     pub publish_not_ready_addresses: Option<bool>,
     /// Type string describes ingress methods for a service. Valid values are ClusterIP, NodePort, LoadBalancer, ExternalName, None. Defaults to ClusterIP
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub servicetype: Option<APIMaticServicespecServicetype>,
     /// Supports "ClientIP" and "None". Used to maintain session affinity. Enable client IP based session affinity. Must be ClientIP or None. Defaults to None. More info: https://kubernetes.io/docs/concepts/services-networking/service/#virtual-ips-and-service-proxies
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sessionAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinity")]
     pub session_affinity: Option<APIMaticServicespecSessionAffinity>,
     /// sessionAffinityConfig contains the configurations of session affinity.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sessionAffinityConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionAffinityConfig")]
     pub session_affinity_config: Option<APIMaticServicespecSessionAffinityConfig>,
     /// topologyKeys is a preference-order list of topology keys which implementations of services should use to preferentially sort endpoints when accessing this Service, it can not be used at the same time as externalTrafficPolicy=Local. Topology keys must be valid label keys and at most 16 keys may be specified. Endpoints are chosen based on the first topology key with available backends. If this field is specified and all entries have no backends that match the topology of the client, the service has no backends for that client and connections should fail. The special value "*" may be used to mean "any topology". This catch-all value, if used, only makes sense as the last value in the list. If this is not specified or empty, no topology constraints will be applied. This field is alpha-level and is only honored by servers that enable the ServiceTopology feature.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologyKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologyKeys")]
     pub topology_keys: Option<Vec<String>>,
 }
 
@@ -894,11 +694,7 @@ pub struct APIMaticServicespecSessionAffinityConfig {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct APIMaticServicespecSessionAffinityConfigClientIp {
     /// timeoutSeconds specifies the seconds of ClientIP type session sticky time. The value must be >0 && <=86400(for 1 day) if ServiceAffinity == "ClientIP". Default value is 10800(for 3 hours).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -906,18 +702,10 @@ pub struct APIMaticServicespecSessionAffinityConfigClientIp {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct APIMaticStatus {
     /// statefulsetStatus displays the status of the owned deployment resource which exposes the APIMatic pods for communication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deploymentStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentStatus")]
     pub deployment_status: Option<APIMaticStatusDeploymentStatus>,
     /// serviceStatus displays the status of the owned service resource which exposes the APIMatic pods for communication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceStatus")]
     pub service_status: Option<APIMaticStatusServiceStatus>,
 }
 
@@ -925,52 +713,28 @@ pub struct APIMaticStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct APIMaticStatusDeploymentStatus {
     /// Total number of available pods (ready for at least minReadySeconds) targeted by this deployment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availableReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableReplicas")]
     pub available_replicas: Option<i32>,
     /// Count of hash collisions for the Deployment. The Deployment controller uses this field as a collision avoidance mechanism when it needs to create the name for the newest ReplicaSet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "collisionCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "collisionCount")]
     pub collision_count: Option<i32>,
     /// Represents the latest available observations of a deployment's current state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The generation observed by the deployment controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// Total number of ready pods targeted by this deployment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readyReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]
     pub ready_replicas: Option<i32>,
     /// Total number of non-terminated pods targeted by this deployment (their labels match the selector).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
     /// Total number of unavailable pods targeted by this deployment. This is the total number of pods that are still required for the deployment to have 100% available capacity. They may either be pods that are running but not yet available or pods that still have not been created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unavailableReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unavailableReplicas")]
     pub unavailable_replicas: Option<i32>,
     /// Total number of non-terminated pods targeted by this deployment that have the desired template spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updatedReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatedReplicas")]
     pub updated_replicas: Option<i32>,
 }
 
@@ -981,11 +745,7 @@ pub struct APIMaticStatusServiceStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// LoadBalancer contains the current status of the load-balancer, if one is present.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancer")]
     pub load_balancer: Option<APIMaticStatusServiceStatusLoadBalancer>,
 }
 
@@ -1021,3 +781,4 @@ pub struct APIMaticStatusServiceStatusLoadBalancerIngressPorts {
     /// Protocol is the protocol of the service port of which status is recorded here The supported values are: "TCP", "UDP", "SCTP"
     pub protocol: String,
 }
+

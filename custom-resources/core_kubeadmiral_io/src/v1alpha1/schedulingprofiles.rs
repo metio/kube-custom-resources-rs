@@ -5,27 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "core.kubeadmiral.io",
-    version = "v1alpha1",
-    kind = "SchedulingProfile",
-    plural = "schedulingprofiles"
-)]
+#[kube(group = "core.kubeadmiral.io", version = "v1alpha1", kind = "SchedulingProfile", plural = "schedulingprofiles")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SchedulingProfileSpec {
     /// PluginConfig is an optional set of custom plugin arguments for each plugin. Omitting config args for a plugin is equivalent to using the default config for that plugin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pluginConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pluginConfig")]
     pub plugin_config: Option<Vec<SchedulingProfilePluginConfig>>,
     /// Plugins specify the set of plugins that should be enabled or disabled. Enabled plugins are the ones that should be enabled in addition to the default plugins. Disabled plugins are any of the default plugins that should be disabled. When no enabled or disabled plugin is specified for an extension point, default plugins for that extension point will be used if there is any.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -208,3 +199,4 @@ pub struct SchedulingProfilePluginsSelectEnabled {
 pub enum SchedulingProfilePluginsSelectEnabledType {
     Webhook,
 }
+

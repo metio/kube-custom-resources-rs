@@ -4,51 +4,34 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// spec defines the desired state of this scylla cluster.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "scylla.scylladb.com",
-    version = "v1",
-    kind = "ScyllaCluster",
-    plural = "scyllaclusters"
-)]
+#[kube(group = "scylla.scylladb.com", version = "v1", kind = "ScyllaCluster", plural = "scyllaclusters")]
 #[kube(namespaced)]
 #[kube(status = "ScyllaClusterStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ScyllaClusterSpec {
     /// agentRepository is the repository to pull the agent image from.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentRepository"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentRepository")]
     pub agent_repository: Option<String>,
     /// agentVersion indicates the version of Scylla Manager Agent to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentVersion")]
     pub agent_version: Option<String>,
     /// alternator designates this cluster an Alternator cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub alternator: Option<ScyllaClusterAlternator>,
     /// automaticOrphanedNodeCleanup controls if automatic orphan node cleanup should be performed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "automaticOrphanedNodeCleanup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "automaticOrphanedNodeCleanup")]
     pub automatic_orphaned_node_cleanup: Option<bool>,
     /// backups specifies backup tasks in Scylla Manager. When Scylla Manager is not installed, these will be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -60,84 +43,40 @@ pub struct ScyllaClusterSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub datacenter: Option<ScyllaClusterDatacenter>,
     /// developerMode determines if the cluster runs in developer-mode.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "developerMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "developerMode")]
     pub developer_mode: Option<bool>,
     /// dnsDomains is a list of DNS domains this cluster is reachable by. These domains are used when setting up the infrastructure, like certificates. EXPERIMENTAL. Do not rely on any particular behaviour controlled by this field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dnsDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsDomains")]
     pub dns_domains: Option<Vec<String>>,
     /// exposeOptions specifies options for exposing ScyllaCluster services. This field is immutable. EXPERIMENTAL. Do not rely on any particular behaviour controlled by this field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "exposeOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exposeOptions")]
     pub expose_options: Option<ScyllaClusterExposeOptions>,
     /// externalSeeds specifies the external seeds to propagate to ScyllaDB binary on startup as "seeds" parameter of seed-provider.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalSeeds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalSeeds")]
     pub external_seeds: Option<Vec<String>>,
     /// forceRedeploymentReason can be used to force a rolling update of all racks by providing a unique string.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "forceRedeploymentReason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceRedeploymentReason")]
     pub force_redeployment_reason: Option<String>,
     /// genericUpgrade allows to configure behavior of generic upgrade logic.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "genericUpgrade"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "genericUpgrade")]
     pub generic_upgrade: Option<ScyllaClusterGenericUpgrade>,
     /// imagePullSecrets is an optional list of references to secrets in the same namespace used for pulling Scylla and Agent images.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<ScyllaClusterImagePullSecrets>>,
     /// minReadySeconds is the minimum number of seconds for which a newly created ScyllaDB node should be ready for it to be considered available. When used to control load balanced traffic, this can give the load balancer in front of a node enough time to notice that the node is ready and start forwarding traffic in time. Because it all depends on timing, the order is not guaranteed and, if possible, you should use readinessGates instead. If not provided, Operator will determine this value.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minReadySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
     /// minTerminationGracePeriodSeconds specifies minimum duration in seconds to wait before every drained node is terminated. This gives time to potential load balancer in front of a node to notice that node is not ready anymore and stop forwarding new requests. This applies only when node is terminated gracefully. If not provided, Operator will determine this value. EXPERIMENTAL. Do not rely on any particular behaviour controlled by this field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minTerminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minTerminationGracePeriodSeconds")]
     pub min_termination_grace_period_seconds: Option<i32>,
     /// network holds the networking config.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub network: Option<ScyllaClusterNetwork>,
     /// podMetadata controls shared metadata for all pods created based on this spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMetadata")]
     pub pod_metadata: Option<ScyllaClusterPodMetadata>,
     /// readinessGates specifies custom readiness gates that will be evaluated for every ScyllaDB Pod readiness. It's projected into every ScyllaDB Pod as its readinessGate. Refer to upstream documentation to learn more about readiness gates.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessGates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessGates")]
     pub readiness_gates: Option<Vec<ScyllaClusterReadinessGates>>,
     /// repairs specify repair tasks in Scylla Manager. When Scylla Manager is not installed, these will be ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -146,11 +85,7 @@ pub struct ScyllaClusterSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub repository: Option<String>,
     /// scyllaArgs will be appended to Scylla binary during startup. This is supported from 4.2.0 Scylla version.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scyllaArgs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scyllaArgs")]
     pub scylla_args: Option<String>,
     /// sysctls holds the sysctl properties to be applied during initialization given as a list of key=value pairs. Example: fs.aio-max-nr=232323
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -164,35 +99,19 @@ pub struct ScyllaClusterSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScyllaClusterAlternator {
     /// insecureDisableAuthorization disables Alternator authorization. If not specified, the authorization is enabled. For backwards compatibility the authorization is disabled when this field is not specified and a manual port is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureDisableAuthorization"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureDisableAuthorization")]
     pub insecure_disable_authorization: Option<bool>,
     /// insecureEnableHTTP enables serving Alternator traffic also on insecure HTTP port.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureEnableHTTP"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureEnableHTTP")]
     pub insecure_enable_http: Option<bool>,
     /// port is the port number used to bind the Alternator API. Deprecated: `port` is deprecated and may be ignored in the future. Please make sure to avoid using hostNetworking and work with standard Kubernetes concepts like Services.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// servingCertificate references a TLS certificate for serving secure traffic.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "servingCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "servingCertificate")]
     pub serving_certificate: Option<ScyllaClusterAlternatorServingCertificate>,
     /// writeIsolation indicates the isolation level.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "writeIsolation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeIsolation")]
     pub write_isolation: Option<String>,
 }
 
@@ -200,22 +119,13 @@ pub struct ScyllaClusterAlternator {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScyllaClusterAlternatorServingCertificate {
     /// operatorManagedOptions specifies options for certificates manged by the operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "operatorManagedOptions"
-    )]
-    pub operator_managed_options:
-        Option<ScyllaClusterAlternatorServingCertificateOperatorManagedOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorManagedOptions")]
+    pub operator_managed_options: Option<ScyllaClusterAlternatorServingCertificateOperatorManagedOptions>,
     /// type determines the source of this certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<ScyllaClusterAlternatorServingCertificateType>,
     /// userManagedOptions specifies options for certificates manged by users.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userManagedOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userManagedOptions")]
     pub user_managed_options: Option<ScyllaClusterAlternatorServingCertificateUserManagedOptions>,
 }
 
@@ -223,18 +133,10 @@ pub struct ScyllaClusterAlternatorServingCertificate {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScyllaClusterAlternatorServingCertificateOperatorManagedOptions {
     /// additionalDNSNames represents external DNS names that the certificates should be signed for.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalDNSNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalDNSNames")]
     pub additional_dns_names: Option<Vec<String>>,
     /// additionalIPAddresses represents external IP addresses that the certificates should be signed for.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalIPAddresses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalIPAddresses")]
     pub additional_ip_addresses: Option<Vec<String>>,
 }
 
@@ -249,11 +151,7 @@ pub enum ScyllaClusterAlternatorServingCertificateType {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScyllaClusterAlternatorServingCertificateUserManagedOptions {
     /// secretName references a kubernetes.io/tls type secret containing the TLS cert and key.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -278,11 +176,7 @@ pub struct ScyllaClusterBackups {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// numRetries indicates how many times a scheduled task will be retried before failing.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "numRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numRetries")]
     pub num_retries: Option<i64>,
     /// rateLimit is a list of megabytes (MiB) per second rate limits expressed in the format [<dc>:]<limit>. The <dc>: part is optional and only needed when different datacenters need different upload limits. Set to 0 for no limit (default 100).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rateLimit")]
@@ -291,11 +185,7 @@ pub struct ScyllaClusterBackups {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retention: Option<i64>,
     /// snapshotParallel is a list of snapshot parallelism limits in the format [<dc>:]<limit>. The <dc>: part is optional and allows for specifying different limits in selected datacenters. If The <dc>: part is not set, the limit is global (e.g. 'dc1:2,5') the runs are parallel in n nodes (2 in dc1) and n nodes in all the other datacenters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotParallel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotParallel")]
     pub snapshot_parallel: Option<Vec<String>>,
     /// startDate specifies the task start date expressed in the RFC3339 format or now[+duration], e.g. now+3d2h10m, valid units are d, h, m, s.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startDate")]
@@ -304,11 +194,7 @@ pub struct ScyllaClusterBackups {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timezone: Option<String>,
     /// uploadParallel is a list of upload parallelism limits in the format [<dc>:]<limit>. The <dc>: part is optional and allows for specifying different limits in selected datacenters. If The <dc>: part is not set the limit is global (e.g. 'dc1:2,5') the runs are parallel in n nodes (2 in dc1) and n nodes in all the other datacenters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "uploadParallel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "uploadParallel")]
     pub upload_parallel: Option<Vec<String>>,
 }
 
@@ -327,18 +213,10 @@ pub struct ScyllaClusterDatacenter {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScyllaClusterDatacenterRacks {
     /// agentResources specify the resources for the Agent container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentResources")]
     pub agent_resources: Option<ScyllaClusterDatacenterRacksAgentResources>,
     /// AgentVolumeMounts to be added to Agent container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "agentVolumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "agentVolumeMounts")]
     pub agent_volume_mounts: Option<Vec<ScyllaClusterDatacenterRacksAgentVolumeMounts>>,
     /// members is the number of Scylla instances in this rack.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -353,28 +231,16 @@ pub struct ScyllaClusterDatacenterRacks {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<ScyllaClusterDatacenterRacksResources>,
     /// Scylla config map name to customize scylla manager agent
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scyllaAgentConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scyllaAgentConfig")]
     pub scylla_agent_config: Option<String>,
     /// Scylla config map name to customize scylla.yaml
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scyllaConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scyllaConfig")]
     pub scylla_config: Option<String>,
     /// storage describes the underlying storage that Scylla will consume.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<ScyllaClusterDatacenterRacksStorage>,
     /// VolumeMounts to be added to Scylla container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<ScyllaClusterDatacenterRacksVolumeMounts>>,
     /// Volumes added to Scylla Pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -384,8 +250,8 @@ pub struct ScyllaClusterDatacenterRacks {
 /// agentResources specify the resources for the Agent container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScyllaClusterDatacenterRacksAgentResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container.
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate.
+    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
+    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
     ///  This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ScyllaClusterDatacenterRacksAgentResourcesClaims>>,
@@ -411,11 +277,7 @@ pub struct ScyllaClusterDatacenterRacksAgentVolumeMounts {
     #[serde(rename = "mountPath")]
     pub mount_path: String,
     /// mountPropagation determines how mounts are propagated from the host to container and the other way around. When not set, MountPropagationNone is used. This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -426,11 +288,7 @@ pub struct ScyllaClusterDatacenterRacksAgentVolumeMounts {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
     /// Expanded path within the volume from which the container's volume should be mounted. Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment. Defaults to "" (volume's root). SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -438,25 +296,13 @@ pub struct ScyllaClusterDatacenterRacksAgentVolumeMounts {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScyllaClusterDatacenterRacksPlacement {
     /// nodeAffinity describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<ScyllaClusterDatacenterRacksPlacementNodeAffinity>,
     /// podAffinity describes pod affinity scheduling rules.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<ScyllaClusterDatacenterRacksPlacementPodAffinity>,
     /// podAntiAffinity describes pod anti-affinity scheduling rules.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<ScyllaClusterDatacenterRacksPlacementPodAntiAffinity>,
     /// tolerations allow the pod to tolerate any taint that matches the triple <key,value,effect> using the matching operator.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -496,8 +342,7 @@ pub struct ScyllaClusterDatacenterRacksPlacementNodeAffinityPreferredDuringSched
 
 /// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScyllaClusterDatacenterRacksPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct ScyllaClusterDatacenterRacksPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
@@ -509,8 +354,7 @@ pub struct ScyllaClusterDatacenterRacksPlacementNodeAffinityPreferredDuringSched
 
 /// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScyllaClusterDatacenterRacksPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct ScyllaClusterDatacenterRacksPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
@@ -541,8 +385,7 @@ pub struct ScyllaClusterDatacenterRacksPlacementNodeAffinityRequiredDuringSchedu
 
 /// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScyllaClusterDatacenterRacksPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct ScyllaClusterDatacenterRacksPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
@@ -554,8 +397,7 @@ pub struct ScyllaClusterDatacenterRacksPlacementNodeAffinityRequiredDuringSchedu
 
 /// A node selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScyllaClusterDatacenterRacksPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct ScyllaClusterDatacenterRacksPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists, DoesNotExist. Gt, and Lt.
@@ -622,8 +464,7 @@ pub struct ScyllaClusterDatacenterRacksPlacementPodAffinityPreferredDuringSchedu
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScyllaClusterDatacenterRacksPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct ScyllaClusterDatacenterRacksPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -646,8 +487,7 @@ pub struct ScyllaClusterDatacenterRacksPlacementPodAffinityPreferredDuringSchedu
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScyllaClusterDatacenterRacksPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct ScyllaClusterDatacenterRacksPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -693,8 +533,7 @@ pub struct ScyllaClusterDatacenterRacksPlacementPodAffinityRequiredDuringSchedul
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScyllaClusterDatacenterRacksPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct ScyllaClusterDatacenterRacksPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -717,8 +556,7 @@ pub struct ScyllaClusterDatacenterRacksPlacementPodAffinityRequiredDuringSchedul
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScyllaClusterDatacenterRacksPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct ScyllaClusterDatacenterRacksPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -785,8 +623,7 @@ pub struct ScyllaClusterDatacenterRacksPlacementPodAntiAffinityPreferredDuringSc
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScyllaClusterDatacenterRacksPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct ScyllaClusterDatacenterRacksPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -809,8 +646,7 @@ pub struct ScyllaClusterDatacenterRacksPlacementPodAntiAffinityPreferredDuringSc
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScyllaClusterDatacenterRacksPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct ScyllaClusterDatacenterRacksPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -856,8 +692,7 @@ pub struct ScyllaClusterDatacenterRacksPlacementPodAntiAffinityRequiredDuringSch
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScyllaClusterDatacenterRacksPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct ScyllaClusterDatacenterRacksPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -880,8 +715,7 @@ pub struct ScyllaClusterDatacenterRacksPlacementPodAntiAffinityRequiredDuringSch
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScyllaClusterDatacenterRacksPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct ScyllaClusterDatacenterRacksPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -904,11 +738,7 @@ pub struct ScyllaClusterDatacenterRacksPlacementTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -918,8 +748,8 @@ pub struct ScyllaClusterDatacenterRacksPlacementTolerations {
 /// resources the Scylla container will use.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScyllaClusterDatacenterRacksResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container.
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate.
+    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
+    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
     ///  This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ScyllaClusterDatacenterRacksResourcesClaims>>,
@@ -948,11 +778,7 @@ pub struct ScyllaClusterDatacenterRacksStorage {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<ScyllaClusterDatacenterRacksStorageMetadata>,
     /// storageClassName is the name of a storageClass to request.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
 }
 
@@ -974,11 +800,7 @@ pub struct ScyllaClusterDatacenterRacksVolumeMounts {
     #[serde(rename = "mountPath")]
     pub mount_path: String,
     /// mountPropagation determines how mounts are propagated from the host to container and the other way around. When not set, MountPropagationNone is used. This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -989,11 +811,7 @@ pub struct ScyllaClusterDatacenterRacksVolumeMounts {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
     /// Expanded path within the volume from which the container's volume should be mounted. Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment. Defaults to "" (volume's root). SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -1001,11 +819,7 @@ pub struct ScyllaClusterDatacenterRacksVolumeMounts {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScyllaClusterDatacenterRacksVolumes {
     /// awsElasticBlockStore represents an AWS Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsElasticBlockStore"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
     pub aws_elastic_block_store: Option<ScyllaClusterDatacenterRacksVolumesAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
@@ -1026,19 +840,15 @@ pub struct ScyllaClusterDatacenterRacksVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<ScyllaClusterDatacenterRacksVolumesCsi>,
     /// downwardAPI represents downward API about the pod that should populate this volume
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<ScyllaClusterDatacenterRacksVolumesDownwardApi>,
     /// emptyDir represents a temporary directory that shares a pod's lifetime. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<ScyllaClusterDatacenterRacksVolumesEmptyDir>,
-    /// ephemeral represents a volume that is handled by a cluster storage driver. The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts, and deleted when the pod is removed.
-    ///  Use this if: a) the volume is only needed while the pod runs, b) features of normal volumes like restoring from snapshot or capacity tracking are needed, c) the storage driver is specified through a storage class, and d) the storage driver supports dynamic volume provisioning through a PersistentVolumeClaim (see EphemeralVolumeSource for more information on the connection between this volume type and PersistentVolumeClaim).
-    ///  Use PersistentVolumeClaim or one of the vendor-specific APIs for volumes that persist for longer than the lifecycle of an individual pod.
-    ///  Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to be used that way - see the documentation of the driver for more information.
+    /// ephemeral represents a volume that is handled by a cluster storage driver. The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts, and deleted when the pod is removed. 
+    ///  Use this if: a) the volume is only needed while the pod runs, b) features of normal volumes like restoring from snapshot or capacity tracking are needed, c) the storage driver is specified through a storage class, and d) the storage driver supports dynamic volume provisioning through a PersistentVolumeClaim (see EphemeralVolumeSource for more information on the connection between this volume type and PersistentVolumeClaim). 
+    ///  Use PersistentVolumeClaim or one of the vendor-specific APIs for volumes that persist for longer than the lifecycle of an individual pod. 
+    ///  Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to be used that way - see the documentation of the driver for more information. 
     ///  A pod can use both types of ephemeral volumes and persistent volumes at the same time.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ephemeral: Option<ScyllaClusterDatacenterRacksVolumesEphemeral>,
@@ -1046,21 +856,13 @@ pub struct ScyllaClusterDatacenterRacksVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fc: Option<ScyllaClusterDatacenterRacksVolumesFc>,
     /// flexVolume represents a generic volume resource that is provisioned/attached using an exec based plugin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flexVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<ScyllaClusterDatacenterRacksVolumesFlexVolume>,
     /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flocker: Option<ScyllaClusterDatacenterRacksVolumesFlocker>,
     /// gcePersistentDisk represents a GCE Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gcePersistentDisk"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
     pub gce_persistent_disk: Option<ScyllaClusterDatacenterRacksVolumesGcePersistentDisk>,
     /// gitRepo represents a git repository at a particular revision. DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir into the Pod's container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepo")]
@@ -1080,25 +882,13 @@ pub struct ScyllaClusterDatacenterRacksVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nfs: Option<ScyllaClusterDatacenterRacksVolumesNfs>,
     /// persistentVolumeClaimVolumeSource represents a reference to a PersistentVolumeClaim in the same namespace. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<ScyllaClusterDatacenterRacksVolumesPersistentVolumeClaim>,
     /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "photonPersistentDisk"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
     pub photon_persistent_disk: Option<ScyllaClusterDatacenterRacksVolumesPhotonPersistentDisk>,
     /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portworxVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
     pub portworx_volume: Option<ScyllaClusterDatacenterRacksVolumesPortworxVolume>,
     /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1119,11 +909,7 @@ pub struct ScyllaClusterDatacenterRacksVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storageos: Option<ScyllaClusterDatacenterRacksVolumesStorageos>,
     /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vsphereVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
     pub vsphere_volume: Option<ScyllaClusterDatacenterRacksVolumesVsphereVolume>,
 }
 
@@ -1148,11 +934,7 @@ pub struct ScyllaClusterDatacenterRacksVolumesAwsElasticBlockStore {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScyllaClusterDatacenterRacksVolumesAzureDisk {
     /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachingMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
     pub caching_mode: Option<String>,
     /// diskName is the Name of the data disk in the blob storage
     #[serde(rename = "diskName")]
@@ -1197,11 +979,7 @@ pub struct ScyllaClusterDatacenterRacksVolumesCephfs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
     pub secret_file: Option<String>,
     /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty. More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
@@ -1248,11 +1026,7 @@ pub struct ScyllaClusterDatacenterRacksVolumesCinderSecretRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScyllaClusterDatacenterRacksVolumesConfigMap {
     /// defaultMode is optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the ConfigMap, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1286,21 +1060,13 @@ pub struct ScyllaClusterDatacenterRacksVolumesCsi {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// nodePublishSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI NodePublishVolume and NodeUnpublishVolume calls. This field is optional, and  may be empty if no secret is required. If the secret object contains more than one secret, all secret references are passed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePublishSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
     pub node_publish_secret_ref: Option<ScyllaClusterDatacenterRacksVolumesCsiNodePublishSecretRef>,
     /// readOnly specifies a read-only configuration for the volume. Defaults to false (read/write).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// volumeAttributes stores driver-specific properties that are passed to the CSI driver. Consult your driver's documentation for supported values.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
@@ -1316,11 +1082,7 @@ pub struct ScyllaClusterDatacenterRacksVolumesCsiNodePublishSecretRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScyllaClusterDatacenterRacksVolumesDownwardApi {
     /// Optional: mode bits to use on created files by default. Must be a Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// Items is a list of downward API volume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1339,24 +1101,15 @@ pub struct ScyllaClusterDatacenterRacksVolumesDownwardApiItems {
     /// Required: Path is  the relative path name of the file to be created. Must not be absolute or contain the '..' path. Must be utf-8 encoded. The first item of the relative path must not start with '..'
     pub path: String,
     /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<ScyllaClusterDatacenterRacksVolumesDownwardApiItemsResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ScyllaClusterDatacenterRacksVolumesDownwardApiItemsResourceFieldRef>,
 }
 
 /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScyllaClusterDatacenterRacksVolumesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -1367,11 +1120,7 @@ pub struct ScyllaClusterDatacenterRacksVolumesDownwardApiItemsFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScyllaClusterDatacenterRacksVolumesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1391,29 +1140,24 @@ pub struct ScyllaClusterDatacenterRacksVolumesEmptyDir {
     pub size_limit: Option<IntOrString>,
 }
 
-/// ephemeral represents a volume that is handled by a cluster storage driver. The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts, and deleted when the pod is removed.
-///  Use this if: a) the volume is only needed while the pod runs, b) features of normal volumes like restoring from snapshot or capacity tracking are needed, c) the storage driver is specified through a storage class, and d) the storage driver supports dynamic volume provisioning through a PersistentVolumeClaim (see EphemeralVolumeSource for more information on the connection between this volume type and PersistentVolumeClaim).
-///  Use PersistentVolumeClaim or one of the vendor-specific APIs for volumes that persist for longer than the lifecycle of an individual pod.
-///  Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to be used that way - see the documentation of the driver for more information.
+/// ephemeral represents a volume that is handled by a cluster storage driver. The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts, and deleted when the pod is removed. 
+///  Use this if: a) the volume is only needed while the pod runs, b) features of normal volumes like restoring from snapshot or capacity tracking are needed, c) the storage driver is specified through a storage class, and d) the storage driver supports dynamic volume provisioning through a PersistentVolumeClaim (see EphemeralVolumeSource for more information on the connection between this volume type and PersistentVolumeClaim). 
+///  Use PersistentVolumeClaim or one of the vendor-specific APIs for volumes that persist for longer than the lifecycle of an individual pod. 
+///  Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to be used that way - see the documentation of the driver for more information. 
 ///  A pod can use both types of ephemeral volumes and persistent volumes at the same time.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScyllaClusterDatacenterRacksVolumesEphemeral {
-    /// Will be used to create a stand-alone PVC to provision the volume. The pod in which this EphemeralVolumeSource is embedded will be the owner of the PVC, i.e. the PVC will be deleted together with the pod.  The name of the PVC will be `<pod name>-<volume name>` where `<volume name>` is the name from the `PodSpec.Volumes` array entry. Pod validation will reject the pod if the concatenated name is not valid for a PVC (for example, too long).
-    ///  An existing PVC with that name that is not owned by the pod will *not* be used for the pod to avoid using an unrelated volume by mistake. Starting the pod is then blocked until the unrelated PVC is removed. If such a pre-created PVC is meant to be used by the pod, the PVC has to updated with an owner reference to the pod once the pod exists. Normally this should not be necessary, but it may be useful when manually reconstructing a broken cluster.
-    ///  This field is read-only and no changes will be made by Kubernetes to the PVC after it has been created.
+    /// Will be used to create a stand-alone PVC to provision the volume. The pod in which this EphemeralVolumeSource is embedded will be the owner of the PVC, i.e. the PVC will be deleted together with the pod.  The name of the PVC will be `<pod name>-<volume name>` where `<volume name>` is the name from the `PodSpec.Volumes` array entry. Pod validation will reject the pod if the concatenated name is not valid for a PVC (for example, too long). 
+    ///  An existing PVC with that name that is not owned by the pod will *not* be used for the pod to avoid using an unrelated volume by mistake. Starting the pod is then blocked until the unrelated PVC is removed. If such a pre-created PVC is meant to be used by the pod, the PVC has to updated with an owner reference to the pod once the pod exists. Normally this should not be necessary, but it may be useful when manually reconstructing a broken cluster. 
+    ///  This field is read-only and no changes will be made by Kubernetes to the PVC after it has been created. 
     ///  Required, must not be nil.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimTemplate"
-    )]
-    pub volume_claim_template:
-        Option<ScyllaClusterDatacenterRacksVolumesEphemeralVolumeClaimTemplate>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
+    pub volume_claim_template: Option<ScyllaClusterDatacenterRacksVolumesEphemeralVolumeClaimTemplate>,
 }
 
-/// Will be used to create a stand-alone PVC to provision the volume. The pod in which this EphemeralVolumeSource is embedded will be the owner of the PVC, i.e. the PVC will be deleted together with the pod.  The name of the PVC will be `<pod name>-<volume name>` where `<volume name>` is the name from the `PodSpec.Volumes` array entry. Pod validation will reject the pod if the concatenated name is not valid for a PVC (for example, too long).
-///  An existing PVC with that name that is not owned by the pod will *not* be used for the pod to avoid using an unrelated volume by mistake. Starting the pod is then blocked until the unrelated PVC is removed. If such a pre-created PVC is meant to be used by the pod, the PVC has to updated with an owner reference to the pod once the pod exists. Normally this should not be necessary, but it may be useful when manually reconstructing a broken cluster.
-///  This field is read-only and no changes will be made by Kubernetes to the PVC after it has been created.
+/// Will be used to create a stand-alone PVC to provision the volume. The pod in which this EphemeralVolumeSource is embedded will be the owner of the PVC, i.e. the PVC will be deleted together with the pod.  The name of the PVC will be `<pod name>-<volume name>` where `<volume name>` is the name from the `PodSpec.Volumes` array entry. Pod validation will reject the pod if the concatenated name is not valid for a PVC (for example, too long). 
+///  An existing PVC with that name that is not owned by the pod will *not* be used for the pod to avoid using an unrelated volume by mistake. Starting the pod is then blocked until the unrelated PVC is removed. If such a pre-created PVC is meant to be used by the pod, the PVC has to updated with an owner reference to the pod once the pod exists. Normally this should not be necessary, but it may be useful when manually reconstructing a broken cluster. 
+///  This field is read-only and no changes will be made by Kubernetes to the PVC after it has been created. 
 ///  Required, must not be nil.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScyllaClusterDatacenterRacksVolumesEphemeralVolumeClaimTemplate {
@@ -1426,69 +1170,38 @@ pub struct ScyllaClusterDatacenterRacksVolumesEphemeralVolumeClaimTemplate {
 
 /// May contain labels and annotations that will be copied into the PVC when creating it. No other fields are allowed and will be rejected during validation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScyllaClusterDatacenterRacksVolumesEphemeralVolumeClaimTemplateMetadata {}
+pub struct ScyllaClusterDatacenterRacksVolumesEphemeralVolumeClaimTemplateMetadata {
+}
 
 /// The specification for the PersistentVolumeClaim. The entire content is copied unchanged into the PVC that gets created from this template. The same fields as in a PersistentVolumeClaim are also valid here.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScyllaClusterDatacenterRacksVolumesEphemeralVolumeClaimTemplateSpec {
     /// accessModes contains the desired access modes the volume should have. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// dataSource field can be used to specify either: * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot) * An existing PVC (PersistentVolumeClaim) If the provisioner or an external controller can support the specified data source, it will create a new volume based on the contents of the specified data source. When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef, and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified. If the namespace is specified, then dataSourceRef will not be copied to dataSource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSource"
-    )]
-    pub data_source:
-        Option<ScyllaClusterDatacenterRacksVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
+    pub data_source: Option<ScyllaClusterDatacenterRacksVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
     /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty volume is desired. This may be any object from a non-empty API group (non core object) or a PersistentVolumeClaim object. When this field is specified, volume binding will only succeed if the type of the specified object matches some installed volume populator or dynamic provisioner. This field will replace the functionality of the dataSource field and as such if both fields are non-empty, they must have the same value. For backwards compatibility, when namespace isn't specified in dataSourceRef, both fields (dataSource and dataSourceRef) will be set to the same value automatically if one of them is empty and the other is non-empty. When namespace is specified in dataSourceRef, dataSource isn't set to the same value and must be empty. There are three important differences between dataSource and dataSourceRef: * While dataSource only allows two specific types of objects, dataSourceRef allows any non-core object, as well as PersistentVolumeClaim objects. * While dataSource ignores disallowed values (dropping them), dataSourceRef preserves all values, and generates an error if a disallowed value is specified. * While dataSource only allows local objects, dataSourceRef allows objects in any namespaces. (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled. (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSourceRef"
-    )]
-    pub data_source_ref:
-        Option<ScyllaClusterDatacenterRacksVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
+    pub data_source_ref: Option<ScyllaClusterDatacenterRacksVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
     /// resources represents the minimum resources the volume should have. If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements that are lower than previous value but must still be higher than capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources:
-        Option<ScyllaClusterDatacenterRacksVolumesEphemeralVolumeClaimTemplateSpecResources>,
+    pub resources: Option<ScyllaClusterDatacenterRacksVolumesEphemeralVolumeClaimTemplateSpecResources>,
     /// selector is a label query over volumes to consider for binding.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub selector:
-        Option<ScyllaClusterDatacenterRacksVolumesEphemeralVolumeClaimTemplateSpecSelector>,
+    pub selector: Option<ScyllaClusterDatacenterRacksVolumesEphemeralVolumeClaimTemplateSpecSelector>,
     /// storageClassName is the name of the StorageClass required by the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim. If specified, the CSI driver will create or update the volume with the attributes defined in the corresponding VolumeAttributesClass. This has a different purpose than storageClassName, it can be changed after the claim is created. An empty string value means that no VolumeAttributesClass will be applied to the claim but it's not allowed to reset this field to empty string once it is set. If unspecified and the PersistentVolumeClaim is unbound, the default VolumeAttributesClass will be set by the persistentvolume controller if it exists. If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource exists. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributesClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim. Value of Filesystem is implied when not included in claim spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     /// volumeName is the binding reference to the PersistentVolume backing this claim.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -1543,8 +1256,7 @@ pub struct ScyllaClusterDatacenterRacksVolumesEphemeralVolumeClaimTemplateSpecSe
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScyllaClusterDatacenterRacksVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions
-{
+pub struct ScyllaClusterDatacenterRacksVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -1567,11 +1279,7 @@ pub struct ScyllaClusterDatacenterRacksVolumesFc {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// targetWWNs is Optional: FC target worldwide names (WWNs)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetWWNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
     pub target_ww_ns: Option<Vec<String>>,
     /// wwids Optional: FC volume world wide identifiers (wwids) Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1609,18 +1317,10 @@ pub struct ScyllaClusterDatacenterRacksVolumesFlexVolumeSecretRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScyllaClusterDatacenterRacksVolumesFlocker {
     /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker should be considered as deprecated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
     pub dataset_name: Option<String>,
     /// datasetUUID is the UUID of the dataset. This is unique identifier of a Flocker dataset
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetUUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
     pub dataset_uuid: Option<String>,
 }
 
@@ -1680,37 +1380,21 @@ pub struct ScyllaClusterDatacenterRacksVolumesHostPath {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScyllaClusterDatacenterRacksVolumesIscsi {
     /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthDiscovery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
     /// chapAuthSession defines whether support iSCSI Session CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthSession"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
     pub chap_auth_session: Option<bool>,
     /// fsType is the filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#iscsi TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// initiatorName is the custom iSCSI Initiator Name. If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface <target portal>:<volume name> will be created for the connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initiatorName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
     pub initiator_name: Option<String>,
     /// iqn is the target iSCSI Qualified Name.
     pub iqn: String,
     /// iscsiInterface is the interface Name that uses an iSCSI transport. Defaults to 'default' (tcp).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "iscsiInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
     pub iscsi_interface: Option<String>,
     /// lun represents iSCSI Target Lun number.
     pub lun: i32,
@@ -1788,11 +1472,7 @@ pub struct ScyllaClusterDatacenterRacksVolumesPortworxVolume {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScyllaClusterDatacenterRacksVolumesProjected {
     /// defaultMode are the mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// sources is the list of volume projections
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1802,54 +1482,35 @@ pub struct ScyllaClusterDatacenterRacksVolumesProjected {
 /// Projection that may be projected along with other supported volume types
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScyllaClusterDatacenterRacksVolumesProjectedSources {
-    /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field of ClusterTrustBundle objects in an auto-updating file.
-    ///  Alpha, gated by the ClusterTrustBundleProjection feature gate.
-    ///  ClusterTrustBundle objects can either be selected by name, or by the combination of signer name and a label selector.
+    /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field of ClusterTrustBundle objects in an auto-updating file. 
+    ///  Alpha, gated by the ClusterTrustBundleProjection feature gate. 
+    ///  ClusterTrustBundle objects can either be selected by name, or by the combination of signer name and a label selector. 
     ///  Kubelet performs aggressive normalization of the PEM contents written into the pod filesystem.  Esoteric PEM features such as inter-block comments and block headers are stripped.  Certificates are deduplicated. The ordering of certificates within the file is arbitrary, and Kubelet may change the order over time.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterTrustBundle"
-    )]
-    pub cluster_trust_bundle:
-        Option<ScyllaClusterDatacenterRacksVolumesProjectedSourcesClusterTrustBundle>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<ScyllaClusterDatacenterRacksVolumesProjectedSourcesClusterTrustBundle>,
     /// configMap information about the configMap data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<ScyllaClusterDatacenterRacksVolumesProjectedSourcesConfigMap>,
     /// downwardAPI information about the downwardAPI data to project
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<ScyllaClusterDatacenterRacksVolumesProjectedSourcesDownwardApi>,
     /// secret information about the secret data to project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<ScyllaClusterDatacenterRacksVolumesProjectedSourcesSecret>,
     /// serviceAccountToken is information about the serviceAccountToken data to project
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountToken"
-    )]
-    pub service_account_token:
-        Option<ScyllaClusterDatacenterRacksVolumesProjectedSourcesServiceAccountToken>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
+    pub service_account_token: Option<ScyllaClusterDatacenterRacksVolumesProjectedSourcesServiceAccountToken>,
 }
 
-/// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field of ClusterTrustBundle objects in an auto-updating file.
-///  Alpha, gated by the ClusterTrustBundleProjection feature gate.
-///  ClusterTrustBundle objects can either be selected by name, or by the combination of signer name and a label selector.
+/// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field of ClusterTrustBundle objects in an auto-updating file. 
+///  Alpha, gated by the ClusterTrustBundleProjection feature gate. 
+///  ClusterTrustBundle objects can either be selected by name, or by the combination of signer name and a label selector. 
 ///  Kubelet performs aggressive normalization of the PEM contents written into the pod filesystem.  Esoteric PEM features such as inter-block comments and block headers are stripped.  Certificates are deduplicated. The ordering of certificates within the file is arbitrary, and Kubelet may change the order over time.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScyllaClusterDatacenterRacksVolumesProjectedSourcesClusterTrustBundle {
     /// Select all ClusterTrustBundles that match this label selector.  Only has effect if signerName is set.  Mutually-exclusive with name.  If unset, interpreted as "match nothing".  If set but empty, interpreted as "match everything".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector:
-        Option<ScyllaClusterDatacenterRacksVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<ScyllaClusterDatacenterRacksVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
     /// Select a single ClusterTrustBundle by object name.  Mutually-exclusive with signerName and labelSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -1859,11 +1520,7 @@ pub struct ScyllaClusterDatacenterRacksVolumesProjectedSourcesClusterTrustBundle
     /// Relative path from the volume root to write the bundle.
     pub path: String,
     /// Select all ClusterTrustBundles that match this signer name. Mutually-exclusive with name.  The contents of all selected ClusterTrustBundles will be unified and deduplicated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "signerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
     pub signer_name: Option<String>,
 }
 
@@ -1880,8 +1537,7 @@ pub struct ScyllaClusterDatacenterRacksVolumesProjectedSourcesClusterTrustBundle
 
 /// A label selector requirement is a selector that contains values, a key, and an operator that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ScyllaClusterDatacenterRacksVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions
-{
+pub struct ScyllaClusterDatacenterRacksVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values. Valid operators are In, NotIn, Exists and DoesNotExist.
@@ -1930,32 +1586,22 @@ pub struct ScyllaClusterDatacenterRacksVolumesProjectedSourcesDownwardApi {
 pub struct ScyllaClusterDatacenterRacksVolumesProjectedSourcesDownwardApiItems {
     /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<ScyllaClusterDatacenterRacksVolumesProjectedSourcesDownwardApiItemsFieldRef>,
+    pub field_ref: Option<ScyllaClusterDatacenterRacksVolumesProjectedSourcesDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. If not specified, the volume defaultMode will be used. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<i32>,
     /// Required: Path is  the relative path name of the file to be created. Must not be absolute or contain the '..' path. Must be utf-8 encoded. The first item of the relative path must not start with '..'
     pub path: String,
     /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<ScyllaClusterDatacenterRacksVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ScyllaClusterDatacenterRacksVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
 }
 
 /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScyllaClusterDatacenterRacksVolumesProjectedSourcesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -1966,11 +1612,7 @@ pub struct ScyllaClusterDatacenterRacksVolumesProjectedSourcesDownwardApiItemsFi
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScyllaClusterDatacenterRacksVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2012,11 +1654,7 @@ pub struct ScyllaClusterDatacenterRacksVolumesProjectedSourcesServiceAccountToke
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
     /// expirationSeconds is the requested duration of validity of the service account token. As the token approaches expiration, the kubelet volume plugin will proactively rotate the service account token. The kubelet will start trying to rotate the token if the token is older than 80 percent of its time to live or if the token is older than 24 hours.Defaults to 1 hour and must be at least 10 minutes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
     /// path is the path relative to the mount point of the file to project the token into.
     pub path: String,
@@ -2087,11 +1725,7 @@ pub struct ScyllaClusterDatacenterRacksVolumesScaleIo {
     /// gateway is the host address of the ScaleIO API Gateway.
     pub gateway: String,
     /// protectionDomain is the name of the ScaleIO Protection Domain for the configured storage.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protectionDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
     pub protection_domain: Option<String>,
     /// readOnly Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
@@ -2100,34 +1734,18 @@ pub struct ScyllaClusterDatacenterRacksVolumesScaleIo {
     #[serde(rename = "secretRef")]
     pub secret_ref: ScyllaClusterDatacenterRacksVolumesScaleIoSecretRef,
     /// sslEnabled Flag enable/disable SSL communication with Gateway, default false
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
     /// storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned. Default is ThinProvisioned.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
     pub storage_mode: Option<String>,
     /// storagePool is the ScaleIO Storage Pool associated with the protection domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
     pub storage_pool: Option<String>,
     /// system is the name of the storage system as configured in ScaleIO.
     pub system: String,
     /// volumeName is the name of a volume already created in the ScaleIO system that is associated with this volume source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -2143,11 +1761,7 @@ pub struct ScyllaClusterDatacenterRacksVolumesScaleIoSecretRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScyllaClusterDatacenterRacksVolumesSecret {
     /// defaultMode is Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items If unspecified, each key-value pair in the Data field of the referenced Secret will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the Secret, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2156,11 +1770,7 @@ pub struct ScyllaClusterDatacenterRacksVolumesSecret {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
     /// secretName is the name of the secret in the pod's namespace to use. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -2189,18 +1799,10 @@ pub struct ScyllaClusterDatacenterRacksVolumesStorageos {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<ScyllaClusterDatacenterRacksVolumesStorageosSecretRef>,
     /// volumeName is the human-readable name of the StorageOS volume.  Volume names are only unique within a namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
     /// volumeNamespace specifies the scope of the volume within StorageOS.  If no namespace is specified then the Pod's namespace will be used.  This allows the Kubernetes name scoping to be mirrored within StorageOS for tighter integration. Set VolumeName to any name to override the default behaviour. Set to "default" if you are not using namespaces within StorageOS. Namespaces that do not pre-exist within StorageOS will be created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
     pub volume_namespace: Option<String>,
 }
 
@@ -2219,18 +1821,10 @@ pub struct ScyllaClusterDatacenterRacksVolumesVsphereVolume {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// storagePolicyID is the storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
     pub storage_policy_id: Option<String>,
     /// storagePolicyName is the storage Policy Based Management (SPBM) profile name.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
     pub storage_policy_name: Option<String>,
     /// volumePath is the path that identifies vSphere volume vmdk
     #[serde(rename = "volumePath")]
@@ -2241,21 +1835,13 @@ pub struct ScyllaClusterDatacenterRacksVolumesVsphereVolume {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScyllaClusterExposeOptions {
     /// BroadcastOptions defines how ScyllaDB node publishes its IP address to other nodes and clients.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "broadcastOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "broadcastOptions")]
     pub broadcast_options: Option<ScyllaClusterExposeOptionsBroadcastOptions>,
     /// cql specifies expose options for CQL SSL backend. EXPERIMENTAL. Do not rely on any particular behaviour controlled by this field.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cql: Option<ScyllaClusterExposeOptionsCql>,
     /// nodeService controls properties of Service dedicated for each ScyllaCluster node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeService")]
     pub node_service: Option<ScyllaClusterExposeOptionsNodeService>,
 }
 
@@ -2326,11 +1912,7 @@ pub struct ScyllaClusterExposeOptionsCqlIngress {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disabled: Option<bool>,
     /// ingressClassName specifies Ingress class name. EXPERIMENTAL. Do not rely on any particular behaviour controlled by this field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClassName")]
     pub ingress_class_name: Option<String>,
     /// labels is a custom key value map that gets merged with managed object labels.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2341,38 +1923,22 @@ pub struct ScyllaClusterExposeOptionsCqlIngress {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScyllaClusterExposeOptionsNodeService {
     /// allocateLoadBalancerNodePorts controls value of service.spec.allocateLoadBalancerNodePorts of each node Service. Check Kubernetes corev1.Service documentation about semantic of this field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allocateLoadBalancerNodePorts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocateLoadBalancerNodePorts")]
     pub allocate_load_balancer_node_ports: Option<bool>,
     /// annotations is a custom key value map that gets merged with managed object annotations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// externalTrafficPolicy controls value of service.spec.externalTrafficPolicy of each node Service. Check Kubernetes corev1.Service documentation about semantic of this field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalTrafficPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
     pub external_traffic_policy: Option<String>,
     /// internalTrafficPolicy controls value of service.spec.internalTrafficPolicy of each node Service. Check Kubernetes corev1.Service documentation about semantic of this field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "internalTrafficPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "internalTrafficPolicy")]
     pub internal_traffic_policy: Option<String>,
     /// labels is a custom key value map that gets merged with managed object labels.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// loadBalancerClass controls value of service.spec.loadBalancerClass of each node Service. Check Kubernetes corev1.Service documentation about semantic of this field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerClass")]
     pub load_balancer_class: Option<String>,
     /// type is the Kubernetes Service type.
     #[serde(rename = "type")]
@@ -2383,18 +1949,10 @@ pub struct ScyllaClusterExposeOptionsNodeService {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScyllaClusterGenericUpgrade {
     /// failureStrategy specifies which logic is executed when upgrade failure happens. Currently only Retry is supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureStrategy")]
     pub failure_strategy: Option<String>,
     /// pollInterval specifies how often upgrade logic polls on state updates. Increasing this value should lower number of requests sent to apiserver, but it may affect overall time spent during upgrade. DEPRECATED.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pollInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pollInterval")]
     pub poll_interval: Option<String>,
 }
 
@@ -2413,11 +1971,7 @@ pub struct ScyllaClusterNetwork {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
     pub dns_policy: Option<String>,
     /// hostNetworking determines if scylla uses the host's network namespace. Setting this option avoids going through Kubernetes SDN and exposes scylla on node's IP. Deprecated: `hostNetworking` is deprecated and may be ignored in the future.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostNetworking"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetworking")]
     pub host_networking: Option<bool>,
 }
 
@@ -2467,21 +2021,13 @@ pub struct ScyllaClusterRepairs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// numRetries indicates how many times a scheduled task will be retried before failing.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "numRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numRetries")]
     pub num_retries: Option<i64>,
     /// parallel is the maximum number of Scylla repair jobs that can run at the same time (on different token ranges and replicas). Each node can take part in at most one repair at any given moment. By default the maximum possible parallelism is used. The effective parallelism depends on a keyspace replication factor (RF) and the number of nodes. The formula to calculate it is as follows: number of nodes / RF, ex. for 6 node cluster with RF=3 the maximum parallelism is 2.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parallel: Option<i64>,
     /// smallTableThreshold enable small table optimization for tables of size lower than given threshold. Supported units [B, MiB, GiB, TiB].
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "smallTableThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "smallTableThreshold")]
     pub small_table_threshold: Option<String>,
     /// startDate specifies the task start date expressed in the RFC3339 format or now[+duration], e.g. now+3d2h10m, valid units are d, h, m, s.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startDate")]
@@ -2495,11 +2041,7 @@ pub struct ScyllaClusterRepairs {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScyllaClusterStatus {
     /// availableMembers is the number of ScyllaDB members in all racks that are available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availableMembers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableMembers")]
     pub available_members: Option<i32>,
     /// backups reflects status of backup tasks.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2514,11 +2056,7 @@ pub struct ScyllaClusterStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub members: Option<i32>,
     /// observedGeneration is the most recent generation observed for this ScyllaCluster. It corresponds to the ScyllaCluster's generation, which is updated on mutation by the API Server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// rackCount is the number of ScyllaDB racks in this cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rackCount")]
@@ -2527,11 +2065,7 @@ pub struct ScyllaClusterStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub racks: Option<BTreeMap<String, ScyllaClusterStatusRacks>>,
     /// readyMembers is the number of ScyllaDB members in all racks that are ready.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readyMembers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyMembers")]
     pub ready_members: Option<i32>,
     /// repairs reflects status of repair tasks.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2571,11 +2105,7 @@ pub struct ScyllaClusterStatusBackups {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// numRetries reflects how many times a scheduled task will be retried before failing.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "numRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numRetries")]
     pub num_retries: Option<i64>,
     /// rateLimit reflects a list of megabytes (MiB) per second rate limits expressed in the format [<dc>:]<limit>.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rateLimit")]
@@ -2584,11 +2114,7 @@ pub struct ScyllaClusterStatusBackups {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retention: Option<i64>,
     /// snapshotParallel reflects a list of snapshot parallelism limits in the format [<dc>:]<limit>.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotParallel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotParallel")]
     pub snapshot_parallel: Option<Vec<String>>,
     /// startDate reflects the task start date expressed in the RFC3339 format
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startDate")]
@@ -2597,11 +2123,7 @@ pub struct ScyllaClusterStatusBackups {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timezone: Option<String>,
     /// uploadParallel reflects a list of upload parallelism limits in the format [<dc>:]<limit>.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "uploadParallel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "uploadParallel")]
     pub upload_parallel: Option<Vec<String>>,
 }
 
@@ -2609,11 +2131,7 @@ pub struct ScyllaClusterStatusBackups {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScyllaClusterStatusRacks {
     /// availableMembers is the number of available members in the Rack.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availableMembers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableMembers")]
     pub available_members: Option<i32>,
     /// conditions are the latest available observations of a rack's state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2622,11 +2140,7 @@ pub struct ScyllaClusterStatusRacks {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub members: Option<i32>,
     /// readyMembers is the number of ready members in the specific Rack
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readyMembers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyMembers")]
     pub ready_members: Option<i32>,
     /// replace_address_first_boot holds addresses which should be replaced by new nodes. DEPRECATED: since Scylla Operator 1.10 it's only used for deprecated replace node procedure (ScyllaDB OS <5.2, Enterprise <2023.1). With Scylla Operator 1.11+ this field may be empty.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2635,11 +2149,7 @@ pub struct ScyllaClusterStatusRacks {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub stale: Option<bool>,
     /// updatedMembers is the number of members matching the current spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updatedMembers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatedMembers")]
     pub updated_members: Option<i32>,
     /// version is the current version of Scylla in use.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2693,21 +2203,13 @@ pub struct ScyllaClusterStatusRepairs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// numRetries reflects how many times a scheduled task will be retried before failing.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "numRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numRetries")]
     pub num_retries: Option<i64>,
     /// parallel reflects the maximum number of Scylla repair jobs that can run at the same time (on different token ranges and replicas).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parallel: Option<i64>,
     /// smallTableThreshold reflects whether small table optimization for tables, of size lower than given threshold, are enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "smallTableThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "smallTableThreshold")]
     pub small_table_threshold: Option<String>,
     /// startDate reflects the task start date expressed in the RFC3339 format
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startDate")]
@@ -2721,44 +2223,25 @@ pub struct ScyllaClusterStatusRepairs {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScyllaClusterStatusUpgrade {
     /// currentNode node under upgrade. DEPRECATED.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentNode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentNode")]
     pub current_node: Option<String>,
     /// currentRack rack under upgrade. DEPRECATED.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentRack"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentRack")]
     pub current_rack: Option<String>,
     /// dataSnapshotTag is the snapshot tag of data keyspaces.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSnapshotTag"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSnapshotTag")]
     pub data_snapshot_tag: Option<String>,
     /// fromVersion reflects from which version ScyllaCluster is being upgraded.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fromVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromVersion")]
     pub from_version: Option<String>,
     /// state reflects current upgrade state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
     /// systemSnapshotTag is the snapshot tag of system keyspaces.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "systemSnapshotTag"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemSnapshotTag")]
     pub system_snapshot_tag: Option<String>,
     /// toVersion reflects to which version ScyllaCluster is being upgraded.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "toVersion")]
     pub to_version: Option<String>,
 }
+

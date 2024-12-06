@@ -5,7 +5,7 @@ SPDX-License-Identifier: 0BSD
 
 # Kubernetes Custom Resource Bindings for Rust [![Chat](https://img.shields.io/badge/matrix-%23talk.metio:matrix.org-brightgreen.svg?style=social&label=Matrix)](https://matrix.to/#/#talk.metio:matrix.org)
 
-This repository contains [kube-rs](https://kube.rs/) compatible bindings for Kubernetes [custom resources](https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definitions/) generated with [kopium](https://github.com/kube-rs/kopium)
+This repository contains [kube-rs](https://kube.rs/) compatible bindings for Kubernetes [custom resources](https://kubernetes.io/docs/tasks/extend-kubernetes/custom-resources/custom-resource-definitions/) generated with [kopium](https://github.com/kube-rs/kopium).
 
 Feel free to add your own CRD to the [catalog](https://github.com/metio/kube-custom-resources-rs/blob/main/code-generator/src/catalog.rs)!
 
@@ -253,6 +253,8 @@ The following groups are available:
 - [kustomize.toolkit.fluxcd.io](https://crates.io/crates/kcr_kustomize_toolkit_fluxcd_io)
 - [kyverno.io](https://crates.io/crates/kcr_kyverno_io)
 - [lambda.services.k8s.aws](https://crates.io/crates/kcr_lambda_services_k8s_aws)
+- [leaksignal.com](https://crates.io/crates/kcr_leaksignal_com)
+- [lerentis.uploadfilter24.eu](https://crates.io/crates/kcr_lerentis_uploadfilter24_eu)
 - [limitador.kuadrant.io](https://crates.io/crates/kcr_limitador_kuadrant_io)
 - [listeners.stackable.tech](https://crates.io/crates/kcr_listeners_stackable_tech)
 - [litmuschaos.io](https://crates.io/crates/kcr_litmuschaos_io)

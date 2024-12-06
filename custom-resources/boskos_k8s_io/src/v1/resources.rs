@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// Holds information that are not likely to change
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "boskos.k8s.io",
-    version = "v1",
-    kind = "ResourceObject",
-    plural = "resources"
-)]
+#[kube(group = "boskos.k8s.io", version = "v1", kind = "ResourceObject", plural = "resources")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ResourceObjectSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -30,17 +25,9 @@ pub struct ResourceObjectSpec {
 /// Holds information that are likely to change
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ResourceObjectStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expirationDate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationDate")]
     pub expiration_date: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdate")]
     pub last_update: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub owner: Option<String>,
@@ -49,3 +36,4 @@ pub struct ResourceObjectStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userData")]
     pub user_data: Option<BTreeMap<String, serde_json::Value>>,
 }
+

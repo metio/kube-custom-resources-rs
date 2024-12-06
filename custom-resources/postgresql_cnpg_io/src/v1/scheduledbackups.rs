@@ -5,7 +5,7 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
@@ -13,27 +13,18 @@ use self::prelude::*;
 /// Specification of the desired behavior of the ScheduledBackup.
 /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "postgresql.cnpg.io",
-    version = "v1",
-    kind = "ScheduledBackup",
-    plural = "scheduledbackups"
-)]
+#[kube(group = "postgresql.cnpg.io", version = "v1", kind = "ScheduledBackup", plural = "scheduledbackups")]
 #[kube(namespaced)]
 #[kube(status = "ScheduledBackupStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ScheduledBackupSpec {
     /// Indicates which ownerReference should be put inside the created backup resources.<br />
     /// - none: no owner reference for created backup objects (same behavior as before the field was introduced)<br />
     /// - self: sets the Scheduled backup object as owner of the backup<br />
     /// - cluster: set the cluster as owner of the backup<br />
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupOwnerReference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupOwnerReference")]
     pub backup_owner_reference: Option<ScheduledBackupBackupOwnerReference>,
     /// The cluster to backup
     pub cluster: ScheduledBackupCluster,
@@ -51,18 +42,10 @@ pub struct ScheduledBackupSpec {
     pub online: Option<bool>,
     /// Configuration parameters to control the online/hot backup with volume snapshots
     /// Overrides the default settings specified in the cluster '.backup.volumeSnapshot.onlineConfiguration' stanza
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "onlineConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "onlineConfiguration")]
     pub online_configuration: Option<ScheduledBackupOnlineConfiguration>,
     /// Configuration parameters passed to the plugin managing this backup
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pluginConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pluginConfiguration")]
     pub plugin_configuration: Option<ScheduledBackupPluginConfiguration>,
     /// The schedule does not follow the same format used in Kubernetes CronJobs
     /// as it includes an additional seconds specifier,
@@ -121,11 +104,7 @@ pub struct ScheduledBackupOnlineConfiguration {
     /// the PostgreSQL server. If set to true, an immediate checkpoint will be
     /// used, meaning PostgreSQL will complete the checkpoint as soon as
     /// possible. `false` by default.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "immediateCheckpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "immediateCheckpoint")]
     pub immediate_checkpoint: Option<bool>,
     /// If false, the function will return immediately after the backup is completed,
     /// without waiting for WAL to be archived.
@@ -136,11 +115,7 @@ pub struct ScheduledBackupOnlineConfiguration {
     /// On a standby, this means that it will wait only when archive_mode = always.
     /// If write activity on the primary is low, it may be useful to run pg_switch_wal on the primary in order to trigger
     /// an immediate segment switch.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "waitForArchive"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "waitForArchive")]
     pub wait_for_archive: Option<bool>,
 }
 
@@ -171,24 +146,13 @@ pub enum ScheduledBackupTarget {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScheduledBackupStatus {
     /// The latest time the schedule
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastCheckTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastCheckTime")]
     pub last_check_time: Option<String>,
     /// Information when was the last time that backup was successfully scheduled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastScheduleTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastScheduleTime")]
     pub last_schedule_time: Option<String>,
     /// Next time we will run a backup
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nextScheduleTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nextScheduleTime")]
     pub next_schedule_time: Option<String>,
 }
+

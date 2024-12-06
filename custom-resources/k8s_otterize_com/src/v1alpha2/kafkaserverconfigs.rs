@@ -5,32 +5,23 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// KafkaServerConfigSpec defines the desired state of KafkaServerConfig
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "k8s.otterize.com",
-    version = "v1alpha2",
-    kind = "KafkaServerConfig",
-    plural = "kafkaserverconfigs"
-)]
+#[kube(group = "k8s.otterize.com", version = "v1alpha2", kind = "KafkaServerConfig", plural = "kafkaserverconfigs")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct KafkaServerConfigSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub addr: Option<String>,
     /// If Intents for network policies are enabled, and there are other Intents to this Kafka server,
     /// will automatically create an Intent so that the Intents Operator can connect. Set to true to disable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "noAutoCreateIntentsForOperator"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noAutoCreateIntentsForOperator")]
     pub no_auto_create_intents_for_operator: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<KafkaServerConfigService>,
@@ -75,4 +66,6 @@ pub enum KafkaServerConfigTopicsPattern {
 
 /// KafkaServerConfigStatus defines the observed state of KafkaServerConfig
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct KafkaServerConfigStatus {}
+pub struct KafkaServerConfigStatus {
+}
+

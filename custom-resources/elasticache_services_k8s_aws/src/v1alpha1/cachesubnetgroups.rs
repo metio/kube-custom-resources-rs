@@ -4,55 +4,46 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// CacheSubnetGroupSpec defines the desired state of CacheSubnetGroup.
-///
-///
+/// 
+/// 
 /// Represents the output of one of the following operations:
-///
-///
+/// 
+/// 
 ///    * CreateCacheSubnetGroup
-///
-///
+/// 
+/// 
 ///    * ModifyCacheSubnetGroup
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "elasticache.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "CacheSubnetGroup",
-    plural = "cachesubnetgroups"
-)]
+#[kube(group = "elasticache.services.k8s.aws", version = "v1alpha1", kind = "CacheSubnetGroup", plural = "cachesubnetgroups")]
 #[kube(namespaced)]
 #[kube(status = "CacheSubnetGroupStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CacheSubnetGroupSpec {
     /// A description for the cache subnet group.
     #[serde(rename = "cacheSubnetGroupDescription")]
     pub cache_subnet_group_description: String,
     /// A name for the cache subnet group. This value is stored as a lowercase string.
-    ///
-    ///
+    /// 
+    /// 
     /// Constraints: Must contain no more than 255 alphanumeric characters or hyphens.
-    ///
-    ///
+    /// 
+    /// 
     /// Example: mysubnetgroup
     #[serde(rename = "cacheSubnetGroupName")]
     pub cache_subnet_group_name: String,
     /// A list of VPC subnet IDs for the cache subnet group.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetIDs")]
     pub subnet_i_ds: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subnetRefs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetRefs")]
     pub subnet_refs: Option<Vec<CacheSubnetGroupSubnetRefs>>,
     /// A list of tags to be added to this resource. A tag is a key-value pair. A
     /// tag key must be accompanied by a tag value, although null is accepted.
@@ -64,8 +55,8 @@ pub struct CacheSubnetGroupSpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
-///
+/// 
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -104,11 +95,7 @@ pub struct CacheSubnetGroupStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<CacheSubnetGroupStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -161,17 +148,9 @@ pub struct CacheSubnetGroupStatusEvents {
     pub date: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceIdentifier"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceIdentifier")]
     pub source_identifier: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceType")]
     pub source_type: Option<String>,
 }
 
@@ -181,24 +160,12 @@ pub struct CacheSubnetGroupStatusEvents {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CacheSubnetGroupStatusSubnets {
     /// Describes an Availability Zone in which the cluster is launched.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subnetAvailabilityZone"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetAvailabilityZone")]
     pub subnet_availability_zone: Option<CacheSubnetGroupStatusSubnetsSubnetAvailabilityZone>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subnetIdentifier"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetIdentifier")]
     pub subnet_identifier: Option<String>,
     /// The ID of the outpost subnet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subnetOutpost"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetOutpost")]
     pub subnet_outpost: Option<CacheSubnetGroupStatusSubnetsSubnetOutpost>,
 }
 
@@ -212,10 +179,7 @@ pub struct CacheSubnetGroupStatusSubnetsSubnetAvailabilityZone {
 /// The ID of the outpost subnet.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CacheSubnetGroupStatusSubnetsSubnetOutpost {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subnetOutpostARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetOutpostARN")]
     pub subnet_outpost_arn: Option<String>,
 }
+

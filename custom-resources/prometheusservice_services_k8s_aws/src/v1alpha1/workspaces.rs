@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// WorkspaceSpec defines the desired state of Workspace.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "prometheusservice.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "Workspace",
-    plural = "workspaces"
-)]
+#[kube(group = "prometheusservice.services.k8s.aws", version = "v1alpha1", kind = "Workspace", plural = "workspaces")]
 #[kube(namespaced)]
 #[kube(status = "WorkspaceStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct WorkspaceSpec {
     /// An optional user-assigned alias for this workspace. This alias is for user
     /// reference and does not need to be unique.
@@ -40,11 +35,7 @@ pub struct WorkspaceStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<WorkspaceStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -56,11 +47,7 @@ pub struct WorkspaceStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<WorkspaceStatusStatus>,
     /// The generated ID of the workspace that was just created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workspaceID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workspaceID")]
     pub workspace_id: Option<String>,
 }
 
@@ -90,10 +77,7 @@ pub struct WorkspaceStatusAckResourceMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkspaceStatusStatus {
     /// State of a workspace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusCode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusCode")]
     pub status_code: Option<String>,
 }
+

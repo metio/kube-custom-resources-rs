@@ -4,33 +4,24 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// SystemBackupSpec defines the desired state of the Longhorn SystemBackup
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "longhorn.io",
-    version = "v1beta2",
-    kind = "SystemBackup",
-    plural = "systembackups"
-)]
+#[kube(group = "longhorn.io", version = "v1beta2", kind = "SystemBackup", plural = "systembackups")]
 #[kube(namespaced)]
 #[kube(status = "SystemBackupStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SystemBackupSpec {
     /// The create volume backup policy
     /// Can be "if-not-present", "always" or "disabled"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeBackupPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeBackupPolicy")]
     pub volume_backup_policy: Option<String>,
 }
 
@@ -46,18 +37,10 @@ pub struct SystemBackupStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitCommit")]
     pub git_commit: Option<String>,
     /// The last time that the system backup was synced into the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastSyncedAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSyncedAt")]
     pub last_synced_at: Option<String>,
     /// The saved manager image.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "managerImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managerImage")]
     pub manager_image: Option<String>,
     /// The node ID of the responsible controller to reconcile this SystemBackup.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerID")]
@@ -69,3 +52,4 @@ pub struct SystemBackupStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
+

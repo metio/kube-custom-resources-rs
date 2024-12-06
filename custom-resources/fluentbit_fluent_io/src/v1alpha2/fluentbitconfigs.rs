@@ -5,65 +5,36 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// NamespacedFluentBitCfgSpec defines the desired state of FluentBit
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "fluentbit.fluent.io",
-    version = "v1alpha2",
-    kind = "FluentBitConfig",
-    plural = "fluentbitconfigs"
-)]
+#[kube(group = "fluentbit.fluent.io", version = "v1alpha2", kind = "FluentBitConfig", plural = "fluentbitconfigs")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct FluentBitConfigSpec {
     /// Select cluster level multiline parser config
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterMultilineParserSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterMultilineParserSelector")]
     pub cluster_multiline_parser_selector: Option<FluentBitConfigClusterMultilineParserSelector>,
     /// Select cluster level parser config
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterParserSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterParserSelector")]
     pub cluster_parser_selector: Option<FluentBitConfigClusterParserSelector>,
     /// Select filter plugins
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "filterSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterSelector")]
     pub filter_selector: Option<FluentBitConfigFilterSelector>,
     /// Select multiline parser plugins
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "multilineParserSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multilineParserSelector")]
     pub multiline_parser_selector: Option<FluentBitConfigMultilineParserSelector>,
     /// Select output plugins
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "outputSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "outputSelector")]
     pub output_selector: Option<FluentBitConfigOutputSelector>,
     /// Select parser plugins
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "parserSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parserSelector")]
     pub parser_selector: Option<FluentBitConfigParserSelector>,
     /// Service defines the global behaviour of the Fluent Bit engine.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -74,21 +45,12 @@ pub struct FluentBitConfigSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitConfigClusterMultilineParserSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<FluentBitConfigClusterMultilineParserSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<FluentBitConfigClusterMultilineParserSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -113,20 +75,12 @@ pub struct FluentBitConfigClusterMultilineParserSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitConfigClusterParserSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<FluentBitConfigClusterParserSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -151,20 +105,12 @@ pub struct FluentBitConfigClusterParserSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitConfigFilterSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<FluentBitConfigFilterSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -189,20 +135,12 @@ pub struct FluentBitConfigFilterSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitConfigMultilineParserSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<FluentBitConfigMultilineParserSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -227,20 +165,12 @@ pub struct FluentBitConfigMultilineParserSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitConfigOutputSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<FluentBitConfigOutputSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -265,20 +195,12 @@ pub struct FluentBitConfigOutputSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitConfigParserSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<FluentBitConfigParserSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -305,82 +227,42 @@ pub struct FluentBitConfigService {
     /// If true go to background on start
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub daemon: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "emitterMemBufLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emitterMemBufLimit")]
     pub emitter_mem_buf_limit: Option<String>,
     /// Per-namespace re-emitter configuration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "emitterName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emitterName")]
     pub emitter_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "emitterStorageType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emitterStorageType")]
     pub emitter_storage_type: Option<String>,
     /// Interval to flush output
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flushSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flushSeconds")]
     pub flush_seconds: Option<i64>,
     /// Wait time on exit
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "graceSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "graceSeconds")]
     pub grace_seconds: Option<i64>,
     /// the error count to meet the unhealthy requirement, this is a sum for all output plugins in a defined HC_Period, example for output error: [2022/02/16 10:44:10] [ warn] [engine] failed to flush chunk '1-1645008245.491540684.flb', retry in 7 seconds: task_id=0, input=forward.1 > output=cloudwatch_logs.3 (out_id=3)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hcErrorsCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hcErrorsCount")]
     pub hc_errors_count: Option<i64>,
     /// The time period by second to count the error and retry failure data point
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hcPeriod")]
     pub hc_period: Option<i64>,
     /// the retry failure count to meet the unhealthy requirement, this is a sum for all output plugins in a defined HC_Period, example for retry failure: [2022/02/16 20:11:36] [ warn] [engine] chunk '1-1645042288.260516436.flb' cannot be retried: task_id=0, input=tcp.3 > output=cloudwatch_logs.1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hcRetryFailureCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hcRetryFailureCount")]
     pub hc_retry_failure_count: Option<i64>,
     /// enable Health check feature at http://127.0.0.1:2020/api/v1/health Note: Enabling this will not automatically configure kubernetes to use fluentbit's healthcheck endpoint
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<bool>,
     /// If true enable reloading via HTTP
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hotReload")]
     pub hot_reload: Option<bool>,
     /// Address to listen
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpListen"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpListen")]
     pub http_listen: Option<String>,
     /// Port to listen
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpPort")]
     pub http_port: Option<i32>,
     /// If true enable statistics HTTP server
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpServer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpServer")]
     pub http_server: Option<bool>,
     /// File to log diagnostic output
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logFile")]
@@ -389,18 +271,10 @@ pub struct FluentBitConfigService {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<FluentBitConfigServiceLogLevel>,
     /// Optional 'parsers' config file (can be multiple)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "parsersFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parsersFile")]
     pub parsers_file: Option<String>,
     /// backward compatible
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "parsersFiles"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parsersFiles")]
     pub parsers_files: Option<Vec<String>>,
     /// Configure a global environment for the storage layer in Service. It is recommended to configure the volume and volumeMount separately for this storage. The hostPath type should be used for that Volume in Fluentbit daemon set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -428,28 +302,16 @@ pub enum FluentBitConfigServiceLogLevel {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct FluentBitConfigServiceStorage {
     /// This option configure a hint of maximum value of memory to use when processing these records
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backlogMemLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backlogMemLimit")]
     pub backlog_mem_limit: Option<String>,
     /// Enable the data integrity check when writing and reading data from the filesystem
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub checksum: Option<FluentBitConfigServiceStorageChecksum>,
     /// When enabled, irrecoverable chunks will be deleted during runtime, and any other irrecoverable chunk located in the configured storage path directory will be deleted when Fluent-Bit starts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deleteIrrecoverableChunks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deleteIrrecoverableChunks")]
     pub delete_irrecoverable_chunks: Option<FluentBitConfigServiceStorageDeleteIrrecoverableChunks>,
     /// If the input plugin has enabled filesystem storage type, this property sets the maximum number of Chunks that can be up in memory
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxChunksUp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxChunksUp")]
     pub max_chunks_up: Option<i64>,
     /// If http_server option has been enabled in the Service section, this option registers a new endpoint where internal metrics of the storage layer can be consumed
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -497,3 +359,4 @@ pub enum FluentBitConfigServiceStorageSync {
     #[serde(rename = "full")]
     Full,
 }
+

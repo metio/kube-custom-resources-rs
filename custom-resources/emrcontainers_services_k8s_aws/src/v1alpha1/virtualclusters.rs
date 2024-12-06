@@ -4,15 +4,15 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// VirtualClusterSpec defines the desired state of VirtualCluster.
-///
+/// 
 /// This entity describes a virtual cluster. A virtual cluster is a Kubernetes
 /// namespace that Amazon EMR is registered with. Amazon EMR uses virtual clusters
 /// to run jobs and host endpoints. Multiple virtual clusters can be backed by
@@ -21,17 +21,12 @@ use self::prelude::*;
 /// contribute to your bill or that require lifecycle management outside the
 /// service.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "emrcontainers.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "VirtualCluster",
-    plural = "virtualclusters"
-)]
+#[kube(group = "emrcontainers.services.k8s.aws", version = "v1alpha1", kind = "VirtualCluster", plural = "virtualclusters")]
 #[kube(namespaced)]
 #[kube(status = "VirtualClusterStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct VirtualClusterSpec {
     /// The container provider of the virtual cluster.
     #[serde(rename = "containerProvider")]
@@ -76,11 +71,7 @@ pub struct VirtualClusterStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<VirtualClusterStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -114,3 +105,4 @@ pub struct VirtualClusterStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

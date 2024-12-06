@@ -5,7 +5,7 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
@@ -17,3 +17,4 @@ pub struct ControllerRevisionChildren {
     pub kind: String,
     pub names: Vec<String>,
 }
+

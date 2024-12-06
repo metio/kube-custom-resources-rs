@@ -4,10 +4,10 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
@@ -15,17 +15,12 @@ use self::prelude::*;
 /// This is more specific than the NamedPoolSpec so we get schema validation on the
 /// allowed pool names that can be specified.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "ceph.rook.io",
-    version = "v1",
-    kind = "CephBlockPool",
-    plural = "cephblockpools"
-)]
+#[kube(group = "ceph.rook.io", version = "v1", kind = "CephBlockPool", plural = "cephblockpools")]
 #[kube(namespaced)]
 #[kube(status = "CephBlockPoolStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CephBlockPoolSpec {
     /// The application name to set on the pool. Only expected to be set for rgw pools.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -33,49 +28,25 @@ pub struct CephBlockPoolSpec {
     /// DEPRECATED: use Parameters instead, e.g., Parameters["compression_mode"] = "force"
     /// The inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force)
     /// Do NOT set a default value for kubebuilder as this will override the Parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "compressionMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionMode")]
     pub compression_mode: Option<CephBlockPoolCompressionMode>,
     /// The root of the crush hierarchy utilized by the pool
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crushRoot")]
     pub crush_root: Option<String>,
     /// The device class the OSD should set to for use in the pool
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deviceClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceClass")]
     pub device_class: Option<String>,
     /// Allow rook operator to change the pool CRUSH tunables once the pool is created
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableCrushUpdates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableCrushUpdates")]
     pub enable_crush_updates: Option<bool>,
     /// EnableRBDStats is used to enable gathering of statistics for all RBD images in the pool
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableRBDStats"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableRBDStats")]
     pub enable_rbd_stats: Option<bool>,
     /// The erasure code settings
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "erasureCoded"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "erasureCoded")]
     pub erasure_coded: Option<CephBlockPoolErasureCoded>,
     /// The failure domain: osd/host/(region or zone if available) - technically also any type in the crush map
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomain")]
     pub failure_domain: Option<String>,
     /// The mirroring settings
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -93,11 +64,7 @@ pub struct CephBlockPoolSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicated: Option<CephBlockPoolReplicated>,
     /// The mirroring statusCheck
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusCheck")]
     pub status_check: Option<CephBlockPoolStatusCheck>,
 }
 
@@ -148,11 +115,7 @@ pub struct CephBlockPoolMirroring {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub peers: Option<CephBlockPoolMirroringPeers>,
     /// SnapshotSchedules is the scheduling of snapshot for mirrored images/pools
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotSchedules"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotSchedules")]
     pub snapshot_schedules: Option<Vec<CephBlockPoolMirroringSnapshotSchedules>>,
 }
 
@@ -160,11 +123,7 @@ pub struct CephBlockPoolMirroring {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephBlockPoolMirroringPeers {
     /// SecretNames represents the Kubernetes Secret names to add rbd-mirror or cephfs-mirror peers
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretNames")]
     pub secret_names: Option<Vec<String>>,
 }
 
@@ -203,11 +162,7 @@ pub struct CephBlockPoolQuotas {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBytes")]
     pub max_bytes: Option<i64>,
     /// MaxObjects represents the quota in objects
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxObjects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxObjects")]
     pub max_objects: Option<i64>,
     /// MaxSize represents the quota in bytes as a string
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSize")]
@@ -218,41 +173,21 @@ pub struct CephBlockPoolQuotas {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephBlockPoolReplicated {
     /// HybridStorage represents hybrid storage tier settings
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hybridStorage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hybridStorage")]
     pub hybrid_storage: Option<CephBlockPoolReplicatedHybridStorage>,
     /// ReplicasPerFailureDomain the number of replica in the specified failure domain
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicasPerFailureDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicasPerFailureDomain")]
     pub replicas_per_failure_domain: Option<i64>,
     /// RequireSafeReplicaSize if false allows you to set replica 1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requireSafeReplicaSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireSafeReplicaSize")]
     pub require_safe_replica_size: Option<bool>,
     /// Size - Number of copies per object in a replicated storage pool, including the object itself (required for replicated pool type)
     pub size: i64,
     /// SubFailureDomain the name of the sub-failure domain
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subFailureDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subFailureDomain")]
     pub sub_failure_domain: Option<String>,
     /// TargetSizeRatio gives a hint (%) to Ceph in terms of expected consumption of the total cluster capacity
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetSizeRatio"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetSizeRatio")]
     pub target_size_ratio: Option<f64>,
 }
 
@@ -295,35 +230,19 @@ pub struct CephBlockPoolStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub info: Option<BTreeMap<String, String>>,
     /// MirroringInfoSpec is the status of the pool/radosnamespace mirroring
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mirroringInfo"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mirroringInfo")]
     pub mirroring_info: Option<CephBlockPoolStatusMirroringInfo>,
     /// MirroringStatusSpec is the status of the pool/radosNamespace mirroring
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mirroringStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mirroringStatus")]
     pub mirroring_status: Option<CephBlockPoolStatusMirroringStatus>,
     /// ObservedGeneration is the latest generation observed by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// ConditionType represent a resource's status
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
     /// SnapshotScheduleStatusSpec is the status of the snapshot schedule
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotScheduleStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotScheduleStatus")]
     pub snapshot_schedule_status: Option<CephBlockPoolStatusSnapshotScheduleStatus>,
 }
 
@@ -332,17 +251,9 @@ pub struct CephBlockPoolStatus {
 pub struct CephBlockPoolStatusMirroringInfo {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub details: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastChanged"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastChanged")]
     pub last_changed: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastChecked"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastChecked")]
     pub last_checked: Option<String>,
     /// Mode is the mirroring mode
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -382,18 +293,10 @@ pub struct CephBlockPoolStatusMirroringStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub details: Option<String>,
     /// LastChanged is the last time time the status last changed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastChanged"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastChanged")]
     pub last_changed: Option<String>,
     /// LastChecked is the last time time the status was checked
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastChecked"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastChecked")]
     pub last_checked: Option<String>,
     /// Summary is the mirroring status summary
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -450,25 +353,13 @@ pub struct CephBlockPoolStatusSnapshotScheduleStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub details: Option<String>,
     /// LastChanged is the last time time the status last changed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastChanged"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastChanged")]
     pub last_changed: Option<String>,
     /// LastChecked is the last time time the status was checked
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastChecked"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastChecked")]
     pub last_checked: Option<String>,
     /// SnapshotSchedules is the list of snapshots scheduled
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotSchedules"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotSchedules")]
     pub snapshot_schedules: Option<Vec<CephBlockPoolStatusSnapshotScheduleStatusSnapshotSchedules>>,
 }
 
@@ -499,3 +390,4 @@ pub struct CephBlockPoolStatusSnapshotScheduleStatusSnapshotSchedulesItems {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub start_time: Option<String>,
 }
+

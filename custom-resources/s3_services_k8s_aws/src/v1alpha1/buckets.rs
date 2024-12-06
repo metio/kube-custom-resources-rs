@@ -4,29 +4,24 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// BucketSpec defines the desired state of Bucket.
-///
+/// 
 /// In terms of implementation, a Bucket is a resource. An Amazon S3 bucket name
 /// is globally unique, and the namespace is shared by all Amazon Web Services
 /// accounts.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "s3.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "Bucket",
-    plural = "buckets"
-)]
+#[kube(group = "s3.services.k8s.aws", version = "v1alpha1", kind = "Bucket", plural = "buckets")]
 #[kube(namespaced)]
 #[kube(status = "BucketStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct BucketSpec {
     /// Container for setting the transfer acceleration state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -43,55 +38,31 @@ pub struct BucketSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cors: Option<BucketCors>,
     /// The configuration information for the bucket.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "createBucketConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "createBucketConfiguration")]
     pub create_bucket_configuration: Option<BucketCreateBucketConfiguration>,
     /// Specifies the default server-side-encryption configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub encryption: Option<BucketEncryption>,
     /// Allows grantee the read, write, read ACP, and write ACP permissions on the
     /// bucket.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "grantFullControl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "grantFullControl")]
     pub grant_full_control: Option<String>,
     /// Allows grantee to list the objects in the bucket.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "grantRead")]
     pub grant_read: Option<String>,
     /// Allows grantee to read the bucket ACL.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "grantReadACP"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "grantReadACP")]
     pub grant_read_acp: Option<String>,
     /// Allows grantee to create new objects in the bucket.
-    ///
+    /// 
     /// For the bucket and object owners of existing objects, also allows deletions
     /// and overwrites of those objects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "grantWrite"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "grantWrite")]
     pub grant_write: Option<String>,
     /// Allows grantee to write the ACL for the applicable bucket.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "grantWriteACP"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "grantWriteACP")]
     pub grant_write_acp: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "intelligentTiering"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "intelligentTiering")]
     pub intelligent_tiering: Option<Vec<BucketIntelligentTiering>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub inventory: Option<Vec<BucketInventory>>,
@@ -110,25 +81,13 @@ pub struct BucketSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub notification: Option<BucketNotification>,
     /// Specifies whether you want S3 Object Lock to be enabled for the new bucket.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "objectLockEnabledForBucket"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectLockEnabledForBucket")]
     pub object_lock_enabled_for_bucket: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "objectOwnership"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectOwnership")]
     pub object_ownership: Option<String>,
     /// The OwnershipControls (BucketOwnerEnforced, BucketOwnerPreferred, or ObjectWriter)
     /// that you want to apply to this Amazon S3 bucket.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ownershipControls"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownershipControls")]
     pub ownership_controls: Option<BucketOwnershipControls>,
     /// The bucket policy as a JSON document.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -138,22 +97,14 @@ pub struct BucketSpec {
     /// more information about when Amazon S3 considers a bucket or object public,
     /// see The Meaning of "Public" (https://docs.aws.amazon.com/AmazonS3/latest/dev/access-control-block-public-access.html#access-control-block-public-access-policy-status)
     /// in the Amazon S3 User Guide.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "publicAccessBlock"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "publicAccessBlock")]
     pub public_access_block: Option<BucketPublicAccessBlock>,
     /// A container for replication rules. You can add up to 1,000 rules. The maximum
     /// size of a replication configuration is 2 MB.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replication: Option<BucketReplication>,
     /// Container for Payer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestPayment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestPayment")]
     pub request_payment: Option<BucketRequestPayment>,
     /// Container for the TagSet and Tag elements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -187,11 +138,7 @@ pub struct BucketAnalytics {
     /// Specifies data related to access patterns to be collected and made available
     /// to analyze the tradeoffs between different storage classes for an Amazon
     /// S3 bucket.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassAnalysis"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassAnalysis")]
     pub storage_class_analysis: Option<BucketAnalyticsStorageClassAnalysis>,
 }
 
@@ -248,11 +195,7 @@ pub struct BucketAnalyticsFilterTag {
 pub struct BucketAnalyticsStorageClassAnalysis {
     /// Container for data related to the storage class analysis for an Amazon S3
     /// bucket for export.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataExport"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataExport")]
     pub data_export: Option<BucketAnalyticsStorageClassAnalysisDataExport>,
 }
 
@@ -263,11 +206,7 @@ pub struct BucketAnalyticsStorageClassAnalysisDataExport {
     /// Where to publish the analytics results.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub destination: Option<BucketAnalyticsStorageClassAnalysisDataExportDestination>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "outputSchemaVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "outputSchemaVersion")]
     pub output_schema_version: Option<String>,
 }
 
@@ -275,13 +214,8 @@ pub struct BucketAnalyticsStorageClassAnalysisDataExport {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketAnalyticsStorageClassAnalysisDataExportDestination {
     /// Contains information about where to publish the analytics results.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3BucketDestination"
-    )]
-    pub s3_bucket_destination:
-        Option<BucketAnalyticsStorageClassAnalysisDataExportDestinationS3BucketDestination>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3BucketDestination")]
+    pub s3_bucket_destination: Option<BucketAnalyticsStorageClassAnalysisDataExportDestinationS3BucketDestination>,
 }
 
 /// Contains information about where to publish the analytics results.
@@ -289,11 +223,7 @@ pub struct BucketAnalyticsStorageClassAnalysisDataExportDestination {
 pub struct BucketAnalyticsStorageClassAnalysisDataExportDestinationS3BucketDestination {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bucket: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bucketAccountID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bucketAccountID")]
     pub bucket_account_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub format: Option<String>,
@@ -314,48 +244,24 @@ pub struct BucketCors {
 /// Specifies a cross-origin access rule for an Amazon S3 bucket.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketCorsCorsRules {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowedHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedHeaders")]
     pub allowed_headers: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowedMethods"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedMethods")]
     pub allowed_methods: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowedOrigins"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedOrigins")]
     pub allowed_origins: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "exposeHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exposeHeaders")]
     pub expose_headers: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxAgeSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxAgeSeconds")]
     pub max_age_seconds: Option<i64>,
 }
 
 /// The configuration information for the bucket.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketCreateBucketConfiguration {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "locationConstraint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "locationConstraint")]
     pub location_constraint: Option<String>,
 }
 
@@ -378,18 +284,9 @@ pub struct BucketEncryptionRules {
     /// S3 uses this KMS key for SSE-KMS. For more information, see PUT Bucket encryption
     /// (https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTencryption.html)
     /// in the Amazon S3 API Reference.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "applyServerSideEncryptionByDefault"
-    )]
-    pub apply_server_side_encryption_by_default:
-        Option<BucketEncryptionRulesApplyServerSideEncryptionByDefault>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bucketKeyEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "applyServerSideEncryptionByDefault")]
+    pub apply_server_side_encryption_by_default: Option<BucketEncryptionRulesApplyServerSideEncryptionByDefault>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bucketKeyEnabled")]
     pub bucket_key_enabled: Option<bool>,
 }
 
@@ -404,22 +301,14 @@ pub struct BucketEncryptionRules {
 /// in the Amazon S3 API Reference.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketEncryptionRulesApplyServerSideEncryptionByDefault {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kmsMasterKeyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsMasterKeyID")]
     pub kms_master_key_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sseAlgorithm"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sseAlgorithm")]
     pub sse_algorithm: Option<String>,
 }
 
 /// Specifies the S3 Intelligent-Tiering configuration for an Amazon S3 bucket.
-///
+/// 
 /// For information about the S3 Intelligent-Tiering storage class, see Storage
 /// class for automatically optimizing frequently and infrequently accessed objects
 /// (https://docs.aws.amazon.com/AmazonS3/latest/dev/storage-class-intro.html#sc-dynamic-data-access).
@@ -485,11 +374,7 @@ pub struct BucketIntelligentTieringFilterTag {
 /// tier, without additional operational overhead.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketIntelligentTieringTierings {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessTier"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessTier")]
     pub access_tier: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub days: Option<i64>,
@@ -509,19 +394,11 @@ pub struct BucketInventory {
     pub filter: Option<BucketInventoryFilter>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includedObjectVersions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includedObjectVersions")]
     pub included_object_versions: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isEnabled")]
     pub is_enabled: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "optionalFields"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "optionalFields")]
     pub optional_fields: Option<Vec<String>>,
     /// Specifies the schedule for generating inventory results.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -533,11 +410,7 @@ pub struct BucketInventory {
 pub struct BucketInventoryDestination {
     /// Contains the bucket name, file format, bucket owner (optional), and prefix
     /// (optional) where inventory results are published.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3BucketDestination"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3BucketDestination")]
     pub s3_bucket_destination: Option<BucketInventoryDestinationS3BucketDestination>,
 }
 
@@ -605,13 +478,8 @@ pub struct BucketLifecycleRules {
     /// For more information, see Aborting Incomplete Multipart Uploads Using a Bucket
     /// Lifecycle Policy (https://docs.aws.amazon.com/AmazonS3/latest/dev/mpuoverview.html#mpu-abort-incomplete-mpu-lifecycle-config)
     /// in the Amazon S3 User Guide.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "abortIncompleteMultipartUpload"
-    )]
-    pub abort_incomplete_multipart_upload:
-        Option<BucketLifecycleRulesAbortIncompleteMultipartUpload>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "abortIncompleteMultipartUpload")]
+    pub abort_incomplete_multipart_upload: Option<BucketLifecycleRulesAbortIncompleteMultipartUpload>,
     /// Container for the expiration for the lifecycle of the object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub expiration: Option<BucketLifecycleRulesExpiration>,
@@ -626,19 +494,10 @@ pub struct BucketLifecycleRules {
     /// configuration action on a bucket that has versioning enabled (or suspended)
     /// to request that Amazon S3 delete noncurrent object versions at a specific
     /// period in the object's lifetime.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "noncurrentVersionExpiration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noncurrentVersionExpiration")]
     pub noncurrent_version_expiration: Option<BucketLifecycleRulesNoncurrentVersionExpiration>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "noncurrentVersionTransitions"
-    )]
-    pub noncurrent_version_transitions:
-        Option<Vec<BucketLifecycleRulesNoncurrentVersionTransitions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noncurrentVersionTransitions")]
+    pub noncurrent_version_transitions: Option<Vec<BucketLifecycleRulesNoncurrentVersionTransitions>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -654,11 +513,7 @@ pub struct BucketLifecycleRules {
 /// in the Amazon S3 User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketLifecycleRulesAbortIncompleteMultipartUpload {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "daysAfterInitiation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "daysAfterInitiation")]
     pub days_after_initiation: Option<i64>,
 }
 
@@ -669,11 +524,7 @@ pub struct BucketLifecycleRulesExpiration {
     pub date: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub days: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expiredObjectDeleteMarker"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expiredObjectDeleteMarker")]
     pub expired_object_delete_marker: Option<bool>,
 }
 
@@ -686,17 +537,9 @@ pub struct BucketLifecycleRulesFilter {
     /// of the predicates configured inside the And operator.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub and: Option<BucketLifecycleRulesFilterAnd>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "objectSizeGreaterThan"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectSizeGreaterThan")]
     pub object_size_greater_than: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "objectSizeLessThan"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectSizeLessThan")]
     pub object_size_less_than: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
@@ -710,17 +553,9 @@ pub struct BucketLifecycleRulesFilter {
 /// of the predicates configured inside the And operator.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketLifecycleRulesFilterAnd {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "objectSizeGreaterThan"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectSizeGreaterThan")]
     pub object_size_greater_than: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "objectSizeLessThan"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectSizeLessThan")]
     pub object_size_less_than: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
@@ -753,17 +588,9 @@ pub struct BucketLifecycleRulesFilterTag {
 /// period in the object's lifetime.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketLifecycleRulesNoncurrentVersionExpiration {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "newerNoncurrentVersions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "newerNoncurrentVersions")]
     pub newer_noncurrent_versions: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "noncurrentDays"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noncurrentDays")]
     pub noncurrent_days: Option<i64>,
 }
 
@@ -776,23 +603,11 @@ pub struct BucketLifecycleRulesNoncurrentVersionExpiration {
 /// a specific period in the object's lifetime.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketLifecycleRulesNoncurrentVersionTransitions {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "newerNoncurrentVersions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "newerNoncurrentVersions")]
     pub newer_noncurrent_versions: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "noncurrentDays"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noncurrentDays")]
     pub noncurrent_days: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
     pub storage_class: Option<String>,
 }
 
@@ -806,11 +621,7 @@ pub struct BucketLifecycleRulesTransitions {
     pub date: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub days: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
     pub storage_class: Option<String>,
 }
 
@@ -821,11 +632,7 @@ pub struct BucketLogging {
     /// all log object keys for a bucket. For more information, see PUT Bucket logging
     /// (https://docs.aws.amazon.com/AmazonS3/latest/API/RESTBucketPUTlogging.html)
     /// in the Amazon S3 API Reference.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loggingEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loggingEnabled")]
     pub logging_enabled: Option<BucketLoggingLoggingEnabled>,
 }
 
@@ -835,28 +642,16 @@ pub struct BucketLogging {
 /// in the Amazon S3 API Reference.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketLoggingLoggingEnabled {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetBucket"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetBucket")]
     pub target_bucket: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetGrants"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetGrants")]
     pub target_grants: Option<Vec<BucketLoggingLoggingEnabledTargetGrants>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetPrefix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPrefix")]
     pub target_prefix: Option<String>,
 }
 
 /// Container for granting information.
-///
+/// 
 /// Buckets that use the bucket owner enforced setting for Object Ownership don't
 /// support target grants. For more information, see Permissions server access
 /// log delivery (https://docs.aws.amazon.com/AmazonS3/latest/userguide/enable-server-access-logging.html#grant-log-delivery-permissions-general)
@@ -873,17 +668,9 @@ pub struct BucketLoggingLoggingEnabledTargetGrants {
 /// Container for the person being granted permissions.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketLoggingLoggingEnabledTargetGrantsGrantee {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "displayName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "displayName")]
     pub display_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "emailAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emailAddress")]
     pub email_address: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
@@ -917,11 +704,7 @@ pub struct BucketMetrics {
 /// For more information, see PutBucketMetricsConfiguration (https://docs.aws.amazon.com/AmazonS3/latest/API/API_PutBucketMetricsConfiguration.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketMetricsFilter {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessPointARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessPointARN")]
     pub access_point_arn: Option<String>,
     /// A conjunction (logical AND) of predicates, which is used in evaluating a
     /// metrics filter. The operator must have at least two predicates, and an object
@@ -940,11 +723,7 @@ pub struct BucketMetricsFilter {
 /// must match all of the predicates in order for the filter to apply.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketMetricsFilterAnd {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessPointARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessPointARN")]
     pub access_point_arn: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
@@ -974,23 +753,11 @@ pub struct BucketMetricsFilterTag {
 /// If this element is empty, notifications are turned off for the bucket.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketNotification {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lambdaFunctionConfigurations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lambdaFunctionConfigurations")]
     pub lambda_function_configurations: Option<Vec<BucketNotificationLambdaFunctionConfigurations>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queueConfigurations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queueConfigurations")]
     pub queue_configurations: Option<Vec<BucketNotificationQueueConfigurations>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topicConfigurations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topicConfigurations")]
     pub topic_configurations: Option<Vec<BucketNotificationTopicConfigurations>>,
 }
 
@@ -1008,11 +775,7 @@ pub struct BucketNotificationLambdaFunctionConfigurations {
     /// If you don't provide one, Amazon S3 will assign an ID.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lambdaFunctionARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lambdaFunctionARN")]
     pub lambda_function_arn: Option<String>,
 }
 
@@ -1031,13 +794,8 @@ pub struct BucketNotificationLambdaFunctionConfigurationsFilter {
 pub struct BucketNotificationLambdaFunctionConfigurationsFilterKey {
     /// A list of containers for the key-value pair that defines the criteria for
     /// the filter rule.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "filterRules"
-    )]
-    pub filter_rules:
-        Option<Vec<BucketNotificationLambdaFunctionConfigurationsFilterKeyFilterRules>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterRules")]
+    pub filter_rules: Option<Vec<BucketNotificationLambdaFunctionConfigurationsFilterKeyFilterRules>>,
 }
 
 /// Specifies the Amazon S3 object key name to filter on and whether to filter
@@ -1084,11 +842,7 @@ pub struct BucketNotificationQueueConfigurationsFilter {
 pub struct BucketNotificationQueueConfigurationsFilterKey {
     /// A list of containers for the key-value pair that defines the criteria for
     /// the filter rule.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "filterRules"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterRules")]
     pub filter_rules: Option<Vec<BucketNotificationQueueConfigurationsFilterKeyFilterRules>>,
 }
 
@@ -1137,11 +891,7 @@ pub struct BucketNotificationTopicConfigurationsFilter {
 pub struct BucketNotificationTopicConfigurationsFilterKey {
     /// A list of containers for the key-value pair that defines the criteria for
     /// the filter rule.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "filterRules"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterRules")]
     pub filter_rules: Option<Vec<BucketNotificationTopicConfigurationsFilterKeyFilterRules>>,
 }
 
@@ -1167,24 +917,20 @@ pub struct BucketOwnershipControls {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketOwnershipControlsRules {
     /// The container element for object ownership for a bucket's ownership controls.
-    ///
+    /// 
     /// BucketOwnerPreferred - Objects uploaded to the bucket change ownership to
     /// the bucket owner if the objects are uploaded with the bucket-owner-full-control
     /// canned ACL.
-    ///
+    /// 
     /// ObjectWriter - The uploading account will own the object if the object is
     /// uploaded with the bucket-owner-full-control canned ACL.
-    ///
+    /// 
     /// BucketOwnerEnforced - Access control lists (ACLs) are disabled and no longer
     /// affect permissions. The bucket owner automatically owns and has full control
     /// over every object in the bucket. The bucket only accepts PUT requests that
     /// don't specify an ACL or bucket owner full control ACLs, such as the bucket-owner-full-control
     /// canned ACL or an equivalent form of this ACL expressed in the XML format.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "objectOwnership"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectOwnership")]
     pub object_ownership: Option<String>,
 }
 
@@ -1195,29 +941,13 @@ pub struct BucketOwnershipControlsRules {
 /// in the Amazon S3 User Guide.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketPublicAccessBlock {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "blockPublicACLs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockPublicACLs")]
     pub block_public_ac_ls: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "blockPublicPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockPublicPolicy")]
     pub block_public_policy: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ignorePublicACLs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignorePublicACLs")]
     pub ignore_public_ac_ls: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restrictPublicBuckets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restrictPublicBuckets")]
     pub restrict_public_buckets: Option<bool>,
 }
 
@@ -1240,18 +970,14 @@ pub struct BucketReplicationRules {
     /// Status must be set to Disabled, because Amazon S3 does not support replicating
     /// delete markers for tag-based rules. For an example configuration, see Basic
     /// Rule Configuration (https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-add-config.html#replication-config-min-rule-config).
-    ///
+    /// 
     /// For more information about delete marker replication, see Basic Rule Configuration
     /// (https://docs.aws.amazon.com/AmazonS3/latest/dev/delete-marker-replication.html).
-    ///
+    /// 
     /// If you are using an earlier version of the replication configuration, Amazon
     /// S3 handles replication of delete markers differently. For more information,
     /// see Backward Compatibility (https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-add-config.html#replication-backward-compat-considerations).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deleteMarkerReplication"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deleteMarkerReplication")]
     pub delete_marker_replication: Option<BucketReplicationRulesDeleteMarkerReplication>,
     /// Specifies information about where to publish analysis or configuration results
     /// for an Amazon S3 bucket and S3 Replication Time Control (S3 RTC).
@@ -1260,11 +986,7 @@ pub struct BucketReplicationRules {
     /// Optional configuration to replicate existing source bucket objects. For more
     /// information, see Replicating Existing Objects (https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-what-is-isnot-replicated.html#existing-object-replication)
     /// in the Amazon S3 User Guide.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "existingObjectReplication"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "existingObjectReplication")]
     pub existing_object_replication: Option<BucketReplicationRulesExistingObjectReplication>,
     /// A filter that identifies the subset of objects to which the replication rule
     /// applies. A Filter must specify exactly one Prefix, Tag, or an And child element.
@@ -1282,11 +1004,7 @@ pub struct BucketReplicationRules {
     /// that you can specify for objects created with server-side encryption using
     /// a customer managed key stored in Amazon Web Services Key Management Service
     /// (SSE-KMS).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceSelectionCriteria"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceSelectionCriteria")]
     pub source_selection_criteria: Option<BucketReplicationRulesSourceSelectionCriteria>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
@@ -1298,10 +1016,10 @@ pub struct BucketReplicationRules {
 /// Status must be set to Disabled, because Amazon S3 does not support replicating
 /// delete markers for tag-based rules. For an example configuration, see Basic
 /// Rule Configuration (https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-add-config.html#replication-config-min-rule-config).
-///
+/// 
 /// For more information about delete marker replication, see Basic Rule Configuration
 /// (https://docs.aws.amazon.com/AmazonS3/latest/dev/delete-marker-replication.html).
-///
+/// 
 /// If you are using an earlier version of the replication configuration, Amazon
 /// S3 handles replication of delete markers differently. For more information,
 /// see Backward Compatibility (https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-add-config.html#replication-backward-compat-considerations).
@@ -1316,24 +1034,15 @@ pub struct BucketReplicationRulesDeleteMarkerReplication {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketReplicationRulesDestination {
     /// A container for information about access control for replicas.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessControlTranslation"
-    )]
-    pub access_control_translation:
-        Option<BucketReplicationRulesDestinationAccessControlTranslation>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessControlTranslation")]
+    pub access_control_translation: Option<BucketReplicationRulesDestinationAccessControlTranslation>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub account: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bucket: Option<String>,
     /// Specifies encryption-related information for an Amazon S3 bucket that is
     /// a destination for replicated objects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "encryptionConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptionConfiguration")]
     pub encryption_configuration: Option<BucketReplicationRulesDestinationEncryptionConfiguration>,
     /// A container specifying replication metrics-related settings enabling replication
     /// metrics and events.
@@ -1343,17 +1052,9 @@ pub struct BucketReplicationRulesDestination {
     /// including whether S3 RTC is enabled and the time when all objects and operations
     /// on objects must be replicated. Must be specified together with a Metrics
     /// block.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicationTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicationTime")]
     pub replication_time: Option<BucketReplicationRulesDestinationReplicationTime>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
     pub storage_class: Option<String>,
 }
 
@@ -1368,11 +1069,7 @@ pub struct BucketReplicationRulesDestinationAccessControlTranslation {
 /// a destination for replicated objects.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketReplicationRulesDestinationEncryptionConfiguration {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicaKMSKeyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaKMSKeyID")]
     pub replica_kms_key_id: Option<String>,
 }
 
@@ -1382,11 +1079,7 @@ pub struct BucketReplicationRulesDestinationEncryptionConfiguration {
 pub struct BucketReplicationRulesDestinationMetrics {
     /// A container specifying the time value for S3 Replication Time Control (S3
     /// RTC) and replication metrics EventThreshold.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "eventThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "eventThreshold")]
     pub event_threshold: Option<BucketReplicationRulesDestinationMetricsEventThreshold>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
@@ -1438,12 +1131,12 @@ pub struct BucketReplicationRulesFilter {
     /// A container for specifying rule filters. The filters determine the subset
     /// of objects to which the rule applies. This element is required only if you
     /// specify more than one filter.
-    ///
+    /// 
     /// For example:
-    ///
+    /// 
     ///    * If you specify both a Prefix and a Tag filter, wrap these filters in
     ///    an And tag.
-    ///
+    /// 
     ///    * If you specify a filter based on multiple tags, wrap the Tag elements
     ///    in an And tag.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1458,12 +1151,12 @@ pub struct BucketReplicationRulesFilter {
 /// A container for specifying rule filters. The filters determine the subset
 /// of objects to which the rule applies. This element is required only if you
 /// specify more than one filter.
-///
+/// 
 /// For example:
-///
+/// 
 ///    * If you specify both a Prefix and a Tag filter, wrap these filters in
 ///    an And tag.
-///
+/// 
 ///    * If you specify a filter based on multiple tags, wrap the Tag elements
 ///    in an And tag.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1505,26 +1198,16 @@ pub struct BucketReplicationRulesSourceSelectionCriteria {
     /// version of replication configuration (when Filter is specified), you can
     /// specify this element and set the status to Enabled to replicate modifications
     /// on replicas.
-    ///
+    /// 
     /// If you don't specify the Filter element, Amazon S3 assumes that the replication
     /// configuration is the earlier version, V1. In the earlier version, this element
     /// is not allowed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicaModifications"
-    )]
-    pub replica_modifications:
-        Option<BucketReplicationRulesSourceSelectionCriteriaReplicaModifications>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaModifications")]
+    pub replica_modifications: Option<BucketReplicationRulesSourceSelectionCriteriaReplicaModifications>,
     /// A container for filter information for the selection of S3 objects encrypted
     /// with Amazon Web Services KMS.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sseKMSEncryptedObjects"
-    )]
-    pub sse_kms_encrypted_objects:
-        Option<BucketReplicationRulesSourceSelectionCriteriaSseKmsEncryptedObjects>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sseKMSEncryptedObjects")]
+    pub sse_kms_encrypted_objects: Option<BucketReplicationRulesSourceSelectionCriteriaSseKmsEncryptedObjects>,
 }
 
 /// A filter that you can specify for selection for modifications on replicas.
@@ -1532,7 +1215,7 @@ pub struct BucketReplicationRulesSourceSelectionCriteria {
 /// version of replication configuration (when Filter is specified), you can
 /// specify this element and set the status to Enabled to replicate modifications
 /// on replicas.
-///
+/// 
 /// If you don't specify the Filter element, Amazon S3 assumes that the replication
 /// configuration is the earlier version, V1. In the earlier version, this element
 /// is not allowed.
@@ -1584,32 +1267,16 @@ pub struct BucketVersioning {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketWebsite {
     /// The error information.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorDocument"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorDocument")]
     pub error_document: Option<BucketWebsiteErrorDocument>,
     /// Container for the Suffix element.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "indexDocument"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "indexDocument")]
     pub index_document: Option<BucketWebsiteIndexDocument>,
     /// Specifies the redirect behavior of all requests to a website endpoint of
     /// an Amazon S3 bucket.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redirectAllRequestsTo"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redirectAllRequestsTo")]
     pub redirect_all_requests_to: Option<BucketWebsiteRedirectAllRequestsTo>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "routingRules"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routingRules")]
     pub routing_rules: Option<Vec<BucketWebsiteRoutingRules>>,
 }
 
@@ -1661,17 +1328,9 @@ pub struct BucketWebsiteRoutingRules {
 /// redirect request to another host where you might process the error.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BucketWebsiteRoutingRulesCondition {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpErrorCodeReturnedEquals"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpErrorCodeReturnedEquals")]
     pub http_error_code_returned_equals: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keyPrefixEquals"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyPrefixEquals")]
     pub key_prefix_equals: Option<String>,
 }
 
@@ -1681,25 +1340,13 @@ pub struct BucketWebsiteRoutingRulesCondition {
 pub struct BucketWebsiteRoutingRulesRedirect {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostName")]
     pub host_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpRedirectCode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpRedirectCode")]
     pub http_redirect_code: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replaceKeyPrefixWith"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replaceKeyPrefixWith")]
     pub replace_key_prefix_with: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replaceKeyWith"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replaceKeyWith")]
     pub replace_key_with: Option<String>,
 }
 
@@ -1709,11 +1356,7 @@ pub struct BucketStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<BucketStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -1747,3 +1390,4 @@ pub struct BucketStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

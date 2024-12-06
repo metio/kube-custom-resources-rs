@@ -5,44 +5,27 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// ClusterFluentdConfigSpec defines the desired state of ClusterFluentdConfig
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "fluentd.fluent.io",
-    version = "v1alpha1",
-    kind = "ClusterFluentdConfig",
-    plural = "clusterfluentdconfigs"
-)]
+#[kube(group = "fluentd.fluent.io", version = "v1alpha1", kind = "ClusterFluentdConfig", plural = "clusterfluentdconfigs")]
 #[kube(status = "ClusterFluentdConfigStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterFluentdConfigSpec {
     /// Select cluster filter plugins
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterFilterSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterFilterSelector")]
     pub cluster_filter_selector: Option<ClusterFluentdConfigClusterFilterSelector>,
     /// Select cluster input plugins
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterInputSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterInputSelector")]
     pub cluster_input_selector: Option<ClusterFluentdConfigClusterInputSelector>,
     /// Select cluster output plugins
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterOutputSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterOutputSelector")]
     pub cluster_output_selector: Option<ClusterFluentdConfigClusterOutputSelector>,
     /// Emit mode. If batch, the plugin will emit events per labels matched. Enum: record, batch.
     /// will make no effect if EnableFilterKubernetes is set false.
@@ -50,39 +33,19 @@ pub struct ClusterFluentdConfigSpec {
     pub emit_mode: Option<ClusterFluentdConfigEmitMode>,
     /// Sticky tags will match only one record from an event stream. The same tag will be treated the same way.
     /// will make no effect if EnableFilterKubernetes is set false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stickyTags"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stickyTags")]
     pub sticky_tags: Option<String>,
     /// A set of container names. Ignored if left empty.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "watchedConstainers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "watchedConstainers")]
     pub watched_constainers: Option<Vec<String>>,
     /// A set of hosts. Ignored if left empty.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "watchedHosts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "watchedHosts")]
     pub watched_hosts: Option<Vec<String>>,
     /// Use this field to filter the logs, will make no effect if EnableFilterKubernetes is set false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "watchedLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "watchedLabels")]
     pub watched_labels: Option<BTreeMap<String, String>>,
     /// A set of namespaces. The whole namespaces would be watched if left empty.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "watchedNamespaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "watchedNamespaces")]
     pub watched_namespaces: Option<Vec<String>>,
 }
 
@@ -90,20 +53,12 @@ pub struct ClusterFluentdConfigSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterFluentdConfigClusterFilterSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ClusterFluentdConfigClusterFilterSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -128,20 +83,12 @@ pub struct ClusterFluentdConfigClusterFilterSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterFluentdConfigClusterInputSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ClusterFluentdConfigClusterInputSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -166,20 +113,12 @@ pub struct ClusterFluentdConfigClusterInputSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterFluentdConfigClusterOutputSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ClusterFluentdConfigClusterOutputSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -219,3 +158,4 @@ pub struct ClusterFluentdConfigStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+

@@ -5,66 +5,41 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// TransportServerSpec is the spec of the TransportServer resource.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "k8s.nginx.org",
-    version = "v1alpha1",
-    kind = "TransportServer",
-    plural = "transportservers"
-)]
+#[kube(group = "k8s.nginx.org", version = "v1alpha1", kind = "TransportServer", plural = "transportservers")]
 #[kube(namespaced)]
 #[kube(status = "TransportServerStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TransportServerSpec {
     /// TransportServerAction defines an action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<TransportServerAction>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressClassName")]
     pub ingress_class_name: Option<String>,
     /// TransportServerListener defines a listener for a TransportServer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub listener: Option<TransportServerListener>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverSnippets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverSnippets")]
     pub server_snippets: Option<String>,
     /// SessionParameters defines session parameters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sessionParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionParameters")]
     pub session_parameters: Option<TransportServerSessionParameters>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "streamSnippets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "streamSnippets")]
     pub stream_snippets: Option<String>,
     /// TransportServerTLS defines TransportServerTLS configuration for a TransportServer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<TransportServerTls>,
     /// UpstreamParameters defines parameters for an upstream.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "upstreamParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upstreamParameters")]
     pub upstream_parameters: Option<TransportServerUpstreamParameters>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub upstreams: Option<Vec<TransportServerUpstreams>>,
@@ -103,41 +78,17 @@ pub struct TransportServerTls {
 /// UpstreamParameters defines parameters for an upstream.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TransportServerUpstreamParameters {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeout")]
     pub connect_timeout: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nextUpstream"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nextUpstream")]
     pub next_upstream: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nextUpstreamTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nextUpstreamTimeout")]
     pub next_upstream_timeout: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nextUpstreamTries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nextUpstreamTries")]
     pub next_upstream_tries: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "udpRequests"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "udpRequests")]
     pub udp_requests: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "udpResponses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "udpResponses")]
     pub udp_responses: Option<i64>,
 }
 
@@ -146,30 +97,14 @@ pub struct TransportServerUpstreamParameters {
 pub struct TransportServerUpstreams {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub backup: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupPort")]
     pub backup_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failTimeout")]
     pub fail_timeout: Option<String>,
     /// TransportServerHealthCheck defines the parameters for active Upstream HealthChecks.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<TransportServerUpstreamsHealthCheck>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancingMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancingMethod")]
     pub load_balancing_method: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConns")]
     pub max_conns: Option<i64>,
@@ -224,3 +159,4 @@ pub struct TransportServerStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+

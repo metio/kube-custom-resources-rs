@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "model.kubedl.io",
-    version = "v1alpha1",
-    kind = "Model",
-    plural = "models"
-)]
+#[kube(group = "model.kubedl.io", version = "v1alpha1", kind = "Model", plural = "models")]
 #[kube(namespaced)]
 #[kube(status = "ModelStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ModelSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
@@ -28,11 +23,7 @@ pub struct ModelSpec {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModelStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "latestVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "latestVersion")]
     pub latest_version: Option<ModelStatusLatestVersion>,
 }
 
@@ -40,10 +31,7 @@ pub struct ModelStatus {
 pub struct ModelStatusLatestVersion {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageName")]
     pub image_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelVersion")]
     pub model_version: Option<String>,
 }
+

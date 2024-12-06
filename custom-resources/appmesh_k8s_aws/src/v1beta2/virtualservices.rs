@@ -4,30 +4,25 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// VirtualServiceSpec defines the desired state of VirtualService refers to https://docs.aws.amazon.com/app-mesh/latest/APIReference/API_VirtualServiceSpec.html
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "appmesh.k8s.aws",
-    version = "v1beta2",
-    kind = "VirtualService",
-    plural = "virtualservices"
-)]
+#[kube(group = "appmesh.k8s.aws", version = "v1beta2", kind = "VirtualService", plural = "virtualservices")]
 #[kube(namespaced)]
 #[kube(status = "VirtualServiceStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct VirtualServiceSpec {
     /// AWSName is the AppMesh VirtualService object's name. If unspecified or empty, it defaults to be "${name}.${namespace}" of k8s VirtualService
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsName")]
     pub aws_name: Option<String>,
-    /// A reference to k8s Mesh CR that this VirtualService belongs to. The admission controller populates it using Meshes's selector, and prevents users from setting this field.
+    /// A reference to k8s Mesh CR that this VirtualService belongs to. The admission controller populates it using Meshes's selector, and prevents users from setting this field. 
     ///  Populated by the system. Read-only.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "meshRef")]
     pub mesh_ref: Option<VirtualServiceMeshRef>,
@@ -36,7 +31,7 @@ pub struct VirtualServiceSpec {
     pub provider: Option<VirtualServiceProvider>,
 }
 
-/// A reference to k8s Mesh CR that this VirtualService belongs to. The admission controller populates it using Meshes's selector, and prevents users from setting this field.
+/// A reference to k8s Mesh CR that this VirtualService belongs to. The admission controller populates it using Meshes's selector, and prevents users from setting this field. 
 ///  Populated by the system. Read-only.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServiceMeshRef {
@@ -50,18 +45,10 @@ pub struct VirtualServiceMeshRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServiceProvider {
     /// The virtual node associated with a virtual service.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualNode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualNode")]
     pub virtual_node: Option<VirtualServiceProviderVirtualNode>,
     /// The virtual router associated with a virtual service.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualRouter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualRouter")]
     pub virtual_router: Option<VirtualServiceProviderVirtualRouter>,
 }
 
@@ -69,18 +56,10 @@ pub struct VirtualServiceProvider {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServiceProviderVirtualNode {
     /// Amazon Resource Name to AppMesh VirtualNode object that is acting as a service provider. Exactly one of 'virtualNodeRef' or 'virtualNodeARN' must be specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualNodeARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualNodeARN")]
     pub virtual_node_arn: Option<String>,
     /// Reference to Kubernetes VirtualNode CR in cluster that is acting as a service provider. Exactly one of 'virtualNodeRef' or 'virtualNodeARN' must be specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualNodeRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualNodeRef")]
     pub virtual_node_ref: Option<VirtualServiceProviderVirtualNodeVirtualNodeRef>,
 }
 
@@ -98,18 +77,10 @@ pub struct VirtualServiceProviderVirtualNodeVirtualNodeRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VirtualServiceProviderVirtualRouter {
     /// Amazon Resource Name to AppMesh VirtualRouter object that is acting as a service provider. Exactly one of 'virtualRouterRef' or 'virtualRouterARN' must be specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualRouterARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualRouterARN")]
     pub virtual_router_arn: Option<String>,
     /// Reference to Kubernetes VirtualRouter CR in cluster that is acting as a service provider. Exactly one of 'virtualRouterRef' or 'virtualRouterARN' must be specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualRouterRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualRouterRef")]
     pub virtual_router_ref: Option<VirtualServiceProviderVirtualRouterVirtualRouterRef>,
 }
 
@@ -130,17 +101,10 @@ pub struct VirtualServiceStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The generation observed by the VirtualService controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// VirtualServiceARN is the AppMesh VirtualService object's Amazon Resource Name.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualServiceARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualServiceARN")]
     pub virtual_service_arn: Option<String>,
 }
+

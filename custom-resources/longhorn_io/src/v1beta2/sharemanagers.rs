@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// ShareManagerSpec defines the desired state of the Longhorn share manager
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "longhorn.io",
-    version = "v1beta2",
-    kind = "ShareManager",
-    plural = "sharemanagers"
-)]
+#[kube(group = "longhorn.io", version = "v1beta2", kind = "ShareManager", plural = "sharemanagers")]
 #[kube(namespaced)]
 #[kube(status = "ShareManagerStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ShareManagerSpec {
     /// Share manager image used for creating a share manager pod
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -41,3 +36,4 @@ pub struct ShareManagerStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+

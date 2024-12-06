@@ -4,77 +4,44 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// TerraformSpec defines the desired state of Terraform
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "infra.contrib.fluxcd.io",
-    version = "v1alpha2",
-    kind = "Terraform",
-    plural = "terraforms"
-)]
+#[kube(group = "infra.contrib.fluxcd.io", version = "v1alpha2", kind = "Terraform", plural = "terraforms")]
 #[kube(namespaced)]
 #[kube(status = "TerraformStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct TerraformSpec {
     /// Clean the runner pod up after each reconciliation cycle
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "alwaysCleanupRunnerPod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "alwaysCleanupRunnerPod")]
     pub always_cleanup_runner_pod: Option<bool>,
     /// ApprovePlan specifies name of a plan wanted to approve.
     /// If its value is "auto", the controller will automatically approve every plan.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "approvePlan"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "approvePlan")]
     pub approve_plan: Option<String>,
     /// BackendConfigSpec is for specifying configuration for Terraform's Kubernetes backend
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backendConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendConfig")]
     pub backend_config: Option<TerraformBackendConfig>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backendConfigsFrom"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendConfigsFrom")]
     pub backend_configs_from: Option<Vec<TerraformBackendConfigsFrom>>,
     /// BranchPlanner configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "branchPlanner"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "branchPlanner")]
     pub branch_planner: Option<TerraformBranchPlanner>,
     /// BreakTheGlass specifies if the reconciliation should stop
     /// and allow interactive shell in case of emergency.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "breakTheGlass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "breakTheGlass")]
     pub break_the_glass: Option<bool>,
     /// SecretReference represents a Secret Reference. It has enough information to retrieve secret
     /// in any namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cliConfigSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cliConfigSecretRef")]
     pub cli_config_secret_ref: Option<TerraformCliConfigSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cloud: Option<TerraformCloud>,
@@ -85,58 +52,34 @@ pub struct TerraformSpec {
     pub destroy: Option<bool>,
     /// Create destroy plan and apply it to destroy terraform resources
     /// upon deletion of this object. Defaults to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "destroyResourcesOnDeletion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "destroyResourcesOnDeletion")]
     pub destroy_resources_on_deletion: Option<bool>,
     /// Disable automatic drift detection. Drift detection may be resource intensive in
     /// the context of a large cluster or complex Terraform statefile. Defaults to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableDriftDetection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableDriftDetection")]
     pub disable_drift_detection: Option<bool>,
     /// EnableInventory enables the object to store resource entries as the inventory for external use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableInventory"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableInventory")]
     pub enable_inventory: Option<bool>,
     /// Enterprise is the enterprise configuration placeholder.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enterprise: Option<serde_json::Value>,
     /// List of all configuration files to be created in initialization.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fileMappings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileMappings")]
     pub file_mappings: Option<Vec<TerraformFileMappings>>,
     /// Force instructs the controller to unconditionally
     /// re-plan and re-apply TF resources. Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub force: Option<bool>,
     /// List of health checks to be performed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthChecks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthChecks")]
     pub health_checks: Option<Vec<TerraformHealthChecks>>,
     /// The interval at which to reconcile the Terraform.
     pub interval: String,
     /// The maximum requeue duration after  a previously failed reconciliation.
     /// Only applicable when RetryStrategy is set to ExponentialBackoff.
     /// The default value is 24 hours when not specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRetryInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetryInterval")]
     pub max_retry_interval: Option<String>,
     /// Parallelism limits the number of concurrent operations of Terraform apply step. Zero (0) means using the default value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -149,18 +92,10 @@ pub struct TerraformSpec {
     /// phase.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "planOnly")]
     pub plan_only: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readInputsFromSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readInputsFromSecrets")]
     pub read_inputs_from_secrets: Option<Vec<TerraformReadInputsFromSecrets>>,
     /// RefreshBeforeApply forces refreshing of the state before the apply step.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshBeforeApply"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshBeforeApply")]
     pub refresh_before_apply: Option<bool>,
     /// Remediation specifies what the controller should do when reconciliation
     /// fails. The default is to not perform any action.
@@ -168,54 +103,30 @@ pub struct TerraformSpec {
     pub remediation: Option<TerraformRemediation>,
     /// The interval at which to retry a previously failed reconciliation.
     /// The default value is 15 when not specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<String>,
     /// The strategy to use when retrying a previously failed reconciliation.
     /// The default strategy is StaticInterval and the retry interval is based on the RetryInterval value.
     /// The ExponentialBackoff strategy uses the formula: 2^reconciliationFailures * RetryInterval with a
     /// maximum requeue duration of MaxRetryInterval.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryStrategy")]
     pub retry_strategy: Option<TerraformRetryStrategy>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runnerPodTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runnerPodTemplate")]
     pub runner_pod_template: Option<TerraformRunnerPodTemplate>,
     /// Configure the termination grace period for the runner pod. Use this parameter
     /// to allow the Terraform process to gracefully shutdown. Consider increasing for
     /// large, complex or slow-moving Terraform managed resources.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runnerTerminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runnerTerminationGracePeriodSeconds")]
     pub runner_termination_grace_period_seconds: Option<i64>,
     /// Name of a ServiceAccount for the runner Pod to provision Terraform resources.
     /// Default to tf-runner.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
     /// SourceRef is the reference of the source where the Terraform files are stored.
     #[serde(rename = "sourceRef")]
     pub source_ref: TerraformSourceRef,
     /// StoreReadablePlan enables storing the plan in a readable format.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storeReadablePlan"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storeReadablePlan")]
     pub store_readable_plan: Option<TerraformStoreReadablePlan>,
     /// Suspend is to tell the controller to suspend subsequent TF executions,
     /// it does not apply to already started executions. Defaults to false.
@@ -225,11 +136,7 @@ pub struct TerraformSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub targets: Option<Vec<String>>,
     /// TfVarsFiles loads all given .tfvars files. It copycats the -var-file functionality.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tfVarsFiles"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tfVarsFiles")]
     pub tf_vars_files: Option<Vec<String>>,
     /// TFStateSpec allows the user to set ForceUnlock
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -252,45 +159,25 @@ pub struct TerraformSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub workspace: Option<String>,
     /// A list of target secrets for the outputs to be written as.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "writeOutputsToSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeOutputsToSecret")]
     pub write_outputs_to_secret: Option<TerraformWriteOutputsToSecret>,
 }
 
 /// BackendConfigSpec is for specifying configuration for Terraform's Kubernetes backend
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TerraformBackendConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configPath")]
     pub config_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customConfiguration")]
     pub custom_configuration: Option<String>,
     /// Disable is to completely disable the backend configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disable: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inClusterConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inClusterConfig")]
     pub in_cluster_config: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretSuffix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretSuffix")]
     pub secret_suffix: Option<String>,
 }
 
@@ -323,11 +210,7 @@ pub struct TerraformBranchPlanner {
     /// EnablePathScope specifies if the Branch Planner should or shouldn't check
     /// if a Pull Request has changes under `.spec.path`. If enabled extra
     /// resources will be created only if there are any changes in terraform files.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enablePathScope"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enablePathScope")]
     pub enable_path_scope: Option<bool>,
 }
 
@@ -500,55 +383,31 @@ pub struct TerraformRunnerPodTemplateSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envFrom")]
     pub env_from: Option<Vec<TerraformRunnerPodTemplateSpecEnvFrom>>,
     /// Set host aliases for the Runner Pod
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostAliases"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<TerraformRunnerPodTemplateSpecHostAliases>>,
     /// Runner pod image to use other than default
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Set up Init Containers for the Runner
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<TerraformRunnerPodTemplateSpecInitContainers>>,
     /// Set the NodeSelector for the Runner Pod
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Set PriorityClassName for the Runner Pod container
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// Set Resources for the Runner Pod container
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<TerraformRunnerPodTemplateSpecResources>,
     /// Set SecurityContext for the Runner Pod container
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<TerraformRunnerPodTemplateSpecSecurityContext>,
     /// Set the Tolerations for the Runner Pod
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<TerraformRunnerPodTemplateSpecTolerations>>,
     /// Set Volume Mounts for the Runner Pod
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<TerraformRunnerPodTemplateSpecVolumeMounts>>,
     /// Set Volumes for the Runner Pod
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -559,25 +418,13 @@ pub struct TerraformRunnerPodTemplateSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TerraformRunnerPodTemplateSpecAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<TerraformRunnerPodTemplateSpecAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<TerraformRunnerPodTemplateSpecAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<TerraformRunnerPodTemplateSpecAffinityPodAntiAffinity>,
 }
 
@@ -628,8 +475,7 @@ pub struct TerraformRunnerPodTemplateSpecAffinityNodeAffinityPreferredDuringSche
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TerraformRunnerPodTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct TerraformRunnerPodTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -647,8 +493,7 @@ pub struct TerraformRunnerPodTemplateSpecAffinityNodeAffinityPreferredDuringSche
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TerraformRunnerPodTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct TerraformRunnerPodTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -691,8 +536,7 @@ pub struct TerraformRunnerPodTemplateSpecAffinityNodeAffinityRequiredDuringSched
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TerraformRunnerPodTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct TerraformRunnerPodTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -710,8 +554,7 @@ pub struct TerraformRunnerPodTemplateSpecAffinityNodeAffinityRequiredDuringSched
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TerraformRunnerPodTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct TerraformRunnerPodTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -830,8 +673,7 @@ pub struct TerraformRunnerPodTemplateSpecAffinityPodAffinityPreferredDuringSched
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TerraformRunnerPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct TerraformRunnerPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -865,8 +707,7 @@ pub struct TerraformRunnerPodTemplateSpecAffinityPodAffinityPreferredDuringSched
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TerraformRunnerPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct TerraformRunnerPodTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -953,8 +794,7 @@ pub struct TerraformRunnerPodTemplateSpecAffinityPodAffinityRequiredDuringSchedu
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TerraformRunnerPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct TerraformRunnerPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -988,8 +828,7 @@ pub struct TerraformRunnerPodTemplateSpecAffinityPodAffinityRequiredDuringSchedu
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TerraformRunnerPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct TerraformRunnerPodTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1107,8 +946,7 @@ pub struct TerraformRunnerPodTemplateSpecAffinityPodAntiAffinityPreferredDuringS
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TerraformRunnerPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct TerraformRunnerPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1142,8 +980,7 @@ pub struct TerraformRunnerPodTemplateSpecAffinityPodAntiAffinityPreferredDuringS
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TerraformRunnerPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct TerraformRunnerPodTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1230,8 +1067,7 @@ pub struct TerraformRunnerPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSc
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TerraformRunnerPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct TerraformRunnerPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1265,8 +1101,7 @@ pub struct TerraformRunnerPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSc
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TerraformRunnerPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct TerraformRunnerPodTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1305,11 +1140,7 @@ pub struct TerraformRunnerPodTemplateSpecEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TerraformRunnerPodTemplateSpecEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<TerraformRunnerPodTemplateSpecEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -1317,18 +1148,10 @@ pub struct TerraformRunnerPodTemplateSpecEnvValueFrom {
     pub field_ref: Option<TerraformRunnerPodTemplateSpecEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<TerraformRunnerPodTemplateSpecEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<TerraformRunnerPodTemplateSpecEnvValueFromSecretKeyRef>,
 }
 
@@ -1356,11 +1179,7 @@ pub struct TerraformRunnerPodTemplateSpecEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TerraformRunnerPodTemplateSpecEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -1372,11 +1191,7 @@ pub struct TerraformRunnerPodTemplateSpecEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TerraformRunnerPodTemplateSpecEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1408,11 +1223,7 @@ pub struct TerraformRunnerPodTemplateSpecEnvValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TerraformRunnerPodTemplateSpecEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<TerraformRunnerPodTemplateSpecEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1513,11 +1324,7 @@ pub struct TerraformRunnerPodTemplateSpecInitContainers {
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Actions that the management system should take in response to container lifecycle events.
     /// Cannot be updated.
@@ -1527,11 +1334,7 @@ pub struct TerraformRunnerPodTemplateSpecInitContainers {
     /// Container will be restarted if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<TerraformRunnerPodTemplateSpecInitContainersLivenessProbe>,
     /// Name of the container specified as a DNS_LABEL.
     /// Each container in a pod must have a unique name (DNS_LABEL).
@@ -1550,18 +1353,10 @@ pub struct TerraformRunnerPodTemplateSpecInitContainers {
     /// Container will be removed from service endpoints if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<TerraformRunnerPodTemplateSpecInitContainersReadinessProbe>,
     /// Resources resize policy for the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resizePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
     pub resize_policy: Option<Vec<TerraformRunnerPodTemplateSpecInitContainersResizePolicy>>,
     /// Compute Resources required by this container.
     /// Cannot be updated.
@@ -1583,20 +1378,12 @@ pub struct TerraformRunnerPodTemplateSpecInitContainers {
     /// container. Instead, the next init container starts immediately after this
     /// init container is started, or after any startupProbe has successfully
     /// completed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     /// SecurityContext defines the security options the container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<TerraformRunnerPodTemplateSpecInitContainersSecurityContext>,
     /// StartupProbe indicates that the Pod has successfully initialized.
     /// If specified, no other probes are executed until this completes successfully.
@@ -1605,11 +1392,7 @@ pub struct TerraformRunnerPodTemplateSpecInitContainers {
     /// when it might take a long time to load data or warm a cache, than during steady-state operation.
     /// This cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<TerraformRunnerPodTemplateSpecInitContainersStartupProbe>,
     /// Whether this container should allocate a buffer for stdin in the container runtime. If this
     /// is not set, reads from stdin in the container will always result in EOF.
@@ -1632,11 +1415,7 @@ pub struct TerraformRunnerPodTemplateSpecInitContainers {
     /// all containers will be limited to 12kb.
     /// Defaults to /dev/termination-log.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
     /// Indicate how the termination message should be populated. File will use the contents of
     /// terminationMessagePath to populate the container status message on both success and failure.
@@ -1645,40 +1424,24 @@ pub struct TerraformRunnerPodTemplateSpecInitContainers {
     /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
     /// Defaults to File.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
     /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
     /// volumeDevices is the list of block devices to be used by the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
     pub volume_devices: Option<Vec<TerraformRunnerPodTemplateSpecInitContainersVolumeDevices>>,
     /// Pod volumes to mount into the container's filesystem.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<TerraformRunnerPodTemplateSpecInitContainersVolumeMounts>>,
     /// Container's working directory.
     /// If not specified, the container runtime's default will be used, which
     /// might be configured in the container image.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -1707,34 +1470,19 @@ pub struct TerraformRunnerPodTemplateSpecInitContainersEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TerraformRunnerPodTemplateSpecInitContainersEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<TerraformRunnerPodTemplateSpecInitContainersEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<TerraformRunnerPodTemplateSpecInitContainersEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<TerraformRunnerPodTemplateSpecInitContainersEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<TerraformRunnerPodTemplateSpecInitContainersEnvValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<TerraformRunnerPodTemplateSpecInitContainersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<TerraformRunnerPodTemplateSpecInitContainersEnvValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<TerraformRunnerPodTemplateSpecInitContainersEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
@@ -1761,11 +1509,7 @@ pub struct TerraformRunnerPodTemplateSpecInitContainersEnvValueFromConfigMapKeyR
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TerraformRunnerPodTemplateSpecInitContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -1777,11 +1521,7 @@ pub struct TerraformRunnerPodTemplateSpecInitContainersEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TerraformRunnerPodTemplateSpecInitContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1813,11 +1553,7 @@ pub struct TerraformRunnerPodTemplateSpecInitContainersEnvValueFromSecretKeyRef 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TerraformRunnerPodTemplateSpecInitContainersEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<TerraformRunnerPodTemplateSpecInitContainersEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1926,14 +1662,8 @@ pub struct TerraformRunnerPodTemplateSpecInitContainersLifecyclePostStartHttpGet
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<TerraformRunnerPodTemplateSpecInitContainersLifecyclePostStartHttpGetHttpHeaders>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<TerraformRunnerPodTemplateSpecInitContainersLifecyclePostStartHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -2025,13 +1755,8 @@ pub struct TerraformRunnerPodTemplateSpecInitContainersLifecyclePreStopHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<TerraformRunnerPodTemplateSpecInitContainersLifecyclePreStopHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<TerraformRunnerPodTemplateSpecInitContainersLifecyclePreStopHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -2087,11 +1812,7 @@ pub struct TerraformRunnerPodTemplateSpecInitContainersLivenessProbe {
     pub exec: Option<TerraformRunnerPodTemplateSpecInitContainersLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2101,27 +1822,15 @@ pub struct TerraformRunnerPodTemplateSpecInitContainersLivenessProbe {
     pub http_get: Option<TerraformRunnerPodTemplateSpecInitContainersLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -2136,20 +1845,12 @@ pub struct TerraformRunnerPodTemplateSpecInitContainersLivenessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2172,8 +1873,8 @@ pub struct TerraformRunnerPodTemplateSpecInitContainersLivenessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -2187,13 +1888,8 @@ pub struct TerraformRunnerPodTemplateSpecInitContainersLivenessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<TerraformRunnerPodTemplateSpecInitContainersLivenessProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<TerraformRunnerPodTemplateSpecInitContainersLivenessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -2267,11 +1963,7 @@ pub struct TerraformRunnerPodTemplateSpecInitContainersReadinessProbe {
     pub exec: Option<TerraformRunnerPodTemplateSpecInitContainersReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2281,27 +1973,15 @@ pub struct TerraformRunnerPodTemplateSpecInitContainersReadinessProbe {
     pub http_get: Option<TerraformRunnerPodTemplateSpecInitContainersReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -2316,20 +1996,12 @@ pub struct TerraformRunnerPodTemplateSpecInitContainersReadinessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2352,8 +2024,8 @@ pub struct TerraformRunnerPodTemplateSpecInitContainersReadinessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -2367,13 +2039,8 @@ pub struct TerraformRunnerPodTemplateSpecInitContainersReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<TerraformRunnerPodTemplateSpecInitContainersReadinessProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<TerraformRunnerPodTemplateSpecInitContainersReadinessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -2429,12 +2096,12 @@ pub struct TerraformRunnerPodTemplateSpecInitContainersResizePolicy {
 pub struct TerraformRunnerPodTemplateSpecInitContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<TerraformRunnerPodTemplateSpecInitContainersResourcesClaims>>,
@@ -2471,28 +2138,18 @@ pub struct TerraformRunnerPodTemplateSpecInitContainersSecurityContext {
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
     /// overrides the pod's appArmorProfile.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appArmorProfile"
-    )]
-    pub app_armor_profile:
-        Option<TerraformRunnerPodTemplateSpecInitContainersSecurityContextAppArmorProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<TerraformRunnerPodTemplateSpecInitContainersSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub capabilities:
-        Option<TerraformRunnerPodTemplateSpecInitContainersSecurityContextCapabilities>,
+    pub capabilities: Option<TerraformRunnerPodTemplateSpecInitContainersSecurityContextCapabilities>,
     /// Run container in privileged mode.
     /// Processes in privileged containers are essentially equivalent to root on the host.
     /// Defaults to false.
@@ -2509,22 +2166,14 @@ pub struct TerraformRunnerPodTemplateSpecInitContainersSecurityContext {
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -2532,11 +2181,7 @@ pub struct TerraformRunnerPodTemplateSpecInitContainersSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -2550,35 +2195,20 @@ pub struct TerraformRunnerPodTemplateSpecInitContainersSecurityContext {
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options:
-        Option<TerraformRunnerPodTemplateSpecInitContainersSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<TerraformRunnerPodTemplateSpecInitContainersSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile:
-        Option<TerraformRunnerPodTemplateSpecInitContainersSecurityContextSeccompProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<TerraformRunnerPodTemplateSpecInitContainersSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options:
-        Option<TerraformRunnerPodTemplateSpecInitContainersSecurityContextWindowsOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<TerraformRunnerPodTemplateSpecInitContainersSecurityContextWindowsOptions>,
 }
 
 /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
@@ -2590,11 +2220,7 @@ pub struct TerraformRunnerPodTemplateSpecInitContainersSecurityContextAppArmorPr
     /// The profile must be preconfigured on the node to work.
     /// Must match the loaded name of the profile.
     /// Must be set if and only if type is "Localhost".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of AppArmor profile will be applied.
     /// Valid options are:
@@ -2649,16 +2275,12 @@ pub struct TerraformRunnerPodTemplateSpecInitContainersSecurityContextSeccompPro
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -2675,38 +2297,22 @@ pub struct TerraformRunnerPodTemplateSpecInitContainersSecurityContextWindowsOpt
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -2724,11 +2330,7 @@ pub struct TerraformRunnerPodTemplateSpecInitContainersStartupProbe {
     pub exec: Option<TerraformRunnerPodTemplateSpecInitContainersStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2738,27 +2340,15 @@ pub struct TerraformRunnerPodTemplateSpecInitContainersStartupProbe {
     pub http_get: Option<TerraformRunnerPodTemplateSpecInitContainersStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -2773,20 +2363,12 @@ pub struct TerraformRunnerPodTemplateSpecInitContainersStartupProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2809,8 +2391,8 @@ pub struct TerraformRunnerPodTemplateSpecInitContainersStartupProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -2824,13 +2406,8 @@ pub struct TerraformRunnerPodTemplateSpecInitContainersStartupProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<TerraformRunnerPodTemplateSpecInitContainersStartupProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<TerraformRunnerPodTemplateSpecInitContainersStartupProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -2889,11 +2466,7 @@ pub struct TerraformRunnerPodTemplateSpecInitContainersVolumeMounts {
     /// This field is beta in 1.10.
     /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
     /// (which defaults to None).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -2903,29 +2476,25 @@ pub struct TerraformRunnerPodTemplateSpecInitContainersVolumeMounts {
     pub read_only: Option<bool>,
     /// RecursiveReadOnly specifies whether read-only mounts should be handled
     /// recursively.
-    ///
-    ///
+    /// 
+    /// 
     /// If ReadOnly is false, this field has no meaning and must be unspecified.
-    ///
-    ///
+    /// 
+    /// 
     /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
     /// recursively read-only.  If this field is set to IfPossible, the mount is made
     /// recursively read-only, if it is supported by the container runtime.  If this
     /// field is set to Enabled, the mount is made recursively read-only if it is
     /// supported by the container runtime, otherwise the pod will not be started and
     /// an error will be generated to indicate the reason.
-    ///
-    ///
+    /// 
+    /// 
     /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
     /// None (or be unspecified, which defaults to None).
-    ///
-    ///
+    /// 
+    /// 
     /// If this field is not specified, it is treated as an equivalent of Disabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recursiveReadOnly"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
     pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
@@ -2935,11 +2504,7 @@ pub struct TerraformRunnerPodTemplateSpecInitContainersVolumeMounts {
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -2948,12 +2513,12 @@ pub struct TerraformRunnerPodTemplateSpecInitContainersVolumeMounts {
 pub struct TerraformRunnerPodTemplateSpecResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<TerraformRunnerPodTemplateSpecResourcesClaims>>,
@@ -2988,20 +2553,12 @@ pub struct TerraformRunnerPodTemplateSpecSecurityContext {
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
     /// overrides the pod's appArmorProfile.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appArmorProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
     pub app_armor_profile: Option<TerraformRunnerPodTemplateSpecSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
@@ -3024,22 +2581,14 @@ pub struct TerraformRunnerPodTemplateSpecSecurityContext {
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -3047,11 +2596,7 @@ pub struct TerraformRunnerPodTemplateSpecSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -3065,31 +2610,19 @@ pub struct TerraformRunnerPodTemplateSpecSecurityContext {
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<TerraformRunnerPodTemplateSpecSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<TerraformRunnerPodTemplateSpecSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<TerraformRunnerPodTemplateSpecSecurityContextWindowsOptions>,
 }
 
@@ -3102,11 +2635,7 @@ pub struct TerraformRunnerPodTemplateSpecSecurityContextAppArmorProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must match the loaded name of the profile.
     /// Must be set if and only if type is "Localhost".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of AppArmor profile will be applied.
     /// Valid options are:
@@ -3161,16 +2690,12 @@ pub struct TerraformRunnerPodTemplateSpecSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -3187,38 +2712,22 @@ pub struct TerraformRunnerPodTemplateSpecSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -3244,11 +2753,7 @@ pub struct TerraformRunnerPodTemplateSpecTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -3269,11 +2774,7 @@ pub struct TerraformRunnerPodTemplateSpecVolumeMounts {
     /// This field is beta in 1.10.
     /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
     /// (which defaults to None).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -3283,29 +2784,25 @@ pub struct TerraformRunnerPodTemplateSpecVolumeMounts {
     pub read_only: Option<bool>,
     /// RecursiveReadOnly specifies whether read-only mounts should be handled
     /// recursively.
-    ///
-    ///
+    /// 
+    /// 
     /// If ReadOnly is false, this field has no meaning and must be unspecified.
-    ///
-    ///
+    /// 
+    /// 
     /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
     /// recursively read-only.  If this field is set to IfPossible, the mount is made
     /// recursively read-only, if it is supported by the container runtime.  If this
     /// field is set to Enabled, the mount is made recursively read-only if it is
     /// supported by the container runtime, otherwise the pod will not be started and
     /// an error will be generated to indicate the reason.
-    ///
-    ///
+    /// 
+    /// 
     /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
     /// None (or be unspecified, which defaults to None).
-    ///
-    ///
+    /// 
+    /// 
     /// If this field is not specified, it is treated as an equivalent of Disabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recursiveReadOnly"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
     pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
@@ -3315,11 +2812,7 @@ pub struct TerraformRunnerPodTemplateSpecVolumeMounts {
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -3329,11 +2822,7 @@ pub struct TerraformRunnerPodTemplateSpecVolumes {
     /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsElasticBlockStore"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
     pub aws_elastic_block_store: Option<TerraformRunnerPodTemplateSpecVolumesAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
@@ -3355,11 +2844,7 @@ pub struct TerraformRunnerPodTemplateSpecVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<TerraformRunnerPodTemplateSpecVolumesCsi>,
     /// downwardAPI represents downward API about the pod that should populate this volume
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<TerraformRunnerPodTemplateSpecVolumesDownwardApi>,
     /// emptyDir represents a temporary directory that shares a pod's lifetime.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
@@ -3368,8 +2853,8 @@ pub struct TerraformRunnerPodTemplateSpecVolumes {
     /// ephemeral represents a volume that is handled by a cluster storage driver.
     /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
     /// and deleted when the pod is removed.
-    ///
-    ///
+    /// 
+    /// 
     /// Use this if:
     /// a) the volume is only needed while the pod runs,
     /// b) features of normal volumes like restoring from snapshot or capacity
@@ -3379,18 +2864,18 @@ pub struct TerraformRunnerPodTemplateSpecVolumes {
     ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
     ///    information on the connection between this volume type
     ///    and PersistentVolumeClaim).
-    ///
-    ///
+    /// 
+    /// 
     /// Use PersistentVolumeClaim or one of the vendor-specific
     /// APIs for volumes that persist for longer than the lifecycle
     /// of an individual pod.
-    ///
-    ///
+    /// 
+    /// 
     /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
     /// be used that way - see the documentation of the driver for
     /// more information.
-    ///
-    ///
+    /// 
+    /// 
     /// A pod can use both types of ephemeral volumes and
     /// persistent volumes at the same time.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3400,11 +2885,7 @@ pub struct TerraformRunnerPodTemplateSpecVolumes {
     pub fc: Option<TerraformRunnerPodTemplateSpecVolumesFc>,
     /// flexVolume represents a generic volume resource that is
     /// provisioned/attached using an exec based plugin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flexVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<TerraformRunnerPodTemplateSpecVolumesFlexVolume>,
     /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3412,11 +2893,7 @@ pub struct TerraformRunnerPodTemplateSpecVolumes {
     /// gcePersistentDisk represents a GCE Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gcePersistentDisk"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
     pub gce_persistent_disk: Option<TerraformRunnerPodTemplateSpecVolumesGcePersistentDisk>,
     /// gitRepo represents a git repository at a particular revision.
     /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
@@ -3454,25 +2931,13 @@ pub struct TerraformRunnerPodTemplateSpecVolumes {
     /// persistentVolumeClaimVolumeSource represents a reference to a
     /// PersistentVolumeClaim in the same namespace.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<TerraformRunnerPodTemplateSpecVolumesPersistentVolumeClaim>,
     /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "photonPersistentDisk"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
     pub photon_persistent_disk: Option<TerraformRunnerPodTemplateSpecVolumesPhotonPersistentDisk>,
     /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portworxVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
     pub portworx_volume: Option<TerraformRunnerPodTemplateSpecVolumesPortworxVolume>,
     /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3495,11 +2960,7 @@ pub struct TerraformRunnerPodTemplateSpecVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storageos: Option<TerraformRunnerPodTemplateSpecVolumesStorageos>,
     /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vsphereVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
     pub vsphere_volume: Option<TerraformRunnerPodTemplateSpecVolumesVsphereVolume>,
 }
 
@@ -3535,11 +2996,7 @@ pub struct TerraformRunnerPodTemplateSpecVolumesAwsElasticBlockStore {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TerraformRunnerPodTemplateSpecVolumesAzureDisk {
     /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachingMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
     pub caching_mode: Option<String>,
     /// diskName is the Name of the data disk in the blob storage
     #[serde(rename = "diskName")]
@@ -3592,11 +3049,7 @@ pub struct TerraformRunnerPodTemplateSpecVolumesCephfs {
     pub read_only: Option<bool>,
     /// secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
     pub secret_file: Option<String>,
     /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
@@ -3673,11 +3126,7 @@ pub struct TerraformRunnerPodTemplateSpecVolumesConfigMap {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items if unspecified, each key-value pair in the Data field of the referenced
     /// ConfigMap will be projected into the volume as a file whose name is the
@@ -3738,24 +3187,15 @@ pub struct TerraformRunnerPodTemplateSpecVolumesCsi {
     /// NodePublishVolume and NodeUnpublishVolume calls.
     /// This field is optional, and  may be empty if no secret is required. If the
     /// secret object contains more than one secret, all secret references are passed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePublishSecretRef"
-    )]
-    pub node_publish_secret_ref:
-        Option<TerraformRunnerPodTemplateSpecVolumesCsiNodePublishSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
+    pub node_publish_secret_ref: Option<TerraformRunnerPodTemplateSpecVolumesCsiNodePublishSecretRef>,
     /// readOnly specifies a read-only configuration for the volume.
     /// Defaults to false (read/write).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// volumeAttributes stores driver-specific properties that are passed to the CSI
     /// driver. Consult your driver's documentation for supported values.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
@@ -3788,11 +3228,7 @@ pub struct TerraformRunnerPodTemplateSpecVolumesDownwardApi {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// Items is a list of downward API volume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3817,24 +3253,15 @@ pub struct TerraformRunnerPodTemplateSpecVolumesDownwardApiItems {
     pub path: String,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<TerraformRunnerPodTemplateSpecVolumesDownwardApiItemsResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<TerraformRunnerPodTemplateSpecVolumesDownwardApiItemsResourceFieldRef>,
 }
 
 /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TerraformRunnerPodTemplateSpecVolumesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -3846,11 +3273,7 @@ pub struct TerraformRunnerPodTemplateSpecVolumesDownwardApiItemsFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TerraformRunnerPodTemplateSpecVolumesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3882,8 +3305,8 @@ pub struct TerraformRunnerPodTemplateSpecVolumesEmptyDir {
 /// ephemeral represents a volume that is handled by a cluster storage driver.
 /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
 /// and deleted when the pod is removed.
-///
-///
+/// 
+/// 
 /// Use this if:
 /// a) the volume is only needed while the pod runs,
 /// b) features of normal volumes like restoring from snapshot or capacity
@@ -3893,18 +3316,18 @@ pub struct TerraformRunnerPodTemplateSpecVolumesEmptyDir {
 ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
 ///    information on the connection between this volume type
 ///    and PersistentVolumeClaim).
-///
-///
+/// 
+/// 
 /// Use PersistentVolumeClaim or one of the vendor-specific
 /// APIs for volumes that persist for longer than the lifecycle
 /// of an individual pod.
-///
-///
+/// 
+/// 
 /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
 /// be used that way - see the documentation of the driver for
 /// more information.
-///
-///
+/// 
+/// 
 /// A pod can use both types of ephemeral volumes and
 /// persistent volumes at the same time.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3916,8 +3339,8 @@ pub struct TerraformRunnerPodTemplateSpecVolumesEphemeral {
     /// `<volume name>` is the name from the `PodSpec.Volumes` array
     /// entry. Pod validation will reject the pod if the concatenated name
     /// is not valid for a PVC (for example, too long).
-    ///
-    ///
+    /// 
+    /// 
     /// An existing PVC with that name that is not owned by the pod
     /// will *not* be used for the pod to avoid using an unrelated
     /// volume by mistake. Starting the pod is then blocked until
@@ -3926,20 +3349,15 @@ pub struct TerraformRunnerPodTemplateSpecVolumesEphemeral {
     /// owner reference to the pod once the pod exists. Normally
     /// this should not be necessary, but it may be useful when
     /// manually reconstructing a broken cluster.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is read-only and no changes will be made by Kubernetes
     /// to the PVC after it has been created.
-    ///
-    ///
+    /// 
+    /// 
     /// Required, must not be nil.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimTemplate"
-    )]
-    pub volume_claim_template:
-        Option<TerraformRunnerPodTemplateSpecVolumesEphemeralVolumeClaimTemplate>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
+    pub volume_claim_template: Option<TerraformRunnerPodTemplateSpecVolumesEphemeralVolumeClaimTemplate>,
 }
 
 /// Will be used to create a stand-alone PVC to provision the volume.
@@ -3949,8 +3367,8 @@ pub struct TerraformRunnerPodTemplateSpecVolumesEphemeral {
 /// `<volume name>` is the name from the `PodSpec.Volumes` array
 /// entry. Pod validation will reject the pod if the concatenated name
 /// is not valid for a PVC (for example, too long).
-///
-///
+/// 
+/// 
 /// An existing PVC with that name that is not owned by the pod
 /// will *not* be used for the pod to avoid using an unrelated
 /// volume by mistake. Starting the pod is then blocked until
@@ -3959,12 +3377,12 @@ pub struct TerraformRunnerPodTemplateSpecVolumesEphemeral {
 /// owner reference to the pod once the pod exists. Normally
 /// this should not be necessary, but it may be useful when
 /// manually reconstructing a broken cluster.
-///
-///
+/// 
+/// 
 /// This field is read-only and no changes will be made by Kubernetes
 /// to the PVC after it has been created.
-///
-///
+/// 
+/// 
 /// Required, must not be nil.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TerraformRunnerPodTemplateSpecVolumesEphemeralVolumeClaimTemplate {
@@ -3984,7 +3402,8 @@ pub struct TerraformRunnerPodTemplateSpecVolumesEphemeralVolumeClaimTemplate {
 /// when creating it. No other fields are allowed and will be rejected during
 /// validation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TerraformRunnerPodTemplateSpecVolumesEphemeralVolumeClaimTemplateMetadata {}
+pub struct TerraformRunnerPodTemplateSpecVolumesEphemeralVolumeClaimTemplateMetadata {
+}
 
 /// The specification for the PersistentVolumeClaim. The entire content is
 /// copied unchanged into the PVC that gets created from this
@@ -3994,11 +3413,7 @@ pub struct TerraformRunnerPodTemplateSpecVolumesEphemeralVolumeClaimTemplateMeta
 pub struct TerraformRunnerPodTemplateSpecVolumesEphemeralVolumeClaimTemplateSpec {
     /// accessModes contains the desired access modes the volume should have.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// dataSource field can be used to specify either:
     /// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
@@ -4008,13 +3423,8 @@ pub struct TerraformRunnerPodTemplateSpecVolumesEphemeralVolumeClaimTemplateSpec
     /// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
     /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
     /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSource"
-    )]
-    pub data_source:
-        Option<TerraformRunnerPodTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
+    pub data_source: Option<TerraformRunnerPodTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
     /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
     /// volume is desired. This may be any object from a non-empty API group (non
     /// core object) or a PersistentVolumeClaim object.
@@ -4038,32 +3448,21 @@ pub struct TerraformRunnerPodTemplateSpecVolumesEphemeralVolumeClaimTemplateSpec
     ///   in any namespaces.
     /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
     /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSourceRef"
-    )]
-    pub data_source_ref:
-        Option<TerraformRunnerPodTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
+    pub data_source_ref: Option<TerraformRunnerPodTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
     /// resources represents the minimum resources the volume should have.
     /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
     /// that are lower than previous value but must still be higher than capacity recorded in the
     /// status field of the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources:
-        Option<TerraformRunnerPodTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecResources>,
+    pub resources: Option<TerraformRunnerPodTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecResources>,
     /// selector is a label query over volumes to consider for binding.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub selector:
-        Option<TerraformRunnerPodTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecSelector>,
+    pub selector: Option<TerraformRunnerPodTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecSelector>,
     /// storageClassName is the name of the StorageClass required by the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
     /// If specified, the CSI driver will create or update the volume with the attributes defined
@@ -4077,26 +3476,14 @@ pub struct TerraformRunnerPodTemplateSpecVolumesEphemeralVolumeClaimTemplateSpec
     /// exists.
     /// More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
     /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributesClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
     /// Value of Filesystem is implied when not included in claim spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     /// volumeName is the binding reference to the PersistentVolume backing this claim.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -4197,8 +3584,7 @@ pub struct TerraformRunnerPodTemplateSpecVolumesEphemeralVolumeClaimTemplateSpec
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TerraformRunnerPodTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions
-{
+pub struct TerraformRunnerPodTemplateSpecVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4229,11 +3615,7 @@ pub struct TerraformRunnerPodTemplateSpecVolumesFc {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// targetWWNs is Optional: FC target worldwide names (WWNs)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetWWNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
     pub target_ww_ns: Option<Vec<String>>,
     /// wwids Optional: FC volume world wide identifiers (wwids)
     /// Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
@@ -4291,18 +3673,10 @@ pub struct TerraformRunnerPodTemplateSpecVolumesFlexVolumeSecretRef {
 pub struct TerraformRunnerPodTemplateSpecVolumesFlocker {
     /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
     /// should be considered as deprecated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
     pub dataset_name: Option<String>,
     /// datasetUUID is the UUID of the dataset. This is unique identifier of a Flocker dataset
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetUUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
     pub dataset_uuid: Option<String>,
 }
 
@@ -4399,18 +3773,10 @@ pub struct TerraformRunnerPodTemplateSpecVolumesHostPath {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TerraformRunnerPodTemplateSpecVolumesIscsi {
     /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthDiscovery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
     /// chapAuthSession defines whether support iSCSI Session CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthSession"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
     pub chap_auth_session: Option<bool>,
     /// fsType is the filesystem type of the volume that you want to mount.
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
@@ -4422,21 +3788,13 @@ pub struct TerraformRunnerPodTemplateSpecVolumesIscsi {
     /// initiatorName is the custom iSCSI Initiator Name.
     /// If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface
     /// <target portal>:<volume name> will be created for the connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initiatorName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
     pub initiator_name: Option<String>,
     /// iqn is the target iSCSI Qualified Name.
     pub iqn: String,
     /// iscsiInterface is the interface Name that uses an iSCSI transport.
     /// Defaults to 'default' (tcp).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "iscsiInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
     pub iscsi_interface: Option<String>,
     /// lun represents iSCSI Target Lun number.
     pub lun: i32,
@@ -4542,11 +3900,7 @@ pub struct TerraformRunnerPodTemplateSpecVolumesProjected {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// sources is the list of volume projections
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4558,61 +3912,47 @@ pub struct TerraformRunnerPodTemplateSpecVolumesProjected {
 pub struct TerraformRunnerPodTemplateSpecVolumesProjectedSources {
     /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
     /// of ClusterTrustBundle objects in an auto-updating file.
-    ///
-    ///
+    /// 
+    /// 
     /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// ClusterTrustBundle objects can either be selected by name, or by the
     /// combination of signer name and a label selector.
-    ///
-    ///
+    /// 
+    /// 
     /// Kubelet performs aggressive normalization of the PEM contents written
     /// into the pod filesystem.  Esoteric PEM features such as inter-block
     /// comments and block headers are stripped.  Certificates are deduplicated.
     /// The ordering of certificates within the file is arbitrary, and Kubelet
     /// may change the order over time.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterTrustBundle"
-    )]
-    pub cluster_trust_bundle:
-        Option<TerraformRunnerPodTemplateSpecVolumesProjectedSourcesClusterTrustBundle>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<TerraformRunnerPodTemplateSpecVolumesProjectedSourcesClusterTrustBundle>,
     /// configMap information about the configMap data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<TerraformRunnerPodTemplateSpecVolumesProjectedSourcesConfigMap>,
     /// downwardAPI information about the downwardAPI data to project
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<TerraformRunnerPodTemplateSpecVolumesProjectedSourcesDownwardApi>,
     /// secret information about the secret data to project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<TerraformRunnerPodTemplateSpecVolumesProjectedSourcesSecret>,
     /// serviceAccountToken is information about the serviceAccountToken data to project
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountToken"
-    )]
-    pub service_account_token:
-        Option<TerraformRunnerPodTemplateSpecVolumesProjectedSourcesServiceAccountToken>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
+    pub service_account_token: Option<TerraformRunnerPodTemplateSpecVolumesProjectedSourcesServiceAccountToken>,
 }
 
 /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
 /// of ClusterTrustBundle objects in an auto-updating file.
-///
-///
+/// 
+/// 
 /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-///
-///
+/// 
+/// 
 /// ClusterTrustBundle objects can either be selected by name, or by the
 /// combination of signer name and a label selector.
-///
-///
+/// 
+/// 
 /// Kubelet performs aggressive normalization of the PEM contents written
 /// into the pod filesystem.  Esoteric PEM features such as inter-block
 /// comments and block headers are stripped.  Certificates are deduplicated.
@@ -4624,14 +3964,8 @@ pub struct TerraformRunnerPodTemplateSpecVolumesProjectedSourcesClusterTrustBund
     /// effect if signerName is set.  Mutually-exclusive with name.  If unset,
     /// interpreted as "match nothing".  If set but empty, interpreted as "match
     /// everything".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector: Option<
-        TerraformRunnerPodTemplateSpecVolumesProjectedSourcesClusterTrustBundleLabelSelector,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<TerraformRunnerPodTemplateSpecVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
     /// Select a single ClusterTrustBundle by object name.  Mutually-exclusive
     /// with signerName and labelSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4648,11 +3982,7 @@ pub struct TerraformRunnerPodTemplateSpecVolumesProjectedSourcesClusterTrustBund
     /// Select all ClusterTrustBundles that match this signer name.
     /// Mutually-exclusive with name.  The contents of all selected
     /// ClusterTrustBundles will be unified and deduplicated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "signerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
     pub signer_name: Option<String>,
 }
 
@@ -4675,8 +4005,7 @@ pub struct TerraformRunnerPodTemplateSpecVolumesProjectedSourcesClusterTrustBund
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct TerraformRunnerPodTemplateSpecVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions
-{
+pub struct TerraformRunnerPodTemplateSpecVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4749,8 +4078,7 @@ pub struct TerraformRunnerPodTemplateSpecVolumesProjectedSourcesDownwardApi {
 pub struct TerraformRunnerPodTemplateSpecVolumesProjectedSourcesDownwardApiItems {
     /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<TerraformRunnerPodTemplateSpecVolumesProjectedSourcesDownwardApiItemsFieldRef>,
+    pub field_ref: Option<TerraformRunnerPodTemplateSpecVolumesProjectedSourcesDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
     /// between 0000 and 0777 or a decimal value between 0 and 511.
     /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
@@ -4763,25 +4091,15 @@ pub struct TerraformRunnerPodTemplateSpecVolumesProjectedSourcesDownwardApiItems
     pub path: String,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        TerraformRunnerPodTemplateSpecVolumesProjectedSourcesDownwardApiItemsResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<TerraformRunnerPodTemplateSpecVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
 }
 
 /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TerraformRunnerPodTemplateSpecVolumesProjectedSourcesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -4793,11 +4111,7 @@ pub struct TerraformRunnerPodTemplateSpecVolumesProjectedSourcesDownwardApiItems
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TerraformRunnerPodTemplateSpecVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4867,11 +4181,7 @@ pub struct TerraformRunnerPodTemplateSpecVolumesProjectedSourcesServiceAccountTo
     /// start trying to rotate the token if the token is older than 80 percent of
     /// its time to live or if the token is older than 24 hours.Defaults to 1 hour
     /// and must be at least 10 minutes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
     /// path is the path relative to the mount point of the file to project the
     /// token into.
@@ -4979,11 +4289,7 @@ pub struct TerraformRunnerPodTemplateSpecVolumesScaleIo {
     /// gateway is the host address of the ScaleIO API Gateway.
     pub gateway: String,
     /// protectionDomain is the name of the ScaleIO Protection Domain for the configured storage.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protectionDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
     pub protection_domain: Option<String>,
     /// readOnly Defaults to false (read/write). ReadOnly here will force
     /// the ReadOnly setting in VolumeMounts.
@@ -4994,36 +4300,20 @@ pub struct TerraformRunnerPodTemplateSpecVolumesScaleIo {
     #[serde(rename = "secretRef")]
     pub secret_ref: TerraformRunnerPodTemplateSpecVolumesScaleIoSecretRef,
     /// sslEnabled Flag enable/disable SSL communication with Gateway, default false
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
     /// storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned.
     /// Default is ThinProvisioned.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
     pub storage_mode: Option<String>,
     /// storagePool is the ScaleIO Storage Pool associated with the protection domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
     pub storage_pool: Option<String>,
     /// system is the name of the storage system as configured in ScaleIO.
     pub system: String,
     /// volumeName is the name of a volume already created in the ScaleIO system
     /// that is associated with this volume source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -5053,11 +4343,7 @@ pub struct TerraformRunnerPodTemplateSpecVolumesSecret {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items If unspecified, each key-value pair in the Data field of the referenced
     /// Secret will be projected into the volume as a file whose name is the
@@ -5073,11 +4359,7 @@ pub struct TerraformRunnerPodTemplateSpecVolumesSecret {
     pub optional: Option<bool>,
     /// secretName is the name of the secret in the pod's namespace to use.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -5119,11 +4401,7 @@ pub struct TerraformRunnerPodTemplateSpecVolumesStorageos {
     pub secret_ref: Option<TerraformRunnerPodTemplateSpecVolumesStorageosSecretRef>,
     /// volumeName is the human-readable name of the StorageOS volume.  Volume
     /// names are only unique within a namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
     /// volumeNamespace specifies the scope of the volume within StorageOS.  If no
     /// namespace is specified then the Pod's namespace will be used.  This allows the
@@ -5131,11 +4409,7 @@ pub struct TerraformRunnerPodTemplateSpecVolumesStorageos {
     /// Set VolumeName to any name to override the default behaviour.
     /// Set to "default" if you are not using namespaces within StorageOS.
     /// Namespaces that do not pre-exist within StorageOS will be created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
     pub volume_namespace: Option<String>,
 }
 
@@ -5163,18 +4437,10 @@ pub struct TerraformRunnerPodTemplateSpecVolumesVsphereVolume {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// storagePolicyID is the storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
     pub storage_policy_id: Option<String>,
     /// storagePolicyName is the storage Policy Based Management (SPBM) profile name.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
     pub storage_policy_name: Option<String>,
     /// volumePath is the path that identifies vSphere volume vmdk
     #[serde(rename = "volumePath")]
@@ -5185,11 +4451,7 @@ pub struct TerraformRunnerPodTemplateSpecVolumesVsphereVolume {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct TerraformSourceRef {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Kind of the referent.
     pub kind: TerraformSourceRefKind,
@@ -5224,53 +4486,41 @@ pub enum TerraformStoreReadablePlan {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TerraformTfstate {
     /// ForceUnlock a Terraform state if it has become locked for any reason. Defaults to `no`.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an Enum and has the expected values of:
-    ///
-    ///
+    /// 
+    /// 
     /// - auto
     /// - yes
     /// - no
-    ///
-    ///
+    /// 
+    /// 
     /// WARNING: Only use `auto` in the cases where you are absolutely certain that
     /// no other system is using this state, you could otherwise end up in a bad place
     /// See https://www.terraform.io/language/state/locking#force-unlock for more
     /// information on the terraform state lock and force unlock.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "forceUnlock"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceUnlock")]
     pub force_unlock: Option<TerraformTfstateForceUnlock>,
     /// LockIdentifier holds the Identifier required by Terraform to unlock the state
     /// if it ever gets into a locked state.
-    ///
-    ///
+    /// 
+    /// 
     /// You'll need to put the Lock Identifier in here while setting ForceUnlock to
     /// either `yes` or `auto`.
-    ///
-    ///
+    /// 
+    /// 
     /// Leave this empty to do nothing, set this to the value of the `Lock Info: ID: [value]`,
     /// e.g. `f2ab685b-f84d-ac0b-a125-378a22877e8d`, to force unlock the state.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lockIdentifier"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lockIdentifier")]
     pub lock_identifier: Option<String>,
     /// LockTimeout is a Duration string that instructs Terraform to retry acquiring a lock for the specified period of
     /// time before returning an error. The duration syntax is a number followed by a time unit letter, such as `3s` for
     /// three seconds.
-    ///
-    ///
+    /// 
+    /// 
     /// Defaults to `0s` which will behave as though `LockTimeout` was not set
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lockTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lockTimeout")]
     pub lock_timeout: Option<String>,
 }
 
@@ -5300,11 +4550,7 @@ pub struct TerraformVars {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TerraformVarsValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<TerraformVarsValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -5312,18 +4558,10 @@ pub struct TerraformVarsValueFrom {
     pub field_ref: Option<TerraformVarsValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<TerraformVarsValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<TerraformVarsValueFromSecretKeyRef>,
 }
 
@@ -5351,11 +4589,7 @@ pub struct TerraformVarsValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TerraformVarsValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -5367,11 +4601,7 @@ pub struct TerraformVarsValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TerraformVarsValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5430,24 +4660,12 @@ pub enum TerraformVarsFromKind {
 pub struct TerraformWebhooks {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorMessageTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorMessageTemplate")]
     pub error_message_template: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "payloadType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "payloadType")]
     pub payload_type: Option<String>,
     pub stage: TerraformWebhooksStage,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "testExpression"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "testExpression")]
     pub test_expression: Option<String>,
     pub url: String,
 }
@@ -5478,11 +4696,7 @@ pub struct TerraformWriteOutputsToSecret {
 /// TerraformStatus defines the observed state of Terraform
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TerraformStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availableOutputs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableOutputs")]
     pub available_outputs: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
@@ -5491,77 +4705,41 @@ pub struct TerraformStatus {
     pub inventory: Option<TerraformStatusInventory>,
     /// LastAppliedByDriftDetectionAt is the time when the last drift was detected and
     /// terraform apply was performed as a result
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastAppliedByDriftDetectionAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAppliedByDriftDetectionAt")]
     pub last_applied_by_drift_detection_at: Option<String>,
     /// The last successfully applied revision.
     /// The revision format for Git sources is <branch|tag>/<commit-sha>.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastAppliedRevision"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAppliedRevision")]
     pub last_applied_revision: Option<String>,
     /// LastAttemptedRevision is the revision of the last reconciliation attempt.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastAttemptedRevision"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAttemptedRevision")]
     pub last_attempted_revision: Option<String>,
     /// LastDriftDetectedAt is the time when the last drift was detected
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastDriftDetectedAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastDriftDetectedAt")]
     pub last_drift_detected_at: Option<String>,
     /// LastHandledReconcileAt holds the value of the most recent
     /// reconcile request value, so a change of the annotation value
     /// can be detected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastHandledReconcileAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastHandledReconcileAt")]
     pub last_handled_reconcile_at: Option<String>,
     /// LastPlanAt is the time when the last terraform plan was performed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastPlanAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastPlanAt")]
     pub last_plan_at: Option<String>,
     /// LastPlannedRevision is the revision used by the last planning process.
     /// The result could be either no plan change or a new plan generated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastPlannedRevision"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastPlannedRevision")]
     pub last_planned_revision: Option<String>,
     /// LockStatus defines the observed state of a Terraform State Lock
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lock: Option<TerraformStatusLock>,
     /// ObservedGeneration is the last reconciled generation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub plan: Option<TerraformStatusPlan>,
     /// ReconciliationFailures is the number of reconciliation
     /// failures since the last success or update.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reconciliationFailures"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconciliationFailures")]
     pub reconciliation_failures: Option<i64>,
 }
 
@@ -5586,11 +4764,7 @@ pub struct TerraformStatusInventoryEntries {
 /// LockStatus defines the observed state of a Terraform State Lock
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TerraformStatusLock {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastApplied"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastApplied")]
     pub last_applied: Option<String>,
     /// Pending holds the identifier of the Lock Holder to be used with Force Unlock
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5599,24 +4773,13 @@ pub struct TerraformStatusLock {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TerraformStatusPlan {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "isDestroyPlan"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "isDestroyPlan")]
     pub is_destroy_plan: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "isDriftDetectionPlan"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "isDriftDetectionPlan")]
     pub is_drift_detection_plan: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastApplied"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastApplied")]
     pub last_applied: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pending: Option<String>,
 }
+

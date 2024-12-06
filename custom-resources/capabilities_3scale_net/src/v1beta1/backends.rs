@@ -4,35 +4,26 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// BackendSpec defines the desired state of Backend
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "capabilities.3scale.net",
-    version = "v1beta1",
-    kind = "Backend",
-    plural = "backends"
-)]
+#[kube(group = "capabilities.3scale.net", version = "v1beta1", kind = "Backend", plural = "backends")]
 #[kube(namespaced)]
 #[kube(status = "BackendStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct BackendSpec {
     /// Description is a human readable text of the backend
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mappingRules"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mappingRules")]
     pub mapping_rules: Option<Vec<BackendMappingRules>>,
     /// Methods Map: system_name -> MethodSpec system_name attr is unique for all metrics AND methods In other words, if metric's system_name is A, there is no metric or method with system_name A.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -46,18 +37,10 @@ pub struct BackendSpec {
     #[serde(rename = "privateBaseURL")]
     pub private_base_url: String,
     /// ProviderAccountRef references account provider credentials
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "providerAccountRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerAccountRef")]
     pub provider_account_ref: Option<BackendProviderAccountRef>,
     /// SystemName identifies uniquely the backend within the account provider Default value will be sanitized Name
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "systemName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemName")]
     pub system_name: Option<String>,
 }
 
@@ -102,11 +85,7 @@ pub enum BackendMappingRulesHttpMethod {
 pub struct BackendMethods {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "friendlyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "friendlyName")]
     pub friendly_name: Option<String>,
 }
 
@@ -115,11 +94,7 @@ pub struct BackendMethods {
 pub struct BackendMetrics {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "friendlyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "friendlyName")]
     pub friendly_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub unit: Option<String>,
@@ -142,17 +117,10 @@ pub struct BackendStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// ObservedGeneration reflects the generation of the most recently observed Backend Spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// 3scale control plane host
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "providerAccountHost"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerAccountHost")]
     pub provider_account_host: Option<String>,
 }
+

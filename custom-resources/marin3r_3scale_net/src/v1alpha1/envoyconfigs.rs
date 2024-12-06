@@ -4,38 +4,29 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::api::core::v1::ObjectReference;
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
+    pub use k8s_openapi::api::core::v1::ObjectReference;
 }
 use self::prelude::*;
 
 /// EnvoyConfigSpec defines the desired state of EnvoyConfig
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "marin3r.3scale.net",
-    version = "v1alpha1",
-    kind = "EnvoyConfig",
-    plural = "envoyconfigs"
-)]
+#[kube(group = "marin3r.3scale.net", version = "v1alpha1", kind = "EnvoyConfig", plural = "envoyconfigs")]
 #[kube(namespaced)]
 #[kube(status = "EnvoyConfigStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct EnvoyConfigSpec {
     /// EnvoyAPI is the version of envoy's API to use. Defaults to v3.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "envoyAPI")]
     pub envoy_api: Option<EnvoyConfigEnvoyApi>,
     /// EnvoyResources holds the different types of resources suported by the envoy discovery service
     /// DEPRECATED. Use the `resources` field instead.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "envoyResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envoyResources")]
     pub envoy_resources: Option<EnvoyConfigEnvoyResources>,
     /// NodeID holds the envoy identifier for the discovery service to know which set
     /// of resources to send to each of the envoy clients that connect to it.
@@ -71,11 +62,7 @@ pub struct EnvoyConfigEnvoyResources {
     pub endpoints: Option<Vec<EnvoyConfigEnvoyResourcesEndpoints>>,
     /// ExtensionConfigs is a list of the envoy ExtensionConfig resource type
     /// API V3 reference: https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/core/v3/extension.proto
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "extensionConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extensionConfigs")]
     pub extension_configs: Option<Vec<EnvoyConfigEnvoyResourcesExtensionConfigs>>,
     /// Listeners is a list of the envoy Listener resource type.
     /// API V3 reference: https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/listener/v3/listener.proto
@@ -91,11 +78,7 @@ pub struct EnvoyConfigEnvoyResources {
     pub runtimes: Option<Vec<EnvoyConfigEnvoyResourcesRuntimes>>,
     /// ScopedRoutes is a list of the envoy ScopeRoute resource type.
     /// API V3 reference: https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/route/v3/scoped_route.proto
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scopedRoutes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scopedRoutes")]
     pub scoped_routes: Option<Vec<EnvoyConfigEnvoyResourcesScopedRoutes>>,
     /// Secrets is a list of references to Kubernetes Secret objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -243,26 +226,14 @@ pub struct EnvoyConfigResources {
     pub blueprint: Option<EnvoyConfigResourcesBlueprint>,
     /// Specifies a label selector to watch for EndpointSlices that will
     /// be used to generate the endpoint resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "generateFromEndpointSlices"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateFromEndpointSlices")]
     pub generate_from_endpoint_slices: Option<EnvoyConfigResourcesGenerateFromEndpointSlices>,
     /// The name of a Kubernetes Secret of type "Opaque". It will generate an
     /// envoy "generic secret" proto.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "generateFromOpaqueSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateFromOpaqueSecret")]
     pub generate_from_opaque_secret: Option<EnvoyConfigResourcesGenerateFromOpaqueSecret>,
     /// The name of a Kubernetes Secret of type "kubernetes.io/tls"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "generateFromTlsSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateFromTlsSecret")]
     pub generate_from_tls_secret: Option<String>,
     /// Type is the type url for the protobuf message
     #[serde(rename = "type")]
@@ -304,21 +275,12 @@ pub struct EnvoyConfigResourcesGenerateFromEndpointSlices {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyConfigResourcesGenerateFromEndpointSlicesSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<EnvoyConfigResourcesGenerateFromEndpointSlicesSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<EnvoyConfigResourcesGenerateFromEndpointSlicesSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -389,30 +351,18 @@ pub struct EnvoyConfigStatus {
     /// to give the user a concrete idea on the general status of the discovery servie cache.
     /// It is intended only for human consumption. Other controllers should relly on conditions
     /// to determine the status of the discovery server cache.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheState"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheState")]
     pub cache_state: Option<String>,
     /// Conditions represent the latest available observations of an object's state
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// DesiredVersion represents the resources version described in
     /// the spec of the EnvoyConfig object
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "desiredVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredVersion")]
     pub desired_version: Option<String>,
     /// PublishedVersion is the config version currently
     /// served by the envoy discovery service for the give nodeID
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "publishedVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "publishedVersion")]
     pub published_version: Option<String>,
     /// ConfigRevisions is an ordered list of references to EnvoyConfigRevision
     /// objects
@@ -436,11 +386,7 @@ pub struct EnvoyConfigStatusRevisions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EnvoyConfigStatusRevisionsRef {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -466,14 +412,11 @@ pub struct EnvoyConfigStatusRevisionsRef {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
 }
+

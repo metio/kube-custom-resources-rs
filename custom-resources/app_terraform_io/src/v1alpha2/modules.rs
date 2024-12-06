@@ -5,31 +5,22 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// ModuleSpec defines the desired state of Module.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "app.terraform.io",
-    version = "v1alpha2",
-    kind = "Module",
-    plural = "modules"
-)]
+#[kube(group = "app.terraform.io", version = "v1alpha2", kind = "Module", plural = "modules")]
 #[kube(namespaced)]
 #[kube(status = "ModuleStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ModuleSpec {
     /// Specify whether or not to execute a Destroy run when the object is deleted from the Kubernetes.
     /// Default: `false`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "destroyOnDeletion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "destroyOnDeletion")]
     pub destroy_on_deletion: Option<bool>,
     /// Module source and version to execute.
     pub module: ModuleModule,
@@ -46,11 +37,7 @@ pub struct ModuleSpec {
     pub outputs: Option<Vec<ModuleOutputs>>,
     /// Allows executing a new Run without changing any Workspace or Module attributes.
     /// Example: kubectl patch <KIND> <NAME> --type=merge --patch '{"spec": {"restartedAt": "'\`date -u -Iseconds\`'"}}'
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartedAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartedAt")]
     pub restarted_at: Option<String>,
     /// API Token to be used for API calls.
     pub token: ModuleToken,
@@ -137,18 +124,10 @@ pub struct ModuleStatus {
     /// More information:
     ///   - https://developer.hashicorp.com/terraform/cloud-docs/api-docs/configuration-versions
     ///   - https://developer.hashicorp.com/terraform/cloud-docs/run/api
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configurationVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configurationVersion")]
     pub configuration_version: Option<ModuleStatusConfigurationVersion>,
     /// Workspace Destroy Run ID.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "destroyRunID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "destroyRunID")]
     pub destroy_run_id: Option<String>,
     /// Real world state generation.
     #[serde(rename = "observedGeneration")]
@@ -192,23 +171,16 @@ pub struct ModuleStatusOutput {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ModuleStatusRun {
     /// The configuration version of this run.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configurationVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configurationVersion")]
     pub configuration_version: Option<String>,
     /// Current(both active and finished) HCP Terraform run ID.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// Run ID of the latest run that could update the outputs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "outputRunID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "outputRunID")]
     pub output_run_id: Option<String>,
     /// Current(both active and finished) HCP Terraform run status.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }
+

@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// Spec is the specification of the Kuma MeshProxyPatch resource.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kuma.io",
-    version = "v1alpha1",
-    kind = "MeshProxyPatch",
-    plural = "meshproxypatches"
-)]
+#[kube(group = "kuma.io", version = "v1alpha1", kind = "MeshProxyPatch", plural = "meshproxypatches")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct MeshProxyPatchSpec {
     /// Default is a configuration specific to the group of destinations
     /// referenced in 'targetRef'.
@@ -49,29 +44,17 @@ pub struct MeshProxyPatchDefaultAppendModifications {
     pub cluster: Option<MeshProxyPatchDefaultAppendModificationsCluster>,
     /// HTTPFilter is a modification of Envoy HTTP Filter
     /// available in HTTP Connection Manager in a Listener resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpFilter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpFilter")]
     pub http_filter: Option<MeshProxyPatchDefaultAppendModificationsHttpFilter>,
     /// Listener is a modification of Envoy's Listener resource.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub listener: Option<MeshProxyPatchDefaultAppendModificationsListener>,
     /// NetworkFilter is a modification of Envoy Listener's filter.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkFilter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkFilter")]
     pub network_filter: Option<MeshProxyPatchDefaultAppendModificationsNetworkFilter>,
     /// VirtualHost is a modification of Envoy's VirtualHost
     /// referenced in HTTP Connection Manager in a Listener resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualHost"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualHost")]
     pub virtual_host: Option<MeshProxyPatchDefaultAppendModificationsVirtualHost>,
 }
 
@@ -80,11 +63,7 @@ pub struct MeshProxyPatchDefaultAppendModifications {
 pub struct MeshProxyPatchDefaultAppendModificationsCluster {
     /// JsonPatches specifies list of jsonpatches to apply to on Envoy's Cluster
     /// resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jsonPatches"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonPatches")]
     pub json_patches: Option<Vec<MeshProxyPatchDefaultAppendModificationsClusterJsonPatches>>,
     /// Match is a set of conditions that have to be matched for modification operation to happen.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
@@ -133,7 +112,7 @@ pub struct MeshProxyPatchDefaultAppendModificationsClusterMatch {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Origin is the name of the component or plugin that generated the resource.
-    ///
+    /// 
     /// Here is the list of well-known origins:
     /// inbound - resources generated for handling incoming traffic.
     /// outbound - resources generated for handling outgoing traffic.
@@ -143,7 +122,7 @@ pub struct MeshProxyPatchDefaultAppendModificationsClusterMatch {
     /// ingress - resources generated for Zone Ingress.
     /// egress - resources generated for Zone Egress.
     /// gateway - resources generated for MeshGateway.
-    ///
+    /// 
     /// The list is not complete, because policy plugins can introduce new resources.
     /// For example MeshTrace plugin can create Cluster with "mesh-trace" origin.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -164,11 +143,7 @@ pub enum MeshProxyPatchDefaultAppendModificationsClusterOperation {
 pub struct MeshProxyPatchDefaultAppendModificationsHttpFilter {
     /// JsonPatches specifies list of jsonpatches to apply to on Envoy's
     /// HTTP Filter available in HTTP Connection Manager in a Listener resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jsonPatches"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonPatches")]
     pub json_patches: Option<Vec<MeshProxyPatchDefaultAppendModificationsHttpFilterJsonPatches>>,
     /// Match is a set of conditions that have to be matched for modification operation to happen.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
@@ -214,24 +189,16 @@ pub enum MeshProxyPatchDefaultAppendModificationsHttpFilterJsonPatchesOp {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshProxyPatchDefaultAppendModificationsHttpFilterMatch {
     /// Name of the listener to match.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "listenerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerName")]
     pub listener_name: Option<String>,
     /// Listener tags available in Listener#Metadata#FilterMetadata[io.kuma.tags]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "listenerTags"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerTags")]
     pub listener_tags: Option<BTreeMap<String, String>>,
     /// Name of the HTTP filter. For example "envoy.filters.http.local_ratelimit"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Origin is the name of the component or plugin that generated the resource.
-    ///
+    /// 
     /// Here is the list of well-known origins:
     /// inbound - resources generated for handling incoming traffic.
     /// outbound - resources generated for handling outgoing traffic.
@@ -241,7 +208,7 @@ pub struct MeshProxyPatchDefaultAppendModificationsHttpFilterMatch {
     /// ingress - resources generated for Zone Ingress.
     /// egress - resources generated for Zone Egress.
     /// gateway - resources generated for MeshGateway.
-    ///
+    /// 
     /// The list is not complete, because policy plugins can introduce new resources.
     /// For example MeshTrace plugin can create Cluster with "mesh-trace" origin.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -265,11 +232,7 @@ pub enum MeshProxyPatchDefaultAppendModificationsHttpFilterOperation {
 pub struct MeshProxyPatchDefaultAppendModificationsListener {
     /// JsonPatches specifies list of jsonpatches to apply to on Envoy's Listener
     /// resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jsonPatches"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonPatches")]
     pub json_patches: Option<Vec<MeshProxyPatchDefaultAppendModificationsListenerJsonPatches>>,
     /// Match is a set of conditions that have to be matched for modification operation to happen.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
@@ -318,7 +281,7 @@ pub struct MeshProxyPatchDefaultAppendModificationsListenerMatch {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Origin is the name of the component or plugin that generated the resource.
-    ///
+    /// 
     /// Here is the list of well-known origins:
     /// inbound - resources generated for handling incoming traffic.
     /// outbound - resources generated for handling outgoing traffic.
@@ -328,7 +291,7 @@ pub struct MeshProxyPatchDefaultAppendModificationsListenerMatch {
     /// ingress - resources generated for Zone Ingress.
     /// egress - resources generated for Zone Egress.
     /// gateway - resources generated for MeshGateway.
-    ///
+    /// 
     /// The list is not complete, because policy plugins can introduce new resources.
     /// For example MeshTrace plugin can create Cluster with "mesh-trace" origin.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -351,11 +314,7 @@ pub enum MeshProxyPatchDefaultAppendModificationsListenerOperation {
 pub struct MeshProxyPatchDefaultAppendModificationsNetworkFilter {
     /// JsonPatches specifies list of jsonpatches to apply to on Envoy Listener's
     /// filter.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jsonPatches"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonPatches")]
     pub json_patches: Option<Vec<MeshProxyPatchDefaultAppendModificationsNetworkFilterJsonPatches>>,
     /// Match is a set of conditions that have to be matched for modification operation to happen.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "match")]
@@ -401,24 +360,16 @@ pub enum MeshProxyPatchDefaultAppendModificationsNetworkFilterJsonPatchesOp {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshProxyPatchDefaultAppendModificationsNetworkFilterMatch {
     /// Name of the listener to match.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "listenerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerName")]
     pub listener_name: Option<String>,
     /// Listener tags available in Listener#Metadata#FilterMetadata[io.kuma.tags]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "listenerTags"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "listenerTags")]
     pub listener_tags: Option<BTreeMap<String, String>>,
     /// Name of the network filter. For example "envoy.filters.network.ratelimit"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Origin is the name of the component or plugin that generated the resource.
-    ///
+    /// 
     /// Here is the list of well-known origins:
     /// inbound - resources generated for handling incoming traffic.
     /// outbound - resources generated for handling outgoing traffic.
@@ -428,7 +379,7 @@ pub struct MeshProxyPatchDefaultAppendModificationsNetworkFilterMatch {
     /// ingress - resources generated for Zone Ingress.
     /// egress - resources generated for Zone Egress.
     /// gateway - resources generated for MeshGateway.
-    ///
+    /// 
     /// The list is not complete, because policy plugins can introduce new resources.
     /// For example MeshTrace plugin can create Cluster with "mesh-trace" origin.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -452,11 +403,7 @@ pub enum MeshProxyPatchDefaultAppendModificationsNetworkFilterOperation {
 pub struct MeshProxyPatchDefaultAppendModificationsVirtualHost {
     /// JsonPatches specifies list of jsonpatches to apply to on Envoy's
     /// VirtualHost resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jsonPatches"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonPatches")]
     pub json_patches: Option<Vec<MeshProxyPatchDefaultAppendModificationsVirtualHostJsonPatches>>,
     /// Match is a set of conditions that have to be matched for modification operation to happen.
     #[serde(rename = "match")]
@@ -505,7 +452,7 @@ pub struct MeshProxyPatchDefaultAppendModificationsVirtualHostMatch {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Origin is the name of the component or plugin that generated the resource.
-    ///
+    /// 
     /// Here is the list of well-known origins:
     /// inbound - resources generated for handling incoming traffic.
     /// outbound - resources generated for handling outgoing traffic.
@@ -515,17 +462,13 @@ pub struct MeshProxyPatchDefaultAppendModificationsVirtualHostMatch {
     /// ingress - resources generated for Zone Ingress.
     /// egress - resources generated for Zone Egress.
     /// gateway - resources generated for MeshGateway.
-    ///
+    /// 
     /// The list is not complete, because policy plugins can introduce new resources.
     /// For example MeshTrace plugin can create Cluster with "mesh-trace" origin.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub origin: Option<String>,
     /// Name of the RouteConfiguration resource to match.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "routeConfigurationName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routeConfigurationName")]
     pub route_configuration_name: Option<String>,
 }
 
@@ -563,19 +506,11 @@ pub struct MeshProxyPatchTargetRef {
     pub namespace: Option<String>,
     /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
     /// all data plane types are targeted by the policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
     pub proxy_types: Option<Vec<String>>,
     /// SectionName is used to target specific section of resource.
     /// For example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sectionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]
     pub section_name: Option<String>,
     /// Tags used to select a subset of proxies by tags. Can only be used with kinds
     /// `MeshSubset` and `MeshServiceSubset`
@@ -598,3 +533,4 @@ pub enum MeshProxyPatchTargetRefKind {
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
 }
+

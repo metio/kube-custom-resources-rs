@@ -4,24 +4,19 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::api::core::v1::ObjectReference;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::api::core::v1::ObjectReference;
 }
 use self::prelude::*;
 
 /// Spec defines properties of a VolumeGroupSnapshotContent created by the underlying storage system.
 /// Required.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "groupsnapshot.storage.k8s.io",
-    version = "v1alpha1",
-    kind = "VolumeGroupSnapshotContent",
-    plural = "volumegroupsnapshotcontents"
-)]
+#[kube(group = "groupsnapshot.storage.k8s.io", version = "v1alpha1", kind = "VolumeGroupSnapshotContent", plural = "volumegroupsnapshotcontents")]
 #[kube(status = "VolumeGroupSnapshotContentStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct VolumeGroupSnapshotContentSpec {
     /// DeletionPolicy determines whether this VolumeGroupSnapshotContent and the
     /// physical group snapshot on the underlying storage system should be deleted
@@ -57,11 +52,7 @@ pub struct VolumeGroupSnapshotContentSpec {
     /// post-snapshot creation.
     /// For dynamic provisioning, this field must be set.
     /// This field may be unset for pre-provisioned snapshots.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeGroupSnapshotClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeGroupSnapshotClassName")]
     pub volume_group_snapshot_class_name: Option<String>,
     /// VolumeGroupSnapshotRef specifies the VolumeGroupSnapshot object to which this
     /// VolumeGroupSnapshotContent object is bound.
@@ -94,20 +85,12 @@ pub struct VolumeGroupSnapshotContentSource {
     /// on the underlying storage system for which a Kubernetes object
     /// representation was (or should be) created.
     /// This field is immutable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "groupSnapshotHandles"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupSnapshotHandles")]
     pub group_snapshot_handles: Option<VolumeGroupSnapshotContentSourceGroupSnapshotHandles>,
     /// VolumeHandles is a list of volume handles on the backend to be snapshotted
     /// together. It is specified for dynamic provisioning of the VolumeGroupSnapshot.
     /// This field is immutable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeHandles"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeHandles")]
     pub volume_handles: Option<Vec<String>>,
 }
 
@@ -145,11 +128,7 @@ pub struct VolumeGroupSnapshotContentSourceGroupSnapshotHandles {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VolumeGroupSnapshotContentVolumeGroupSnapshotRef {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -175,11 +154,7 @@ pub struct VolumeGroupSnapshotContentVolumeGroupSnapshotRef {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -197,11 +172,7 @@ pub struct VolumeGroupSnapshotContentStatus {
     /// The format of this field is a Unix nanoseconds time encoded as an int64.
     /// On Unix, the command date +%s%N returns the current time in nanoseconds
     /// since 1970-01-01 00:00:00 UTC.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "creationTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "creationTime")]
     pub creation_time: Option<i64>,
     /// Error is the last observed error during group snapshot creation, if any.
     /// Upon success after retry, this error field will be cleared.
@@ -210,42 +181,24 @@ pub struct VolumeGroupSnapshotContentStatus {
     /// PVVolumeSnapshotContentList is the list of pairs of PV and
     /// VolumeSnapshotContent for this group snapshot
     /// The maximum number of allowed snapshots in the group is 100.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pvVolumeSnapshotContentList"
-    )]
-    pub pv_volume_snapshot_content_list:
-        Option<Vec<VolumeGroupSnapshotContentStatusPvVolumeSnapshotContentList>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pvVolumeSnapshotContentList")]
+    pub pv_volume_snapshot_content_list: Option<Vec<VolumeGroupSnapshotContentStatusPvVolumeSnapshotContentList>>,
     /// ReadyToUse indicates if all the individual snapshots in the group are ready to be
     /// used to restore a group of volumes.
     /// ReadyToUse becomes true when ReadyToUse of all individual snapshots become true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readyToUse"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyToUse")]
     pub ready_to_use: Option<bool>,
     /// VolumeGroupSnapshotHandle is a unique id returned by the CSI driver
     /// to identify the VolumeGroupSnapshot on the storage system.
     /// If a storage system does not provide such an id, the
     /// CSI driver can choose to return the VolumeGroupSnapshot name.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeGroupSnapshotHandle"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeGroupSnapshotHandle")]
     pub volume_group_snapshot_handle: Option<String>,
     /// VolumeSnapshotHandlePairList is a list of CSI "volume_id" and "snapshot_id"
     /// pair returned by the CSI driver to identify snapshots and their source volumes
     /// on the storage system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSnapshotHandlePairList"
-    )]
-    pub volume_snapshot_handle_pair_list:
-        Option<Vec<VolumeGroupSnapshotContentStatusVolumeSnapshotHandlePairList>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSnapshotHandlePairList")]
+    pub volume_snapshot_handle_pair_list: Option<Vec<VolumeGroupSnapshotContentStatusVolumeSnapshotHandlePairList>>,
 }
 
 /// Error is the last observed error during group snapshot creation, if any.
@@ -268,21 +221,11 @@ pub struct VolumeGroupSnapshotContentStatusError {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VolumeGroupSnapshotContentStatusPvVolumeSnapshotContentList {
     /// PersistentVolumeRef is a reference to the persistent volume resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeRef"
-    )]
-    pub persistent_volume_ref:
-        Option<VolumeGroupSnapshotContentStatusPvVolumeSnapshotContentListPersistentVolumeRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeRef")]
+    pub persistent_volume_ref: Option<VolumeGroupSnapshotContentStatusPvVolumeSnapshotContentListPersistentVolumeRef>,
     /// VolumeSnapshotContentRef is a reference to the volume snapshot content resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSnapshotContentRef"
-    )]
-    pub volume_snapshot_content_ref:
-        Option<VolumeGroupSnapshotContentStatusPvVolumeSnapshotContentListVolumeSnapshotContentRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSnapshotContentRef")]
+    pub volume_snapshot_content_ref: Option<VolumeGroupSnapshotContentStatusPvVolumeSnapshotContentListVolumeSnapshotContentRef>,
 }
 
 /// PersistentVolumeRef is a reference to the persistent volume resource
@@ -317,3 +260,4 @@ pub struct VolumeGroupSnapshotContentStatusVolumeSnapshotHandlePairList {
     #[serde(rename = "volumeHandle")]
     pub volume_handle: String,
 }
+

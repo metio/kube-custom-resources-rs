@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// WebhookSpec defines the desired state of Webhook
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "executor.testkube.io",
-    version = "v1",
-    kind = "Webhook",
-    plural = "webhooks"
-)]
+#[kube(group = "executor.testkube.io", version = "v1", kind = "Webhook", plural = "webhooks")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct WebhookSpec {
     /// Disabled will disable the webhook
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -34,32 +29,16 @@ pub struct WebhookSpec {
     pub headers: Option<BTreeMap<String, String>>,
     /// OnStateChange will trigger the webhook only when the result of the current execution differs from the previous result of the same test/test suite/workflow
     /// Deprecated: field is not used
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "onStateChange"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "onStateChange")]
     pub on_state_change: Option<bool>,
     /// will load the generated payload for notification inside the object
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "payloadObjectField"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "payloadObjectField")]
     pub payload_object_field: Option<String>,
     /// golang based template for notification payload
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "payloadTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "payloadTemplate")]
     pub payload_template: Option<String>,
     /// name of the template resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "payloadTemplateReference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "payloadTemplateReference")]
     pub payload_template_reference: Option<String>,
     /// Labels to filter for tests and test suites
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -71,4 +50,6 @@ pub struct WebhookSpec {
 
 /// WebhookStatus defines the observed state of Webhook
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct WebhookStatus {}
+pub struct WebhookStatus {
+}
+

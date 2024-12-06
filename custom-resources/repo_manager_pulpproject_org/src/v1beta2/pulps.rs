@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// PulpSpec defines the desired state of Pulp
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "repo-manager.pulpproject.org",
-    version = "v1beta2",
-    kind = "Pulp",
-    plural = "pulps"
-)]
+#[kube(group = "repo-manager.pulpproject.org", version = "v1beta2", kind = "Pulp", plural = "pulps")]
 #[kube(namespaced)]
 #[kube(status = "PulpStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PulpSpec {
     /// Job to reset pulp admin password
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -320,11 +315,7 @@ pub struct PulpAdminPasswordJobContainerEnvVars {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpAdminPasswordJobContainerEnvVarsValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<PulpAdminPasswordJobContainerEnvVarsValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -332,18 +323,10 @@ pub struct PulpAdminPasswordJobContainerEnvVarsValueFrom {
     pub field_ref: Option<PulpAdminPasswordJobContainerEnvVarsValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<PulpAdminPasswordJobContainerEnvVarsValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<PulpAdminPasswordJobContainerEnvVarsValueFromSecretKeyRef>,
 }
 
@@ -371,11 +354,7 @@ pub struct PulpAdminPasswordJobContainerEnvVarsValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpAdminPasswordJobContainerEnvVarsValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -387,11 +366,7 @@ pub struct PulpAdminPasswordJobContainerEnvVarsValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpAdminPasswordJobContainerEnvVarsValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -424,12 +399,12 @@ pub struct PulpAdminPasswordJobContainerEnvVarsValueFromSecretKeyRef {
 pub struct PulpAdminPasswordJobContainerResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<PulpAdminPasswordJobContainerResourceRequirementsClaims>>,
@@ -479,11 +454,7 @@ pub struct PulpApi {
     pub init_container: Option<PulpApiInitContainer>,
     /// Periodic probe of container liveness.
     /// Container will be restarted if the probe fails.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<PulpApiLivenessProbe>,
     /// NodeSelector for the Pulp pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -493,11 +464,7 @@ pub struct PulpApi {
     pub pdb: Option<PulpApiPdb>,
     /// Periodic probe of container service readiness.
     /// Container will be removed from service endpoints if the probe fails.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<PulpApiReadinessProbe>,
     /// Size is the size of number of pulp-api replicas.
     /// Default: 1
@@ -521,25 +488,13 @@ pub struct PulpApi {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpApiAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<PulpApiAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<PulpApiAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<PulpApiAffinityPodAntiAffinity>,
 }
 
@@ -555,25 +510,15 @@ pub struct PulpApiAffinityNodeAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node matches the corresponding matchExpressions; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution:
-        Option<Vec<PulpApiAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<PulpApiAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
     /// at some point during pod execution (e.g. due to an update), the system
     /// may or may not try to eventually evict the pod from its node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<PulpApiAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<PulpApiAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
 /// An empty preferred scheduling term matches all objects with implicit weight 0
@@ -581,8 +526,7 @@ pub struct PulpApiAffinityNodeAffinity {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpApiAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// A node selector term, associated with the corresponding weight.
-    pub preference:
-        PulpApiAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
+    pub preference: PulpApiAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
     /// Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.
     pub weight: i32,
 }
@@ -601,8 +545,7 @@ pub struct PulpApiAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExec
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpApiAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct PulpApiAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -620,8 +563,7 @@ pub struct PulpApiAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExec
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpApiAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct PulpApiAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -645,9 +587,7 @@ pub struct PulpApiAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExec
 pub struct PulpApiAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// Required. A list of node selector terms. The terms are ORed.
     #[serde(rename = "nodeSelectorTerms")]
-    pub node_selector_terms: Vec<
-        PulpApiAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms,
-    >,
+    pub node_selector_terms: Vec<PulpApiAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTerms>,
 }
 
 /// A null or empty node selector term matches no objects. The requirements of
@@ -666,8 +606,7 @@ pub struct PulpApiAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecu
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpApiAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct PulpApiAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -685,8 +624,7 @@ pub struct PulpApiAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecu
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpApiAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct PulpApiAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -713,13 +651,8 @@ pub struct PulpApiAffinityPodAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution:
-        Option<Vec<PulpApiAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<PulpApiAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
@@ -727,13 +660,8 @@ pub struct PulpApiAffinityPodAffinity {
     /// system may or may not try to eventually evict the pod from its node.
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<Vec<PulpApiAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<PulpApiAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -741,8 +669,7 @@ pub struct PulpApiAffinityPodAffinity {
 pub struct PulpApiAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// Required. A pod affinity term, associated with the corresponding weight.
     #[serde(rename = "podAffinityTerm")]
-    pub pod_affinity_term:
-        PulpApiAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    pub pod_affinity_term: PulpApiAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
     /// weight associated with matching the corresponding podAffinityTerm,
     /// in the range 1-100.
     pub weight: i32,
@@ -816,8 +743,7 @@ pub struct PulpApiAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecu
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpApiAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct PulpApiAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -851,8 +777,7 @@ pub struct PulpApiAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecu
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpApiAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct PulpApiAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -876,14 +801,8 @@ pub struct PulpApiAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecu
 pub struct PulpApiAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
     /// If it's null, this PodAffinityTerm matches with no Pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector: Option<
-        PulpApiAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<PulpApiAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
     /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
@@ -893,11 +812,7 @@ pub struct PulpApiAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecut
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabelKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
@@ -908,25 +823,15 @@ pub struct PulpApiAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecut
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mismatchLabelKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
     /// null selector and null or empty namespaces list means "this pod's namespace".
     /// An empty selector ({}) matches all namespaces.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceSelector"
-    )]
-    pub namespace_selector: Option<
-        PulpApiAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<PulpApiAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     /// namespaces specifies a static list of namespace names that the term applies to.
     /// The term is applied to the union of the namespaces listed in this field
     /// and the ones selected by namespaceSelector.
@@ -959,8 +864,7 @@ pub struct PulpApiAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecut
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpApiAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct PulpApiAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -994,8 +898,7 @@ pub struct PulpApiAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecut
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpApiAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct PulpApiAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1021,13 +924,8 @@ pub struct PulpApiAffinityPodAntiAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution:
-        Option<Vec<PulpApiAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<PulpApiAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the anti-affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the anti-affinity requirements specified by this field cease to be met
@@ -1035,13 +933,8 @@ pub struct PulpApiAffinityPodAntiAffinity {
     /// system may or may not try to eventually evict the pod from its node.
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<Vec<PulpApiAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<PulpApiAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -1123,8 +1016,7 @@ pub struct PulpApiAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringE
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpApiAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct PulpApiAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1158,8 +1050,7 @@ pub struct PulpApiAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringE
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpApiAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct PulpApiAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1246,8 +1137,7 @@ pub struct PulpApiAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringEx
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpApiAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct PulpApiAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1281,8 +1171,7 @@ pub struct PulpApiAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringEx
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpApiAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct PulpApiAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1321,11 +1210,7 @@ pub struct PulpApiEnvVars {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpApiEnvVarsValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<PulpApiEnvVarsValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -1333,18 +1218,10 @@ pub struct PulpApiEnvVarsValueFrom {
     pub field_ref: Option<PulpApiEnvVarsValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<PulpApiEnvVarsValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<PulpApiEnvVarsValueFromSecretKeyRef>,
 }
 
@@ -1372,11 +1249,7 @@ pub struct PulpApiEnvVarsValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpApiEnvVarsValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -1388,11 +1261,7 @@ pub struct PulpApiEnvVarsValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpApiEnvVarsValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1461,11 +1330,7 @@ pub struct PulpApiInitContainerEnvVars {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpApiInitContainerEnvVarsValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<PulpApiInitContainerEnvVarsValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -1473,18 +1338,10 @@ pub struct PulpApiInitContainerEnvVarsValueFrom {
     pub field_ref: Option<PulpApiInitContainerEnvVarsValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<PulpApiInitContainerEnvVarsValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<PulpApiInitContainerEnvVarsValueFromSecretKeyRef>,
 }
 
@@ -1512,11 +1369,7 @@ pub struct PulpApiInitContainerEnvVarsValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpApiInitContainerEnvVarsValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -1528,11 +1381,7 @@ pub struct PulpApiInitContainerEnvVarsValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpApiInitContainerEnvVarsValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1565,12 +1414,12 @@ pub struct PulpApiInitContainerEnvVarsValueFromSecretKeyRef {
 pub struct PulpApiInitContainerResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<PulpApiInitContainerResourceRequirementsClaims>>,
@@ -1604,11 +1453,7 @@ pub struct PulpApiLivenessProbe {
     pub exec: Option<PulpApiLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1618,27 +1463,15 @@ pub struct PulpApiLivenessProbe {
     pub http_get: Option<PulpApiLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -1653,20 +1486,12 @@ pub struct PulpApiLivenessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -1689,8 +1514,8 @@ pub struct PulpApiLivenessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -1704,11 +1529,7 @@ pub struct PulpApiLivenessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<PulpApiLivenessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1752,21 +1573,13 @@ pub struct PulpApiPdb {
     /// "selector" are unavailable after the eviction, i.e. even in absence of
     /// the evicted pod. For example, one can prevent all voluntary evictions
     /// by specifying 0. This is a mutually exclusive setting with "minAvailable".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
     /// An eviction is allowed if at least "minAvailable" pods selected by
     /// "selector" will still be available after the eviction, i.e. even in the
     /// absence of the evicted pod.  So for example you can prevent all voluntary
     /// evictions by specifying "100%".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minAvailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minAvailable")]
     pub min_available: Option<IntOrString>,
     /// Label query over pods whose evictions are managed by the disruption
     /// budget.
@@ -1777,38 +1590,34 @@ pub struct PulpApiPdb {
     /// UnhealthyPodEvictionPolicy defines the criteria for when unhealthy pods
     /// should be considered for eviction. Current implementation considers healthy pods,
     /// as pods that have status.conditions item with type="Ready",status="True".
-    ///
-    ///
+    /// 
+    /// 
     /// Valid policies are IfHealthyBudget and AlwaysAllow.
     /// If no policy is specified, the default behavior will be used,
     /// which corresponds to the IfHealthyBudget policy.
-    ///
-    ///
+    /// 
+    /// 
     /// IfHealthyBudget policy means that running pods (status.phase="Running"),
     /// but not yet healthy can be evicted only if the guarded application is not
     /// disrupted (status.currentHealthy is at least equal to status.desiredHealthy).
     /// Healthy pods will be subject to the PDB for eviction.
-    ///
-    ///
+    /// 
+    /// 
     /// AlwaysAllow policy means that all running pods (status.phase="Running"),
     /// but not yet healthy are considered disrupted and can be evicted regardless
     /// of whether the criteria in a PDB is met. This means perspective running
     /// pods of a disrupted application might not get a chance to become healthy.
     /// Healthy pods will be subject to the PDB for eviction.
-    ///
-    ///
+    /// 
+    /// 
     /// Additional policies may be added in the future.
     /// Clients making eviction decisions should disallow eviction of unhealthy pods
     /// if they encounter an unrecognized policy in this field.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is beta-level. The eviction API uses this field when
     /// the feature gate PDBUnhealthyPodEvictionPolicy is enabled (enabled by default).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unhealthyPodEvictionPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyPodEvictionPolicy")]
     pub unhealthy_pod_eviction_policy: Option<String>,
 }
 
@@ -1819,20 +1628,12 @@ pub struct PulpApiPdb {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpApiPdbSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PulpApiPdbSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -1862,11 +1663,7 @@ pub struct PulpApiReadinessProbe {
     pub exec: Option<PulpApiReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1876,27 +1673,15 @@ pub struct PulpApiReadinessProbe {
     pub http_get: Option<PulpApiReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -1911,20 +1696,12 @@ pub struct PulpApiReadinessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -1947,8 +1724,8 @@ pub struct PulpApiReadinessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -1962,11 +1739,7 @@ pub struct PulpApiReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<PulpApiReadinessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2008,12 +1781,12 @@ pub struct PulpApiReadinessProbeTcpSocket {
 pub struct PulpApiResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<PulpApiResourceRequirementsClaims>>,
@@ -2046,11 +1819,7 @@ pub struct PulpApiStrategy {
     /// ---
     /// TODO: Update this to follow our convention for oneOf, whatever we decide it
     /// to be.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollingUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<PulpApiStrategyRollingUpdate>,
     /// Type of deployment. Can be "Recreate" or "RollingUpdate". Default is RollingUpdate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -2087,11 +1856,7 @@ pub struct PulpApiStrategyRollingUpdate {
     /// can be scaled down further, followed by scaling up the new ReplicaSet, ensuring
     /// that the total number of pods available at all times during the update is at
     /// least 70% of desired pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
 }
 
@@ -2117,11 +1882,7 @@ pub struct PulpApiTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -2135,11 +1896,7 @@ pub struct PulpApiTopologySpreadConstraints {
     /// LabelSelector is used to find matching pods.
     /// Pods that match this label selector are counted to determine the number of pods
     /// in their corresponding topology domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PulpApiTopologySpreadConstraintsLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select the pods over which
     /// spreading will be calculated. The keys are used to lookup values from the
@@ -2149,14 +1906,10 @@ pub struct PulpApiTopologySpreadConstraints {
     /// MatchLabelKeys cannot be set when LabelSelector isn't set.
     /// Keys that don't exist in the incoming pod labels will
     /// be ignored. A null or empty list means only match against labelSelector.
-    ///
-    ///
+    /// 
+    /// 
     /// This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabelKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MaxSkew describes the degree to which pods may be unevenly distributed.
     /// When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference
@@ -2187,8 +1940,8 @@ pub struct PulpApiTopologySpreadConstraints {
     /// If value is nil, the constraint behaves as if MinDomains is equal to 1.
     /// Valid values are integers greater than 0.
     /// When value is not nil, WhenUnsatisfiable must be DoNotSchedule.
-    ///
-    ///
+    /// 
+    /// 
     /// For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same
     /// labelSelector spread as 2/2/2:
     /// | zone1 | zone2 | zone3 |
@@ -2197,40 +1950,28 @@ pub struct PulpApiTopologySpreadConstraints {
     /// In this situation, new pod with the same labelSelector cannot be scheduled,
     /// because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,
     /// it will violate MaxSkew.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
     /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector
     /// when calculating pod topology spread skew. Options are:
     /// - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.
     /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
-    ///
-    ///
+    /// 
+    /// 
     /// If this value is nil, the behavior is equivalent to the Honor policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinityPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
     /// NodeTaintsPolicy indicates how we will treat node taints when calculating
     /// pod topology spread skew. Options are:
     /// - Honor: nodes without taints, along with tainted nodes for which the incoming pod
     /// has a toleration, are included.
     /// - Ignore: node taints are ignored. All nodes are included.
-    ///
-    ///
+    /// 
+    /// 
     /// If this value is nil, the behavior is equivalent to the Ignore policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeTaintsPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
     /// TopologyKey is the key of node labels. Nodes that have a label with this key
     /// and identical values are considered to be in the same topology.
@@ -2272,21 +2013,12 @@ pub struct PulpApiTopologySpreadConstraints {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpApiTopologySpreadConstraintsLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<PulpApiTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PulpApiTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -2325,11 +2057,7 @@ pub struct PulpCache {
     pub external_cache_secret: Option<String>,
     /// Periodic probe of container liveness.
     /// Container will be restarted if the probe fails.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<PulpCacheLivenessProbe>,
     /// NodeSelector for the Pulp pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2341,11 +2069,7 @@ pub struct PulpCache {
     pub pvc: Option<String>,
     /// Periodic probe of container service readiness.
     /// Container will be removed from service endpoints if the probe fails.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<PulpCacheReadinessProbe>,
     /// The image name for the redis image.
     /// Default: "redis:latest"
@@ -2372,25 +2096,13 @@ pub struct PulpCache {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpCacheAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<PulpCacheAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<PulpCacheAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<PulpCacheAffinityPodAntiAffinity>,
 }
 
@@ -2406,25 +2118,15 @@ pub struct PulpCacheAffinityNodeAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node matches the corresponding matchExpressions; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution:
-        Option<Vec<PulpCacheAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<PulpCacheAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
     /// at some point during pod execution (e.g. due to an update), the system
     /// may or may not try to eventually evict the pod from its node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<PulpCacheAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<PulpCacheAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
 /// An empty preferred scheduling term matches all objects with implicit weight 0
@@ -2432,8 +2134,7 @@ pub struct PulpCacheAffinityNodeAffinity {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpCacheAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// A node selector term, associated with the corresponding weight.
-    pub preference:
-        PulpCacheAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
+    pub preference: PulpCacheAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
     /// Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.
     pub weight: i32,
 }
@@ -2452,8 +2153,7 @@ pub struct PulpCacheAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringEx
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpCacheAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct PulpCacheAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -2471,8 +2171,7 @@ pub struct PulpCacheAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringEx
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpCacheAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct PulpCacheAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -2515,8 +2214,7 @@ pub struct PulpCacheAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExe
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpCacheAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct PulpCacheAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -2534,8 +2232,7 @@ pub struct PulpCacheAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExe
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpCacheAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct PulpCacheAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -2562,13 +2259,8 @@ pub struct PulpCacheAffinityPodAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution:
-        Option<Vec<PulpCacheAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<PulpCacheAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
@@ -2576,13 +2268,8 @@ pub struct PulpCacheAffinityPodAffinity {
     /// system may or may not try to eventually evict the pod from its node.
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<Vec<PulpCacheAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<PulpCacheAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -2590,8 +2277,7 @@ pub struct PulpCacheAffinityPodAffinity {
 pub struct PulpCacheAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// Required. A pod affinity term, associated with the corresponding weight.
     #[serde(rename = "podAffinityTerm")]
-    pub pod_affinity_term:
-        PulpCacheAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    pub pod_affinity_term: PulpCacheAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
     /// weight associated with matching the corresponding podAffinityTerm,
     /// in the range 1-100.
     pub weight: i32,
@@ -2665,8 +2351,7 @@ pub struct PulpCacheAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExe
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpCacheAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct PulpCacheAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2700,8 +2385,7 @@ pub struct PulpCacheAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExe
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpCacheAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct PulpCacheAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2725,14 +2409,8 @@ pub struct PulpCacheAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExe
 pub struct PulpCacheAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
     /// If it's null, this PodAffinityTerm matches with no Pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector: Option<
-        PulpCacheAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<PulpCacheAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
     /// incoming pod labels, those key-value labels are merged with `labelSelector` as `key in (value)`
@@ -2742,11 +2420,7 @@ pub struct PulpCacheAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExec
     /// The same key is forbidden to exist in both matchLabelKeys and labelSelector.
     /// Also, matchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabelKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MismatchLabelKeys is a set of pod label keys to select which pods will
     /// be taken into consideration. The keys are used to lookup values from the
@@ -2757,25 +2431,15 @@ pub struct PulpCacheAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExec
     /// The same key is forbidden to exist in both mismatchLabelKeys and labelSelector.
     /// Also, mismatchLabelKeys cannot be set when labelSelector isn't set.
     /// This is an alpha field and requires enabling MatchLabelKeysInPodAffinity feature gate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mismatchLabelKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mismatchLabelKeys")]
     pub mismatch_label_keys: Option<Vec<String>>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
     /// null selector and null or empty namespaces list means "this pod's namespace".
     /// An empty selector ({}) matches all namespaces.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceSelector"
-    )]
-    pub namespace_selector: Option<
-        PulpCacheAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<PulpCacheAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     /// namespaces specifies a static list of namespace names that the term applies to.
     /// The term is applied to the union of the namespaces listed in this field
     /// and the ones selected by namespaceSelector.
@@ -2808,8 +2472,7 @@ pub struct PulpCacheAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExec
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpCacheAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct PulpCacheAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2843,8 +2506,7 @@ pub struct PulpCacheAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExec
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpCacheAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct PulpCacheAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2870,14 +2532,8 @@ pub struct PulpCacheAffinityPodAntiAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<PulpCacheAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<PulpCacheAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the anti-affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the anti-affinity requirements specified by this field cease to be met
@@ -2885,13 +2541,8 @@ pub struct PulpCacheAffinityPodAntiAffinity {
     /// system may or may not try to eventually evict the pod from its node.
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<Vec<PulpCacheAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<PulpCacheAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -2973,8 +2624,7 @@ pub struct PulpCacheAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDurin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpCacheAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct PulpCacheAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -3008,8 +2658,7 @@ pub struct PulpCacheAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDurin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpCacheAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct PulpCacheAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -3096,8 +2745,7 @@ pub struct PulpCacheAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuring
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpCacheAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct PulpCacheAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -3131,8 +2779,7 @@ pub struct PulpCacheAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuring
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpCacheAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct PulpCacheAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -3155,11 +2802,7 @@ pub struct PulpCacheLivenessProbe {
     pub exec: Option<PulpCacheLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3169,27 +2812,15 @@ pub struct PulpCacheLivenessProbe {
     pub http_get: Option<PulpCacheLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -3204,20 +2835,12 @@ pub struct PulpCacheLivenessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -3240,8 +2863,8 @@ pub struct PulpCacheLivenessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -3255,11 +2878,7 @@ pub struct PulpCacheLivenessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<PulpCacheLivenessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3305,11 +2924,7 @@ pub struct PulpCacheReadinessProbe {
     pub exec: Option<PulpCacheReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3319,27 +2934,15 @@ pub struct PulpCacheReadinessProbe {
     pub http_get: Option<PulpCacheReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -3354,20 +2957,12 @@ pub struct PulpCacheReadinessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -3390,8 +2985,8 @@ pub struct PulpCacheReadinessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -3405,11 +3000,7 @@ pub struct PulpCacheReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<PulpCacheReadinessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3451,12 +3042,12 @@ pub struct PulpCacheReadinessProbeTcpSocket {
 pub struct PulpCacheRedisResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<PulpCacheRedisResourceRequirementsClaims>>,
@@ -3489,11 +3080,7 @@ pub struct PulpCacheStrategy {
     /// ---
     /// TODO: Update this to follow our convention for oneOf, whatever we decide it
     /// to be.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollingUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<PulpCacheStrategyRollingUpdate>,
     /// Type of deployment. Can be "Recreate" or "RollingUpdate". Default is RollingUpdate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -3530,11 +3117,7 @@ pub struct PulpCacheStrategyRollingUpdate {
     /// can be scaled down further, followed by scaling up the new ReplicaSet, ensuring
     /// that the total number of pods available at all times during the update is at
     /// least 70% of desired pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
 }
 
@@ -3560,11 +3143,7 @@ pub struct PulpCacheTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -3597,11 +3176,7 @@ pub struct PulpContent {
     pub init_container: Option<PulpContentInitContainer>,
     /// Periodic probe of container liveness.
     /// Container will be restarted if the probe fails.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<PulpContentLivenessProbe>,
     /// NodeSelector for the Pulp pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3611,11 +3186,7 @@ pub struct PulpContent {
     pub pdb: Option<PulpContentPdb>,
     /// Periodic probe of container service readiness.
     /// Container will be removed from service endpoints if the probe fails.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<PulpContentReadinessProbe>,
     /// Size is the size of number of pulp-content replicas.
     /// Default: 2
@@ -3639,25 +3210,13 @@ pub struct PulpContent {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpContentAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<PulpContentAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<PulpContentAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<PulpContentAffinityPodAntiAffinity>,
 }
 
@@ -3673,25 +3232,15 @@ pub struct PulpContentAffinityNodeAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node matches the corresponding matchExpressions; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution:
-        Option<Vec<PulpContentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<PulpContentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
     /// at some point during pod execution (e.g. due to an update), the system
     /// may or may not try to eventually evict the pod from its node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<PulpContentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<PulpContentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
 /// An empty preferred scheduling term matches all objects with implicit weight 0
@@ -3699,8 +3248,7 @@ pub struct PulpContentAffinityNodeAffinity {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpContentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// A node selector term, associated with the corresponding weight.
-    pub preference:
-        PulpContentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
+    pub preference: PulpContentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
     /// Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.
     pub weight: i32,
 }
@@ -3719,8 +3267,7 @@ pub struct PulpContentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuring
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpContentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct PulpContentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -3738,8 +3285,7 @@ pub struct PulpContentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuring
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpContentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct PulpContentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -3782,8 +3328,7 @@ pub struct PulpContentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringE
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpContentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct PulpContentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -3801,8 +3346,7 @@ pub struct PulpContentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringE
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpContentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct PulpContentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -3829,13 +3373,8 @@ pub struct PulpContentAffinityPodAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution:
-        Option<Vec<PulpContentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<PulpContentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
@@ -3843,13 +3382,8 @@ pub struct PulpContentAffinityPodAffinity {
     /// system may or may not try to eventually evict the pod from its node.
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<Vec<PulpContentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<PulpContentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -3931,8 +3465,7 @@ pub struct PulpContentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringE
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpContentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct PulpContentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -3966,8 +3499,7 @@ pub struct PulpContentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringE
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpContentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct PulpContentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4054,8 +3586,7 @@ pub struct PulpContentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringEx
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpContentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct PulpContentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4089,8 +3620,7 @@ pub struct PulpContentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringEx
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpContentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct PulpContentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4116,14 +3646,8 @@ pub struct PulpContentAffinityPodAntiAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<PulpContentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<PulpContentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the anti-affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the anti-affinity requirements specified by this field cease to be met
@@ -4131,14 +3655,8 @@ pub struct PulpContentAffinityPodAntiAffinity {
     /// system may or may not try to eventually evict the pod from its node.
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution: Option<
-        Vec<PulpContentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<PulpContentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -4220,8 +3738,7 @@ pub struct PulpContentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDur
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpContentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct PulpContentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4255,8 +3772,7 @@ pub struct PulpContentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDur
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpContentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct PulpContentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4343,8 +3859,7 @@ pub struct PulpContentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuri
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpContentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct PulpContentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4378,8 +3893,7 @@ pub struct PulpContentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuri
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpContentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct PulpContentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4418,11 +3932,7 @@ pub struct PulpContentEnvVars {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpContentEnvVarsValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<PulpContentEnvVarsValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -4430,18 +3940,10 @@ pub struct PulpContentEnvVarsValueFrom {
     pub field_ref: Option<PulpContentEnvVarsValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<PulpContentEnvVarsValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<PulpContentEnvVarsValueFromSecretKeyRef>,
 }
 
@@ -4469,11 +3971,7 @@ pub struct PulpContentEnvVarsValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpContentEnvVarsValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -4485,11 +3983,7 @@ pub struct PulpContentEnvVarsValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpContentEnvVarsValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4558,11 +4052,7 @@ pub struct PulpContentInitContainerEnvVars {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpContentInitContainerEnvVarsValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<PulpContentInitContainerEnvVarsValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -4570,18 +4060,10 @@ pub struct PulpContentInitContainerEnvVarsValueFrom {
     pub field_ref: Option<PulpContentInitContainerEnvVarsValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<PulpContentInitContainerEnvVarsValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<PulpContentInitContainerEnvVarsValueFromSecretKeyRef>,
 }
 
@@ -4609,11 +4091,7 @@ pub struct PulpContentInitContainerEnvVarsValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpContentInitContainerEnvVarsValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -4625,11 +4103,7 @@ pub struct PulpContentInitContainerEnvVarsValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpContentInitContainerEnvVarsValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4662,12 +4136,12 @@ pub struct PulpContentInitContainerEnvVarsValueFromSecretKeyRef {
 pub struct PulpContentInitContainerResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<PulpContentInitContainerResourceRequirementsClaims>>,
@@ -4701,11 +4175,7 @@ pub struct PulpContentLivenessProbe {
     pub exec: Option<PulpContentLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4715,27 +4185,15 @@ pub struct PulpContentLivenessProbe {
     pub http_get: Option<PulpContentLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -4750,20 +4208,12 @@ pub struct PulpContentLivenessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -4786,8 +4236,8 @@ pub struct PulpContentLivenessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -4801,11 +4251,7 @@ pub struct PulpContentLivenessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<PulpContentLivenessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4849,21 +4295,13 @@ pub struct PulpContentPdb {
     /// "selector" are unavailable after the eviction, i.e. even in absence of
     /// the evicted pod. For example, one can prevent all voluntary evictions
     /// by specifying 0. This is a mutually exclusive setting with "minAvailable".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
     /// An eviction is allowed if at least "minAvailable" pods selected by
     /// "selector" will still be available after the eviction, i.e. even in the
     /// absence of the evicted pod.  So for example you can prevent all voluntary
     /// evictions by specifying "100%".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minAvailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minAvailable")]
     pub min_available: Option<IntOrString>,
     /// Label query over pods whose evictions are managed by the disruption
     /// budget.
@@ -4874,38 +4312,34 @@ pub struct PulpContentPdb {
     /// UnhealthyPodEvictionPolicy defines the criteria for when unhealthy pods
     /// should be considered for eviction. Current implementation considers healthy pods,
     /// as pods that have status.conditions item with type="Ready",status="True".
-    ///
-    ///
+    /// 
+    /// 
     /// Valid policies are IfHealthyBudget and AlwaysAllow.
     /// If no policy is specified, the default behavior will be used,
     /// which corresponds to the IfHealthyBudget policy.
-    ///
-    ///
+    /// 
+    /// 
     /// IfHealthyBudget policy means that running pods (status.phase="Running"),
     /// but not yet healthy can be evicted only if the guarded application is not
     /// disrupted (status.currentHealthy is at least equal to status.desiredHealthy).
     /// Healthy pods will be subject to the PDB for eviction.
-    ///
-    ///
+    /// 
+    /// 
     /// AlwaysAllow policy means that all running pods (status.phase="Running"),
     /// but not yet healthy are considered disrupted and can be evicted regardless
     /// of whether the criteria in a PDB is met. This means perspective running
     /// pods of a disrupted application might not get a chance to become healthy.
     /// Healthy pods will be subject to the PDB for eviction.
-    ///
-    ///
+    /// 
+    /// 
     /// Additional policies may be added in the future.
     /// Clients making eviction decisions should disallow eviction of unhealthy pods
     /// if they encounter an unrecognized policy in this field.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is beta-level. The eviction API uses this field when
     /// the feature gate PDBUnhealthyPodEvictionPolicy is enabled (enabled by default).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unhealthyPodEvictionPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyPodEvictionPolicy")]
     pub unhealthy_pod_eviction_policy: Option<String>,
 }
 
@@ -4916,20 +4350,12 @@ pub struct PulpContentPdb {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpContentPdbSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PulpContentPdbSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -4959,11 +4385,7 @@ pub struct PulpContentReadinessProbe {
     pub exec: Option<PulpContentReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4973,27 +4395,15 @@ pub struct PulpContentReadinessProbe {
     pub http_get: Option<PulpContentReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -5008,20 +4418,12 @@ pub struct PulpContentReadinessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -5044,8 +4446,8 @@ pub struct PulpContentReadinessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -5059,11 +4461,7 @@ pub struct PulpContentReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<PulpContentReadinessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5105,12 +4503,12 @@ pub struct PulpContentReadinessProbeTcpSocket {
 pub struct PulpContentResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<PulpContentResourceRequirementsClaims>>,
@@ -5143,11 +4541,7 @@ pub struct PulpContentStrategy {
     /// ---
     /// TODO: Update this to follow our convention for oneOf, whatever we decide it
     /// to be.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollingUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<PulpContentStrategyRollingUpdate>,
     /// Type of deployment. Can be "Recreate" or "RollingUpdate". Default is RollingUpdate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -5184,11 +4578,7 @@ pub struct PulpContentStrategyRollingUpdate {
     /// can be scaled down further, followed by scaling up the new ReplicaSet, ensuring
     /// that the total number of pods available at all times during the update is at
     /// least 70% of desired pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
 }
 
@@ -5214,11 +4604,7 @@ pub struct PulpContentTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -5232,11 +4618,7 @@ pub struct PulpContentTopologySpreadConstraints {
     /// LabelSelector is used to find matching pods.
     /// Pods that match this label selector are counted to determine the number of pods
     /// in their corresponding topology domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PulpContentTopologySpreadConstraintsLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select the pods over which
     /// spreading will be calculated. The keys are used to lookup values from the
@@ -5246,14 +4628,10 @@ pub struct PulpContentTopologySpreadConstraints {
     /// MatchLabelKeys cannot be set when LabelSelector isn't set.
     /// Keys that don't exist in the incoming pod labels will
     /// be ignored. A null or empty list means only match against labelSelector.
-    ///
-    ///
+    /// 
+    /// 
     /// This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabelKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MaxSkew describes the degree to which pods may be unevenly distributed.
     /// When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference
@@ -5284,8 +4662,8 @@ pub struct PulpContentTopologySpreadConstraints {
     /// If value is nil, the constraint behaves as if MinDomains is equal to 1.
     /// Valid values are integers greater than 0.
     /// When value is not nil, WhenUnsatisfiable must be DoNotSchedule.
-    ///
-    ///
+    /// 
+    /// 
     /// For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same
     /// labelSelector spread as 2/2/2:
     /// | zone1 | zone2 | zone3 |
@@ -5294,40 +4672,28 @@ pub struct PulpContentTopologySpreadConstraints {
     /// In this situation, new pod with the same labelSelector cannot be scheduled,
     /// because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,
     /// it will violate MaxSkew.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
     /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector
     /// when calculating pod topology spread skew. Options are:
     /// - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.
     /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
-    ///
-    ///
+    /// 
+    /// 
     /// If this value is nil, the behavior is equivalent to the Honor policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinityPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
     /// NodeTaintsPolicy indicates how we will treat node taints when calculating
     /// pod topology spread skew. Options are:
     /// - Honor: nodes without taints, along with tainted nodes for which the incoming pod
     /// has a toleration, are included.
     /// - Ignore: node taints are ignored. All nodes are included.
-    ///
-    ///
+    /// 
+    /// 
     /// If this value is nil, the behavior is equivalent to the Ignore policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeTaintsPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
     /// TopologyKey is the key of node labels. Nodes that have a label with this key
     /// and identical values are considered to be in the same topology.
@@ -5369,21 +4735,12 @@ pub struct PulpContentTopologySpreadConstraints {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpContentTopologySpreadConstraintsLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<PulpContentTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PulpContentTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -5415,11 +4772,7 @@ pub struct PulpDatabase {
     pub external_db_secret: Option<String>,
     /// Periodic probe of container liveness.
     /// Container will be restarted if the probe fails.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<PulpDatabaseLivenessProbe>,
     /// NodeSelector for the database pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5469,11 +4822,7 @@ pub struct PulpDatabase {
     pub pvc: Option<String>,
     /// Periodic probe of container service readiness.
     /// Container will be removed from service endpoints if the probe fails.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<PulpDatabaseReadinessProbe>,
     /// Node tolerations for the database pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5487,25 +4836,13 @@ pub struct PulpDatabase {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpDatabaseAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<PulpDatabaseAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<PulpDatabaseAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<PulpDatabaseAffinityPodAntiAffinity>,
 }
 
@@ -5521,26 +4858,15 @@ pub struct PulpDatabaseAffinityNodeAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node matches the corresponding matchExpressions; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<PulpDatabaseAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<PulpDatabaseAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
     /// at some point during pod execution (e.g. due to an update), the system
     /// may or may not try to eventually evict the pod from its node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<PulpDatabaseAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<PulpDatabaseAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
 /// An empty preferred scheduling term matches all objects with implicit weight 0
@@ -5548,8 +4874,7 @@ pub struct PulpDatabaseAffinityNodeAffinity {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpDatabaseAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// A node selector term, associated with the corresponding weight.
-    pub preference:
-        PulpDatabaseAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
+    pub preference: PulpDatabaseAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
     /// Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.
     pub weight: i32,
 }
@@ -5568,8 +4893,7 @@ pub struct PulpDatabaseAffinityNodeAffinityPreferredDuringSchedulingIgnoredDurin
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpDatabaseAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct PulpDatabaseAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -5587,8 +4911,7 @@ pub struct PulpDatabaseAffinityNodeAffinityPreferredDuringSchedulingIgnoredDurin
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpDatabaseAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct PulpDatabaseAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -5631,8 +4954,7 @@ pub struct PulpDatabaseAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuring
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpDatabaseAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct PulpDatabaseAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -5650,8 +4972,7 @@ pub struct PulpDatabaseAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuring
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpDatabaseAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct PulpDatabaseAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -5678,13 +4999,8 @@ pub struct PulpDatabaseAffinityPodAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution:
-        Option<Vec<PulpDatabaseAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<PulpDatabaseAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
@@ -5692,13 +5008,8 @@ pub struct PulpDatabaseAffinityPodAffinity {
     /// system may or may not try to eventually evict the pod from its node.
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<Vec<PulpDatabaseAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<PulpDatabaseAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -5780,8 +5091,7 @@ pub struct PulpDatabaseAffinityPodAffinityPreferredDuringSchedulingIgnoredDuring
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpDatabaseAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct PulpDatabaseAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5815,8 +5125,7 @@ pub struct PulpDatabaseAffinityPodAffinityPreferredDuringSchedulingIgnoredDuring
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpDatabaseAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct PulpDatabaseAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5903,8 +5212,7 @@ pub struct PulpDatabaseAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringE
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpDatabaseAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct PulpDatabaseAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5938,8 +5246,7 @@ pub struct PulpDatabaseAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringE
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpDatabaseAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct PulpDatabaseAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5965,14 +5272,8 @@ pub struct PulpDatabaseAffinityPodAntiAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<PulpDatabaseAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<PulpDatabaseAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the anti-affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the anti-affinity requirements specified by this field cease to be met
@@ -5980,14 +5281,8 @@ pub struct PulpDatabaseAffinityPodAntiAffinity {
     /// system may or may not try to eventually evict the pod from its node.
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution: Option<
-        Vec<PulpDatabaseAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<PulpDatabaseAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -6069,8 +5364,7 @@ pub struct PulpDatabaseAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDu
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpDatabaseAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct PulpDatabaseAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -6104,8 +5398,7 @@ pub struct PulpDatabaseAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDu
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpDatabaseAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct PulpDatabaseAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -6192,8 +5485,7 @@ pub struct PulpDatabaseAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDur
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpDatabaseAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct PulpDatabaseAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -6227,8 +5519,7 @@ pub struct PulpDatabaseAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDur
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpDatabaseAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct PulpDatabaseAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -6251,11 +5542,7 @@ pub struct PulpDatabaseLivenessProbe {
     pub exec: Option<PulpDatabaseLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6265,27 +5552,15 @@ pub struct PulpDatabaseLivenessProbe {
     pub http_get: Option<PulpDatabaseLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -6300,20 +5575,12 @@ pub struct PulpDatabaseLivenessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -6336,8 +5603,8 @@ pub struct PulpDatabaseLivenessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -6351,11 +5618,7 @@ pub struct PulpDatabaseLivenessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<PulpDatabaseLivenessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6397,12 +5660,12 @@ pub struct PulpDatabaseLivenessProbeTcpSocket {
 pub struct PulpDatabasePostgresResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<PulpDatabasePostgresResourceRequirementsClaims>>,
@@ -6436,11 +5699,7 @@ pub struct PulpDatabaseReadinessProbe {
     pub exec: Option<PulpDatabaseReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6450,27 +5709,15 @@ pub struct PulpDatabaseReadinessProbe {
     pub http_get: Option<PulpDatabaseReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -6485,20 +5732,12 @@ pub struct PulpDatabaseReadinessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -6521,8 +5760,8 @@ pub struct PulpDatabaseReadinessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -6536,11 +5775,7 @@ pub struct PulpDatabaseReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<PulpDatabaseReadinessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6599,11 +5834,7 @@ pub struct PulpDatabaseTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -6723,11 +5954,7 @@ pub struct PulpMigrationJobContainerEnvVars {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpMigrationJobContainerEnvVarsValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<PulpMigrationJobContainerEnvVarsValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -6735,18 +5962,10 @@ pub struct PulpMigrationJobContainerEnvVarsValueFrom {
     pub field_ref: Option<PulpMigrationJobContainerEnvVarsValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<PulpMigrationJobContainerEnvVarsValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<PulpMigrationJobContainerEnvVarsValueFromSecretKeyRef>,
 }
 
@@ -6774,11 +5993,7 @@ pub struct PulpMigrationJobContainerEnvVarsValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpMigrationJobContainerEnvVarsValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -6790,11 +6005,7 @@ pub struct PulpMigrationJobContainerEnvVarsValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpMigrationJobContainerEnvVarsValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6827,12 +6038,12 @@ pub struct PulpMigrationJobContainerEnvVarsValueFromSecretKeyRef {
 pub struct PulpMigrationJobContainerResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<PulpMigrationJobContainerResourceRequirementsClaims>>,
@@ -6906,11 +6117,7 @@ pub struct PulpSigningJobContainerEnvVars {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpSigningJobContainerEnvVarsValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<PulpSigningJobContainerEnvVarsValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -6918,18 +6125,10 @@ pub struct PulpSigningJobContainerEnvVarsValueFrom {
     pub field_ref: Option<PulpSigningJobContainerEnvVarsValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<PulpSigningJobContainerEnvVarsValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<PulpSigningJobContainerEnvVarsValueFromSecretKeyRef>,
 }
 
@@ -6957,11 +6156,7 @@ pub struct PulpSigningJobContainerEnvVarsValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpSigningJobContainerEnvVarsValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -6973,11 +6168,7 @@ pub struct PulpSigningJobContainerEnvVarsValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpSigningJobContainerEnvVarsValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7010,12 +6201,12 @@ pub struct PulpSigningJobContainerEnvVarsValueFromSecretKeyRef {
 pub struct PulpSigningJobContainerResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<PulpSigningJobContainerResourceRequirementsClaims>>,
@@ -7067,12 +6258,12 @@ pub struct PulpTelemetry {
 pub struct PulpTelemetryResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<PulpTelemetryResourceRequirementsClaims>>,
@@ -7108,11 +6299,7 @@ pub struct PulpWeb {
     pub env_vars: Option<Vec<PulpWebEnvVars>>,
     /// Periodic probe of container liveness.
     /// Container will be restarted if the probe fails.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<PulpWebLivenessProbe>,
     /// NodeSelector for the Web pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7122,11 +6309,7 @@ pub struct PulpWeb {
     pub pdb: Option<PulpWebPdb>,
     /// Periodic probe of container service readiness.
     /// Container will be removed from service endpoints if the probe fails.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<PulpWebReadinessProbe>,
     /// Size is the size of number of pulp-web replicas.
     /// Default: 1
@@ -7172,11 +6355,7 @@ pub struct PulpWebEnvVars {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpWebEnvVarsValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<PulpWebEnvVarsValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -7184,18 +6363,10 @@ pub struct PulpWebEnvVarsValueFrom {
     pub field_ref: Option<PulpWebEnvVarsValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<PulpWebEnvVarsValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<PulpWebEnvVarsValueFromSecretKeyRef>,
 }
 
@@ -7223,11 +6394,7 @@ pub struct PulpWebEnvVarsValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpWebEnvVarsValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -7239,11 +6406,7 @@ pub struct PulpWebEnvVarsValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpWebEnvVarsValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7280,11 +6443,7 @@ pub struct PulpWebLivenessProbe {
     pub exec: Option<PulpWebLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7294,27 +6453,15 @@ pub struct PulpWebLivenessProbe {
     pub http_get: Option<PulpWebLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -7329,20 +6476,12 @@ pub struct PulpWebLivenessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -7365,8 +6504,8 @@ pub struct PulpWebLivenessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -7380,11 +6519,7 @@ pub struct PulpWebLivenessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<PulpWebLivenessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7428,21 +6563,13 @@ pub struct PulpWebPdb {
     /// "selector" are unavailable after the eviction, i.e. even in absence of
     /// the evicted pod. For example, one can prevent all voluntary evictions
     /// by specifying 0. This is a mutually exclusive setting with "minAvailable".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
     /// An eviction is allowed if at least "minAvailable" pods selected by
     /// "selector" will still be available after the eviction, i.e. even in the
     /// absence of the evicted pod.  So for example you can prevent all voluntary
     /// evictions by specifying "100%".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minAvailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minAvailable")]
     pub min_available: Option<IntOrString>,
     /// Label query over pods whose evictions are managed by the disruption
     /// budget.
@@ -7453,38 +6580,34 @@ pub struct PulpWebPdb {
     /// UnhealthyPodEvictionPolicy defines the criteria for when unhealthy pods
     /// should be considered for eviction. Current implementation considers healthy pods,
     /// as pods that have status.conditions item with type="Ready",status="True".
-    ///
-    ///
+    /// 
+    /// 
     /// Valid policies are IfHealthyBudget and AlwaysAllow.
     /// If no policy is specified, the default behavior will be used,
     /// which corresponds to the IfHealthyBudget policy.
-    ///
-    ///
+    /// 
+    /// 
     /// IfHealthyBudget policy means that running pods (status.phase="Running"),
     /// but not yet healthy can be evicted only if the guarded application is not
     /// disrupted (status.currentHealthy is at least equal to status.desiredHealthy).
     /// Healthy pods will be subject to the PDB for eviction.
-    ///
-    ///
+    /// 
+    /// 
     /// AlwaysAllow policy means that all running pods (status.phase="Running"),
     /// but not yet healthy are considered disrupted and can be evicted regardless
     /// of whether the criteria in a PDB is met. This means perspective running
     /// pods of a disrupted application might not get a chance to become healthy.
     /// Healthy pods will be subject to the PDB for eviction.
-    ///
-    ///
+    /// 
+    /// 
     /// Additional policies may be added in the future.
     /// Clients making eviction decisions should disallow eviction of unhealthy pods
     /// if they encounter an unrecognized policy in this field.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is beta-level. The eviction API uses this field when
     /// the feature gate PDBUnhealthyPodEvictionPolicy is enabled (enabled by default).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unhealthyPodEvictionPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyPodEvictionPolicy")]
     pub unhealthy_pod_eviction_policy: Option<String>,
 }
 
@@ -7495,20 +6618,12 @@ pub struct PulpWebPdb {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpWebPdbSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PulpWebPdbSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -7538,11 +6653,7 @@ pub struct PulpWebReadinessProbe {
     pub exec: Option<PulpWebReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7552,27 +6663,15 @@ pub struct PulpWebReadinessProbe {
     pub http_get: Option<PulpWebReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -7587,20 +6686,12 @@ pub struct PulpWebReadinessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -7623,8 +6714,8 @@ pub struct PulpWebReadinessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -7638,11 +6729,7 @@ pub struct PulpWebReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<PulpWebReadinessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7684,12 +6771,12 @@ pub struct PulpWebReadinessProbeTcpSocket {
 pub struct PulpWebResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<PulpWebResourceRequirementsClaims>>,
@@ -7722,11 +6809,7 @@ pub struct PulpWebStrategy {
     /// ---
     /// TODO: Update this to follow our convention for oneOf, whatever we decide it
     /// to be.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollingUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<PulpWebStrategyRollingUpdate>,
     /// Type of deployment. Can be "Recreate" or "RollingUpdate". Default is RollingUpdate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -7763,11 +6846,7 @@ pub struct PulpWebStrategyRollingUpdate {
     /// can be scaled down further, followed by scaling up the new ReplicaSet, ensuring
     /// that the total number of pods available at all times during the update is at
     /// least 70% of desired pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
 }
 
@@ -7801,11 +6880,7 @@ pub struct PulpWorker {
     pub init_container: Option<PulpWorkerInitContainer>,
     /// Periodic probe of container liveness.
     /// Container will be restarted if the probe fails.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<PulpWorkerLivenessProbe>,
     /// NodeSelector for the Pulp pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7815,11 +6890,7 @@ pub struct PulpWorker {
     pub pdb: Option<PulpWorkerPdb>,
     /// Periodic probe of container service readiness.
     /// Container will be removed from service endpoints if the probe fails.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<PulpWorkerReadinessProbe>,
     /// Size is the size of number of pulp-worker replicas.
     /// Default: 2
@@ -7843,25 +6914,13 @@ pub struct PulpWorker {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpWorkerAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<PulpWorkerAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<PulpWorkerAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<PulpWorkerAffinityPodAntiAffinity>,
 }
 
@@ -7877,25 +6936,15 @@ pub struct PulpWorkerAffinityNodeAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node matches the corresponding matchExpressions; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution:
-        Option<Vec<PulpWorkerAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<PulpWorkerAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
     /// at some point during pod execution (e.g. due to an update), the system
     /// may or may not try to eventually evict the pod from its node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<PulpWorkerAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<PulpWorkerAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
 /// An empty preferred scheduling term matches all objects with implicit weight 0
@@ -7903,8 +6952,7 @@ pub struct PulpWorkerAffinityNodeAffinity {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpWorkerAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// A node selector term, associated with the corresponding weight.
-    pub preference:
-        PulpWorkerAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
+    pub preference: PulpWorkerAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
     /// Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.
     pub weight: i32,
 }
@@ -7923,8 +6971,7 @@ pub struct PulpWorkerAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringE
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpWorkerAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct PulpWorkerAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -7942,8 +6989,7 @@ pub struct PulpWorkerAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringE
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpWorkerAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct PulpWorkerAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -7986,8 +7032,7 @@ pub struct PulpWorkerAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringEx
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpWorkerAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct PulpWorkerAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -8005,8 +7050,7 @@ pub struct PulpWorkerAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringEx
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpWorkerAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct PulpWorkerAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -8033,13 +7077,8 @@ pub struct PulpWorkerAffinityPodAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution:
-        Option<Vec<PulpWorkerAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<PulpWorkerAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
@@ -8047,13 +7086,8 @@ pub struct PulpWorkerAffinityPodAffinity {
     /// system may or may not try to eventually evict the pod from its node.
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<Vec<PulpWorkerAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<PulpWorkerAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -8061,8 +7095,7 @@ pub struct PulpWorkerAffinityPodAffinity {
 pub struct PulpWorkerAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// Required. A pod affinity term, associated with the corresponding weight.
     #[serde(rename = "podAffinityTerm")]
-    pub pod_affinity_term:
-        PulpWorkerAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    pub pod_affinity_term: PulpWorkerAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
     /// weight associated with matching the corresponding podAffinityTerm,
     /// in the range 1-100.
     pub weight: i32,
@@ -8136,8 +7169,7 @@ pub struct PulpWorkerAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringEx
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpWorkerAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct PulpWorkerAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8171,8 +7203,7 @@ pub struct PulpWorkerAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringEx
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpWorkerAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct PulpWorkerAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8259,8 +7290,7 @@ pub struct PulpWorkerAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExe
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpWorkerAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct PulpWorkerAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8294,8 +7324,7 @@ pub struct PulpWorkerAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExe
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpWorkerAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct PulpWorkerAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8321,14 +7350,8 @@ pub struct PulpWorkerAffinityPodAntiAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<PulpWorkerAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<PulpWorkerAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the anti-affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the anti-affinity requirements specified by this field cease to be met
@@ -8336,14 +7359,8 @@ pub struct PulpWorkerAffinityPodAntiAffinity {
     /// system may or may not try to eventually evict the pod from its node.
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution: Option<
-        Vec<PulpWorkerAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<PulpWorkerAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -8425,8 +7442,7 @@ pub struct PulpWorkerAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuri
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpWorkerAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct PulpWorkerAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8460,8 +7476,7 @@ pub struct PulpWorkerAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuri
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpWorkerAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct PulpWorkerAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8548,8 +7563,7 @@ pub struct PulpWorkerAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDurin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpWorkerAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct PulpWorkerAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8583,8 +7597,7 @@ pub struct PulpWorkerAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDurin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PulpWorkerAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct PulpWorkerAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8623,11 +7636,7 @@ pub struct PulpWorkerEnvVars {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpWorkerEnvVarsValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<PulpWorkerEnvVarsValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -8635,18 +7644,10 @@ pub struct PulpWorkerEnvVarsValueFrom {
     pub field_ref: Option<PulpWorkerEnvVarsValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<PulpWorkerEnvVarsValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<PulpWorkerEnvVarsValueFromSecretKeyRef>,
 }
 
@@ -8674,11 +7675,7 @@ pub struct PulpWorkerEnvVarsValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpWorkerEnvVarsValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -8690,11 +7687,7 @@ pub struct PulpWorkerEnvVarsValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpWorkerEnvVarsValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8763,11 +7756,7 @@ pub struct PulpWorkerInitContainerEnvVars {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpWorkerInitContainerEnvVarsValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<PulpWorkerInitContainerEnvVarsValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -8775,18 +7764,10 @@ pub struct PulpWorkerInitContainerEnvVarsValueFrom {
     pub field_ref: Option<PulpWorkerInitContainerEnvVarsValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<PulpWorkerInitContainerEnvVarsValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<PulpWorkerInitContainerEnvVarsValueFromSecretKeyRef>,
 }
 
@@ -8814,11 +7795,7 @@ pub struct PulpWorkerInitContainerEnvVarsValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpWorkerInitContainerEnvVarsValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -8830,11 +7807,7 @@ pub struct PulpWorkerInitContainerEnvVarsValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpWorkerInitContainerEnvVarsValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8867,12 +7840,12 @@ pub struct PulpWorkerInitContainerEnvVarsValueFromSecretKeyRef {
 pub struct PulpWorkerInitContainerResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<PulpWorkerInitContainerResourceRequirementsClaims>>,
@@ -8906,11 +7879,7 @@ pub struct PulpWorkerLivenessProbe {
     pub exec: Option<PulpWorkerLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8920,27 +7889,15 @@ pub struct PulpWorkerLivenessProbe {
     pub http_get: Option<PulpWorkerLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -8955,20 +7912,12 @@ pub struct PulpWorkerLivenessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -8991,8 +7940,8 @@ pub struct PulpWorkerLivenessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -9006,11 +7955,7 @@ pub struct PulpWorkerLivenessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<PulpWorkerLivenessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9054,21 +7999,13 @@ pub struct PulpWorkerPdb {
     /// "selector" are unavailable after the eviction, i.e. even in absence of
     /// the evicted pod. For example, one can prevent all voluntary evictions
     /// by specifying 0. This is a mutually exclusive setting with "minAvailable".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
     /// An eviction is allowed if at least "minAvailable" pods selected by
     /// "selector" will still be available after the eviction, i.e. even in the
     /// absence of the evicted pod.  So for example you can prevent all voluntary
     /// evictions by specifying "100%".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minAvailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minAvailable")]
     pub min_available: Option<IntOrString>,
     /// Label query over pods whose evictions are managed by the disruption
     /// budget.
@@ -9079,38 +8016,34 @@ pub struct PulpWorkerPdb {
     /// UnhealthyPodEvictionPolicy defines the criteria for when unhealthy pods
     /// should be considered for eviction. Current implementation considers healthy pods,
     /// as pods that have status.conditions item with type="Ready",status="True".
-    ///
-    ///
+    /// 
+    /// 
     /// Valid policies are IfHealthyBudget and AlwaysAllow.
     /// If no policy is specified, the default behavior will be used,
     /// which corresponds to the IfHealthyBudget policy.
-    ///
-    ///
+    /// 
+    /// 
     /// IfHealthyBudget policy means that running pods (status.phase="Running"),
     /// but not yet healthy can be evicted only if the guarded application is not
     /// disrupted (status.currentHealthy is at least equal to status.desiredHealthy).
     /// Healthy pods will be subject to the PDB for eviction.
-    ///
-    ///
+    /// 
+    /// 
     /// AlwaysAllow policy means that all running pods (status.phase="Running"),
     /// but not yet healthy are considered disrupted and can be evicted regardless
     /// of whether the criteria in a PDB is met. This means perspective running
     /// pods of a disrupted application might not get a chance to become healthy.
     /// Healthy pods will be subject to the PDB for eviction.
-    ///
-    ///
+    /// 
+    /// 
     /// Additional policies may be added in the future.
     /// Clients making eviction decisions should disallow eviction of unhealthy pods
     /// if they encounter an unrecognized policy in this field.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is beta-level. The eviction API uses this field when
     /// the feature gate PDBUnhealthyPodEvictionPolicy is enabled (enabled by default).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unhealthyPodEvictionPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyPodEvictionPolicy")]
     pub unhealthy_pod_eviction_policy: Option<String>,
 }
 
@@ -9121,20 +8054,12 @@ pub struct PulpWorkerPdb {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpWorkerPdbSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PulpWorkerPdbSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -9164,11 +8089,7 @@ pub struct PulpWorkerReadinessProbe {
     pub exec: Option<PulpWorkerReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9178,27 +8099,15 @@ pub struct PulpWorkerReadinessProbe {
     pub http_get: Option<PulpWorkerReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -9213,20 +8122,12 @@ pub struct PulpWorkerReadinessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -9249,8 +8150,8 @@ pub struct PulpWorkerReadinessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -9264,11 +8165,7 @@ pub struct PulpWorkerReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<PulpWorkerReadinessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9310,12 +8207,12 @@ pub struct PulpWorkerReadinessProbeTcpSocket {
 pub struct PulpWorkerResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<PulpWorkerResourceRequirementsClaims>>,
@@ -9348,11 +8245,7 @@ pub struct PulpWorkerStrategy {
     /// ---
     /// TODO: Update this to follow our convention for oneOf, whatever we decide it
     /// to be.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollingUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<PulpWorkerStrategyRollingUpdate>,
     /// Type of deployment. Can be "Recreate" or "RollingUpdate". Default is RollingUpdate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -9389,11 +8282,7 @@ pub struct PulpWorkerStrategyRollingUpdate {
     /// can be scaled down further, followed by scaling up the new ReplicaSet, ensuring
     /// that the total number of pods available at all times during the update is at
     /// least 70% of desired pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
 }
 
@@ -9419,11 +8308,7 @@ pub struct PulpWorkerTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -9437,11 +8322,7 @@ pub struct PulpWorkerTopologySpreadConstraints {
     /// LabelSelector is used to find matching pods.
     /// Pods that match this label selector are counted to determine the number of pods
     /// in their corresponding topology domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
     pub label_selector: Option<PulpWorkerTopologySpreadConstraintsLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select the pods over which
     /// spreading will be calculated. The keys are used to lookup values from the
@@ -9451,14 +8332,10 @@ pub struct PulpWorkerTopologySpreadConstraints {
     /// MatchLabelKeys cannot be set when LabelSelector isn't set.
     /// Keys that don't exist in the incoming pod labels will
     /// be ignored. A null or empty list means only match against labelSelector.
-    ///
-    ///
+    /// 
+    /// 
     /// This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabelKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MaxSkew describes the degree to which pods may be unevenly distributed.
     /// When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference
@@ -9489,8 +8366,8 @@ pub struct PulpWorkerTopologySpreadConstraints {
     /// If value is nil, the constraint behaves as if MinDomains is equal to 1.
     /// Valid values are integers greater than 0.
     /// When value is not nil, WhenUnsatisfiable must be DoNotSchedule.
-    ///
-    ///
+    /// 
+    /// 
     /// For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same
     /// labelSelector spread as 2/2/2:
     /// | zone1 | zone2 | zone3 |
@@ -9499,40 +8376,28 @@ pub struct PulpWorkerTopologySpreadConstraints {
     /// In this situation, new pod with the same labelSelector cannot be scheduled,
     /// because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,
     /// it will violate MaxSkew.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
     /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector
     /// when calculating pod topology spread skew. Options are:
     /// - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.
     /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
-    ///
-    ///
+    /// 
+    /// 
     /// If this value is nil, the behavior is equivalent to the Honor policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinityPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
     /// NodeTaintsPolicy indicates how we will treat node taints when calculating
     /// pod topology spread skew. Options are:
     /// - Honor: nodes without taints, along with tainted nodes for which the incoming pod
     /// has a toleration, are included.
     /// - Ignore: node taints are ignored. All nodes are included.
-    ///
-    ///
+    /// 
+    /// 
     /// If this value is nil, the behavior is equivalent to the Ignore policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeTaintsPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
     /// TopologyKey is the key of node labels. Nodes that have a label with this key
     /// and identical values are considered to be in the same topology.
@@ -9574,21 +8439,12 @@ pub struct PulpWorkerTopologySpreadConstraints {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PulpWorkerTopologySpreadConstraintsLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<PulpWorkerTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PulpWorkerTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -9662,3 +8518,4 @@ pub struct PulpStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub telemetry_enabled: Option<bool>,
 }
+

@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// DexOAuth2ClientSpec defines the desired state of the OAuth2 client.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "dex.gpu-ninja.com",
-    version = "v1alpha1",
-    kind = "DexOAuth2Client",
-    plural = "dexoauth2clients"
-)]
+#[kube(group = "dex.gpu-ninja.com", version = "v1alpha1", kind = "DexOAuth2Client", plural = "dexoauth2clients")]
 #[kube(namespaced)]
 #[kube(status = "DexOAuth2ClientStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DexOAuth2ClientSpec {
     /// IdentityProviderRef is a reference to the identity provider which this client is associated with.
     #[serde(rename = "identityProviderRef")]
@@ -36,21 +31,13 @@ pub struct DexOAuth2ClientSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub public: Option<bool>,
     /// RedirectURIs is a list of allowed redirect URLs for the client.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redirectURIs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redirectURIs")]
     pub redirect_ur_is: Option<Vec<String>>,
     /// SecretName is the name of the secret that will be created to store the OAuth2 client id and client secret.
     #[serde(rename = "secretName")]
     pub secret_name: String,
     /// TrustedPeers are a list of peers which can issue tokens on this client's behalf using the dynamic "oauth2:server:client_id:(client_id)" scope. If a peer makes such a request, this client's ID will appear as the ID Token's audience.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trustedPeers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustedPeers")]
     pub trusted_peers: Option<Vec<String>>,
 }
 
@@ -68,11 +55,7 @@ pub struct DexOAuth2ClientIdentityProviderRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DexOAuth2ClientStatus {
     /// ObservedGeneration is the most recent generation observed for this OAuth2 client by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// Phase is the current phase of the OAuth2 client.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -81,3 +64,4 @@ pub struct DexOAuth2ClientStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
 }
+

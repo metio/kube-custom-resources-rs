@@ -4,62 +4,37 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// NodeSLOSpec defines the desired state of NodeSLO
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "slo.koordinator.sh",
-    version = "v1alpha1",
-    kind = "NodeSLO",
-    plural = "nodeslos"
-)]
+#[kube(group = "slo.koordinator.sh", version = "v1alpha1", kind = "NodeSLO", plural = "nodeslos")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct NodeSLOSpec {
     /// CPU Burst Strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cpuBurstStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuBurstStrategy")]
     pub cpu_burst_strategy: Option<NodeSLOCpuBurstStrategy>,
     /// Third party extensions for NodeSLO
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub extensions: Option<BTreeMap<String, serde_json::Value>>,
     /// QoS management for out-of-band applications
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostApplications"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostApplications")]
     pub host_applications: Option<Vec<NodeSLOHostApplications>>,
     /// QoS config strategy for pods of different qos-class
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceQOSStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceQOSStrategy")]
     pub resource_qos_strategy: Option<NodeSLOResourceQosStrategy>,
     /// BE pods will be limited if node resource usage overload
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceUsedThresholdWithBE"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceUsedThresholdWithBE")]
     pub resource_used_threshold_with_be: Option<NodeSLOResourceUsedThresholdWithBe>,
     /// node global system config
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "systemStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemStrategy")]
     pub system_strategy: Option<NodeSLOSystemStrategy>,
 }
 
@@ -67,34 +42,18 @@ pub struct NodeSLOSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeSLOCpuBurstStrategy {
     /// pod cfs quota scale up ceil percentage, default = 300 (300%)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cfsQuotaBurstPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cfsQuotaBurstPercent")]
     pub cfs_quota_burst_percent: Option<i64>,
     /// specifies a period of time for pod can use at burst, default = -1 (unlimited)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cfsQuotaBurstPeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cfsQuotaBurstPeriodSeconds")]
     pub cfs_quota_burst_period_seconds: Option<i64>,
     /// cpu burst percentage for setting cpu.cfs_burst_us, legal range: [0, 10000], default as 1000 (1000%)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cpuBurstPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuBurstPercent")]
     pub cpu_burst_percent: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policy: Option<String>,
     /// scale down cfs quota if node cpu overload, default = 50
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sharePoolThresholdPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sharePoolThresholdPercent")]
     pub share_pool_threshold_percent: Option<i64>,
 }
 
@@ -102,11 +61,7 @@ pub struct NodeSLOCpuBurstStrategy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeSLOHostApplications {
     /// Optional, defines the host cgroup configuration, use default if not specified according to priority and qos
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cgroupPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cgroupPath")]
     pub cgroup_path: Option<NodeSLOHostApplicationsCgroupPath>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -131,17 +86,14 @@ pub struct NodeSLOHostApplicationsCgroupPath {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentDir")]
     pub parent_dir: Option<String>,
     /// cgroup relative path under parent dir
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "relativePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "relativePath")]
     pub relative_path: Option<String>,
 }
 
 /// QoS Strategy of host application
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSLOHostApplicationsStrategy {}
+pub struct NodeSLOHostApplicationsStrategy {
+}
 
 /// QoS config strategy for pods of different qos-class
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -150,11 +102,7 @@ pub struct NodeSLOResourceQosStrategy {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "beClass")]
     pub be_class: Option<NodeSLOResourceQosStrategyBeClass>,
     /// ResourceQOS for root cgroup.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cgroupRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cgroupRoot")]
     pub cgroup_root: Option<NodeSLOResourceQosStrategyCgroupRoot>,
     /// ResourceQOS for LS pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lsClass")]
@@ -166,11 +114,7 @@ pub struct NodeSLOResourceQosStrategy {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policies: Option<NodeSLOResourceQosStrategyPolicies>,
     /// ResourceQOS for system pods
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "systemClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemClass")]
     pub system_class: Option<NodeSLOResourceQosStrategySystemClass>,
 }
 
@@ -185,18 +129,10 @@ pub struct NodeSLOResourceQosStrategyBeClass {
     /// MemoryQOSCfg stores node-level config of memory qos
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryQOS")]
     pub memory_qos: Option<NodeSLOResourceQosStrategyBeClassMemoryQos>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkQOS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkQOS")]
     pub network_qos: Option<NodeSLOResourceQosStrategyBeClassNetworkQos>,
     /// ResctrlQOSCfg stores node-level config of resctrl qos
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resctrlQOS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resctrlQOS")]
     pub resctrl_qos: Option<NodeSLOResourceQosStrategyBeClassResctrlQos>,
 }
 
@@ -222,60 +158,28 @@ pub struct NodeSLOResourceQosStrategyBeClassBlkioQosBlocks {
 pub struct NodeSLOResourceQosStrategyBeClassBlkioQosBlocksIoCfg {
     /// configure the cost model of blkio-cost manually
     /// whether the user model is enabled. Default value: false
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableUserModel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableUserModel")]
     pub enable_user_model: Option<bool>,
     /// This field is used to set the weight of a sub-group. Default value: 100. Valid values: 1 to 100.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ioWeightPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ioWeightPercent")]
     pub io_weight_percent: Option<i64>,
     /// the read BPS of user model
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelReadBPS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelReadBPS")]
     pub model_read_bps: Option<i64>,
     /// the random read iops of user model
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelReadRandIOPS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelReadRandIOPS")]
     pub model_read_rand_iops: Option<i64>,
     /// the sequential read iops of user model
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelReadSeqIOPS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelReadSeqIOPS")]
     pub model_read_seq_iops: Option<i64>,
     /// the write BPS of user model
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelWriteBPS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelWriteBPS")]
     pub model_write_bps: Option<i64>,
     /// the random write iops of user model
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelWriteRandIOPS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelWriteRandIOPS")]
     pub model_write_rand_iops: Option<i64>,
     /// the sequential write iops of user model
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelWriteSeqIOPS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelWriteSeqIOPS")]
     pub model_write_seq_iops: Option<i64>,
     /// Throttling of throughput
     /// The value is set to 0, which indicates that the feature is disabled.
@@ -289,36 +193,20 @@ pub struct NodeSLOResourceQosStrategyBeClassBlkioQosBlocksIoCfg {
     /// Only used for RootClass
     /// After blk-iocost is enabled, the kernel calculates the proportion of requests that exceed the read or write latency threshold out of all requests. When the proportion is greater than the read or write latency percentile (95%), the kernel considers the disk to be saturated and reduces the rate at which requests are sent to the disk.
     /// the read latency threshold. Unit: microseconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readLatency"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readLatency")]
     pub read_latency: Option<i64>,
     /// the read latency percentile
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readLatencyPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readLatencyPercent")]
     pub read_latency_percent: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeBPS")]
     pub write_bps: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeIOPS")]
     pub write_iops: Option<i64>,
     /// the write latency threshold. Unit: microseconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "writeLatency"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeLatency")]
     pub write_latency: Option<i64>,
     /// the write latency percentile
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "writeLatencyPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeLatencyPercent")]
     pub write_latency_percent: Option<i64>,
 }
 
@@ -328,22 +216,14 @@ pub struct NodeSLOResourceQosStrategyBeClassCpuQos {
     /// whether pods of the QoS class can expel the cgroup idle pods at the SMT-level. default = false
     /// If set to true, pods of this QoS will use a dedicated core sched group for noise clean with the SchedIdle pods.
     /// NOTE: It takes effect if cpuPolicy = "coreSched".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "coreExpeller"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "coreExpeller")]
     pub core_expeller: Option<bool>,
     /// Enable indicates whether the cpu qos is enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
     /// group identity value for pods, default = 0
     /// NOTE: It takes effect if cpuPolicy = "groupIdentity".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "groupIdentity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupIdentity")]
     pub group_identity: Option<i64>,
     /// cpu.idle value for pods, default = 0.
     /// `1` means using SCHED_IDLE.
@@ -367,11 +247,7 @@ pub struct NodeSLOResourceQosStrategyBeClassMemoryQos {
     /// NOTE: `memory.low` should be larger than `memory.min`. If spec.requests.memory == spec.limits.memory,
     /// pod `memory.low` and `memory.high` become invalid, while `memory.wmark_ratio` is still in effect.
     /// Close: 0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lowLimitPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lowLimitPercent")]
     pub low_limit_percent: Option<i64>,
     /// memcg qos
     /// If enabled, memcg qos will be set by the agent, where some fields are implicitly calculated from pod spec.
@@ -382,36 +258,20 @@ pub struct NodeSLOResourceQosStrategyBeClassMemoryQos {
     /// MinLimitPercent specifies the minLimitFactor percentage to calculate `memory.min`, which protects memory
     /// from global reclamation when memory usage does not exceed the min limit.
     /// Close: 0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minLimitPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minLimitPercent")]
     pub min_limit_percent: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "oomKillGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "oomKillGroup")]
     pub oom_kill_group: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub priority: Option<i64>,
     /// TODO: enhance the usages of oom priority and oom kill group
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityEnable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityEnable")]
     pub priority_enable: Option<i64>,
     /// ThrottlingPercent specifies the throttlingFactor percentage to calculate `memory.high` with pod
     /// memory.limits or node allocatable memory, which triggers memcg direct reclamation when memory usage exceeds.
     /// Lower the factor brings more heavier reclaim pressure.
     /// Close: 0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "throttlingPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "throttlingPercent")]
     pub throttling_percent: Option<i64>,
     /// wmark_min_adj (Anolis OS required)
     /// WmarkMinAdj specifies `memory.wmark_min_adj` which adjusts per-memcg threshold for global memory
@@ -420,11 +280,7 @@ pub struct NodeSLOResourceQosStrategyBeClassMemoryQos {
     /// [-25, 0)：global_wmark_min' = global_wmark_min + (global_wmark_min - 0) * wmarkMinAdj
     /// (0, 50]：global_wmark_min' = global_wmark_min + (global_wmark_low - global_wmark_min) * wmarkMinAdj
     /// Close: [LSR:0, LS:0, BE:0]. Recommended: [LSR:-25, LS:-25, BE:50].
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wmarkMinAdj"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wmarkMinAdj")]
     pub wmark_min_adj: Option<i64>,
     /// wmark_ratio (Anolis OS required)
     /// Async memory reclamation is triggered when cgroup memory usage exceeds `memory.wmark_high` and the reclamation
@@ -434,20 +290,12 @@ pub struct NodeSLOResourceQosStrategyBeClassMemoryQos {
     /// WmarkRatio specifies `memory.wmark_ratio` that help calculate `memory.wmark_high`, which triggers async
     /// memory reclamation when memory usage exceeds.
     /// Close: 0. Recommended: 95.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wmarkRatio"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wmarkRatio")]
     pub wmark_ratio: Option<i64>,
     /// WmarkScalePermill specifies `memory.wmark_scale_factor` that helps calculate `memory.wmark_low`, which
     /// stops async memory reclamation when memory usage belows.
     /// Close: 50. Recommended: 20.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wmarkScalePermill"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wmarkScalePermill")]
     pub wmark_scale_permill: Option<i64>,
 }
 
@@ -457,21 +305,13 @@ pub struct NodeSLOResourceQosStrategyBeClassNetworkQos {
     /// unit: bps(bytes per second), two expressions are supported，int and string,
     /// int: percentage based on total bandwidth，valid in 0-100
     /// string: a specific network bandwidth value, eg: 50M.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "egressLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressLimit")]
     pub egress_limit: Option<IntOrString>,
     /// EgressRequest describes the minimum network bandwidth guaranteed in the egress direction.
     /// unit: bps(bytes per second), two expressions are supported，int and string,
     /// int: percentage based on total bandwidth，valid in 0-100
     /// string: a specific network bandwidth value, eg: 50M.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "egressRequest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressRequest")]
     pub egress_request: Option<IntOrString>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
@@ -479,21 +319,13 @@ pub struct NodeSLOResourceQosStrategyBeClassNetworkQos {
     /// unit: bps(bytes per second), two expressions are supported，int and string,
     /// int: percentage based on total bandwidth，valid in 0-100
     /// string: a specific network bandwidth value, eg: 50M.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressLimit")]
     pub ingress_limit: Option<IntOrString>,
     /// IngressRequest describes the minimum network bandwidth guaranteed in the ingress direction.
     /// unit: bps(bytes per second), two expressions are supported，int and string,
     /// int: percentage based on total bandwidth，valid in 0-100
     /// string: a specific network bandwidth value, eg: 50M.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressRequest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressRequest")]
     pub ingress_request: Option<IntOrString>,
 }
 
@@ -501,28 +333,16 @@ pub struct NodeSLOResourceQosStrategyBeClassNetworkQos {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeSLOResourceQosStrategyBeClassResctrlQos {
     /// LLC available range end for pods by percentage
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "catRangeEndPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "catRangeEndPercent")]
     pub cat_range_end_percent: Option<i64>,
     /// LLC available range start for pods by percentage
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "catRangeStartPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "catRangeStartPercent")]
     pub cat_range_start_percent: Option<i64>,
     /// Enable indicates whether the resctrl qos is enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
     /// MBA percent
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mbaPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mbaPercent")]
     pub mba_percent: Option<i64>,
 }
 
@@ -537,18 +357,10 @@ pub struct NodeSLOResourceQosStrategyCgroupRoot {
     /// MemoryQOSCfg stores node-level config of memory qos
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryQOS")]
     pub memory_qos: Option<NodeSLOResourceQosStrategyCgroupRootMemoryQos>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkQOS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkQOS")]
     pub network_qos: Option<NodeSLOResourceQosStrategyCgroupRootNetworkQos>,
     /// ResctrlQOSCfg stores node-level config of resctrl qos
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resctrlQOS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resctrlQOS")]
     pub resctrl_qos: Option<NodeSLOResourceQosStrategyCgroupRootResctrlQos>,
 }
 
@@ -574,60 +386,28 @@ pub struct NodeSLOResourceQosStrategyCgroupRootBlkioQosBlocks {
 pub struct NodeSLOResourceQosStrategyCgroupRootBlkioQosBlocksIoCfg {
     /// configure the cost model of blkio-cost manually
     /// whether the user model is enabled. Default value: false
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableUserModel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableUserModel")]
     pub enable_user_model: Option<bool>,
     /// This field is used to set the weight of a sub-group. Default value: 100. Valid values: 1 to 100.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ioWeightPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ioWeightPercent")]
     pub io_weight_percent: Option<i64>,
     /// the read BPS of user model
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelReadBPS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelReadBPS")]
     pub model_read_bps: Option<i64>,
     /// the random read iops of user model
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelReadRandIOPS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelReadRandIOPS")]
     pub model_read_rand_iops: Option<i64>,
     /// the sequential read iops of user model
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelReadSeqIOPS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelReadSeqIOPS")]
     pub model_read_seq_iops: Option<i64>,
     /// the write BPS of user model
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelWriteBPS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelWriteBPS")]
     pub model_write_bps: Option<i64>,
     /// the random write iops of user model
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelWriteRandIOPS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelWriteRandIOPS")]
     pub model_write_rand_iops: Option<i64>,
     /// the sequential write iops of user model
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelWriteSeqIOPS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelWriteSeqIOPS")]
     pub model_write_seq_iops: Option<i64>,
     /// Throttling of throughput
     /// The value is set to 0, which indicates that the feature is disabled.
@@ -641,36 +421,20 @@ pub struct NodeSLOResourceQosStrategyCgroupRootBlkioQosBlocksIoCfg {
     /// Only used for RootClass
     /// After blk-iocost is enabled, the kernel calculates the proportion of requests that exceed the read or write latency threshold out of all requests. When the proportion is greater than the read or write latency percentile (95%), the kernel considers the disk to be saturated and reduces the rate at which requests are sent to the disk.
     /// the read latency threshold. Unit: microseconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readLatency"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readLatency")]
     pub read_latency: Option<i64>,
     /// the read latency percentile
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readLatencyPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readLatencyPercent")]
     pub read_latency_percent: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeBPS")]
     pub write_bps: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeIOPS")]
     pub write_iops: Option<i64>,
     /// the write latency threshold. Unit: microseconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "writeLatency"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeLatency")]
     pub write_latency: Option<i64>,
     /// the write latency percentile
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "writeLatencyPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeLatencyPercent")]
     pub write_latency_percent: Option<i64>,
 }
 
@@ -680,22 +444,14 @@ pub struct NodeSLOResourceQosStrategyCgroupRootCpuQos {
     /// whether pods of the QoS class can expel the cgroup idle pods at the SMT-level. default = false
     /// If set to true, pods of this QoS will use a dedicated core sched group for noise clean with the SchedIdle pods.
     /// NOTE: It takes effect if cpuPolicy = "coreSched".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "coreExpeller"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "coreExpeller")]
     pub core_expeller: Option<bool>,
     /// Enable indicates whether the cpu qos is enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
     /// group identity value for pods, default = 0
     /// NOTE: It takes effect if cpuPolicy = "groupIdentity".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "groupIdentity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupIdentity")]
     pub group_identity: Option<i64>,
     /// cpu.idle value for pods, default = 0.
     /// `1` means using SCHED_IDLE.
@@ -719,11 +475,7 @@ pub struct NodeSLOResourceQosStrategyCgroupRootMemoryQos {
     /// NOTE: `memory.low` should be larger than `memory.min`. If spec.requests.memory == spec.limits.memory,
     /// pod `memory.low` and `memory.high` become invalid, while `memory.wmark_ratio` is still in effect.
     /// Close: 0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lowLimitPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lowLimitPercent")]
     pub low_limit_percent: Option<i64>,
     /// memcg qos
     /// If enabled, memcg qos will be set by the agent, where some fields are implicitly calculated from pod spec.
@@ -734,36 +486,20 @@ pub struct NodeSLOResourceQosStrategyCgroupRootMemoryQos {
     /// MinLimitPercent specifies the minLimitFactor percentage to calculate `memory.min`, which protects memory
     /// from global reclamation when memory usage does not exceed the min limit.
     /// Close: 0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minLimitPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minLimitPercent")]
     pub min_limit_percent: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "oomKillGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "oomKillGroup")]
     pub oom_kill_group: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub priority: Option<i64>,
     /// TODO: enhance the usages of oom priority and oom kill group
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityEnable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityEnable")]
     pub priority_enable: Option<i64>,
     /// ThrottlingPercent specifies the throttlingFactor percentage to calculate `memory.high` with pod
     /// memory.limits or node allocatable memory, which triggers memcg direct reclamation when memory usage exceeds.
     /// Lower the factor brings more heavier reclaim pressure.
     /// Close: 0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "throttlingPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "throttlingPercent")]
     pub throttling_percent: Option<i64>,
     /// wmark_min_adj (Anolis OS required)
     /// WmarkMinAdj specifies `memory.wmark_min_adj` which adjusts per-memcg threshold for global memory
@@ -772,11 +508,7 @@ pub struct NodeSLOResourceQosStrategyCgroupRootMemoryQos {
     /// [-25, 0)：global_wmark_min' = global_wmark_min + (global_wmark_min - 0) * wmarkMinAdj
     /// (0, 50]：global_wmark_min' = global_wmark_min + (global_wmark_low - global_wmark_min) * wmarkMinAdj
     /// Close: [LSR:0, LS:0, BE:0]. Recommended: [LSR:-25, LS:-25, BE:50].
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wmarkMinAdj"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wmarkMinAdj")]
     pub wmark_min_adj: Option<i64>,
     /// wmark_ratio (Anolis OS required)
     /// Async memory reclamation is triggered when cgroup memory usage exceeds `memory.wmark_high` and the reclamation
@@ -786,20 +518,12 @@ pub struct NodeSLOResourceQosStrategyCgroupRootMemoryQos {
     /// WmarkRatio specifies `memory.wmark_ratio` that help calculate `memory.wmark_high`, which triggers async
     /// memory reclamation when memory usage exceeds.
     /// Close: 0. Recommended: 95.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wmarkRatio"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wmarkRatio")]
     pub wmark_ratio: Option<i64>,
     /// WmarkScalePermill specifies `memory.wmark_scale_factor` that helps calculate `memory.wmark_low`, which
     /// stops async memory reclamation when memory usage belows.
     /// Close: 50. Recommended: 20.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wmarkScalePermill"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wmarkScalePermill")]
     pub wmark_scale_permill: Option<i64>,
 }
 
@@ -809,21 +533,13 @@ pub struct NodeSLOResourceQosStrategyCgroupRootNetworkQos {
     /// unit: bps(bytes per second), two expressions are supported，int and string,
     /// int: percentage based on total bandwidth，valid in 0-100
     /// string: a specific network bandwidth value, eg: 50M.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "egressLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressLimit")]
     pub egress_limit: Option<IntOrString>,
     /// EgressRequest describes the minimum network bandwidth guaranteed in the egress direction.
     /// unit: bps(bytes per second), two expressions are supported，int and string,
     /// int: percentage based on total bandwidth，valid in 0-100
     /// string: a specific network bandwidth value, eg: 50M.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "egressRequest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressRequest")]
     pub egress_request: Option<IntOrString>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
@@ -831,21 +547,13 @@ pub struct NodeSLOResourceQosStrategyCgroupRootNetworkQos {
     /// unit: bps(bytes per second), two expressions are supported，int and string,
     /// int: percentage based on total bandwidth，valid in 0-100
     /// string: a specific network bandwidth value, eg: 50M.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressLimit")]
     pub ingress_limit: Option<IntOrString>,
     /// IngressRequest describes the minimum network bandwidth guaranteed in the ingress direction.
     /// unit: bps(bytes per second), two expressions are supported，int and string,
     /// int: percentage based on total bandwidth，valid in 0-100
     /// string: a specific network bandwidth value, eg: 50M.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressRequest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressRequest")]
     pub ingress_request: Option<IntOrString>,
 }
 
@@ -853,28 +561,16 @@ pub struct NodeSLOResourceQosStrategyCgroupRootNetworkQos {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeSLOResourceQosStrategyCgroupRootResctrlQos {
     /// LLC available range end for pods by percentage
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "catRangeEndPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "catRangeEndPercent")]
     pub cat_range_end_percent: Option<i64>,
     /// LLC available range start for pods by percentage
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "catRangeStartPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "catRangeStartPercent")]
     pub cat_range_start_percent: Option<i64>,
     /// Enable indicates whether the resctrl qos is enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
     /// MBA percent
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mbaPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mbaPercent")]
     pub mba_percent: Option<i64>,
 }
 
@@ -889,18 +585,10 @@ pub struct NodeSLOResourceQosStrategyLsClass {
     /// MemoryQOSCfg stores node-level config of memory qos
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryQOS")]
     pub memory_qos: Option<NodeSLOResourceQosStrategyLsClassMemoryQos>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkQOS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkQOS")]
     pub network_qos: Option<NodeSLOResourceQosStrategyLsClassNetworkQos>,
     /// ResctrlQOSCfg stores node-level config of resctrl qos
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resctrlQOS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resctrlQOS")]
     pub resctrl_qos: Option<NodeSLOResourceQosStrategyLsClassResctrlQos>,
 }
 
@@ -926,60 +614,28 @@ pub struct NodeSLOResourceQosStrategyLsClassBlkioQosBlocks {
 pub struct NodeSLOResourceQosStrategyLsClassBlkioQosBlocksIoCfg {
     /// configure the cost model of blkio-cost manually
     /// whether the user model is enabled. Default value: false
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableUserModel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableUserModel")]
     pub enable_user_model: Option<bool>,
     /// This field is used to set the weight of a sub-group. Default value: 100. Valid values: 1 to 100.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ioWeightPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ioWeightPercent")]
     pub io_weight_percent: Option<i64>,
     /// the read BPS of user model
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelReadBPS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelReadBPS")]
     pub model_read_bps: Option<i64>,
     /// the random read iops of user model
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelReadRandIOPS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelReadRandIOPS")]
     pub model_read_rand_iops: Option<i64>,
     /// the sequential read iops of user model
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelReadSeqIOPS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelReadSeqIOPS")]
     pub model_read_seq_iops: Option<i64>,
     /// the write BPS of user model
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelWriteBPS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelWriteBPS")]
     pub model_write_bps: Option<i64>,
     /// the random write iops of user model
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelWriteRandIOPS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelWriteRandIOPS")]
     pub model_write_rand_iops: Option<i64>,
     /// the sequential write iops of user model
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelWriteSeqIOPS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelWriteSeqIOPS")]
     pub model_write_seq_iops: Option<i64>,
     /// Throttling of throughput
     /// The value is set to 0, which indicates that the feature is disabled.
@@ -993,36 +649,20 @@ pub struct NodeSLOResourceQosStrategyLsClassBlkioQosBlocksIoCfg {
     /// Only used for RootClass
     /// After blk-iocost is enabled, the kernel calculates the proportion of requests that exceed the read or write latency threshold out of all requests. When the proportion is greater than the read or write latency percentile (95%), the kernel considers the disk to be saturated and reduces the rate at which requests are sent to the disk.
     /// the read latency threshold. Unit: microseconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readLatency"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readLatency")]
     pub read_latency: Option<i64>,
     /// the read latency percentile
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readLatencyPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readLatencyPercent")]
     pub read_latency_percent: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeBPS")]
     pub write_bps: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeIOPS")]
     pub write_iops: Option<i64>,
     /// the write latency threshold. Unit: microseconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "writeLatency"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeLatency")]
     pub write_latency: Option<i64>,
     /// the write latency percentile
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "writeLatencyPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeLatencyPercent")]
     pub write_latency_percent: Option<i64>,
 }
 
@@ -1032,22 +672,14 @@ pub struct NodeSLOResourceQosStrategyLsClassCpuQos {
     /// whether pods of the QoS class can expel the cgroup idle pods at the SMT-level. default = false
     /// If set to true, pods of this QoS will use a dedicated core sched group for noise clean with the SchedIdle pods.
     /// NOTE: It takes effect if cpuPolicy = "coreSched".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "coreExpeller"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "coreExpeller")]
     pub core_expeller: Option<bool>,
     /// Enable indicates whether the cpu qos is enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
     /// group identity value for pods, default = 0
     /// NOTE: It takes effect if cpuPolicy = "groupIdentity".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "groupIdentity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupIdentity")]
     pub group_identity: Option<i64>,
     /// cpu.idle value for pods, default = 0.
     /// `1` means using SCHED_IDLE.
@@ -1071,11 +703,7 @@ pub struct NodeSLOResourceQosStrategyLsClassMemoryQos {
     /// NOTE: `memory.low` should be larger than `memory.min`. If spec.requests.memory == spec.limits.memory,
     /// pod `memory.low` and `memory.high` become invalid, while `memory.wmark_ratio` is still in effect.
     /// Close: 0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lowLimitPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lowLimitPercent")]
     pub low_limit_percent: Option<i64>,
     /// memcg qos
     /// If enabled, memcg qos will be set by the agent, where some fields are implicitly calculated from pod spec.
@@ -1086,36 +714,20 @@ pub struct NodeSLOResourceQosStrategyLsClassMemoryQos {
     /// MinLimitPercent specifies the minLimitFactor percentage to calculate `memory.min`, which protects memory
     /// from global reclamation when memory usage does not exceed the min limit.
     /// Close: 0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minLimitPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minLimitPercent")]
     pub min_limit_percent: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "oomKillGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "oomKillGroup")]
     pub oom_kill_group: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub priority: Option<i64>,
     /// TODO: enhance the usages of oom priority and oom kill group
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityEnable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityEnable")]
     pub priority_enable: Option<i64>,
     /// ThrottlingPercent specifies the throttlingFactor percentage to calculate `memory.high` with pod
     /// memory.limits or node allocatable memory, which triggers memcg direct reclamation when memory usage exceeds.
     /// Lower the factor brings more heavier reclaim pressure.
     /// Close: 0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "throttlingPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "throttlingPercent")]
     pub throttling_percent: Option<i64>,
     /// wmark_min_adj (Anolis OS required)
     /// WmarkMinAdj specifies `memory.wmark_min_adj` which adjusts per-memcg threshold for global memory
@@ -1124,11 +736,7 @@ pub struct NodeSLOResourceQosStrategyLsClassMemoryQos {
     /// [-25, 0)：global_wmark_min' = global_wmark_min + (global_wmark_min - 0) * wmarkMinAdj
     /// (0, 50]：global_wmark_min' = global_wmark_min + (global_wmark_low - global_wmark_min) * wmarkMinAdj
     /// Close: [LSR:0, LS:0, BE:0]. Recommended: [LSR:-25, LS:-25, BE:50].
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wmarkMinAdj"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wmarkMinAdj")]
     pub wmark_min_adj: Option<i64>,
     /// wmark_ratio (Anolis OS required)
     /// Async memory reclamation is triggered when cgroup memory usage exceeds `memory.wmark_high` and the reclamation
@@ -1138,20 +746,12 @@ pub struct NodeSLOResourceQosStrategyLsClassMemoryQos {
     /// WmarkRatio specifies `memory.wmark_ratio` that help calculate `memory.wmark_high`, which triggers async
     /// memory reclamation when memory usage exceeds.
     /// Close: 0. Recommended: 95.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wmarkRatio"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wmarkRatio")]
     pub wmark_ratio: Option<i64>,
     /// WmarkScalePermill specifies `memory.wmark_scale_factor` that helps calculate `memory.wmark_low`, which
     /// stops async memory reclamation when memory usage belows.
     /// Close: 50. Recommended: 20.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wmarkScalePermill"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wmarkScalePermill")]
     pub wmark_scale_permill: Option<i64>,
 }
 
@@ -1161,21 +761,13 @@ pub struct NodeSLOResourceQosStrategyLsClassNetworkQos {
     /// unit: bps(bytes per second), two expressions are supported，int and string,
     /// int: percentage based on total bandwidth，valid in 0-100
     /// string: a specific network bandwidth value, eg: 50M.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "egressLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressLimit")]
     pub egress_limit: Option<IntOrString>,
     /// EgressRequest describes the minimum network bandwidth guaranteed in the egress direction.
     /// unit: bps(bytes per second), two expressions are supported，int and string,
     /// int: percentage based on total bandwidth，valid in 0-100
     /// string: a specific network bandwidth value, eg: 50M.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "egressRequest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressRequest")]
     pub egress_request: Option<IntOrString>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
@@ -1183,21 +775,13 @@ pub struct NodeSLOResourceQosStrategyLsClassNetworkQos {
     /// unit: bps(bytes per second), two expressions are supported，int and string,
     /// int: percentage based on total bandwidth，valid in 0-100
     /// string: a specific network bandwidth value, eg: 50M.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressLimit")]
     pub ingress_limit: Option<IntOrString>,
     /// IngressRequest describes the minimum network bandwidth guaranteed in the ingress direction.
     /// unit: bps(bytes per second), two expressions are supported，int and string,
     /// int: percentage based on total bandwidth，valid in 0-100
     /// string: a specific network bandwidth value, eg: 50M.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressRequest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressRequest")]
     pub ingress_request: Option<IntOrString>,
 }
 
@@ -1205,28 +789,16 @@ pub struct NodeSLOResourceQosStrategyLsClassNetworkQos {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeSLOResourceQosStrategyLsClassResctrlQos {
     /// LLC available range end for pods by percentage
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "catRangeEndPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "catRangeEndPercent")]
     pub cat_range_end_percent: Option<i64>,
     /// LLC available range start for pods by percentage
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "catRangeStartPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "catRangeStartPercent")]
     pub cat_range_start_percent: Option<i64>,
     /// Enable indicates whether the resctrl qos is enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
     /// MBA percent
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mbaPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mbaPercent")]
     pub mba_percent: Option<i64>,
 }
 
@@ -1241,18 +813,10 @@ pub struct NodeSLOResourceQosStrategyLsrClass {
     /// MemoryQOSCfg stores node-level config of memory qos
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryQOS")]
     pub memory_qos: Option<NodeSLOResourceQosStrategyLsrClassMemoryQos>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkQOS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkQOS")]
     pub network_qos: Option<NodeSLOResourceQosStrategyLsrClassNetworkQos>,
     /// ResctrlQOSCfg stores node-level config of resctrl qos
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resctrlQOS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resctrlQOS")]
     pub resctrl_qos: Option<NodeSLOResourceQosStrategyLsrClassResctrlQos>,
 }
 
@@ -1278,60 +842,28 @@ pub struct NodeSLOResourceQosStrategyLsrClassBlkioQosBlocks {
 pub struct NodeSLOResourceQosStrategyLsrClassBlkioQosBlocksIoCfg {
     /// configure the cost model of blkio-cost manually
     /// whether the user model is enabled. Default value: false
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableUserModel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableUserModel")]
     pub enable_user_model: Option<bool>,
     /// This field is used to set the weight of a sub-group. Default value: 100. Valid values: 1 to 100.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ioWeightPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ioWeightPercent")]
     pub io_weight_percent: Option<i64>,
     /// the read BPS of user model
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelReadBPS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelReadBPS")]
     pub model_read_bps: Option<i64>,
     /// the random read iops of user model
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelReadRandIOPS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelReadRandIOPS")]
     pub model_read_rand_iops: Option<i64>,
     /// the sequential read iops of user model
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelReadSeqIOPS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelReadSeqIOPS")]
     pub model_read_seq_iops: Option<i64>,
     /// the write BPS of user model
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelWriteBPS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelWriteBPS")]
     pub model_write_bps: Option<i64>,
     /// the random write iops of user model
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelWriteRandIOPS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelWriteRandIOPS")]
     pub model_write_rand_iops: Option<i64>,
     /// the sequential write iops of user model
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelWriteSeqIOPS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelWriteSeqIOPS")]
     pub model_write_seq_iops: Option<i64>,
     /// Throttling of throughput
     /// The value is set to 0, which indicates that the feature is disabled.
@@ -1345,36 +877,20 @@ pub struct NodeSLOResourceQosStrategyLsrClassBlkioQosBlocksIoCfg {
     /// Only used for RootClass
     /// After blk-iocost is enabled, the kernel calculates the proportion of requests that exceed the read or write latency threshold out of all requests. When the proportion is greater than the read or write latency percentile (95%), the kernel considers the disk to be saturated and reduces the rate at which requests are sent to the disk.
     /// the read latency threshold. Unit: microseconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readLatency"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readLatency")]
     pub read_latency: Option<i64>,
     /// the read latency percentile
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readLatencyPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readLatencyPercent")]
     pub read_latency_percent: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeBPS")]
     pub write_bps: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeIOPS")]
     pub write_iops: Option<i64>,
     /// the write latency threshold. Unit: microseconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "writeLatency"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeLatency")]
     pub write_latency: Option<i64>,
     /// the write latency percentile
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "writeLatencyPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeLatencyPercent")]
     pub write_latency_percent: Option<i64>,
 }
 
@@ -1384,22 +900,14 @@ pub struct NodeSLOResourceQosStrategyLsrClassCpuQos {
     /// whether pods of the QoS class can expel the cgroup idle pods at the SMT-level. default = false
     /// If set to true, pods of this QoS will use a dedicated core sched group for noise clean with the SchedIdle pods.
     /// NOTE: It takes effect if cpuPolicy = "coreSched".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "coreExpeller"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "coreExpeller")]
     pub core_expeller: Option<bool>,
     /// Enable indicates whether the cpu qos is enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
     /// group identity value for pods, default = 0
     /// NOTE: It takes effect if cpuPolicy = "groupIdentity".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "groupIdentity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupIdentity")]
     pub group_identity: Option<i64>,
     /// cpu.idle value for pods, default = 0.
     /// `1` means using SCHED_IDLE.
@@ -1423,11 +931,7 @@ pub struct NodeSLOResourceQosStrategyLsrClassMemoryQos {
     /// NOTE: `memory.low` should be larger than `memory.min`. If spec.requests.memory == spec.limits.memory,
     /// pod `memory.low` and `memory.high` become invalid, while `memory.wmark_ratio` is still in effect.
     /// Close: 0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lowLimitPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lowLimitPercent")]
     pub low_limit_percent: Option<i64>,
     /// memcg qos
     /// If enabled, memcg qos will be set by the agent, where some fields are implicitly calculated from pod spec.
@@ -1438,36 +942,20 @@ pub struct NodeSLOResourceQosStrategyLsrClassMemoryQos {
     /// MinLimitPercent specifies the minLimitFactor percentage to calculate `memory.min`, which protects memory
     /// from global reclamation when memory usage does not exceed the min limit.
     /// Close: 0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minLimitPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minLimitPercent")]
     pub min_limit_percent: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "oomKillGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "oomKillGroup")]
     pub oom_kill_group: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub priority: Option<i64>,
     /// TODO: enhance the usages of oom priority and oom kill group
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityEnable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityEnable")]
     pub priority_enable: Option<i64>,
     /// ThrottlingPercent specifies the throttlingFactor percentage to calculate `memory.high` with pod
     /// memory.limits or node allocatable memory, which triggers memcg direct reclamation when memory usage exceeds.
     /// Lower the factor brings more heavier reclaim pressure.
     /// Close: 0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "throttlingPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "throttlingPercent")]
     pub throttling_percent: Option<i64>,
     /// wmark_min_adj (Anolis OS required)
     /// WmarkMinAdj specifies `memory.wmark_min_adj` which adjusts per-memcg threshold for global memory
@@ -1476,11 +964,7 @@ pub struct NodeSLOResourceQosStrategyLsrClassMemoryQos {
     /// [-25, 0)：global_wmark_min' = global_wmark_min + (global_wmark_min - 0) * wmarkMinAdj
     /// (0, 50]：global_wmark_min' = global_wmark_min + (global_wmark_low - global_wmark_min) * wmarkMinAdj
     /// Close: [LSR:0, LS:0, BE:0]. Recommended: [LSR:-25, LS:-25, BE:50].
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wmarkMinAdj"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wmarkMinAdj")]
     pub wmark_min_adj: Option<i64>,
     /// wmark_ratio (Anolis OS required)
     /// Async memory reclamation is triggered when cgroup memory usage exceeds `memory.wmark_high` and the reclamation
@@ -1490,20 +974,12 @@ pub struct NodeSLOResourceQosStrategyLsrClassMemoryQos {
     /// WmarkRatio specifies `memory.wmark_ratio` that help calculate `memory.wmark_high`, which triggers async
     /// memory reclamation when memory usage exceeds.
     /// Close: 0. Recommended: 95.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wmarkRatio"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wmarkRatio")]
     pub wmark_ratio: Option<i64>,
     /// WmarkScalePermill specifies `memory.wmark_scale_factor` that helps calculate `memory.wmark_low`, which
     /// stops async memory reclamation when memory usage belows.
     /// Close: 50. Recommended: 20.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wmarkScalePermill"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wmarkScalePermill")]
     pub wmark_scale_permill: Option<i64>,
 }
 
@@ -1513,21 +989,13 @@ pub struct NodeSLOResourceQosStrategyLsrClassNetworkQos {
     /// unit: bps(bytes per second), two expressions are supported，int and string,
     /// int: percentage based on total bandwidth，valid in 0-100
     /// string: a specific network bandwidth value, eg: 50M.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "egressLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressLimit")]
     pub egress_limit: Option<IntOrString>,
     /// EgressRequest describes the minimum network bandwidth guaranteed in the egress direction.
     /// unit: bps(bytes per second), two expressions are supported，int and string,
     /// int: percentage based on total bandwidth，valid in 0-100
     /// string: a specific network bandwidth value, eg: 50M.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "egressRequest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressRequest")]
     pub egress_request: Option<IntOrString>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
@@ -1535,21 +1003,13 @@ pub struct NodeSLOResourceQosStrategyLsrClassNetworkQos {
     /// unit: bps(bytes per second), two expressions are supported，int and string,
     /// int: percentage based on total bandwidth，valid in 0-100
     /// string: a specific network bandwidth value, eg: 50M.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressLimit")]
     pub ingress_limit: Option<IntOrString>,
     /// IngressRequest describes the minimum network bandwidth guaranteed in the ingress direction.
     /// unit: bps(bytes per second), two expressions are supported，int and string,
     /// int: percentage based on total bandwidth，valid in 0-100
     /// string: a specific network bandwidth value, eg: 50M.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressRequest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressRequest")]
     pub ingress_request: Option<IntOrString>,
 }
 
@@ -1557,28 +1017,16 @@ pub struct NodeSLOResourceQosStrategyLsrClassNetworkQos {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeSLOResourceQosStrategyLsrClassResctrlQos {
     /// LLC available range end for pods by percentage
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "catRangeEndPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "catRangeEndPercent")]
     pub cat_range_end_percent: Option<i64>,
     /// LLC available range start for pods by percentage
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "catRangeStartPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "catRangeStartPercent")]
     pub cat_range_start_percent: Option<i64>,
     /// Enable indicates whether the resctrl qos is enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
     /// MBA percent
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mbaPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mbaPercent")]
     pub mba_percent: Option<i64>,
 }
 
@@ -1589,11 +1037,7 @@ pub struct NodeSLOResourceQosStrategyPolicies {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuPolicy")]
     pub cpu_policy: Option<String>,
     /// applied policy for the Net QoS, default = "tc"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "netQOSPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "netQOSPolicy")]
     pub net_qos_policy: Option<String>,
 }
 
@@ -1608,18 +1052,10 @@ pub struct NodeSLOResourceQosStrategySystemClass {
     /// MemoryQOSCfg stores node-level config of memory qos
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryQOS")]
     pub memory_qos: Option<NodeSLOResourceQosStrategySystemClassMemoryQos>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkQOS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkQOS")]
     pub network_qos: Option<NodeSLOResourceQosStrategySystemClassNetworkQos>,
     /// ResctrlQOSCfg stores node-level config of resctrl qos
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resctrlQOS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resctrlQOS")]
     pub resctrl_qos: Option<NodeSLOResourceQosStrategySystemClassResctrlQos>,
 }
 
@@ -1645,60 +1081,28 @@ pub struct NodeSLOResourceQosStrategySystemClassBlkioQosBlocks {
 pub struct NodeSLOResourceQosStrategySystemClassBlkioQosBlocksIoCfg {
     /// configure the cost model of blkio-cost manually
     /// whether the user model is enabled. Default value: false
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableUserModel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableUserModel")]
     pub enable_user_model: Option<bool>,
     /// This field is used to set the weight of a sub-group. Default value: 100. Valid values: 1 to 100.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ioWeightPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ioWeightPercent")]
     pub io_weight_percent: Option<i64>,
     /// the read BPS of user model
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelReadBPS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelReadBPS")]
     pub model_read_bps: Option<i64>,
     /// the random read iops of user model
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelReadRandIOPS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelReadRandIOPS")]
     pub model_read_rand_iops: Option<i64>,
     /// the sequential read iops of user model
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelReadSeqIOPS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelReadSeqIOPS")]
     pub model_read_seq_iops: Option<i64>,
     /// the write BPS of user model
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelWriteBPS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelWriteBPS")]
     pub model_write_bps: Option<i64>,
     /// the random write iops of user model
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelWriteRandIOPS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelWriteRandIOPS")]
     pub model_write_rand_iops: Option<i64>,
     /// the sequential write iops of user model
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelWriteSeqIOPS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelWriteSeqIOPS")]
     pub model_write_seq_iops: Option<i64>,
     /// Throttling of throughput
     /// The value is set to 0, which indicates that the feature is disabled.
@@ -1712,36 +1116,20 @@ pub struct NodeSLOResourceQosStrategySystemClassBlkioQosBlocksIoCfg {
     /// Only used for RootClass
     /// After blk-iocost is enabled, the kernel calculates the proportion of requests that exceed the read or write latency threshold out of all requests. When the proportion is greater than the read or write latency percentile (95%), the kernel considers the disk to be saturated and reduces the rate at which requests are sent to the disk.
     /// the read latency threshold. Unit: microseconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readLatency"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readLatency")]
     pub read_latency: Option<i64>,
     /// the read latency percentile
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readLatencyPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readLatencyPercent")]
     pub read_latency_percent: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeBPS")]
     pub write_bps: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeIOPS")]
     pub write_iops: Option<i64>,
     /// the write latency threshold. Unit: microseconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "writeLatency"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeLatency")]
     pub write_latency: Option<i64>,
     /// the write latency percentile
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "writeLatencyPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeLatencyPercent")]
     pub write_latency_percent: Option<i64>,
 }
 
@@ -1751,22 +1139,14 @@ pub struct NodeSLOResourceQosStrategySystemClassCpuQos {
     /// whether pods of the QoS class can expel the cgroup idle pods at the SMT-level. default = false
     /// If set to true, pods of this QoS will use a dedicated core sched group for noise clean with the SchedIdle pods.
     /// NOTE: It takes effect if cpuPolicy = "coreSched".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "coreExpeller"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "coreExpeller")]
     pub core_expeller: Option<bool>,
     /// Enable indicates whether the cpu qos is enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
     /// group identity value for pods, default = 0
     /// NOTE: It takes effect if cpuPolicy = "groupIdentity".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "groupIdentity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupIdentity")]
     pub group_identity: Option<i64>,
     /// cpu.idle value for pods, default = 0.
     /// `1` means using SCHED_IDLE.
@@ -1790,11 +1170,7 @@ pub struct NodeSLOResourceQosStrategySystemClassMemoryQos {
     /// NOTE: `memory.low` should be larger than `memory.min`. If spec.requests.memory == spec.limits.memory,
     /// pod `memory.low` and `memory.high` become invalid, while `memory.wmark_ratio` is still in effect.
     /// Close: 0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lowLimitPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lowLimitPercent")]
     pub low_limit_percent: Option<i64>,
     /// memcg qos
     /// If enabled, memcg qos will be set by the agent, where some fields are implicitly calculated from pod spec.
@@ -1805,36 +1181,20 @@ pub struct NodeSLOResourceQosStrategySystemClassMemoryQos {
     /// MinLimitPercent specifies the minLimitFactor percentage to calculate `memory.min`, which protects memory
     /// from global reclamation when memory usage does not exceed the min limit.
     /// Close: 0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minLimitPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minLimitPercent")]
     pub min_limit_percent: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "oomKillGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "oomKillGroup")]
     pub oom_kill_group: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub priority: Option<i64>,
     /// TODO: enhance the usages of oom priority and oom kill group
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityEnable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityEnable")]
     pub priority_enable: Option<i64>,
     /// ThrottlingPercent specifies the throttlingFactor percentage to calculate `memory.high` with pod
     /// memory.limits or node allocatable memory, which triggers memcg direct reclamation when memory usage exceeds.
     /// Lower the factor brings more heavier reclaim pressure.
     /// Close: 0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "throttlingPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "throttlingPercent")]
     pub throttling_percent: Option<i64>,
     /// wmark_min_adj (Anolis OS required)
     /// WmarkMinAdj specifies `memory.wmark_min_adj` which adjusts per-memcg threshold for global memory
@@ -1843,11 +1203,7 @@ pub struct NodeSLOResourceQosStrategySystemClassMemoryQos {
     /// [-25, 0)：global_wmark_min' = global_wmark_min + (global_wmark_min - 0) * wmarkMinAdj
     /// (0, 50]：global_wmark_min' = global_wmark_min + (global_wmark_low - global_wmark_min) * wmarkMinAdj
     /// Close: [LSR:0, LS:0, BE:0]. Recommended: [LSR:-25, LS:-25, BE:50].
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wmarkMinAdj"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wmarkMinAdj")]
     pub wmark_min_adj: Option<i64>,
     /// wmark_ratio (Anolis OS required)
     /// Async memory reclamation is triggered when cgroup memory usage exceeds `memory.wmark_high` and the reclamation
@@ -1857,20 +1213,12 @@ pub struct NodeSLOResourceQosStrategySystemClassMemoryQos {
     /// WmarkRatio specifies `memory.wmark_ratio` that help calculate `memory.wmark_high`, which triggers async
     /// memory reclamation when memory usage exceeds.
     /// Close: 0. Recommended: 95.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wmarkRatio"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wmarkRatio")]
     pub wmark_ratio: Option<i64>,
     /// WmarkScalePermill specifies `memory.wmark_scale_factor` that helps calculate `memory.wmark_low`, which
     /// stops async memory reclamation when memory usage belows.
     /// Close: 50. Recommended: 20.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wmarkScalePermill"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wmarkScalePermill")]
     pub wmark_scale_permill: Option<i64>,
 }
 
@@ -1880,21 +1228,13 @@ pub struct NodeSLOResourceQosStrategySystemClassNetworkQos {
     /// unit: bps(bytes per second), two expressions are supported，int and string,
     /// int: percentage based on total bandwidth，valid in 0-100
     /// string: a specific network bandwidth value, eg: 50M.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "egressLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressLimit")]
     pub egress_limit: Option<IntOrString>,
     /// EgressRequest describes the minimum network bandwidth guaranteed in the egress direction.
     /// unit: bps(bytes per second), two expressions are supported，int and string,
     /// int: percentage based on total bandwidth，valid in 0-100
     /// string: a specific network bandwidth value, eg: 50M.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "egressRequest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressRequest")]
     pub egress_request: Option<IntOrString>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
@@ -1902,21 +1242,13 @@ pub struct NodeSLOResourceQosStrategySystemClassNetworkQos {
     /// unit: bps(bytes per second), two expressions are supported，int and string,
     /// int: percentage based on total bandwidth，valid in 0-100
     /// string: a specific network bandwidth value, eg: 50M.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressLimit")]
     pub ingress_limit: Option<IntOrString>,
     /// IngressRequest describes the minimum network bandwidth guaranteed in the ingress direction.
     /// unit: bps(bytes per second), two expressions are supported，int and string,
     /// int: percentage based on total bandwidth，valid in 0-100
     /// string: a specific network bandwidth value, eg: 50M.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressRequest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressRequest")]
     pub ingress_request: Option<IntOrString>,
 }
 
@@ -1924,28 +1256,16 @@ pub struct NodeSLOResourceQosStrategySystemClassNetworkQos {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeSLOResourceQosStrategySystemClassResctrlQos {
     /// LLC available range end for pods by percentage
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "catRangeEndPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "catRangeEndPercent")]
     pub cat_range_end_percent: Option<i64>,
     /// LLC available range start for pods by percentage
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "catRangeStartPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "catRangeStartPercent")]
     pub cat_range_start_percent: Option<i64>,
     /// Enable indicates whether the resctrl qos is enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
     /// MBA percent
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mbaPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mbaPercent")]
     pub mba_percent: Option<i64>,
 }
 
@@ -1955,73 +1275,37 @@ pub struct NodeSLOResourceUsedThresholdWithBe {
     /// be.satisfactionRate = be.CPURealLimit/be.CPURequest; be.cpuUsage = be.CPUUsed/be.CPURealLimit
     /// if be.satisfactionRate < CPUEvictBESatisfactionLowerPercent/100 && be.usage >= CPUEvictBEUsageThresholdPercent/100,
     /// then start to evict pod, and will evict to ${CPUEvictBESatisfactionUpperPercent}
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cpuEvictBESatisfactionLowerPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuEvictBESatisfactionLowerPercent")]
     pub cpu_evict_be_satisfaction_lower_percent: Option<i64>,
     /// be.satisfactionRate = be.CPURealLimit/be.CPURequest
     /// if be.satisfactionRate > CPUEvictBESatisfactionUpperPercent/100, then stop to evict.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cpuEvictBESatisfactionUpperPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuEvictBESatisfactionUpperPercent")]
     pub cpu_evict_be_satisfaction_upper_percent: Option<i64>,
     /// if be.cpuUsage >= CPUEvictBEUsageThresholdPercent/100, then start to calculate the resources need to be released.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cpuEvictBEUsageThresholdPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuEvictBEUsageThresholdPercent")]
     pub cpu_evict_be_usage_threshold_percent: Option<i64>,
     /// CPUEvictPolicy defines the policy for the BECPUEvict feature.
     /// Default: `evictByRealLimit`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cpuEvictPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuEvictPolicy")]
     pub cpu_evict_policy: Option<String>,
     /// when avg(cpuusage) > CPUEvictThresholdPercent, will start to evict pod by cpu,
     /// and avg(cpuusage) is calculated based on the most recent CPUEvictTimeWindowSeconds data
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cpuEvictTimeWindowSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuEvictTimeWindowSeconds")]
     pub cpu_evict_time_window_seconds: Option<i64>,
     /// CPUSuppressPolicy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cpuSuppressPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuSuppressPolicy")]
     pub cpu_suppress_policy: Option<String>,
     /// cpu suppress threshold percentage (0,100), default = 65
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cpuSuppressThresholdPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuSuppressThresholdPercent")]
     pub cpu_suppress_threshold_percent: Option<i64>,
     /// whether the strategy is enabled, default = false
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
     /// lower: memory release util usage under MemoryEvictLowerPercent, default = MemoryEvictThresholdPercent - 2
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "memoryEvictLowerPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryEvictLowerPercent")]
     pub memory_evict_lower_percent: Option<i64>,
     /// upper: memory evict threshold percentage (0,100), default = 70
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "memoryEvictThresholdPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryEvictThresholdPercent")]
     pub memory_evict_threshold_percent: Option<i64>,
 }
 
@@ -2029,35 +1313,21 @@ pub struct NodeSLOResourceUsedThresholdWithBe {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeSLOSystemStrategy {
     /// /sys/kernel/mm/memcg_reaper/reap_background
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "memcgReapBackGround"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memcgReapBackGround")]
     pub memcg_reap_back_ground: Option<i64>,
     /// for /proc/sys/vm/min_free_kbytes, min_free_kbytes = minFreeKbytesFactor * nodeTotalMemory /10000
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minFreeKbytesFactor"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minFreeKbytesFactor")]
     pub min_free_kbytes_factor: Option<i64>,
     /// TotalNetworkBandwidth indicates the overall network bandwidth, cluster manager can set this field, and default value taken from /sys/class/net/${NIC_NAME}/speed, unit: Mbps
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "totalNetworkBandwidth"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "totalNetworkBandwidth")]
     pub total_network_bandwidth: Option<IntOrString>,
     /// /proc/sys/vm/watermark_scale_factor
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "watermarkScaleFactor"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "watermarkScaleFactor")]
     pub watermark_scale_factor: Option<i64>,
 }
 
 /// NodeSLOStatus defines the observed state of NodeSLO
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct NodeSLOStatus {}
+pub struct NodeSLOStatus {
+}
+

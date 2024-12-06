@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// NodeModulesConfigSpec describes the desired state of modules on the node
 /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#spec-and-status
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kmm.sigs.x-k8s.io",
-    version = "v1beta1",
-    kind = "NodeModulesConfig",
-    plural = "nodemodulesconfigs"
-)]
+#[kube(group = "kmm.sigs.x-k8s.io", version = "v1beta1", kind = "NodeModulesConfig", plural = "nodemodulesconfigs")]
 #[kube(status = "NodeModulesConfigStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct NodeModulesConfigSpec {
     /// Modules list the spec of all the modules that need to be executed
     /// on the node
@@ -34,11 +29,7 @@ pub struct NodeModulesConfigModules {
     pub config: NodeModulesConfigModulesConfig,
     /// LocalObjectReference contains enough information to let you locate the
     /// referenced object inside the same namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageRepoSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRepoSecret")]
     pub image_repo_secret: Option<NodeModulesConfigModulesImageRepoSecret>,
     pub name: String,
     pub namespace: String,
@@ -53,17 +44,9 @@ pub struct NodeModulesConfigModulesConfig {
     /// PullPolicy describes a policy for if/when to pull a container image
     #[serde(rename = "imagePullPolicy")]
     pub image_pull_policy: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inTreeModuleToRemove"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inTreeModuleToRemove")]
     pub in_tree_module_to_remove: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inTreeModulesToRemove"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inTreeModulesToRemove")]
     pub in_tree_modules_to_remove: Option<Vec<String>>,
     /// When InsecurePull is true, the container image can be pulled without TLS.
     #[serde(rename = "insecurePull")]
@@ -85,19 +68,11 @@ pub struct NodeModulesConfigModulesConfigModprobe {
     pub dir_name: Option<String>,
     /// FirmwarePath is the path of the firmware(s).
     /// The firmware(s) will be copied to the host for the kernel to find them.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "firmwarePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "firmwarePath")]
     pub firmware_path: Option<String>,
     /// ModuleName is the name of the Module to be loaded.
     /// This field can only be unset if rawArgs is set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "moduleName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "moduleName")]
     pub module_name: Option<String>,
     /// ModulesLoadingOrder defines the dependency between kernel modules loading, in case
     /// it was not created by depmod (independent kernel modules).
@@ -109,11 +84,7 @@ pub struct NodeModulesConfigModulesConfigModprobe {
     ///    - moduleB
     ///    - moduleC
     /// In order to load all 3 modules, moduleA shoud be defined in the ModuleName parameter of this struct
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modulesLoadingOrder"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modulesLoadingOrder")]
     pub modules_loading_order: Option<Vec<String>>,
     /// Parameters is an optional list of kernel module parameters to be provided to modprobe.
     /// They should be in the form of key=value and will be separated by spaces in the modprobe command.
@@ -181,17 +152,9 @@ pub struct NodeModulesConfigStatusModules {
     pub config: Option<NodeModulesConfigStatusModulesConfig>,
     /// LocalObjectReference contains enough information to let you locate the
     /// referenced object inside the same namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageRepoSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRepoSecret")]
     pub image_repo_secret: Option<NodeModulesConfigStatusModulesImageRepoSecret>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastTransitionTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastTransitionTime")]
     pub last_transition_time: Option<String>,
     pub name: String,
     pub namespace: String,
@@ -206,17 +169,9 @@ pub struct NodeModulesConfigStatusModulesConfig {
     /// PullPolicy describes a policy for if/when to pull a container image
     #[serde(rename = "imagePullPolicy")]
     pub image_pull_policy: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inTreeModuleToRemove"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inTreeModuleToRemove")]
     pub in_tree_module_to_remove: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inTreeModulesToRemove"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inTreeModulesToRemove")]
     pub in_tree_modules_to_remove: Option<Vec<String>>,
     /// When InsecurePull is true, the container image can be pulled without TLS.
     #[serde(rename = "insecurePull")]
@@ -238,19 +193,11 @@ pub struct NodeModulesConfigStatusModulesConfigModprobe {
     pub dir_name: Option<String>,
     /// FirmwarePath is the path of the firmware(s).
     /// The firmware(s) will be copied to the host for the kernel to find them.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "firmwarePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "firmwarePath")]
     pub firmware_path: Option<String>,
     /// ModuleName is the name of the Module to be loaded.
     /// This field can only be unset if rawArgs is set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "moduleName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "moduleName")]
     pub module_name: Option<String>,
     /// ModulesLoadingOrder defines the dependency between kernel modules loading, in case
     /// it was not created by depmod (independent kernel modules).
@@ -262,11 +209,7 @@ pub struct NodeModulesConfigStatusModulesConfigModprobe {
     ///    - moduleB
     ///    - moduleC
     /// In order to load all 3 modules, moduleA shoud be defined in the ModuleName parameter of this struct
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modulesLoadingOrder"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modulesLoadingOrder")]
     pub modules_loading_order: Option<Vec<String>>,
     /// Parameters is an optional list of kernel module parameters to be provided to modprobe.
     /// They should be in the form of key=value and will be separated by spaces in the modprobe command.
@@ -317,3 +260,4 @@ pub struct NodeModulesConfigStatusModulesImageRepoSecret {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
+

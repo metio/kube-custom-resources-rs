@@ -4,36 +4,27 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// JobRunSpec defines the desired state of JobRun.
-///
+/// 
 /// This entity describes a job run. A job run is a unit of work, such as a Spark
 /// jar, PySpark script, or SparkSQL query, that you submit to Amazon EMR on
 /// EKS.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "emrcontainers.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "JobRun",
-    plural = "jobruns"
-)]
+#[kube(group = "emrcontainers.services.k8s.aws", version = "v1alpha1", kind = "JobRun", plural = "jobruns")]
 #[kube(namespaced)]
 #[kube(status = "JobRunStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct JobRunSpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configurationOverrides"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configurationOverrides")]
     pub configuration_overrides: Option<String>,
     /// The execution role ARN for the job run.
     #[serde(rename = "executionRoleARN")]
@@ -51,24 +42,16 @@ pub struct JobRunSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<BTreeMap<String, String>>,
     /// The virtual cluster ID for which the job run request is submitted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualClusterID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualClusterID")]
     pub virtual_cluster_id: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualClusterRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualClusterRef")]
     pub virtual_cluster_ref: Option<JobRunVirtualClusterRef>,
 }
 
@@ -76,34 +59,18 @@ pub struct JobRunSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobRunJobDriver {
     /// The information about job driver for Spark submit.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sparkSubmitJobDriver"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sparkSubmitJobDriver")]
     pub spark_submit_job_driver: Option<JobRunJobDriverSparkSubmitJobDriver>,
 }
 
 /// The information about job driver for Spark submit.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JobRunJobDriverSparkSubmitJobDriver {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "entryPoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "entryPoint")]
     pub entry_point: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "entryPointArguments"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "entryPointArguments")]
     pub entry_point_arguments: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sparkSubmitParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sparkSubmitParameters")]
     pub spark_submit_parameters: Option<String>,
 }
 
@@ -111,7 +78,7 @@ pub struct JobRunJobDriverSparkSubmitJobDriver {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -138,11 +105,7 @@ pub struct JobRunStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<JobRunStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -179,3 +142,4 @@ pub struct JobRunStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

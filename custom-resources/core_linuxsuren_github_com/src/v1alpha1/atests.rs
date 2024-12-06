@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// ATestSpec defines the desired state of ATest
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "core.linuxsuren.github.com",
-    version = "v1alpha1",
-    kind = "ATest",
-    plural = "atests"
-)]
+#[kube(group = "core.linuxsuren.github.com", version = "v1alpha1", kind = "ATest", plural = "atests")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ATestSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
@@ -30,11 +25,7 @@ pub struct ATestSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
     /// Service Type string describes ingress methods for a service
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceType")]
     pub service_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
@@ -45,14 +36,12 @@ pub struct ATestSpec {
 pub struct ATestPersistent {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
     pub storage_class: Option<String>,
 }
 
 /// ATestStatus defines the observed state of ATest
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ATestStatus {}
+pub struct ATestStatus {
+}
+

@@ -5,81 +5,44 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// SriovOperatorConfigSpec defines the desired state of SriovOperatorConfig
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "sriovnetwork.openshift.io",
-    version = "v1",
-    kind = "SriovOperatorConfig",
-    plural = "sriovoperatorconfigs"
-)]
+#[kube(group = "sriovnetwork.openshift.io", version = "v1", kind = "SriovOperatorConfig", plural = "sriovoperatorconfigs")]
 #[kube(namespaced)]
 #[kube(status = "SriovOperatorConfigStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SriovOperatorConfigSpec {
     /// NodeSelector selects the nodes to be configured
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configDaemonNodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configDaemonNodeSelector")]
     pub config_daemon_node_selector: Option<BTreeMap<String, String>>,
     /// Flag to enable the sriov-network-config-daemon to use a systemd service to configure SR-IOV devices on boot
     /// Default mode: daemon
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configurationMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configurationMode")]
     pub configuration_mode: Option<SriovOperatorConfigConfigurationMode>,
     /// Flag to disable nodes drain during debugging
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableDrain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableDrain")]
     pub disable_drain: Option<bool>,
     /// DisablePlugins is a list of sriov-network-config-daemon plugins to disable
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disablePlugins"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disablePlugins")]
     pub disable_plugins: Option<Vec<String>>,
     /// Flag to control whether the network resource injector webhook shall be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableInjector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableInjector")]
     pub enable_injector: Option<bool>,
     /// Flag to control whether the operator admission controller webhook shall be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableOperatorWebhook"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableOperatorWebhook")]
     pub enable_operator_webhook: Option<bool>,
     /// Flag to enable OVS hardware offload. Set to 'true' to provision switchdev-configuration.service and enable OpenvSwitch hw-offload on nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableOvsOffload"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableOvsOffload")]
     pub enable_ovs_offload: Option<bool>,
     /// FeatureGates to enable experimental features
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "featureGates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "featureGates")]
     pub feature_gates: Option<BTreeMap<String, bool>>,
     /// Flag to control the log verbose level of the operator. Set to '0' to show only the basic logs. And set to '2' to show all the available logs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
@@ -105,10 +68,7 @@ pub struct SriovOperatorConfigStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub injector: Option<String>,
     /// Show the runtime status of the operator admission controller webhook
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "operatorWebhook"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorWebhook")]
     pub operator_webhook: Option<String>,
 }
+

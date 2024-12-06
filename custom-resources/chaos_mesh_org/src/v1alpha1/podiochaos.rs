@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// PodIOChaosSpec defines the desired state of IOChaos
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "chaos-mesh.org",
-    version = "v1alpha1",
-    kind = "PodIOChaos",
-    plural = "podiochaos"
-)]
+#[kube(group = "chaos-mesh.org", version = "v1alpha1", kind = "PodIOChaos", plural = "podiochaos")]
 #[kube(namespaced)]
 #[kube(status = "PodIOChaosStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PodIOChaosSpec {
     /// Actions are a list of IOChaos actions
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -120,11 +115,7 @@ pub struct PodIOChaosActionsMistake {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLength")]
     pub max_length: Option<i64>,
     /// There will be [1, MaxOccurrences] segments of wrong data.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxOccurrences"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxOccurrences")]
     pub max_occurrences: Option<i64>,
 }
 
@@ -146,17 +137,9 @@ pub struct PodIOChaosActionsMtime {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PodIOChaosStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failedMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failedMessage")]
     pub failed_message: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// Pid represents a running toda process id
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -165,3 +148,4 @@ pub struct PodIOChaosStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "startTime")]
     pub start_time: Option<i64>,
 }
+

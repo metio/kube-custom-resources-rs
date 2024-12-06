@@ -5,30 +5,21 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// HorreumSpec defines the desired state of Horreum
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "hyperfoil.io",
-    version = "v1alpha1",
-    kind = "Horreum",
-    plural = "horreums"
-)]
+#[kube(group = "hyperfoil.io", version = "v1alpha1", kind = "Horreum", plural = "horreums")]
 #[kube(namespaced)]
 #[kube(status = "HorreumStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct HorreumSpec {
     /// Name of secret resource with data `username` and `password`. This will be the first user that get's created in Horreum with the `admin` role, therefore it can create other users and teams. Created automatically if it does not exist.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminSecret")]
     pub admin_secret: Option<String>,
     /// Database coordinates for Horreum data. Besides `username` and `password` the secret must also contain key `dbsecret` that will be used to sign access to the database.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -49,11 +40,7 @@ pub struct HorreumSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub route: Option<HorreumRoute>,
     /// Alternative service type when routes are not available (e.g. on vanilla K8s)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceType")]
     pub service_type: Option<String>,
 }
 
@@ -78,11 +65,7 @@ pub struct HorreumDatabase {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HorreumKeycloak {
     /// Secret used for admin access to the deployed Keycloak instance. Created if does not exist. Must contain keys `username` and `password`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminSecret")]
     pub admin_secret: Option<String>,
     /// Database coordinates Keycloak should use
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -97,11 +80,7 @@ pub struct HorreumKeycloak {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub route: Option<HorreumKeycloakRoute>,
     /// Alternative service type when routes are not available (e.g. on vanilla K8s)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceType")]
     pub service_type: Option<String>,
 }
 
@@ -126,11 +105,7 @@ pub struct HorreumKeycloakDatabase {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HorreumKeycloakExternal {
     /// Internal URI - Horreum will use this for communication but won't disclose that.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "internalUri"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "internalUri")]
     pub internal_uri: Option<String>,
     /// Public facing URI - Horreum will send this URI to the clients.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "publicUri")]
@@ -155,11 +130,7 @@ pub struct HorreumKeycloakRoute {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HorreumPostgres {
     /// Secret used for unrestricted access to the database. Created if does not exist. Must contain keys `username` and `password`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminSecret")]
     pub admin_secret: Option<String>,
     /// True (or omitted) to deploy PostgreSQL database
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -168,11 +139,7 @@ pub struct HorreumPostgres {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Name of PVC where the database will store the data. If empty, ephemeral storage will be used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<String>,
     /// Id of the user the container should run as
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -197,18 +164,10 @@ pub struct HorreumRoute {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HorreumStatus {
     /// Public URL of Keycloak
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keycloakUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keycloakUrl")]
     pub keycloak_url: Option<String>,
     /// Last time state has changed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdate")]
     pub last_update: Option<String>,
     /// Public URL of the Horreum application
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "publicUrl")]
@@ -220,3 +179,4 @@ pub struct HorreumStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }
+

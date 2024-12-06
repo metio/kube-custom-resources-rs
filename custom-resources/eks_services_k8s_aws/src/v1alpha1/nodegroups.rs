@@ -4,28 +4,23 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// NodegroupSpec defines the desired state of Nodegroup.
-///
+/// 
 /// An object representing an Amazon EKS managed node group.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "eks.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "Nodegroup",
-    plural = "nodegroups"
-)]
+#[kube(group = "eks.services.k8s.aws", version = "v1alpha1", kind = "Nodegroup", plural = "nodegroups")]
 #[kube(namespaced)]
 #[kube(status = "NodegroupStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct NodegroupSpec {
     /// The AMI type for your node group. If you specify launchTemplate, and your
     /// launch template uses a custom AMI, then don't specify amiType, or the node
@@ -37,39 +32,23 @@ pub struct NodegroupSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "amiType")]
     pub ami_type: Option<String>,
     /// The capacity type for your node group.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "capacityType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "capacityType")]
     pub capacity_type: Option<String>,
     /// A unique, case-sensitive identifier that you provide to ensure the idempotency
     /// of the request.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientRequestToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientRequestToken")]
     pub client_request_token: Option<String>,
     /// The name of your cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
     pub cluster_name: Option<String>,
     /// AWSResourceReferenceWrapper provides a wrapper around *AWSResourceReference
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterRef")]
     pub cluster_ref: Option<NodegroupClusterRef>,
     /// The root device disk size (in GiB) for your node group instances. The default
     /// disk size is 20 GiB for Linux and Bottlerocket. The default disk size is
@@ -92,11 +71,7 @@ pub struct NodegroupSpec {
     /// information, see Managed node group capacity types (https://docs.aws.amazon.com/eks/latest/userguide/managed-node-groups.html#managed-node-group-capacity-types)
     /// and Customizing managed nodes with launch templates (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)
     /// in the Amazon EKS User Guide.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceTypes")]
     pub instance_types: Option<Vec<String>>,
     /// The Kubernetes labels to apply to the nodes in the node group when they are
     /// created.
@@ -107,11 +82,7 @@ pub struct NodegroupSpec {
     /// Make sure that the launch template meets the requirements in launchTemplateSpecification.
     /// Also refer to Customizing managed nodes with launch templates (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)
     /// in the Amazon EKS User Guide.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "launchTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "launchTemplate")]
     pub launch_template: Option<NodegroupLaunchTemplate>,
     /// The unique name to give your node group.
     pub name: String,
@@ -134,14 +105,10 @@ pub struct NodegroupSpec {
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeRoleRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeRoleRef")]
     pub node_role_ref: Option<NodegroupNodeRoleRef>,
     /// The AMI version of the Amazon EKS optimized AMI to use with your node group.
     /// By default, the latest available AMI version for the node group's current
@@ -151,17 +118,13 @@ pub struct NodegroupSpec {
     /// November 2022 and later releases of the Windows AMIs. For information about
     /// Windows versions, see Amazon EKS optimized Windows AMI versions (https://docs.aws.amazon.com/eks/latest/userguide/eks-ami-versions-windows.html)
     /// in the Amazon EKS User Guide.
-    ///
+    /// 
     /// If you specify launchTemplate, and your launch template uses a custom AMI,
     /// then don't specify releaseVersion, or the node group deployment will fail.
     /// For more information about using launch templates with Amazon EKS, see Customizing
     /// managed nodes with launch templates (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)
     /// in the Amazon EKS User Guide.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "releaseVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "releaseVersion")]
     pub release_version: Option<String>,
     /// The remote access configuration to use with your node group. For Linux, the
     /// protocol is SSH. For Windows, the protocol is RDP. If you specify launchTemplate,
@@ -169,25 +132,13 @@ pub struct NodegroupSpec {
     /// For more information about using launch templates with Amazon EKS, see Customizing
     /// managed nodes with launch templates (https://docs.aws.amazon.com/eks/latest/userguide/launch-templates.html)
     /// in the Amazon EKS User Guide.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteAccess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteAccess")]
     pub remote_access: Option<NodegroupRemoteAccess>,
     /// The scaling configuration details for the Auto Scaling group that is created
     /// for your node group.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scalingConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scalingConfig")]
     pub scaling_config: Option<NodegroupScalingConfig>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subnetRefs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetRefs")]
     pub subnet_refs: Option<Vec<NodegroupSubnetRefs>>,
     /// The subnets to use for the Auto Scaling group that is created for your node
     /// group. If you specify launchTemplate, then don't specify SubnetId (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_CreateNetworkInterface.html)
@@ -207,11 +158,7 @@ pub struct NodegroupSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub taints: Option<Vec<NodegroupTaints>>,
     /// The node group update configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updateConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateConfig")]
     pub update_config: Option<NodegroupUpdateConfig>,
     /// The Kubernetes version to use for your managed nodes. By default, the Kubernetes
     /// version of the cluster is used, and this is the only accepted specified value.
@@ -228,7 +175,7 @@ pub struct NodegroupSpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -268,7 +215,7 @@ pub struct NodegroupLaunchTemplate {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -300,17 +247,9 @@ pub struct NodegroupRemoteAccess {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ec2SshKey")]
     pub ec2_ssh_key: Option<String>,
     /// Reference field for SourceSecurityGroups
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceSecurityGroupRefs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceSecurityGroupRefs")]
     pub source_security_group_refs: Option<Vec<NodegroupRemoteAccessSourceSecurityGroupRefs>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceSecurityGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceSecurityGroups")]
     pub source_security_groups: Option<Vec<String>>,
 }
 
@@ -318,7 +257,7 @@ pub struct NodegroupRemoteAccess {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -343,11 +282,7 @@ pub struct NodegroupRemoteAccessSourceSecurityGroupRefsFrom {
 /// for your node group.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodegroupScalingConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "desiredSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredSize")]
     pub desired_size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSize")]
     pub max_size: Option<i64>,
@@ -359,7 +294,7 @@ pub struct NodegroupScalingConfig {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -396,17 +331,9 @@ pub struct NodegroupTaints {
 /// The node group update configuration.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodegroupUpdateConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailablePercentage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailablePercentage")]
     pub max_unavailable_percentage: Option<i64>,
 }
 
@@ -416,11 +343,7 @@ pub struct NodegroupStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<NodegroupStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -436,11 +359,7 @@ pub struct NodegroupStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub health: Option<NodegroupStatusHealth>,
     /// The Unix epoch timestamp for the last modification to the object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modifiedAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modifiedAt")]
     pub modified_at: Option<String>,
     /// The resources associated with the node group, such as Auto Scaling groups
     /// and security groups for remote access.
@@ -488,11 +407,7 @@ pub struct NodegroupStatusHealthIssues {
     pub code: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceIDs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceIDs")]
     pub resource_i_ds: Option<Vec<String>>,
 }
 
@@ -500,17 +415,9 @@ pub struct NodegroupStatusHealthIssues {
 /// and security groups for remote access.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodegroupStatusResources {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoScalingGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoScalingGroups")]
     pub auto_scaling_groups: Option<Vec<NodegroupStatusResourcesAutoScalingGroups>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteAccessSecurityGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteAccessSecurityGroup")]
     pub remote_access_security_group: Option<String>,
 }
 
@@ -521,3 +428,4 @@ pub struct NodegroupStatusResourcesAutoScalingGroups {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
+

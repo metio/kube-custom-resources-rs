@@ -4,69 +4,44 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// KogitoInfraSpec defines the desired state of KogitoInfra.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "app.kiegroup.org",
-    version = "v1beta1",
-    kind = "KogitoInfra",
-    plural = "kogitoinfras"
-)]
+#[kube(group = "app.kiegroup.org", version = "v1beta1", kind = "KogitoInfra", plural = "kogitoinfras")]
 #[kube(namespaced)]
 #[kube(status = "KogitoInfraStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct KogitoInfraSpec {
     /// List of secret that should be mounted to the services as envs
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapEnvFromReferences"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapEnvFromReferences")]
     pub config_map_env_from_references: Option<Vec<String>>,
     /// List of configmap that should be added to the services bound to this infra instance
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapVolumeReferences"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapVolumeReferences")]
     pub config_map_volume_references: Option<Vec<KogitoInfraConfigMapVolumeReferences>>,
     /// Environment variables to be added to the runtime container. Keys must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub envs: Option<Vec<KogitoInfraEnvs>>,
-    /// Optional properties which would be needed to setup correct runtime/service configuration, based on the resource type.
+    /// Optional properties which would be needed to setup correct runtime/service configuration, based on the resource type. 
     ///  For example, MongoDB will require `username` and `database` as properties for a correct setup, else it will fail
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "infraProperties"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "infraProperties")]
     pub infra_properties: Option<BTreeMap<String, String>>,
     /// Resource for the service. Example: Infinispan/Kafka/Keycloak.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resource: Option<KogitoInfraResource>,
     /// List of secret that should be mounted to the services as envs
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretEnvFromReferences"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretEnvFromReferences")]
     pub secret_env_from_references: Option<Vec<String>>,
     /// List of secret that should be munted to the services bound to this infra instance
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretVolumeReferences"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretVolumeReferences")]
     pub secret_volume_references: Option<Vec<KogitoInfraSecretVolumeReferences>>,
 }
 
@@ -103,28 +78,16 @@ pub struct KogitoInfraEnvs {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KogitoInfraEnvsValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<KogitoInfraEnvsValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<KogitoInfraEnvsValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<KogitoInfraEnvsValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<KogitoInfraEnvsValueFromSecretKeyRef>,
 }
 
@@ -145,11 +108,7 @@ pub struct KogitoInfraEnvsValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KogitoInfraEnvsValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -160,11 +119,7 @@ pub struct KogitoInfraEnvsValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KogitoInfraEnvsValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -223,35 +178,19 @@ pub struct KogitoInfraStatus {
     /// History of conditions for the resource
     pub conditions: Vec<Condition>,
     /// List of Configmap that should be mounted to the services as envs
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapEnvFromReferences"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapEnvFromReferences")]
     pub config_map_env_from_references: Option<Vec<String>>,
     /// List of configmap that should be added as volume mount to this infra instance
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapVolumeReferences"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapVolumeReferences")]
     pub config_map_volume_references: Option<Vec<KogitoInfraStatusConfigMapVolumeReferences>>,
     /// Environment variables to be added to the runtime container. Keys must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<KogitoInfraStatusEnv>>,
     /// List of secret that should be mounted to the services as envs
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretEnvFromReferences"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretEnvFromReferences")]
     pub secret_env_from_references: Option<Vec<String>>,
     /// List of secret that should be added as volume mount to this infra instance
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretVolumeReferences"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretVolumeReferences")]
     pub secret_volume_references: Option<Vec<KogitoInfraStatusSecretVolumeReferences>>,
 }
 
@@ -288,28 +227,16 @@ pub struct KogitoInfraStatusEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KogitoInfraStatusEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<KogitoInfraStatusEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<KogitoInfraStatusEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<KogitoInfraStatusEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<KogitoInfraStatusEnvValueFromSecretKeyRef>,
 }
 
@@ -330,11 +257,7 @@ pub struct KogitoInfraStatusEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KogitoInfraStatusEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -345,11 +268,7 @@ pub struct KogitoInfraStatusEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KogitoInfraStatusEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -386,3 +305,4 @@ pub struct KogitoInfraStatusSecretVolumeReferences {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
 }
+

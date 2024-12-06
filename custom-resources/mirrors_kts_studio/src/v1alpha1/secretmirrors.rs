@@ -5,31 +5,22 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// SecretMirrorSpec defines the desired state of SecretMirror
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "mirrors.kts.studio",
-    version = "v1alpha1",
-    kind = "SecretMirror",
-    plural = "secretmirrors"
-)]
+#[kube(group = "mirrors.kts.studio", version = "v1alpha1", kind = "SecretMirror", plural = "secretmirrors")]
 #[kube(namespaced)]
 #[kube(status = "SecretMirrorStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SecretMirrorSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub destination: Option<SecretMirrorDestination>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pollPeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pollPeriodSeconds")]
     pub poll_period_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<SecretMirrorSource>,
@@ -39,11 +30,7 @@ pub struct SecretMirrorSpec {
 pub struct SecretMirrorDestination {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceRegex"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceRegex")]
     pub namespace_regex: Option<String>,
 }
 
@@ -56,17 +43,9 @@ pub struct SecretMirrorSource {
 /// SecretMirrorStatus defines the observed state of SecretMirror
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SecretMirrorStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastSyncTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSyncTime")]
     pub last_sync_time: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mirrorStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mirrorStatus")]
     pub mirror_status: Option<SecretMirrorStatusMirrorStatus>,
 }
 
@@ -77,3 +56,4 @@ pub enum SecretMirrorStatusMirrorStatus {
     Active,
     Error,
 }
+

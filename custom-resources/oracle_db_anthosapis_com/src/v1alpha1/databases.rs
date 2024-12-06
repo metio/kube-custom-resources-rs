@@ -4,33 +4,24 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// DatabaseSpec defines the desired state of Database.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "oracle.db.anthosapis.com",
-    version = "v1alpha1",
-    kind = "Database",
-    plural = "databases"
-)]
+#[kube(group = "oracle.db.anthosapis.com", version = "v1alpha1", kind = "Database", plural = "databases")]
 #[kube(namespaced)]
 #[kube(status = "DatabaseStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DatabaseSpec {
     /// AdminPasswordGsmSecretRef is a reference to the secret object containing sensitive information to pass to config agent. This field is optional, and may be empty if plaintext password is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminPasswordGsmSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPasswordGsmSecretRef")]
     pub admin_password_gsm_secret_ref: Option<DatabaseAdminPasswordGsmSecretRef>,
     /// AdminPassword is the password for the sys admin of the database.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -64,11 +55,7 @@ pub struct DatabaseAdminPasswordGsmSecretRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseUsers {
     /// A reference to a GSM secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gsmSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gsmSecretRef")]
     pub gsm_secret_ref: Option<DatabaseUsersGsmSecretRef>,
     /// Name of the User.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -113,28 +100,16 @@ pub struct DatabaseUsersSecretRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatabaseStatus {
     /// UserResourceVersions is a map of username to user resource version (plaintext or GSM). For GSM Resource version, use format: "projects/{ProjectId}/secrets/{SecretId}/versions/{Version}".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "UserResourceVersions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "UserResourceVersions")]
     pub user_resource_versions: Option<BTreeMap<String, String>>,
     /// Conditions represents the latest available observations of the Database's current state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// IsChangeApplied indicates whether database changes have been applied
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "isChangeApplied"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "isChangeApplied")]
     pub is_change_applied: Option<String>,
     /// ObservedGeneration is the latest generation observed by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// Phase is a summary of the current state of the Database.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -143,3 +118,4 @@ pub struct DatabaseStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub usernames: Option<Vec<String>>,
 }
+

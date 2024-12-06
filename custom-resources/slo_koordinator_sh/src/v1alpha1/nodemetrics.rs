@@ -4,32 +4,23 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// NodeMetricSpec defines the desired state of NodeMetric
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "slo.koordinator.sh",
-    version = "v1alpha1",
-    kind = "NodeMetric",
-    plural = "nodemetrics"
-)]
+#[kube(group = "slo.koordinator.sh", version = "v1alpha1", kind = "NodeMetric", plural = "nodemetrics")]
 #[kube(status = "NodeMetricStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct NodeMetricSpec {
     /// CollectPolicy defines the Metric collection policy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricCollectPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricCollectPolicy")]
     pub metric_collect_policy: Option<NodeMetricMetricCollectPolicy>,
 }
 
@@ -37,32 +28,16 @@ pub struct NodeMetricSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeMetricMetricCollectPolicy {
     /// AggregateDurationSeconds represents the aggregation period in seconds
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "aggregateDurationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "aggregateDurationSeconds")]
     pub aggregate_duration_seconds: Option<i64>,
     /// NodeAggregatePolicy represents the target grain of node aggregated usage
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAggregatePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAggregatePolicy")]
     pub node_aggregate_policy: Option<NodeMetricMetricCollectPolicyNodeAggregatePolicy>,
     /// NodeMemoryPolicy represents apply which method collect memory info
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeMemoryCollectPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeMemoryCollectPolicy")]
     pub node_memory_collect_policy: Option<NodeMetricMetricCollectPolicyNodeMemoryCollectPolicy>,
     /// ReportIntervalSeconds represents the report period in seconds
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reportIntervalSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reportIntervalSeconds")]
     pub report_interval_seconds: Option<i64>,
 }
 
@@ -88,39 +63,19 @@ pub enum NodeMetricMetricCollectPolicyNodeMemoryCollectPolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeMetricStatus {
     /// HostApplicationMetric contains the metrics of out-out-band applications on node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostApplicationMetric"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostApplicationMetric")]
     pub host_application_metric: Option<Vec<NodeMetricStatusHostApplicationMetric>>,
     /// NodeMetric contains the metrics for this node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeMetric"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeMetric")]
     pub node_metric: Option<NodeMetricStatusNodeMetric>,
     /// PodsMetric contains the metrics for pods belong to this node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podsMetric"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podsMetric")]
     pub pods_metric: Option<Vec<NodeMetricStatusPodsMetric>>,
     /// ProdReclaimableMetric is the indicator statistics of Prod type resources reclaimable
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "prodReclaimableMetric"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prodReclaimableMetric")]
     pub prod_reclaimable_metric: Option<NodeMetricStatusProdReclaimableMetric>,
     /// UpdateTime is the last time this NodeMetric was updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updateTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateTime")]
     pub update_time: Option<String>,
 }
 
@@ -220,29 +175,17 @@ pub struct NodeMetricStatusHostApplicationMetricUsageDevicesVfGroupsVfs {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeMetricStatusNodeMetric {
     /// AggregatedNodeUsages will report only if there are enough samples
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "aggregatedNodeUsages"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "aggregatedNodeUsages")]
     pub aggregated_node_usages: Option<Vec<NodeMetricStatusNodeMetricAggregatedNodeUsages>>,
     /// AggregatedSystemUsages will report only if there are enough samples
     /// Deleted pods will be excluded during aggregation
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "aggregatedSystemUsages"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "aggregatedSystemUsages")]
     pub aggregated_system_usages: Option<Vec<NodeMetricStatusNodeMetricAggregatedSystemUsages>>,
     /// NodeUsage is the total resource usage of node
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeUsage")]
     pub node_usage: Option<NodeMetricStatusNodeMetricNodeUsage>,
     /// SystemUsage is the resource usage of daemon processes and OS kernel, calculated by `NodeUsage - sum(podUsage)`
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "systemUsage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemUsage")]
     pub system_usage: Option<NodeMetricStatusNodeMetricSystemUsage>,
 }
 
@@ -373,8 +316,7 @@ pub struct NodeMetricStatusNodeMetricAggregatedSystemUsagesUsageDevices {
     pub r#type: Option<String>,
     /// VFGroups represents the virtual function devices
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vfGroups")]
-    pub vf_groups:
-        Option<Vec<NodeMetricStatusNodeMetricAggregatedSystemUsagesUsageDevicesVfGroups>>,
+    pub vf_groups: Option<Vec<NodeMetricStatusNodeMetricAggregatedSystemUsagesUsageDevicesVfGroups>>,
 }
 
 /// Topology represents the topology information about the device
@@ -742,3 +684,4 @@ pub struct NodeMetricStatusProdReclaimableMetricResourceDevicesVfGroupsVfs {
     /// Minor represents the Minor number of VirtualFunction, starting from 0, used to identify virtual function.
     pub minor: i32,
 }
+

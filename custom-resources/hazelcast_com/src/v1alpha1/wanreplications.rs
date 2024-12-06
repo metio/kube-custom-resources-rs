@@ -5,24 +5,19 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// WanReplicationSpec defines the desired state of WanReplication
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "hazelcast.com",
-    version = "v1alpha1",
-    kind = "WanReplication",
-    plural = "wanreplications"
-)]
+#[kube(group = "hazelcast.com", version = "v1alpha1", kind = "WanReplication", plural = "wanreplications")]
 #[kube(namespaced)]
 #[kube(status = "WanReplicationStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct WanReplicationSpec {
     /// Acknowledgement is the configuration for the condition when the next batch of WAN events are sent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -38,11 +33,7 @@ pub struct WanReplicationSpec {
     /// Resources is the list of custom resources to which WAN replication applies.
     pub resources: Vec<WanReplicationResources>,
     /// SyncConsistencyCheckStrategy is the strategy for checking the consistency of data between replicas.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "syncConsistencyCheckStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncConsistencyCheckStrategy")]
     pub sync_consistency_check_strategy: Option<String>,
     /// ClusterName is the clusterName field of the target Hazelcast resource.
     #[serde(rename = "targetClusterName")]
@@ -73,11 +64,7 @@ pub enum WanReplicationAcknowledgementType {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WanReplicationBatch {
     /// MaximumDelay represents the maximum delay in milliseconds. If the batch size is not reached, the events will be sent after the maximum delay.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maximumDelay"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumDelay")]
     pub maximum_delay: Option<i32>,
     /// Size represents the maximum batch size.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -91,11 +78,7 @@ pub struct WanReplicationQueue {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub capacity: Option<i32>,
     /// FullBehavior represents the behavior of the new arrival when the queue is full.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fullBehavior"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fullBehavior")]
     pub full_behavior: Option<WanReplicationQueueFullBehavior>,
 }
 
@@ -135,13 +118,8 @@ pub struct WanReplicationStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
     /// WanReplicationMapsStatus is the WAN Replication status of the Maps given in the spec directly or indirectly by Hazelcast resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wanReplicationMapsStatus"
-    )]
-    pub wan_replication_maps_status:
-        Option<BTreeMap<String, WanReplicationStatusWanReplicationMapsStatus>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wanReplicationMapsStatus")]
+    pub wan_replication_maps_status: Option<BTreeMap<String, WanReplicationStatusWanReplicationMapsStatus>>,
 }
 
 /// WanReplicationMapsStatus is the WAN Replication status of the Maps given in the spec directly or indirectly by Hazelcast resource.
@@ -151,20 +129,13 @@ pub struct WanReplicationStatusWanReplicationMapsStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     /// PublisherId is the ID used for WAN publisher ID
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "publisherId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "publisherId")]
     pub publisher_id: Option<String>,
     /// ResourceName is the name of the Map Custom Resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceName")]
     pub resource_name: Option<String>,
     /// Status is the status of WAN replication
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }
+

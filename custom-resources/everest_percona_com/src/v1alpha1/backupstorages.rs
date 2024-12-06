@@ -5,32 +5,23 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// BackupStorageSpec defines the desired state of BackupStorage.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "everest.percona.com",
-    version = "v1alpha1",
-    kind = "BackupStorage",
-    plural = "backupstorages"
-)]
+#[kube(group = "everest.percona.com", version = "v1alpha1", kind = "BackupStorage", plural = "backupstorages")]
 #[kube(namespaced)]
 #[kube(status = "BackupStorageStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct BackupStorageSpec {
     /// AllowedNamespaces is the list of namespaces where the operator will copy secrets provided in the CredentialsSecretsName.
-    ///
+    /// 
     /// Deprecated: BackupStorages are now used only in the namespaces where they are created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowedNamespaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedNamespaces")]
     pub allowed_namespaces: Option<Vec<String>>,
     /// Bucket is a name of bucket.
     pub bucket: String,
@@ -41,19 +32,11 @@ pub struct BackupStorageSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// EndpointURL is an endpoint URL of backup storage.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointURL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointURL")]
     pub endpoint_url: Option<String>,
     /// ForcePathStyle is set to use path-style URLs.
     /// If unspecified, the default value is false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "forcePathStyle"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forcePathStyle")]
     pub force_path_style: Option<bool>,
     /// Region is a region where the bucket is located.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -83,3 +66,4 @@ pub struct BackupStorageStatus {
     #[serde(rename = "usedNamespaces")]
     pub used_namespaces: BTreeMap<String, bool>,
 }
+

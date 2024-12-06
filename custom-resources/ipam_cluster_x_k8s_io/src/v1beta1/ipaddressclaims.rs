@@ -4,32 +4,23 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// IPAddressClaimSpec is the desired state of an IPAddressClaim.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "ipam.cluster.x-k8s.io",
-    version = "v1beta1",
-    kind = "IPAddressClaim",
-    plural = "ipaddressclaims"
-)]
+#[kube(group = "ipam.cluster.x-k8s.io", version = "v1beta1", kind = "IPAddressClaim", plural = "ipaddressclaims")]
 #[kube(namespaced)]
 #[kube(status = "IPAddressClaimStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct IPAddressClaimSpec {
     /// clusterName is the name of the Cluster this object belongs to.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
     pub cluster_name: Option<String>,
     /// poolRef is a reference to the pool from which an IP address should be created.
     #[serde(rename = "poolRef")]
@@ -54,11 +45,7 @@ pub struct IPAddressClaimPoolRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IPAddressClaimStatus {
     /// addressRef is a reference to the address that was created for this claim.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "addressRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "addressRef")]
     pub address_ref: Option<IPAddressClaimStatusAddressRef>,
     /// conditions summarises the current state of the IPAddressClaim
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -76,3 +63,4 @@ pub struct IPAddressClaimStatusAddressRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
+

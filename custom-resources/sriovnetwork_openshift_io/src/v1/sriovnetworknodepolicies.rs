@@ -5,55 +5,34 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// SriovNetworkNodePolicySpec defines the desired state of SriovNetworkNodePolicy
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "sriovnetwork.openshift.io",
-    version = "v1",
-    kind = "SriovNetworkNodePolicy",
-    plural = "sriovnetworknodepolicies"
-)]
+#[kube(group = "sriovnetwork.openshift.io", version = "v1", kind = "SriovNetworkNodePolicy", plural = "sriovnetworknodepolicies")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SriovNetworkNodePolicySpec {
     /// contains bridge configuration for matching PFs,
     /// valid only for eSwitchMode==switchdev
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bridge: Option<SriovNetworkNodePolicyBridge>,
     /// The driver type for configured VFs. Allowed value "netdevice", "vfio-pci". Defaults to netdevice.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deviceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceType")]
     pub device_type: Option<SriovNetworkNodePolicyDeviceType>,
     /// NIC Device Mode. Allowed value "legacy","switchdev".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "eSwitchMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "eSwitchMode")]
     pub e_switch_mode: Option<SriovNetworkNodePolicyESwitchMode>,
     /// Exclude device's NUMA node when advertising this resource by SRIOV network device plugin. Default to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "excludeTopology"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludeTopology")]
     pub exclude_topology: Option<bool>,
     /// don't create the virtual function only allocated them to the device plugin. Defaults to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externallyManaged"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externallyManaged")]
     pub externally_managed: Option<bool>,
     /// RDMA mode. Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "isRdma")]
@@ -65,11 +44,7 @@ pub struct SriovNetworkNodePolicySpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mtu: Option<i64>,
     /// mount vhost-net device. Defaults to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "needVhostNet"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "needVhostNet")]
     pub need_vhost_net: Option<bool>,
     /// NicSelector selects the NICs to be configured
     #[serde(rename = "nicSelector")]
@@ -115,25 +90,13 @@ pub struct SriovNetworkNodePolicyBridgeOvs {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SriovNetworkNodePolicyBridgeOvsBridge {
     /// configure datapath_type field in the Bridge table in OVSDB
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datapathType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datapathType")]
     pub datapath_type: Option<String>,
     /// IDs to inject to external_ids field in the Bridge table in OVSDB
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalIDs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalIDs")]
     pub external_i_ds: Option<BTreeMap<String, String>>,
     /// additional options to inject to other_config field in the bridge table in OVSDB
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "otherConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "otherConfig")]
     pub other_config: Option<BTreeMap<String, String>>,
 }
 
@@ -149,21 +112,13 @@ pub struct SriovNetworkNodePolicyBridgeOvsUplink {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SriovNetworkNodePolicyBridgeOvsUplinkInterface {
     /// external_ids field in the Interface table in OVSDB
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalIDs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalIDs")]
     pub external_i_ds: Option<BTreeMap<String, String>>,
     /// options field in the Interface table in OVSDB
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub options: Option<BTreeMap<String, String>>,
     /// other_config field in the Interface table in OVSDB
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "otherConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "otherConfig")]
     pub other_config: Option<BTreeMap<String, String>>,
     /// type field in the Interface table in OVSDB
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -214,11 +169,7 @@ pub struct SriovNetworkNodePolicyNicSelector {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pfNames")]
     pub pf_names: Option<Vec<String>>,
     /// PCI address of SR-IoV PF.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rootDevices"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootDevices")]
     pub root_devices: Option<Vec<String>>,
     /// The vendor hex code of SR-IoV device. Allowed value "8086", "15b3".
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -236,4 +187,6 @@ pub enum SriovNetworkNodePolicyVdpaType {
 
 /// SriovNetworkNodePolicyStatus defines the observed state of SriovNetworkNodePolicy
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SriovNetworkNodePolicyStatus {}
+pub struct SriovNetworkNodePolicyStatus {
+}
+

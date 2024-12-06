@@ -5,30 +5,21 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// GatewayConfigSpec defines the desired state of GatewayConfig
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "stunner.l7mp.io",
-    version = "v1alpha1",
-    kind = "GatewayConfig",
-    plural = "gatewayconfigs"
-)]
+#[kube(group = "stunner.l7mp.io", version = "v1alpha1", kind = "GatewayConfig", plural = "gatewayconfigs")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct GatewayConfigSpec {
     /// AuthLifetime defines the lifetime of "longterm" authentication credentials in seconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authLifetime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authLifetime")]
     pub auth_lifetime: Option<i32>,
     /// Note that externally set credentials override any inline auth credentials (AuthType,
     /// AuthUsername, etc.): if AuthRef is nonempty then it is expected that the referenced
@@ -49,16 +40,12 @@ pub struct GatewayConfigSpec {
     /// HTTP health-checking. A liveness probe responder will be exposed on path `/live` and
     /// readiness probe on path `/ready`. The scheme (`http://`) is mandatory, default is to
     /// enable health-checking at "http://0.0.0.0:8086".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthCheckEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheckEndpoint")]
     pub health_check_endpoint: Option<String>,
     /// LoadBalancerServiceAnnotations is a list of annotations that will go into the
     /// LoadBalancer services created automatically by the operator to wrap Gateways.
-    ///
-    ///
+    /// 
+    /// 
     /// NOTE: removing annotations from a GatewayConfig will not result in the removal of the
     /// corresponding annotations from the LoadBalancer service, in order to prevent the
     /// accidental removal of an annotation installed there by Kubernetes or the cloud
@@ -66,11 +53,7 @@ pub struct GatewayConfigSpec {
     /// all Gateways (which will remove the corresponding LoadBalancer services), update the
     /// GatewayConfig and then recreate the Gateways, so that the newly created LoadBalancer
     /// services will contain the required annotations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerServiceAnnotations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerServiceAnnotations")]
     pub load_balancer_service_annotations: Option<BTreeMap<String, String>>,
     /// LogLevel specifies the default loglevel for the STUNner daemon.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
@@ -81,11 +64,7 @@ pub struct GatewayConfigSpec {
     /// MetricsEndpoint is the URI in the form `http://address:port/path` exposed for metric
     /// scraping (Prometheus). The scheme (`http://`) is mandatory. Default is to expose no
     /// metric endpoint.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricsEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsEndpoint")]
     pub metrics_endpoint: Option<String>,
     /// MinRelayPort is the smallest relay port assigned for STUNner relay connections.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minPort")]
@@ -95,26 +74,18 @@ pub struct GatewayConfigSpec {
     pub password: Option<String>,
     /// Realm defines the STUN/TURN authentication realm to be used for clients toauthenticate
     /// with STUNner.
-    ///
-    ///
+    /// 
+    /// 
     /// The realm must consist of lower case alphanumeric characters or '-', and must start and
     /// end with an alphanumeric character. No other punctuation is allowed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub realm: Option<String>,
     /// SharedSecret defines the shared secret to be used for "longterm" authentication.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sharedSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sharedSecret")]
     pub shared_secret: Option<String>,
     /// StunnerConfig specifies the name of the ConfigMap into which the operator renders the
     /// stunnerd configfile.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stunnerConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stunnerConfig")]
     pub stunner_config: Option<String>,
     /// Username defines the `username` credential for "plaintext" authentication.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userName")]
@@ -139,15 +110,16 @@ pub struct GatewayConfigAuthRef {
     pub name: String,
     /// Namespace is the namespace of the referenced object. When unspecified, the local
     /// namespace is inferred.
-    ///
-    ///
+    /// 
+    /// 
     /// Note that when a namespace different than the local namespace is specified,
     /// a ReferenceGrant object is required in the referent namespace to allow that
     /// namespace's owner to accept the reference. See the ReferenceGrant
     /// documentation for details.
-    ///
-    ///
+    /// 
+    /// 
     /// Support: Core
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
 }
+

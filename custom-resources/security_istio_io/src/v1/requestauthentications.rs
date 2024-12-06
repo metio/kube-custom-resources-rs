@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Request authentication configuration for workloads. See more details at: https://istio.io/docs/reference/config/security/request_authentication.html
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "security.istio.io",
-    version = "v1",
-    kind = "RequestAuthentication",
-    plural = "requestauthentications"
-)]
+#[kube(group = "security.istio.io", version = "v1", kind = "RequestAuthentication", plural = "requestauthentications")]
 #[kube(namespaced)]
 #[kube(status = "RequestAuthenticationStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct RequestAuthenticationSpec {
     /// Define the list of JWTs that can be validated at the selected workloads' proxy.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jwtRules")]
@@ -35,11 +30,7 @@ pub struct RequestAuthenticationSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRef")]
     pub target_ref: Option<RequestAuthenticationTargetRef>,
     /// Optional.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetRefs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetRefs")]
     pub target_refs: Option<Vec<RequestAuthenticationTargetRefs>>,
 }
 
@@ -49,32 +40,16 @@ pub struct RequestAuthenticationJwtRules {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audiences: Option<Vec<String>>,
     /// If set to true, the original token will be kept for the upstream request.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "forwardOriginalToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forwardOriginalToken")]
     pub forward_original_token: Option<bool>,
     /// List of cookie names from which JWT is expected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fromCookies"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromCookies")]
     pub from_cookies: Option<Vec<String>>,
     /// List of header locations from which JWT is expected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fromHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromHeaders")]
     pub from_headers: Option<Vec<RequestAuthenticationJwtRulesFromHeaders>>,
     /// List of query parameters from which JWT is expected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fromParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromParams")]
     pub from_params: Option<Vec<String>>,
     /// Identifies the issuer that issued the JWT.
     pub issuer: String,
@@ -88,18 +63,10 @@ pub struct RequestAuthenticationJwtRules {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jwks_uri")]
     pub jwks_uri_x: Option<String>,
     /// This field specifies a list of operations to copy the claim to HTTP headers on a successfully verified token.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "outputClaimToHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "outputClaimToHeaders")]
     pub output_claim_to_headers: Option<Vec<RequestAuthenticationJwtRulesOutputClaimToHeaders>>,
     /// This field specifies the header name to output a successfully verified JWT payload to the backend.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "outputPayloadToHeader"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "outputPayloadToHeader")]
     pub output_payload_to_header: Option<String>,
     /// The maximum amount of time that the resolver, determined by the PILOT_JWT_ENABLE_REMOTE_JWKS environment variable, will spend waiting for the JWKS to be fetched.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -127,11 +94,7 @@ pub struct RequestAuthenticationJwtRulesOutputClaimToHeaders {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RequestAuthenticationSelector {
     /// One or more labels that indicate a specific set of pods/VMs on which a policy should be applied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -169,32 +132,20 @@ pub struct RequestAuthenticationStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// Resource Generation to which the Reconciled Condition refers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<IntOrString>,
     /// Includes any errors or warnings detected by Istio's analyzers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "validationMessages"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationMessages")]
     pub validation_messages: Option<Vec<RequestAuthenticationStatusValidationMessages>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RequestAuthenticationStatusValidationMessages {
     /// A url pointing to the Istio documentation for this specific error type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "documentationUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "documentationUrl")]
     pub documentation_url: Option<String>,
     /// Represents how severe a message is.
-    ///
+    /// 
     /// Valid Options: UNKNOWN, ERROR, WARNING, INFO
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<RequestAuthenticationStatusValidationMessagesLevel>,
@@ -223,3 +174,4 @@ pub struct RequestAuthenticationStatusValidationMessagesType {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
+

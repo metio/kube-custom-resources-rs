@@ -4,47 +4,30 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// GrafanaDashboardSpec defines the desired state of GrafanaDashboard
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "grafana.integreatly.org",
-    version = "v1beta1",
-    kind = "GrafanaDashboard",
-    plural = "grafanadashboards"
-)]
+#[kube(group = "grafana.integreatly.org", version = "v1beta1", kind = "GrafanaDashboard", plural = "grafanadashboards")]
 #[kube(namespaced)]
 #[kube(status = "GrafanaDashboardStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct GrafanaDashboardSpec {
     /// allow to import this resources from an operator in a different namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowCrossNamespaceImport"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowCrossNamespaceImport")]
     pub allow_cross_namespace_import: Option<bool>,
     /// dashboard from configmap
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<GrafanaDashboardConfigMapRef>,
     /// Cache duration for dashboards fetched from URLs
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentCacheDuration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentCacheDuration")]
     pub content_cache_duration: Option<String>,
     /// maps required data sources to existing ones
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -65,11 +48,7 @@ pub struct GrafanaDashboardSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "folderUID")]
     pub folder_uid: Option<String>,
     /// grafana.com/dashboards
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "grafanaCom"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "grafanaCom")]
     pub grafana_com: Option<GrafanaDashboardGrafanaCom>,
     /// GzipJson the dashboard's JSON compressed with Gzip. Base64-encoded when in YAML.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gzipJson")]
@@ -84,21 +63,13 @@ pub struct GrafanaDashboardSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub jsonnet: Option<String>,
     /// Jsonnet project build
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jsonnetLib"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jsonnetLib")]
     pub jsonnet_lib: Option<GrafanaDashboardJsonnetLib>,
     /// plugins
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub plugins: Option<Vec<GrafanaDashboardPlugins>>,
     /// how often the dashboard is refreshed, defaults to 5m if not set
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resyncPeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resyncPeriod")]
     pub resync_period: Option<String>,
     /// Manually specify the uid for the dashboard, overwrites uids already present in the json model
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -107,11 +78,7 @@ pub struct GrafanaDashboardSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub url: Option<String>,
     /// authorization options for dashboard from url
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "urlAuthorization"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "urlAuthorization")]
     pub url_authorization: Option<GrafanaDashboardUrlAuthorization>,
 }
 
@@ -143,18 +110,10 @@ pub struct GrafanaDashboardDatasources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrafanaDashboardEnvFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<GrafanaDashboardEnvFromConfigMapKeyRef>,
     /// Selects a key of a Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<GrafanaDashboardEnvFromSecretKeyRef>,
 }
 
@@ -207,18 +166,10 @@ pub struct GrafanaDashboardEnvs {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrafanaDashboardEnvsValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<GrafanaDashboardEnvsValueFromConfigMapKeyRef>,
     /// Selects a key of a Secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<GrafanaDashboardEnvsValueFromSecretKeyRef>,
 }
 
@@ -268,20 +219,12 @@ pub struct GrafanaDashboardGrafanaCom {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrafanaDashboardInstanceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<GrafanaDashboardInstanceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -374,41 +317,22 @@ pub struct GrafanaDashboardUrlAuthorizationBasicAuthUsername {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GrafanaDashboardStatus {
     /// The dashboard instanceSelector can't find matching grafana instances
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "NoMatchingInstances"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "NoMatchingInstances")]
     pub no_matching_instances: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentCache"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentCache")]
     pub content_cache: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentTimestamp")]
     pub content_timestamp: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentUrl")]
     pub content_url: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hash: Option<String>,
     /// Last time the dashboard was resynced
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastResync"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastResync")]
     pub last_resync: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
 }
+

@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// OcmAgentSpec defines the desired state of OcmAgent
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "ocmagent.managed.openshift.io",
-    version = "v1alpha1",
-    kind = "OcmAgent",
-    plural = "ocmagents"
-)]
+#[kube(group = "ocmagent.managed.openshift.io", version = "v1alpha1", kind = "OcmAgent", plural = "ocmagents")]
 #[kube(namespaced)]
 #[kube(status = "OcmAgentStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct OcmAgentSpec {
     /// AgentConfig refers to OCM agent config fields separated
     #[serde(rename = "agentConfig")]
@@ -58,3 +53,4 @@ pub struct OcmAgentStatus {
     #[serde(rename = "serviceStatus")]
     pub service_status: String,
 }
+

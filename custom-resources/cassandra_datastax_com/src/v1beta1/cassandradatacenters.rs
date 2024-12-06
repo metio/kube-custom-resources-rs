@@ -4,80 +4,47 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::api::core::v1::ObjectReference;
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
+    pub use k8s_openapi::api::core::v1::ObjectReference;
 }
 use self::prelude::*;
 
 /// CassandraDatacenterSpec defines the desired state of a CassandraDatacenter
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "cassandra.datastax.com",
-    version = "v1beta1",
-    kind = "CassandraDatacenter",
-    plural = "cassandradatacenters"
-)]
+#[kube(group = "cassandra.datastax.com", version = "v1beta1", kind = "CassandraDatacenter", plural = "cassandradatacenters")]
 #[kube(namespaced)]
 #[kube(status = "CassandraDatacenterStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct CassandraDatacenterSpec {
     /// Additional Annotations allows to define additional labels that will be included in all objects created by the operator. Note, user can override values set by default from the cass-operator and doing so could break cass-operator functionality.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalAnnotations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalAnnotations")]
     pub additional_annotations: Option<BTreeMap<String, String>>,
     /// Additional Labels allows to define additional labels that will be included in all objects created by the operator. Note, user can override values set by default from the cass-operator and doing so could break cass-operator functionality.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalLabels")]
     pub additional_labels: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalSeeds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalSeeds")]
     pub additional_seeds: Option<Vec<String>>,
     /// AdditionalServiceConfig allows to define additional parameters that are included in the created Services. Note, user can override values set by cass-operator and doing so could break cass-operator functionality.
     /// Avoid label "cass-operator" and anything that starts with "cassandra.datastax.com/"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalServiceConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalServiceConfig")]
     pub additional_service_config: Option<CassandraDatacenterAdditionalServiceConfig>,
     /// Turning this option on allows multiple server pods to be created on a k8s worker node, by removing the default pod anti affinity rules.
     /// By default the operator creates just one server pod per k8s worker node. Using custom affinity rules might require turning this
     /// option on in which case the defaults are not set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowMultipleNodesPerWorker"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowMultipleNodesPerWorker")]
     pub allow_multiple_nodes_per_worker: Option<bool>,
     /// Indicates that configuration and container image changes should only be pushed to
     /// the first rack of the datacenter
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "canaryUpgrade"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "canaryUpgrade")]
     pub canary_upgrade: Option<bool>,
     /// The number of nodes that will be updated when CanaryUpgrade is true. Note that the value is
     /// either 0 or greater than the rack size, then all nodes in the rack will get updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "canaryUpgradeCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "canaryUpgradeCount")]
     pub canary_upgrade_count: Option<i32>,
     /// CDC allows configuration of the change data capture agent which can run within the Management API container. Use it to send data to Pulsar.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -91,24 +58,16 @@ pub struct CassandraDatacenterSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<String>,
     /// Container image for the config builder init container. Overrides value from ImageConfig ConfigBuilderImage
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configBuilderImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configBuilderImage")]
     pub config_builder_image: Option<String>,
     /// Kubernetes resource requests and limits per server config initialization container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configBuilderResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configBuilderResources")]
     pub config_builder_resources: Option<CassandraDatacenterConfigBuilderResources>,
     /// ConfigSecret is the name of a secret that contains configuration for Cassandra. The
     /// secret is expected to have a property named config whose value should be a JSON
     /// formatted string that should look like this:
-    ///
-    ///
+    /// 
+    /// 
     ///    config: |-
     ///      {
     ///        "cassandra-yaml": {
@@ -118,94 +77,50 @@ pub struct CassandraDatacenterSpec {
     ///          "max_heap_size": 1024M
     ///        }
     ///      }
-    ///
-    ///
+    /// 
+    /// 
     /// ConfigSecret is mutually exclusive with Config. ConfigSecret takes precedence and
     /// will be used exclusively if both properties are set. The operator sets a watch such
     /// that an update to the secret will trigger an update of the StatefulSets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configSecret")]
     pub config_secret: Option<String>,
     /// DatacenterName allows to override the name of the Cassandra datacenter. In Cassandra the DC name will be overridden by this value.
     /// This setting can create conflicts if multiple DCs coexist in the same namespace if metadata.name for a DC with no override is set to the same value as the override name of another DC.
     /// Use cautiously.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datacenterName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datacenterName")]
     pub datacenter_name: Option<String>,
     /// Configuration for disabling the simple log tailing sidecar container. Our default is to have it enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableSystemLoggerSidecar"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableSystemLoggerSidecar")]
     pub disable_system_logger_sidecar: Option<bool>,
     /// DEPRECATED This setting does nothing and defaults to true. Use SecurityContext instead.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dockerImageRunsAsCassandra"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dockerImageRunsAsCassandra")]
     pub docker_image_runs_as_cassandra: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dseWorkloads"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dseWorkloads")]
     pub dse_workloads: Option<CassandraDatacenterDseWorkloads>,
     /// Rack names in this list are set to the latest StatefulSet configuration
     /// even if Cassandra nodes are down. Use this to recover from an upgrade that couldn't
     /// roll out.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "forceUpgradeRacks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceUpgradeRacks")]
     pub force_upgrade_racks: Option<Vec<String>>,
     /// Config for the Management API certificates
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "managementApiAuth"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managementApiAuth")]
     pub management_api_auth: Option<CassandraDatacenterManagementApiAuth>,
     /// MinReadySeconds sets the minimum number of seconds for which a newly created pod should be ready without any of its containers crashing, for it to be considered available. Defaults to 5 seconds and is set in the StatefulSet spec.
     /// Setting to 0 might cause multiple Cassandra pods to restart at the same time despite PodDisruptionBudget settings.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minReadySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub networking: Option<CassandraDatacenterNetworking>,
     /// NodeAffinityLabels to pin the Datacenter, using node affinity
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinityLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityLabels")]
     pub node_affinity_labels: Option<BTreeMap<String, String>>,
     /// A map of label keys and values to restrict Cassandra node scheduling to k8s workers
     /// with matchiing labels.
     /// More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// PodTemplate provides customisation options (labels, annotations, affinity rules, resource requests, and so on) for the cassandra pods
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podTemplateSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podTemplateSpec")]
     pub pod_template_spec: Option<CassandraDatacenterPodTemplateSpec>,
     /// A list of the named racks in the datacenter, representing independent failure domains. The
     /// number of racks should match the replication factor in the keyspaces you plan to create, and
@@ -214,38 +129,22 @@ pub struct CassandraDatacenterSpec {
     pub racks: Option<Vec<CassandraDatacenterRacks>>,
     /// ReadOnlyRootFilesystem makes the cassandra container to be run with a read-only root filesystem. Currently only functional when used with the
     /// new k8ssandra-client config builder (Cassandra 4.1 and newer and HCD)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// Deprecated Use CassandraTask replacenode to achieve correct node replacement. A list of pod names that need to be replaced.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replaceNodes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replaceNodes")]
     pub replace_nodes: Option<Vec<String>>,
     /// Kubernetes resource requests and limits, per pod
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<CassandraDatacenterResources>,
     /// Deprecated. Use CassandraTask for rolling restarts. Whether to do a rolling restart at the next opportunity. The operator will set this back
     /// to false once the restart is in progress.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollingRestartRequested"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingRestartRequested")]
     pub rolling_restart_requested: Option<bool>,
     /// Cassandra server image name. Use of ImageConfig to match ServerVersion is recommended instead of this value.
     /// This value will override anything set in the ImageConfig matching the ServerVersion
     /// More info: https://kubernetes.io/docs/concepts/containers/images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverImage")]
     pub server_image: Option<String>,
     /// Server type: "cassandra", "dse" or "hcd"
     #[serde(rename = "serverType")]
@@ -255,19 +154,11 @@ pub struct CassandraDatacenterSpec {
     #[serde(rename = "serverVersion")]
     pub server_version: String,
     /// Deprecated DeprecatedServiceAccount Use ServiceAccountName instead, which takes precedence. The k8s service account to use for the server pods
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
     /// ServiceAccountName is the Kubernetes service account to use for the server pods. This takes presedence over DeprecatedServiceAccount and both take precedence over
     /// setting it in the PodTemplateSpec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
     /// Desired number of Cassandra server nodes
     pub size: i32,
@@ -281,25 +172,13 @@ pub struct CassandraDatacenterSpec {
     pub storage_config: CassandraDatacenterStorageConfig,
     /// This secret defines the username and password for the Cassandra server superuser.
     /// If it is omitted, we will generate a secret instead.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "superuserSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "superuserSecretName")]
     pub superuser_secret_name: Option<String>,
     /// Container image for the log tailing sidecar container. Overrides value from ImageConfig SystemLoggerImage
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "systemLoggerImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemLoggerImage")]
     pub system_logger_image: Option<String>,
     /// Kubernetes resource requests and limits per system logger container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "systemLoggerResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemLoggerResources")]
     pub system_logger_resources: Option<CassandraDatacenterSystemLoggerResources>,
     /// Tolerations applied to the Cassandra pod. Note that these cannot be overridden with PodTemplateSpec.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -314,254 +193,113 @@ pub struct CassandraDatacenterSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterAdditionalServiceConfig {
     /// ServiceConfigAdditions exposes additional options for each service
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalSeedService"
-    )]
-    pub additional_seed_service:
-        Option<CassandraDatacenterAdditionalServiceConfigAdditionalSeedService>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalSeedService")]
+    pub additional_seed_service: Option<CassandraDatacenterAdditionalServiceConfigAdditionalSeedService>,
     /// ServiceConfigAdditions exposes additional options for each service
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allpodsService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allpodsService")]
     pub allpods_service: Option<CassandraDatacenterAdditionalServiceConfigAllpodsService>,
     /// ServiceConfigAdditions exposes additional options for each service
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dcService")]
     pub dc_service: Option<CassandraDatacenterAdditionalServiceConfigDcService>,
     /// ServiceConfigAdditions exposes additional options for each service
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePortService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePortService")]
     pub node_port_service: Option<CassandraDatacenterAdditionalServiceConfigNodePortService>,
     /// ServiceConfigAdditions exposes additional options for each service
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seedService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seedService")]
     pub seed_service: Option<CassandraDatacenterAdditionalServiceConfigSeedService>,
 }
 
 /// ServiceConfigAdditions exposes additional options for each service
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterAdditionalServiceConfigAdditionalSeedService {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalAnnotations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalAnnotations")]
     pub additional_annotations: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalLabels")]
     pub additional_labels: Option<BTreeMap<String, String>>,
 }
 
 /// ServiceConfigAdditions exposes additional options for each service
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterAdditionalServiceConfigAllpodsService {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalAnnotations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalAnnotations")]
     pub additional_annotations: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalLabels")]
     pub additional_labels: Option<BTreeMap<String, String>>,
 }
 
 /// ServiceConfigAdditions exposes additional options for each service
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterAdditionalServiceConfigDcService {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalAnnotations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalAnnotations")]
     pub additional_annotations: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalLabels")]
     pub additional_labels: Option<BTreeMap<String, String>>,
 }
 
 /// ServiceConfigAdditions exposes additional options for each service
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterAdditionalServiceConfigNodePortService {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalAnnotations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalAnnotations")]
     pub additional_annotations: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalLabels")]
     pub additional_labels: Option<BTreeMap<String, String>>,
 }
 
 /// ServiceConfigAdditions exposes additional options for each service
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterAdditionalServiceConfigSeedService {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalAnnotations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalAnnotations")]
     pub additional_annotations: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalLabels")]
     pub additional_labels: Option<BTreeMap<String, String>>,
 }
 
 /// CDC allows configuration of the change data capture agent which can run within the Management API container. Use it to send data to Pulsar.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterCdc {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cdcConcurrentProcessors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cdcConcurrentProcessors")]
     pub cdc_concurrent_processors: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cdcPollIntervalM"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cdcPollIntervalM")]
     pub cdc_poll_interval_m: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cdcWorkingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cdcWorkingDir")]
     pub cdc_working_dir: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorCommitLogReprocessEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorCommitLogReprocessEnabled")]
     pub error_commit_log_reprocess_enabled: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pulsarAuthParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pulsarAuthParams")]
     pub pulsar_auth_params: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pulsarAuthPluginClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pulsarAuthPluginClassName")]
     pub pulsar_auth_plugin_class_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pulsarBatchDelayInMs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pulsarBatchDelayInMs")]
     pub pulsar_batch_delay_in_ms: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pulsarKeyBasedBatcher"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pulsarKeyBasedBatcher")]
     pub pulsar_key_based_batcher: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pulsarMaxPendingMessages"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pulsarMaxPendingMessages")]
     pub pulsar_max_pending_messages: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pulsarMaxPendingMessagesAcrossPartitions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pulsarMaxPendingMessagesAcrossPartitions")]
     pub pulsar_max_pending_messages_across_partitions: Option<i64>,
     #[serde(rename = "pulsarServiceUrl")]
     pub pulsar_service_url: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslAllowInsecureConnection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslAllowInsecureConnection")]
     pub ssl_allow_insecure_connection: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslCipherSuites"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslCipherSuites")]
     pub ssl_cipher_suites: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslEnabledProtocols"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabledProtocols")]
     pub ssl_enabled_protocols: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslHostnameVerificationEnable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslHostnameVerificationEnable")]
     pub ssl_hostname_verification_enable: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslKeystorePassword"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslKeystorePassword")]
     pub ssl_keystore_password: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslKeystorePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslKeystorePath")]
     pub ssl_keystore_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslProvider"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslProvider")]
     pub ssl_provider: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslTruststorePassword"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslTruststorePassword")]
     pub ssl_truststore_password: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslTruststorePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslTruststorePath")]
     pub ssl_truststore_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslTruststoreType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslTruststoreType")]
     pub ssl_truststore_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topicPrefix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topicPrefix")]
     pub topic_prefix: Option<String>,
 }
 
@@ -570,12 +308,12 @@ pub struct CassandraDatacenterCdc {
 pub struct CassandraDatacenterConfigBuilderResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<CassandraDatacenterConfigBuilderResourcesClaims>>,
@@ -602,23 +340,11 @@ pub struct CassandraDatacenterConfigBuilderResourcesClaims {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterDseWorkloads {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "analyticsEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "analyticsEnabled")]
     pub analytics_enabled: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "graphEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "graphEnabled")]
     pub graph_enabled: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "searchEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "searchEnabled")]
     pub search_enabled: Option<bool>,
 }
 
@@ -632,7 +358,8 @@ pub struct CassandraDatacenterManagementApiAuth {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterManagementApiAuthInsecure {}
+pub struct CassandraDatacenterManagementApiAuthInsecure {
+}
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterManagementApiAuthManual {
@@ -640,21 +367,13 @@ pub struct CassandraDatacenterManagementApiAuthManual {
     pub client_secret_name: String,
     #[serde(rename = "serverSecretName")]
     pub server_secret_name: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "skipSecretValidation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipSecretValidation")]
     pub skip_secret_validation: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterNetworking {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostNetwork"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
     pub host_network: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePort")]
     pub node_port: Option<CassandraDatacenterNetworkingNodePort>,
@@ -664,11 +383,7 @@ pub struct CassandraDatacenterNetworking {
 pub struct CassandraDatacenterNetworkingNodePort {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub internode: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "internodeSSL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "internodeSSL")]
     pub internode_ssl: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub native: Option<i64>,
@@ -712,21 +427,13 @@ pub struct CassandraDatacenterPodTemplateSpecSpec {
     /// Optional duration in seconds the pod may be active on the node relative to
     /// StartTime before the system will actively try to mark it failed and kill associated containers.
     /// Value must be a positive integer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "activeDeadlineSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeDeadlineSeconds")]
     pub active_deadline_seconds: Option<i64>,
     /// If specified, the pod's scheduling constraints
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<CassandraDatacenterPodTemplateSpecSpecAffinity>,
     /// AutomountServiceAccountToken indicates whether a service account token should be automatically mounted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "automountServiceAccountToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "automountServiceAccountToken")]
     pub automount_service_account_token: Option<bool>,
     /// List of containers belonging to the pod.
     /// Containers cannot currently be added or removed.
@@ -749,30 +456,17 @@ pub struct CassandraDatacenterPodTemplateSpecSpec {
     /// EnableServiceLinks indicates whether information about services should be injected into pod's
     /// environment variables, matching the syntax of Docker links.
     /// Optional: Defaults to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableServiceLinks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableServiceLinks")]
     pub enable_service_links: Option<bool>,
     /// List of ephemeral containers run in this pod. Ephemeral containers may be run in an existing
     /// pod to perform user-initiated actions such as debugging. This list cannot be specified when
     /// creating a pod, and it cannot be modified by updating the pod spec. In order to add an
     /// ephemeral container to an existing pod, use the pod's ephemeralcontainers subresource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ephemeralContainers"
-    )]
-    pub ephemeral_containers:
-        Option<Vec<CassandraDatacenterPodTemplateSpecSpecEphemeralContainers>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ephemeralContainers")]
+    pub ephemeral_containers: Option<Vec<CassandraDatacenterPodTemplateSpecSpecEphemeralContainers>>,
     /// HostAliases is an optional list of hosts and IPs that will be injected into the pod's hosts
     /// file if specified. This is only valid for non-hostNetwork pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostAliases"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<CassandraDatacenterPodTemplateSpecSpecHostAliases>>,
     /// Use the host's ipc namespace.
     /// Optional: Default to false.
@@ -781,11 +475,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpec {
     /// Host networking requested for this pod. Use the host's network namespace.
     /// If this option is set, the ports that will be used must be specified.
     /// Default to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostNetwork"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
     pub host_network: Option<bool>,
     /// Use the host's pid namespace.
     /// Optional: Default to false.
@@ -809,11 +499,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpec {
     /// ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of the images used by this PodSpec.
     /// If specified, these secrets will be passed to individual puller implementations for them to use.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#specifying-imagepullsecrets-on-a-pod
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<CassandraDatacenterPodTemplateSpecSpecImagePullSecrets>>,
     /// List of initialization containers belonging to the pod.
     /// Init containers are executed in order prior to containers being started. If any
@@ -828,11 +514,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpec {
     /// Init containers cannot currently be added or removed.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<CassandraDatacenterPodTemplateSpecSpecInitContainers>>,
     /// NodeName is a request to schedule this pod onto a specific node. If it is non-empty,
     /// the scheduler simply schedules this pod onto that node, assuming that it fits resource
@@ -842,20 +524,16 @@ pub struct CassandraDatacenterPodTemplateSpecSpec {
     /// NodeSelector is a selector which must be true for the pod to fit on a node.
     /// Selector which must match a node's labels for the pod to be scheduled on that node.
     /// More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Specifies the OS of the containers in the pod.
     /// Some pod and container fields are restricted if this is set.
-    ///
-    ///
+    /// 
+    /// 
     /// If the OS field is set to linux, the following fields must be unset:
     /// -securityContext.windowsOptions
-    ///
-    ///
+    /// 
+    /// 
     /// If the OS field is set to windows, following fields must be unset:
     /// - spec.hostPID
     /// - spec.hostIPC
@@ -892,11 +570,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpec {
     /// PreemptionPolicy is the Policy for preempting pods with lower priority.
     /// One of Never, PreemptLowerPriority.
     /// Defaults to PreemptLowerPriority if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preemptionPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preemptionPolicy")]
     pub preemption_policy: Option<String>,
     /// The priority value. Various system components use this field to find the
     /// priority of the pod. When Priority Admission Controller is enabled, it
@@ -911,128 +585,80 @@ pub struct CassandraDatacenterPodTemplateSpecSpec {
     /// name must be defined by creating a PriorityClass object with that name.
     /// If not specified, the pod priority will be default or zero if there is no
     /// default.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// If specified, all readiness gates will be evaluated for pod readiness.
     /// A pod is ready when all its containers are ready AND
     /// all conditions specified in the readiness gates have status equal to "True"
     /// More info: https://git.k8s.io/enhancements/keps/sig-network/580-pod-readiness-gates
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessGates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessGates")]
     pub readiness_gates: Option<Vec<CassandraDatacenterPodTemplateSpecSpecReadinessGates>>,
     /// ResourceClaims defines which ResourceClaims must be allocated
     /// and reserved before the Pod is allowed to start. The resources
     /// will be made available to those containers which consume them
     /// by name.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceClaims"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaims")]
     pub resource_claims: Option<Vec<CassandraDatacenterPodTemplateSpecSpecResourceClaims>>,
     /// Restart policy for all containers within the pod.
     /// One of Always, OnFailure, Never. In some contexts, only a subset of those values may be permitted.
     /// Default to Always.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     /// RuntimeClassName refers to a RuntimeClass object in the node.k8s.io group, which should be used
     /// to run this pod.  If no RuntimeClass resource matches the named class, the pod will not be run.
     /// If unset or empty, the "legacy" RuntimeClass will be used, which is an implicit class with an
     /// empty definition that uses the default runtime handler.
     /// More info: https://git.k8s.io/enhancements/keps/sig-node/585-runtime-class
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runtimeClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeClassName")]
     pub runtime_class_name: Option<String>,
     /// If specified, the pod will be dispatched by specified scheduler.
     /// If not specified, the pod will be dispatched by default scheduler.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schedulerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
     /// SchedulingGates is an opaque list of values that if specified will block scheduling the pod.
     /// If schedulingGates is not empty, the pod will stay in the SchedulingGated state and the
     /// scheduler will not attempt to schedule the pod.
-    ///
-    ///
+    /// 
+    /// 
     /// SchedulingGates can only be set at pod creation time, and be removed only afterwards.
-    ///
-    ///
+    /// 
+    /// 
     /// This is a beta feature enabled by the PodSchedulingReadiness feature gate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schedulingGates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingGates")]
     pub scheduling_gates: Option<Vec<CassandraDatacenterPodTemplateSpecSpecSchedulingGates>>,
     /// SecurityContext holds pod-level security attributes and common container settings.
     /// Optional: Defaults to empty.  See type description for default values of each field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<CassandraDatacenterPodTemplateSpecSpecSecurityContext>,
     /// DeprecatedServiceAccount is a depreciated alias for ServiceAccountName.
     /// Deprecated: Use serviceAccountName instead.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
     /// ServiceAccountName is the name of the ServiceAccount to use to run this pod.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
     /// If true the pod's hostname will be configured as the pod's FQDN, rather than the leaf name (the default).
     /// In Linux containers, this means setting the FQDN in the hostname field of the kernel (the nodename field of struct utsname).
     /// In Windows containers, this means setting the registry value of hostname for the registry key HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters to FQDN.
     /// If a pod does not have FQDN, this has no effect.
     /// Default to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "setHostnameAsFQDN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "setHostnameAsFQDN")]
     pub set_hostname_as_fqdn: Option<bool>,
     /// Share a single process namespace between all of the containers in a pod.
     /// When this is set containers will be able to view and signal processes from other containers
     /// in the same pod, and the first process in each container will not be assigned PID 1.
     /// HostPID and ShareProcessNamespace cannot both be set.
     /// Optional: Default to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "shareProcessNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shareProcessNamespace")]
     pub share_process_namespace: Option<bool>,
     /// If specified, the fully qualified Pod hostname will be "<hostname>.<subdomain>.<pod namespace>.svc.<cluster domain>".
     /// If not specified, the pod will not have a domainname at all.
@@ -1046,11 +672,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpec {
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
     /// Set this value longer than the expected cleanup time for your process.
     /// Defaults to 30 seconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// If specified, the pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1058,13 +680,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpec {
     /// TopologySpreadConstraints describes how a group of pods ought to spread across topology
     /// domains. Scheduler will schedule pods in a way which abides by the constraints.
     /// All topologySpreadConstraints are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologySpreadConstraints"
-    )]
-    pub topology_spread_constraints:
-        Option<Vec<CassandraDatacenterPodTemplateSpecSpecTopologySpreadConstraints>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
+    pub topology_spread_constraints: Option<Vec<CassandraDatacenterPodTemplateSpecSpecTopologySpreadConstraints>>,
     /// List of volumes that can be mounted by containers belonging to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1075,25 +692,13 @@ pub struct CassandraDatacenterPodTemplateSpecSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<CassandraDatacenterPodTemplateSpecSpecAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<CassandraDatacenterPodTemplateSpecSpecAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<CassandraDatacenterPodTemplateSpecSpecAffinityPodAntiAffinity>,
 }
 
@@ -1144,8 +749,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecAffinityNodeAffinityPreferredDu
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterPodTemplateSpecSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct CassandraDatacenterPodTemplateSpecSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1163,8 +767,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecAffinityNodeAffinityPreferredDu
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterPodTemplateSpecSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct CassandraDatacenterPodTemplateSpecSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1207,8 +810,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecAffinityNodeAffinityRequiredDur
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterPodTemplateSpecSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct CassandraDatacenterPodTemplateSpecSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1226,8 +828,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecAffinityNodeAffinityRequiredDur
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterPodTemplateSpecSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct CassandraDatacenterPodTemplateSpecSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1346,8 +947,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecAffinityPodAffinityPreferredDur
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterPodTemplateSpecSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct CassandraDatacenterPodTemplateSpecSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1381,8 +981,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecAffinityPodAffinityPreferredDur
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterPodTemplateSpecSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct CassandraDatacenterPodTemplateSpecSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1469,8 +1068,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecAffinityPodAffinityRequiredDuri
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterPodTemplateSpecSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct CassandraDatacenterPodTemplateSpecSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1504,8 +1102,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecAffinityPodAffinityRequiredDuri
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterPodTemplateSpecSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct CassandraDatacenterPodTemplateSpecSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1623,8 +1220,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecAffinityPodAntiAffinityPreferre
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterPodTemplateSpecSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct CassandraDatacenterPodTemplateSpecSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1658,8 +1254,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecAffinityPodAntiAffinityPreferre
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterPodTemplateSpecSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct CassandraDatacenterPodTemplateSpecSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1746,8 +1341,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecAffinityPodAntiAffinityRequired
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterPodTemplateSpecSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct CassandraDatacenterPodTemplateSpecSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1781,8 +1375,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecAffinityPodAntiAffinityRequired
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterPodTemplateSpecSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct CassandraDatacenterPodTemplateSpecSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1842,11 +1435,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainers {
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Actions that the management system should take in response to container lifecycle events.
     /// Cannot be updated.
@@ -1856,11 +1445,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainers {
     /// Container will be restarted if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<CassandraDatacenterPodTemplateSpecSpecContainersLivenessProbe>,
     /// Name of the container specified as a DNS_LABEL.
     /// Each container in a pod must have a unique name (DNS_LABEL).
@@ -1879,18 +1464,10 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainers {
     /// Container will be removed from service endpoints if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<CassandraDatacenterPodTemplateSpecSpecContainersReadinessProbe>,
     /// Resources resize policy for the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resizePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
     pub resize_policy: Option<Vec<CassandraDatacenterPodTemplateSpecSpecContainersResizePolicy>>,
     /// Compute Resources required by this container.
     /// Cannot be updated.
@@ -1912,20 +1489,12 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainers {
     /// container. Instead, the next init container starts immediately after this
     /// init container is started, or after any startupProbe has successfully
     /// completed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     /// SecurityContext defines the security options the container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<CassandraDatacenterPodTemplateSpecSpecContainersSecurityContext>,
     /// StartupProbe indicates that the Pod has successfully initialized.
     /// If specified, no other probes are executed until this completes successfully.
@@ -1934,11 +1503,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainers {
     /// when it might take a long time to load data or warm a cache, than during steady-state operation.
     /// This cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<CassandraDatacenterPodTemplateSpecSpecContainersStartupProbe>,
     /// Whether this container should allocate a buffer for stdin in the container runtime. If this
     /// is not set, reads from stdin in the container will always result in EOF.
@@ -1961,11 +1526,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainers {
     /// all containers will be limited to 12kb.
     /// Defaults to /dev/termination-log.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
     /// Indicate how the termination message should be populated. File will use the contents of
     /// terminationMessagePath to populate the container status message on both success and failure.
@@ -1974,40 +1535,24 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainers {
     /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
     /// Defaults to File.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
     /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
     /// volumeDevices is the list of block devices to be used by the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
     pub volume_devices: Option<Vec<CassandraDatacenterPodTemplateSpecSpecContainersVolumeDevices>>,
     /// Pod volumes to mount into the container's filesystem.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<CassandraDatacenterPodTemplateSpecSpecContainersVolumeMounts>>,
     /// Container's working directory.
     /// If not specified, the container runtime's default will be used, which
     /// might be configured in the container image.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -2036,34 +1581,19 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecContainersEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<CassandraDatacenterPodTemplateSpecSpecContainersEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<CassandraDatacenterPodTemplateSpecSpecContainersEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<CassandraDatacenterPodTemplateSpecSpecContainersEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<CassandraDatacenterPodTemplateSpecSpecContainersEnvValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<CassandraDatacenterPodTemplateSpecSpecContainersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<CassandraDatacenterPodTemplateSpecSpecContainersEnvValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<CassandraDatacenterPodTemplateSpecSpecContainersEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
@@ -2086,11 +1616,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersEnvValueFromConfigMap
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -2102,11 +1628,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersEnvValueFromFieldRef 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2134,11 +1656,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersEnvValueFromSecretKey
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecContainersEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<CassandraDatacenterPodTemplateSpecSpecContainersEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2216,8 +1734,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePostStart {
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePostStartTcpSocket>,
+    pub tcp_socket: Option<CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePostStartTcpSocket>,
 }
 
 /// Exec specifies the action to take.
@@ -2240,14 +1757,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePostStartHtt
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePostStartHttpGetHttpHeaders>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePostStartHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -2316,8 +1827,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePreStop {
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePreStopTcpSocket>,
+    pub tcp_socket: Option<CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePreStopTcpSocket>,
 }
 
 /// Exec specifies the action to take.
@@ -2340,14 +1850,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePreStopHttpG
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePreStopHttpGetHttpHeaders>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<CassandraDatacenterPodTemplateSpecSpecContainersLifecyclePreStopHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -2403,11 +1907,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersLivenessProbe {
     pub exec: Option<CassandraDatacenterPodTemplateSpecSpecContainersLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2417,27 +1917,15 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersLivenessProbe {
     pub http_get: Option<CassandraDatacenterPodTemplateSpecSpecContainersLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -2452,20 +1940,12 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersLivenessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2488,8 +1968,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersLivenessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -2503,14 +1983,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersLivenessProbeHttpGet 
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<CassandraDatacenterPodTemplateSpecSpecContainersLivenessProbeHttpGetHttpHeaders>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<CassandraDatacenterPodTemplateSpecSpecContainersLivenessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -2584,11 +2058,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersReadinessProbe {
     pub exec: Option<CassandraDatacenterPodTemplateSpecSpecContainersReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2598,27 +2068,15 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersReadinessProbe {
     pub http_get: Option<CassandraDatacenterPodTemplateSpecSpecContainersReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -2633,20 +2091,12 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersReadinessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2669,8 +2119,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersReadinessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -2684,14 +2134,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersReadinessProbeHttpGet
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<CassandraDatacenterPodTemplateSpecSpecContainersReadinessProbeHttpGetHttpHeaders>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<CassandraDatacenterPodTemplateSpecSpecContainersReadinessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -2747,12 +2191,12 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersResizePolicy {
 pub struct CassandraDatacenterPodTemplateSpecSpecContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<CassandraDatacenterPodTemplateSpecSpecContainersResourcesClaims>>,
@@ -2789,18 +2233,13 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersSecurityContext {
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub capabilities:
-        Option<CassandraDatacenterPodTemplateSpecSpecContainersSecurityContextCapabilities>,
+    pub capabilities: Option<CassandraDatacenterPodTemplateSpecSpecContainersSecurityContextCapabilities>,
     /// Run container in privileged mode.
     /// Processes in privileged containers are essentially equivalent to root on the host.
     /// Defaults to false.
@@ -2817,22 +2256,14 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersSecurityContext {
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -2840,11 +2271,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -2858,35 +2285,20 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersSecurityContext {
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options:
-        Option<CassandraDatacenterPodTemplateSpecSpecContainersSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<CassandraDatacenterPodTemplateSpecSpecContainersSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile:
-        Option<CassandraDatacenterPodTemplateSpecSpecContainersSecurityContextSeccompProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<CassandraDatacenterPodTemplateSpecSpecContainersSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options:
-        Option<CassandraDatacenterPodTemplateSpecSpecContainersSecurityContextWindowsOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<CassandraDatacenterPodTemplateSpecSpecContainersSecurityContextWindowsOptions>,
 }
 
 /// The capabilities to add/drop when running containers.
@@ -2933,16 +2345,12 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersSecurityContextSeccom
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -2959,38 +2367,22 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersSecurityContextWindow
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -3008,11 +2400,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersStartupProbe {
     pub exec: Option<CassandraDatacenterPodTemplateSpecSpecContainersStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3022,27 +2410,15 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersStartupProbe {
     pub http_get: Option<CassandraDatacenterPodTemplateSpecSpecContainersStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -3057,20 +2433,12 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersStartupProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -3093,8 +2461,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersStartupProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -3108,13 +2476,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersStartupProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<CassandraDatacenterPodTemplateSpecSpecContainersStartupProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<CassandraDatacenterPodTemplateSpecSpecContainersStartupProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -3171,11 +2534,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -3191,11 +2550,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecContainersVolumeMounts {
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -3237,8 +2592,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecDnsConfigOptions {
 /// scheduling guarantees, and they will not be restarted when they exit or when a Pod is
 /// removed or restarted. The kubelet may evict a Pod if an ephemeral container causes the
 /// Pod to exceed its resource allocation.
-///
-///
+/// 
+/// 
 /// To add an ephemeral container, use the ephemeralcontainers subresource of an existing
 /// Pod. Ephemeral containers may not be removed or restarted.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3284,23 +2639,14 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainers {
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Lifecycle is not allowed for ephemeral containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lifecycle: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecycle>,
     /// Probes are not allowed for ephemeral containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
-    pub liveness_probe:
-        Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLivenessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
+    pub liveness_probe: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLivenessProbe>,
     /// Name of the ephemeral container specified as a DNS_LABEL.
     /// This name must be unique among all containers, init containers and ephemeral containers.
     pub name: String,
@@ -3308,21 +2654,11 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersPorts>>,
     /// Probes are not allowed for ephemeral containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
-    pub readiness_probe:
-        Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersReadinessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
+    pub readiness_probe: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersReadinessProbe>,
     /// Resources resize policy for the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resizePolicy"
-    )]
-    pub resize_policy:
-        Option<Vec<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersResizePolicy>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
+    pub resize_policy: Option<Vec<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersResizePolicy>>,
     /// Resources are not allowed for ephemeral containers. Ephemeral containers use spare resources
     /// already allocated to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3331,29 +2667,15 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainers {
     /// container within a pod.
     /// This may only be set for init containers. You cannot set this field on
     /// ephemeral containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     /// Optional: SecurityContext defines the security options the ephemeral container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
-    pub security_context:
-        Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersSecurityContext>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
+    pub security_context: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersSecurityContext>,
     /// Probes are not allowed for ephemeral containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
-    pub startup_probe:
-        Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersStartupProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
+    pub startup_probe: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersStartupProbe>,
     /// Whether this container should allocate a buffer for stdin in the container runtime. If this
     /// is not set, reads from stdin in the container will always result in EOF.
     /// Default is false.
@@ -3371,15 +2693,11 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainers {
     /// If set, the name of the container from PodSpec that this ephemeral container targets.
     /// The ephemeral container will be run in the namespaces (IPC, PID, etc) of this container.
     /// If not set then the ephemeral container uses the namespaces configured in the Pod spec.
-    ///
-    ///
+    /// 
+    /// 
     /// The container runtime must implement support for this feature. If the runtime does not
     /// support namespace targeting then the result of setting this field is undefined.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetContainerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetContainerName")]
     pub target_container_name: Option<String>,
     /// Optional: Path at which the file to which the container's termination message
     /// will be written is mounted into the container's filesystem.
@@ -3388,11 +2706,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainers {
     /// all containers will be limited to 12kb.
     /// Defaults to /dev/termination-log.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
     /// Indicate how the termination message should be populated. File will use the contents of
     /// terminationMessagePath to populate the container status message on both success and failure.
@@ -3401,42 +2715,24 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainers {
     /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
     /// Defaults to File.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
     /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
     /// volumeDevices is the list of block devices to be used by the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
-    pub volume_devices:
-        Option<Vec<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersVolumeDevices>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
+    pub volume_devices: Option<Vec<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersVolumeDevices>>,
     /// Pod volumes to mount into the container's filesystem. Subpath mounts are not allowed for ephemeral containers.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
-    pub volume_mounts:
-        Option<Vec<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersVolumeMounts>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersVolumeMounts>>,
     /// Container's working directory.
     /// If not specified, the container runtime's default will be used, which
     /// might be configured in the container image.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -3465,37 +2761,19 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref: Option<
-        CassandraDatacenterPodTemplateSpecSpecEphemeralContainersEnvValueFromConfigMapKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersEnvValueFromFieldRef>,
+    pub field_ref: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        CassandraDatacenterPodTemplateSpecSpecEphemeralContainersEnvValueFromResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersEnvValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
@@ -3518,11 +2796,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersEnvValueFrom
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -3534,11 +2808,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersEnvValueFrom
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3566,20 +2836,14 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersEnvValueFrom
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
-    pub config_map_ref:
-        Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersEnvFromConfigMapRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersEnvFromSecretRef>,
+    pub secret_ref: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersEnvFromSecretRef>,
 }
 
 /// The ConfigMap to select from
@@ -3616,8 +2880,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecycle {
     /// Other management of the container blocks until the hook completes.
     /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
-    pub post_start:
-        Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePostStart>,
+    pub post_start: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePostStart>,
     /// PreStop is called immediately before a container is terminated due to an
     /// API request or management event such as liveness/startup probe failure,
     /// preemption, resource contention, etc. The handler is not called if the
@@ -3639,23 +2902,18 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecycle {
 pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePostStart {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec:
-        Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePostStartExec>,
+    pub exec: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePostStartExec>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePostStartHttpGet>,
+    pub http_get: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePostStartHttpGet>,
     /// Sleep represents the duration that the container should sleep before being terminated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sleep:
-        Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePostStartSleep>,
+    pub sleep: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePostStartSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<
-        CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePostStartTcpSocket,
-    >,
+    pub tcp_socket: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePostStartTcpSocket>,
 }
 
 /// Exec specifies the action to take.
@@ -3695,8 +2953,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePos
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePostStartHttpGetHttpHeaders
-{
+pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePostStartHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -3741,18 +2998,15 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePre
     pub exec: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePreStopExec>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePreStopHttpGet>,
+    pub http_get: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePreStopHttpGet>,
     /// Sleep represents the duration that the container should sleep before being terminated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sleep:
-        Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePreStopSleep>,
+    pub sleep: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePreStopSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePreStopTcpSocket>,
+    pub tcp_socket: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePreStopTcpSocket>,
 }
 
 /// Exec specifies the action to take.
@@ -3792,8 +3046,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePre
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePreStopHttpGetHttpHeaders
-{
+pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLifecyclePreStopHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -3830,47 +3083,29 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLivenessProb
     pub exec: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLivenessProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLivenessProbeHttpGet>,
+    pub http_get: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLivenessProbeTcpSocket>,
+    pub tcp_socket: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLivenessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -3881,20 +3116,12 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLivenessProb
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -3917,8 +3144,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLivenessProb
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -3949,8 +3176,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLivenessProb
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLivenessProbeHttpGetHttpHeaders
-{
+pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersLivenessProbeHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -4005,47 +3231,29 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersReadinessPro
     pub exec: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersReadinessProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersReadinessProbeHttpGet>,
+    pub http_get: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersReadinessProbeTcpSocket>,
+    pub tcp_socket: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersReadinessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -4056,20 +3264,12 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersReadinessPro
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -4092,8 +3292,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersReadinessPro
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -4124,8 +3324,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersReadinessPro
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersReadinessProbeHttpGetHttpHeaders
-{
+pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersReadinessProbeHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -4164,16 +3363,15 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersResizePolicy
 pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims:
-        Option<Vec<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersResourcesClaims>>,
+    pub claims: Option<Vec<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4206,19 +3404,13 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersSecurityCont
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub capabilities: Option<
-        CassandraDatacenterPodTemplateSpecSpecEphemeralContainersSecurityContextCapabilities,
-    >,
+    pub capabilities: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersSecurityContextCapabilities>,
     /// Run container in privileged mode.
     /// Processes in privileged containers are essentially equivalent to root on the host.
     /// Defaults to false.
@@ -4235,22 +3427,14 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersSecurityCont
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -4258,11 +3442,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersSecurityCont
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -4276,38 +3456,20 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersSecurityCont
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options: Option<
-        CassandraDatacenterPodTemplateSpecSpecEphemeralContainersSecurityContextSeLinuxOptions,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile: Option<
-        CassandraDatacenterPodTemplateSpecSpecEphemeralContainersSecurityContextSeccompProfile,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options: Option<
-        CassandraDatacenterPodTemplateSpecSpecEphemeralContainersSecurityContextWindowsOptions,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersSecurityContextWindowsOptions>,
 }
 
 /// The capabilities to add/drop when running containers.
@@ -4354,16 +3516,12 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersSecurityCont
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -4380,38 +3538,22 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersSecurityCont
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -4423,47 +3565,29 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersStartupProbe
     pub exec: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersStartupProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersStartupProbeHttpGet>,
+    pub http_get: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersStartupProbeTcpSocket>,
+    pub tcp_socket: Option<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersStartupProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -4474,20 +3598,12 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersStartupProbe
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -4510,8 +3626,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersStartupProbe
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -4525,16 +3641,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersStartupProbe
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<
-            CassandraDatacenterPodTemplateSpecSpecEphemeralContainersStartupProbeHttpGetHttpHeaders,
-        >,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<CassandraDatacenterPodTemplateSpecSpecEphemeralContainersStartupProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -4591,11 +3699,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersVolumeMounts
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -4611,11 +3715,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecEphemeralContainersVolumeMounts
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -4688,11 +3788,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainers {
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Actions that the management system should take in response to container lifecycle events.
     /// Cannot be updated.
@@ -4702,11 +3798,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainers {
     /// Container will be restarted if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersLivenessProbe>,
     /// Name of the container specified as a DNS_LABEL.
     /// Each container in a pod must have a unique name (DNS_LABEL).
@@ -4725,20 +3817,11 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainers {
     /// Container will be removed from service endpoints if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersReadinessProbe>,
     /// Resources resize policy for the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resizePolicy"
-    )]
-    pub resize_policy:
-        Option<Vec<CassandraDatacenterPodTemplateSpecSpecInitContainersResizePolicy>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
+    pub resize_policy: Option<Vec<CassandraDatacenterPodTemplateSpecSpecInitContainersResizePolicy>>,
     /// Compute Resources required by this container.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
@@ -4759,22 +3842,13 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainers {
     /// container. Instead, the next init container starts immediately after this
     /// init container is started, or after any startupProbe has successfully
     /// completed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     /// SecurityContext defines the security options the container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
-    pub security_context:
-        Option<CassandraDatacenterPodTemplateSpecSpecInitContainersSecurityContext>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
+    pub security_context: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersSecurityContext>,
     /// StartupProbe indicates that the Pod has successfully initialized.
     /// If specified, no other probes are executed until this completes successfully.
     /// If this probe fails, the Pod will be restarted, just as if the livenessProbe failed.
@@ -4782,11 +3856,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainers {
     /// when it might take a long time to load data or warm a cache, than during steady-state operation.
     /// This cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersStartupProbe>,
     /// Whether this container should allocate a buffer for stdin in the container runtime. If this
     /// is not set, reads from stdin in the container will always result in EOF.
@@ -4809,11 +3879,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainers {
     /// all containers will be limited to 12kb.
     /// Defaults to /dev/termination-log.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
     /// Indicate how the termination message should be populated. File will use the contents of
     /// terminationMessagePath to populate the container status message on both success and failure.
@@ -4822,42 +3888,24 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainers {
     /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
     /// Defaults to File.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
     /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
     /// volumeDevices is the list of block devices to be used by the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
-    pub volume_devices:
-        Option<Vec<CassandraDatacenterPodTemplateSpecSpecInitContainersVolumeDevices>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
+    pub volume_devices: Option<Vec<CassandraDatacenterPodTemplateSpecSpecInitContainersVolumeDevices>>,
     /// Pod volumes to mount into the container's filesystem.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
-    pub volume_mounts:
-        Option<Vec<CassandraDatacenterPodTemplateSpecSpecInitContainersVolumeMounts>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<CassandraDatacenterPodTemplateSpecSpecInitContainersVolumeMounts>>,
     /// Container's working directory.
     /// If not specified, the container runtime's default will be used, which
     /// might be configured in the container image.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -4886,34 +3934,19 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<CassandraDatacenterPodTemplateSpecSpecInitContainersEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<CassandraDatacenterPodTemplateSpecSpecInitContainersEnvValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<CassandraDatacenterPodTemplateSpecSpecInitContainersEnvValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
@@ -4936,11 +3969,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersEnvValueFromConfi
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -4952,11 +3981,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersEnvValueFromField
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4984,13 +4009,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersEnvValueFromSecre
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
-    pub config_map_ref:
-        Option<CassandraDatacenterPodTemplateSpecSpecInitContainersEnvFromConfigMapRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
@@ -5059,8 +4079,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePostStar
     pub exec: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePostStartExec>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePostStartHttpGet>,
+    pub http_get: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePostStartHttpGet>,
     /// Sleep represents the duration that the container should sleep before being terminated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePostStartSleep>,
@@ -5068,8 +4087,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePostStar
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePostStartTcpSocket>,
+    pub tcp_socket: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePostStartTcpSocket>,
 }
 
 /// Exec specifies the action to take.
@@ -5109,8 +4127,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePostStar
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePostStartHttpGetHttpHeaders
-{
+pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePostStartHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -5155,8 +4172,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePreStop 
     pub exec: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePreStopExec>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePreStopHttpGet>,
+    pub http_get: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePreStopHttpGet>,
     /// Sleep represents the duration that the container should sleep before being terminated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePreStopSleep>,
@@ -5164,8 +4180,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePreStop 
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePreStopTcpSocket>,
+    pub tcp_socket: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePreStopTcpSocket>,
 }
 
 /// Exec specifies the action to take.
@@ -5188,14 +4203,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePreStopH
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePreStopHttpGetHttpHeaders>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<CassandraDatacenterPodTemplateSpecSpecInitContainersLifecyclePreStopHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -5251,11 +4260,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLivenessProbe {
     pub exec: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5265,32 +4270,19 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLivenessProbe {
     pub http_get: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<CassandraDatacenterPodTemplateSpecSpecInitContainersLivenessProbeTcpSocket>,
+    pub tcp_socket: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersLivenessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -5301,20 +4293,12 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLivenessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -5337,8 +4321,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLivenessProbeGrpc
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -5352,14 +4336,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersLivenessProbeHttp
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<CassandraDatacenterPodTemplateSpecSpecInitContainersLivenessProbeHttpGetHttpHeaders>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<CassandraDatacenterPodTemplateSpecSpecInitContainersLivenessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -5433,11 +4411,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersReadinessProbe {
     pub exec: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5447,32 +4421,19 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersReadinessProbe {
     pub http_get: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<CassandraDatacenterPodTemplateSpecSpecInitContainersReadinessProbeTcpSocket>,
+    pub tcp_socket: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersReadinessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -5483,20 +4444,12 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersReadinessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -5519,8 +4472,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersReadinessProbeGrp
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -5534,14 +4487,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersReadinessProbeHtt
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<CassandraDatacenterPodTemplateSpecSpecInitContainersReadinessProbeHttpGetHttpHeaders>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<CassandraDatacenterPodTemplateSpecSpecInitContainersReadinessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -5597,12 +4544,12 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersResizePolicy {
 pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<CassandraDatacenterPodTemplateSpecSpecInitContainersResourcesClaims>>,
@@ -5639,18 +4586,13 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersSecurityContext {
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub capabilities:
-        Option<CassandraDatacenterPodTemplateSpecSpecInitContainersSecurityContextCapabilities>,
+    pub capabilities: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersSecurityContextCapabilities>,
     /// Run container in privileged mode.
     /// Processes in privileged containers are essentially equivalent to root on the host.
     /// Defaults to false.
@@ -5667,22 +4609,14 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersSecurityContext {
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -5690,11 +4624,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -5708,35 +4638,20 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersSecurityContext {
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options:
-        Option<CassandraDatacenterPodTemplateSpecSpecInitContainersSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile:
-        Option<CassandraDatacenterPodTemplateSpecSpecInitContainersSecurityContextSeccompProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options:
-        Option<CassandraDatacenterPodTemplateSpecSpecInitContainersSecurityContextWindowsOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersSecurityContextWindowsOptions>,
 }
 
 /// The capabilities to add/drop when running containers.
@@ -5783,16 +4698,12 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersSecurityContextSe
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -5809,38 +4720,22 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersSecurityContextWi
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -5858,11 +4753,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersStartupProbe {
     pub exec: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5872,32 +4763,19 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersStartupProbe {
     pub http_get: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<CassandraDatacenterPodTemplateSpecSpecInitContainersStartupProbeTcpSocket>,
+    pub tcp_socket: Option<CassandraDatacenterPodTemplateSpecSpecInitContainersStartupProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -5908,20 +4786,12 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersStartupProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -5944,8 +4814,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersStartupProbeGrpc 
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -5959,14 +4829,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersStartupProbeHttpG
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<CassandraDatacenterPodTemplateSpecSpecInitContainersStartupProbeHttpGetHttpHeaders>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<CassandraDatacenterPodTemplateSpecSpecInitContainersStartupProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -6023,11 +4887,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -6043,22 +4903,18 @@ pub struct CassandraDatacenterPodTemplateSpecSpecInitContainersVolumeMounts {
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
 /// Specifies the OS of the containers in the pod.
 /// Some pod and container fields are restricted if this is set.
-///
-///
+/// 
+/// 
 /// If the OS field is set to linux, the following fields must be unset:
 /// -securityContext.windowsOptions
-///
-///
+/// 
+/// 
 /// If the OS field is set to windows, following fields must be unset:
 /// - spec.hostPID
 /// - spec.hostIPC
@@ -6116,31 +4972,23 @@ pub struct CassandraDatacenterPodTemplateSpecSpecResourceClaims {
 pub struct CassandraDatacenterPodTemplateSpecSpecResourceClaimsSource {
     /// ResourceClaimName is the name of a ResourceClaim object in the same
     /// namespace as this pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceClaimName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaimName")]
     pub resource_claim_name: Option<String>,
     /// ResourceClaimTemplateName is the name of a ResourceClaimTemplate
     /// object in the same namespace as this pod.
-    ///
-    ///
+    /// 
+    /// 
     /// The template will be used to create a new ResourceClaim, which will
     /// be bound to this pod. When this pod is deleted, the ResourceClaim
     /// will also be deleted. The pod name and resource name, along with a
     /// generated component, will be used to form a unique name for the
     /// ResourceClaim, which will be recorded in pod.status.resourceClaimStatuses.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable and no changes will be made to the
     /// corresponding ResourceClaim by the control plane after creating the
     /// ResourceClaim.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceClaimTemplateName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaimTemplateName")]
     pub resource_claim_template_name: Option<String>,
 }
 
@@ -6159,13 +5007,13 @@ pub struct CassandraDatacenterPodTemplateSpecSpecSecurityContext {
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
-    ///
-    ///
+    /// 
+    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    ///
-    ///
+    /// 
+    /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
@@ -6177,11 +5025,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecSecurityContext {
     /// and emptydir.
     /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
@@ -6189,11 +5033,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecSecurityContext {
     /// PodSecurityContext, the value specified in SecurityContext takes precedence
     /// for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -6201,11 +5041,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in SecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -6221,22 +5057,12 @@ pub struct CassandraDatacenterPodTemplateSpecSpecSecurityContext {
     /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
     /// takes precedence for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options:
-        Option<CassandraDatacenterPodTemplateSpecSpecSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<CassandraDatacenterPodTemplateSpecSpecSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by the containers in this pod.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile:
-        Option<CassandraDatacenterPodTemplateSpecSpecSecurityContextSeccompProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<CassandraDatacenterPodTemplateSpecSpecSecurityContextSeccompProfile>,
     /// A list of groups applied to the first process run in each container, in addition
     /// to the container's primary GID, the fsGroup (if specified), and group memberships
     /// defined in the container image for the uid of the container process. If unspecified,
@@ -6244,11 +5070,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecSecurityContext {
     /// defined in the container image for the uid of the container process are still effective,
     /// even if they are not included in this list.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
     /// sysctls (by the container runtime) might fail to launch.
@@ -6259,13 +5081,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecSecurityContext {
     /// If unspecified, the options within a container's SecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options:
-        Option<CassandraDatacenterPodTemplateSpecSpecSecurityContextWindowsOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<CassandraDatacenterPodTemplateSpecSpecSecurityContextWindowsOptions>,
 }
 
 /// The SELinux context to be applied to all containers.
@@ -6298,16 +5115,12 @@ pub struct CassandraDatacenterPodTemplateSpecSpecSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -6333,38 +5146,22 @@ pub struct CassandraDatacenterPodTemplateSpecSpecSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -6390,11 +5187,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -6408,13 +5201,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecTopologySpreadConstraints {
     /// LabelSelector is used to find matching pods.
     /// Pods that match this label selector are counted to determine the number of pods
     /// in their corresponding topology domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector:
-        Option<CassandraDatacenterPodTemplateSpecSpecTopologySpreadConstraintsLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<CassandraDatacenterPodTemplateSpecSpecTopologySpreadConstraintsLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select the pods over which
     /// spreading will be calculated. The keys are used to lookup values from the
     /// incoming pod labels, those key-value labels are ANDed with labelSelector
@@ -6423,14 +5211,10 @@ pub struct CassandraDatacenterPodTemplateSpecSpecTopologySpreadConstraints {
     /// MatchLabelKeys cannot be set when LabelSelector isn't set.
     /// Keys that don't exist in the incoming pod labels will
     /// be ignored. A null or empty list means only match against labelSelector.
-    ///
-    ///
+    /// 
+    /// 
     /// This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabelKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MaxSkew describes the degree to which pods may be unevenly distributed.
     /// When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference
@@ -6461,8 +5245,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecTopologySpreadConstraints {
     /// If value is nil, the constraint behaves as if MinDomains is equal to 1.
     /// Valid values are integers greater than 0.
     /// When value is not nil, WhenUnsatisfiable must be DoNotSchedule.
-    ///
-    ///
+    /// 
+    /// 
     /// For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same
     /// labelSelector spread as 2/2/2:
     /// | zone1 | zone2 | zone3 |
@@ -6471,43 +5255,31 @@ pub struct CassandraDatacenterPodTemplateSpecSpecTopologySpreadConstraints {
     /// In this situation, new pod with the same labelSelector cannot be scheduled,
     /// because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,
     /// it will violate MaxSkew.
-    ///
-    ///
+    /// 
+    /// 
     /// This is a beta field and requires the MinDomainsInPodTopologySpread feature gate to be enabled (enabled by default).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
     /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector
     /// when calculating pod topology spread skew. Options are:
     /// - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.
     /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
-    ///
-    ///
+    /// 
+    /// 
     /// If this value is nil, the behavior is equivalent to the Honor policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinityPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
     /// NodeTaintsPolicy indicates how we will treat node taints when calculating
     /// pod topology spread skew. Options are:
     /// - Honor: nodes without taints, along with tainted nodes for which the incoming pod
     /// has a toleration, are included.
     /// - Ignore: node taints are ignored. All nodes are included.
-    ///
-    ///
+    /// 
+    /// 
     /// If this value is nil, the behavior is equivalent to the Ignore policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeTaintsPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
     /// TopologyKey is the key of node labels. Nodes that have a label with this key
     /// and identical values are considered to be in the same topology.
@@ -6561,8 +5333,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecTopologySpreadConstraintsLabelS
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterPodTemplateSpecSpecTopologySpreadConstraintsLabelSelectorMatchExpressions
-{
+pub struct CassandraDatacenterPodTemplateSpecSpecTopologySpreadConstraintsLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -6582,13 +5353,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumes {
     /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsElasticBlockStore"
-    )]
-    pub aws_elastic_block_store:
-        Option<CassandraDatacenterPodTemplateSpecSpecVolumesAwsElasticBlockStore>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
+    pub aws_elastic_block_store: Option<CassandraDatacenterPodTemplateSpecSpecVolumesAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
     pub azure_disk: Option<CassandraDatacenterPodTemplateSpecSpecVolumesAzureDisk>,
@@ -6609,11 +5375,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<CassandraDatacenterPodTemplateSpecSpecVolumesCsi>,
     /// downwardAPI represents downward API about the pod that should populate this volume
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<CassandraDatacenterPodTemplateSpecSpecVolumesDownwardApi>,
     /// emptyDir represents a temporary directory that shares a pod's lifetime.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
@@ -6622,8 +5384,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumes {
     /// ephemeral represents a volume that is handled by a cluster storage driver.
     /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
     /// and deleted when the pod is removed.
-    ///
-    ///
+    /// 
+    /// 
     /// Use this if:
     /// a) the volume is only needed while the pod runs,
     /// b) features of normal volumes like restoring from snapshot or capacity
@@ -6633,18 +5395,18 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumes {
     ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
     ///    information on the connection between this volume type
     ///    and PersistentVolumeClaim).
-    ///
-    ///
+    /// 
+    /// 
     /// Use PersistentVolumeClaim or one of the vendor-specific
     /// APIs for volumes that persist for longer than the lifecycle
     /// of an individual pod.
-    ///
-    ///
+    /// 
+    /// 
     /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
     /// be used that way - see the documentation of the driver for
     /// more information.
-    ///
-    ///
+    /// 
+    /// 
     /// A pod can use both types of ephemeral volumes and
     /// persistent volumes at the same time.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6654,11 +5416,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumes {
     pub fc: Option<CassandraDatacenterPodTemplateSpecSpecVolumesFc>,
     /// flexVolume represents a generic volume resource that is
     /// provisioned/attached using an exec based plugin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flexVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<CassandraDatacenterPodTemplateSpecSpecVolumesFlexVolume>,
     /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6666,11 +5424,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumes {
     /// gcePersistentDisk represents a GCE Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gcePersistentDisk"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
     pub gce_persistent_disk: Option<CassandraDatacenterPodTemplateSpecSpecVolumesGcePersistentDisk>,
     /// gitRepo represents a git repository at a particular revision.
     /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
@@ -6708,27 +5462,13 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumes {
     /// persistentVolumeClaimVolumeSource represents a reference to a
     /// PersistentVolumeClaim in the same namespace.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
-    pub persistent_volume_claim:
-        Option<CassandraDatacenterPodTemplateSpecSpecVolumesPersistentVolumeClaim>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<CassandraDatacenterPodTemplateSpecSpecVolumesPersistentVolumeClaim>,
     /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "photonPersistentDisk"
-    )]
-    pub photon_persistent_disk:
-        Option<CassandraDatacenterPodTemplateSpecSpecVolumesPhotonPersistentDisk>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
+    pub photon_persistent_disk: Option<CassandraDatacenterPodTemplateSpecSpecVolumesPhotonPersistentDisk>,
     /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portworxVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
     pub portworx_volume: Option<CassandraDatacenterPodTemplateSpecSpecVolumesPortworxVolume>,
     /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6751,11 +5491,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storageos: Option<CassandraDatacenterPodTemplateSpecSpecVolumesStorageos>,
     /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vsphereVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
     pub vsphere_volume: Option<CassandraDatacenterPodTemplateSpecSpecVolumesVsphereVolume>,
 }
 
@@ -6791,11 +5527,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesAwsElasticBlockStore {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecVolumesAzureDisk {
     /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachingMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
     pub caching_mode: Option<String>,
     /// diskName is the Name of the data disk in the blob storage
     #[serde(rename = "diskName")]
@@ -6848,11 +5580,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesCephfs {
     pub read_only: Option<bool>,
     /// secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
     pub secret_file: Option<String>,
     /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
@@ -6921,11 +5649,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesConfigMap {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items if unspecified, each key-value pair in the Data field of the referenced
     /// ConfigMap will be projected into the volume as a file whose name is the
@@ -6982,24 +5706,15 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesCsi {
     /// NodePublishVolume and NodeUnpublishVolume calls.
     /// This field is optional, and  may be empty if no secret is required. If the
     /// secret object contains more than one secret, all secret references are passed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePublishSecretRef"
-    )]
-    pub node_publish_secret_ref:
-        Option<CassandraDatacenterPodTemplateSpecSpecVolumesCsiNodePublishSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
+    pub node_publish_secret_ref: Option<CassandraDatacenterPodTemplateSpecSpecVolumesCsiNodePublishSecretRef>,
     /// readOnly specifies a read-only configuration for the volume.
     /// Defaults to false (read/write).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// volumeAttributes stores driver-specific properties that are passed to the CSI
     /// driver. Consult your driver's documentation for supported values.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
@@ -7028,11 +5743,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesDownwardApi {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// Items is a list of downward API volume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7057,24 +5768,15 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesDownwardApiItems {
     pub path: String,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<CassandraDatacenterPodTemplateSpecSpecVolumesDownwardApiItemsResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<CassandraDatacenterPodTemplateSpecSpecVolumesDownwardApiItemsResourceFieldRef>,
 }
 
 /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecVolumesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -7086,11 +5788,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesDownwardApiItemsFieldRef
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecVolumesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7122,8 +5820,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesEmptyDir {
 /// ephemeral represents a volume that is handled by a cluster storage driver.
 /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
 /// and deleted when the pod is removed.
-///
-///
+/// 
+/// 
 /// Use this if:
 /// a) the volume is only needed while the pod runs,
 /// b) features of normal volumes like restoring from snapshot or capacity
@@ -7133,18 +5831,18 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesEmptyDir {
 ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
 ///    information on the connection between this volume type
 ///    and PersistentVolumeClaim).
-///
-///
+/// 
+/// 
 /// Use PersistentVolumeClaim or one of the vendor-specific
 /// APIs for volumes that persist for longer than the lifecycle
 /// of an individual pod.
-///
-///
+/// 
+/// 
 /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
 /// be used that way - see the documentation of the driver for
 /// more information.
-///
-///
+/// 
+/// 
 /// A pod can use both types of ephemeral volumes and
 /// persistent volumes at the same time.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -7156,8 +5854,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesEphemeral {
     /// `<volume name>` is the name from the `PodSpec.Volumes` array
     /// entry. Pod validation will reject the pod if the concatenated name
     /// is not valid for a PVC (for example, too long).
-    ///
-    ///
+    /// 
+    /// 
     /// An existing PVC with that name that is not owned by the pod
     /// will *not* be used for the pod to avoid using an unrelated
     /// volume by mistake. Starting the pod is then blocked until
@@ -7166,20 +5864,15 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesEphemeral {
     /// owner reference to the pod once the pod exists. Normally
     /// this should not be necessary, but it may be useful when
     /// manually reconstructing a broken cluster.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is read-only and no changes will be made by Kubernetes
     /// to the PVC after it has been created.
-    ///
-    ///
+    /// 
+    /// 
     /// Required, must not be nil.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimTemplate"
-    )]
-    pub volume_claim_template:
-        Option<CassandraDatacenterPodTemplateSpecSpecVolumesEphemeralVolumeClaimTemplate>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
+    pub volume_claim_template: Option<CassandraDatacenterPodTemplateSpecSpecVolumesEphemeralVolumeClaimTemplate>,
 }
 
 /// Will be used to create a stand-alone PVC to provision the volume.
@@ -7189,8 +5882,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesEphemeral {
 /// `<volume name>` is the name from the `PodSpec.Volumes` array
 /// entry. Pod validation will reject the pod if the concatenated name
 /// is not valid for a PVC (for example, too long).
-///
-///
+/// 
+/// 
 /// An existing PVC with that name that is not owned by the pod
 /// will *not* be used for the pod to avoid using an unrelated
 /// volume by mistake. Starting the pod is then blocked until
@@ -7199,12 +5892,12 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesEphemeral {
 /// owner reference to the pod once the pod exists. Normally
 /// this should not be necessary, but it may be useful when
 /// manually reconstructing a broken cluster.
-///
-///
+/// 
+/// 
 /// This field is read-only and no changes will be made by Kubernetes
 /// to the PVC after it has been created.
-///
-///
+/// 
+/// 
 /// Required, must not be nil.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecVolumesEphemeralVolumeClaimTemplate {
@@ -7212,8 +5905,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesEphemeralVolumeClaimTemp
     /// when creating it. No other fields are allowed and will be rejected during
     /// validation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub metadata:
-        Option<CassandraDatacenterPodTemplateSpecSpecVolumesEphemeralVolumeClaimTemplateMetadata>,
+    pub metadata: Option<CassandraDatacenterPodTemplateSpecSpecVolumesEphemeralVolumeClaimTemplateMetadata>,
     /// The specification for the PersistentVolumeClaim. The entire content is
     /// copied unchanged into the PVC that gets created from this
     /// template. The same fields as in a PersistentVolumeClaim
@@ -7246,11 +5938,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesEphemeralVolumeClaimTemp
 pub struct CassandraDatacenterPodTemplateSpecSpecVolumesEphemeralVolumeClaimTemplateSpec {
     /// accessModes contains the desired access modes the volume should have.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// dataSource field can be used to specify either:
     /// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
@@ -7260,14 +5948,8 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesEphemeralVolumeClaimTemp
     /// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
     /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
     /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSource"
-    )]
-    pub data_source: Option<
-        CassandraDatacenterPodTemplateSpecSpecVolumesEphemeralVolumeClaimTemplateSpecDataSource,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
+    pub data_source: Option<CassandraDatacenterPodTemplateSpecSpecVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
     /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
     /// volume is desired. This may be any object from a non-empty API group (non
     /// core object) or a PersistentVolumeClaim object.
@@ -7291,35 +5973,21 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesEphemeralVolumeClaimTemp
     ///   in any namespaces.
     /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
     /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSourceRef"
-    )]
-    pub data_source_ref: Option<
-        CassandraDatacenterPodTemplateSpecSpecVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
+    pub data_source_ref: Option<CassandraDatacenterPodTemplateSpecSpecVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
     /// resources represents the minimum resources the volume should have.
     /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
     /// that are lower than previous value but must still be higher than capacity recorded in the
     /// status field of the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<
-        CassandraDatacenterPodTemplateSpecSpecVolumesEphemeralVolumeClaimTemplateSpecResources,
-    >,
+    pub resources: Option<CassandraDatacenterPodTemplateSpecSpecVolumesEphemeralVolumeClaimTemplateSpecResources>,
     /// selector is a label query over volumes to consider for binding.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub selector: Option<
-        CassandraDatacenterPodTemplateSpecSpecVolumesEphemeralVolumeClaimTemplateSpecSelector,
-    >,
+    pub selector: Option<CassandraDatacenterPodTemplateSpecSpecVolumesEphemeralVolumeClaimTemplateSpecSelector>,
     /// storageClassName is the name of the StorageClass required by the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
     /// If specified, the CSI driver will create or update the volume with the attributes defined
@@ -7333,26 +6001,14 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesEphemeralVolumeClaimTemp
     /// exists.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
     /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributesClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
     /// Value of Filesystem is implied when not included in claim spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     /// volumeName is the binding reference to the PersistentVolume backing this claim.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -7401,8 +6057,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesEphemeralVolumeClaimTemp
 /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
 /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterPodTemplateSpecSpecVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef
-{
+pub struct CassandraDatacenterPodTemplateSpecSpecVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef {
     /// APIGroup is the group for the resource being referenced.
     /// If APIGroup is not specified, the specified Kind must be in the core API group.
     /// For any other third-party types, APIGroup is required.
@@ -7454,8 +6109,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesEphemeralVolumeClaimTemp
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterPodTemplateSpecSpecVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions
-{
+pub struct CassandraDatacenterPodTemplateSpecSpecVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -7486,11 +6140,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesFc {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// targetWWNs is Optional: FC target worldwide names (WWNs)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetWWNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
     pub target_ww_ns: Option<Vec<String>>,
     /// wwids Optional: FC volume world wide identifiers (wwids)
     /// Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
@@ -7544,18 +6194,10 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesFlexVolumeSecretRef {
 pub struct CassandraDatacenterPodTemplateSpecSpecVolumesFlocker {
     /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
     /// should be considered as deprecated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
     pub dataset_name: Option<String>,
     /// datasetUUID is the UUID of the dataset. This is unique identifier of a Flocker dataset
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetUUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
     pub dataset_uuid: Option<String>,
 }
 
@@ -7652,18 +6294,10 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesHostPath {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecVolumesIscsi {
     /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthDiscovery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
     /// chapAuthSession defines whether support iSCSI Session CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthSession"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
     pub chap_auth_session: Option<bool>,
     /// fsType is the filesystem type of the volume that you want to mount.
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
@@ -7675,21 +6309,13 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesIscsi {
     /// initiatorName is the custom iSCSI Initiator Name.
     /// If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface
     /// <target portal>:<volume name> will be created for the connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initiatorName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
     pub initiator_name: Option<String>,
     /// iqn is the target iSCSI Qualified Name.
     pub iqn: String,
     /// iscsiInterface is the interface Name that uses an iSCSI transport.
     /// Defaults to 'default' (tcp).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "iscsiInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
     pub iscsi_interface: Option<String>,
     /// lun represents iSCSI Target Lun number.
     pub lun: i32,
@@ -7791,11 +6417,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesProjected {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// sources is the list of volume projections
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7807,62 +6429,47 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesProjected {
 pub struct CassandraDatacenterPodTemplateSpecSpecVolumesProjectedSources {
     /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
     /// of ClusterTrustBundle objects in an auto-updating file.
-    ///
-    ///
+    /// 
+    /// 
     /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// ClusterTrustBundle objects can either be selected by name, or by the
     /// combination of signer name and a label selector.
-    ///
-    ///
+    /// 
+    /// 
     /// Kubelet performs aggressive normalization of the PEM contents written
     /// into the pod filesystem.  Esoteric PEM features such as inter-block
     /// comments and block headers are stripped.  Certificates are deduplicated.
     /// The ordering of certificates within the file is arbitrary, and Kubelet
     /// may change the order over time.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterTrustBundle"
-    )]
-    pub cluster_trust_bundle:
-        Option<CassandraDatacenterPodTemplateSpecSpecVolumesProjectedSourcesClusterTrustBundle>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<CassandraDatacenterPodTemplateSpecSpecVolumesProjectedSourcesClusterTrustBundle>,
     /// configMap information about the configMap data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<CassandraDatacenterPodTemplateSpecSpecVolumesProjectedSourcesConfigMap>,
     /// downwardAPI information about the downwardAPI data to project
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
-    pub downward_api:
-        Option<CassandraDatacenterPodTemplateSpecSpecVolumesProjectedSourcesDownwardApi>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
+    pub downward_api: Option<CassandraDatacenterPodTemplateSpecSpecVolumesProjectedSourcesDownwardApi>,
     /// secret information about the secret data to project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<CassandraDatacenterPodTemplateSpecSpecVolumesProjectedSourcesSecret>,
     /// serviceAccountToken is information about the serviceAccountToken data to project
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountToken"
-    )]
-    pub service_account_token:
-        Option<CassandraDatacenterPodTemplateSpecSpecVolumesProjectedSourcesServiceAccountToken>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
+    pub service_account_token: Option<CassandraDatacenterPodTemplateSpecSpecVolumesProjectedSourcesServiceAccountToken>,
 }
 
 /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
 /// of ClusterTrustBundle objects in an auto-updating file.
-///
-///
+/// 
+/// 
 /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-///
-///
+/// 
+/// 
 /// ClusterTrustBundle objects can either be selected by name, or by the
 /// combination of signer name and a label selector.
-///
-///
+/// 
+/// 
 /// Kubelet performs aggressive normalization of the PEM contents written
 /// into the pod filesystem.  Esoteric PEM features such as inter-block
 /// comments and block headers are stripped.  Certificates are deduplicated.
@@ -7915,8 +6522,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesProjectedSourcesClusterT
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterPodTemplateSpecSpecVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions
-{
+pub struct CassandraDatacenterPodTemplateSpecSpecVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -7941,8 +6547,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesProjectedSourcesConfigMa
     /// the volume setup will error unless it is marked optional. Paths must be
     /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<CassandraDatacenterPodTemplateSpecSpecVolumesProjectedSourcesConfigMapItems>>,
+    pub items: Option<Vec<CassandraDatacenterPodTemplateSpecSpecVolumesProjectedSourcesConfigMapItems>>,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -7978,8 +6583,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesProjectedSourcesConfigMa
 pub struct CassandraDatacenterPodTemplateSpecSpecVolumesProjectedSourcesDownwardApi {
     /// Items is a list of DownwardAPIVolume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<CassandraDatacenterPodTemplateSpecSpecVolumesProjectedSourcesDownwardApiItems>>,
+    pub items: Option<Vec<CassandraDatacenterPodTemplateSpecSpecVolumesProjectedSourcesDownwardApiItems>>,
 }
 
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
@@ -8008,11 +6612,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesProjectedSourcesDownward
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterPodTemplateSpecSpecVolumesProjectedSourcesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -8022,14 +6622,9 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesProjectedSourcesDownward
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterPodTemplateSpecSpecVolumesProjectedSourcesDownwardApiItemsResourceFieldRef
-{
+pub struct CassandraDatacenterPodTemplateSpecSpecVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8049,8 +6644,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesProjectedSourcesSecret {
     /// the volume setup will error unless it is marked optional. Paths must be
     /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<CassandraDatacenterPodTemplateSpecSpecVolumesProjectedSourcesSecretItems>>,
+    pub items: Option<Vec<CassandraDatacenterPodTemplateSpecSpecVolumesProjectedSourcesSecretItems>>,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -8096,11 +6690,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesProjectedSourcesServiceA
     /// start trying to rotate the token if the token is older than 80 percent of
     /// its time to live or if the token is older than 24 hours.Defaults to 1 hour
     /// and must be at least 10 minutes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
     /// path is the path relative to the mount point of the file to project the
     /// token into.
@@ -8204,11 +6794,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesScaleIo {
     /// gateway is the host address of the ScaleIO API Gateway.
     pub gateway: String,
     /// protectionDomain is the name of the ScaleIO Protection Domain for the configured storage.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protectionDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
     pub protection_domain: Option<String>,
     /// readOnly Defaults to false (read/write). ReadOnly here will force
     /// the ReadOnly setting in VolumeMounts.
@@ -8219,36 +6805,20 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesScaleIo {
     #[serde(rename = "secretRef")]
     pub secret_ref: CassandraDatacenterPodTemplateSpecSpecVolumesScaleIoSecretRef,
     /// sslEnabled Flag enable/disable SSL communication with Gateway, default false
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
     /// storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned.
     /// Default is ThinProvisioned.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
     pub storage_mode: Option<String>,
     /// storagePool is the ScaleIO Storage Pool associated with the protection domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
     pub storage_pool: Option<String>,
     /// system is the name of the storage system as configured in ScaleIO.
     pub system: String,
     /// volumeName is the name of a volume already created in the ScaleIO system
     /// that is associated with this volume source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -8274,11 +6844,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesSecret {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items If unspecified, each key-value pair in the Data field of the referenced
     /// Secret will be projected into the volume as a file whose name is the
@@ -8294,11 +6860,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesSecret {
     pub optional: Option<bool>,
     /// secretName is the name of the secret in the pod's namespace to use.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -8340,11 +6902,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesStorageos {
     pub secret_ref: Option<CassandraDatacenterPodTemplateSpecSpecVolumesStorageosSecretRef>,
     /// volumeName is the human-readable name of the StorageOS volume.  Volume
     /// names are only unique within a namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
     /// volumeNamespace specifies the scope of the volume within StorageOS.  If no
     /// namespace is specified then the Pod's namespace will be used.  This allows the
@@ -8352,11 +6910,7 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesStorageos {
     /// Set VolumeName to any name to override the default behaviour.
     /// Set to "default" if you are not using namespaces within StorageOS.
     /// Namespaces that do not pre-exist within StorageOS will be created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
     pub volume_namespace: Option<String>,
 }
 
@@ -8380,18 +6934,10 @@ pub struct CassandraDatacenterPodTemplateSpecSpecVolumesVsphereVolume {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// storagePolicyID is the storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
     pub storage_policy_id: Option<String>,
     /// storagePolicyName is the storage Policy Based Management (SPBM) profile name.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
     pub storage_policy_name: Option<String>,
     /// volumePath is the path that identifies vSphere volume vmdk
     #[serde(rename = "volumePath")]
@@ -8408,11 +6954,7 @@ pub struct CassandraDatacenterRacks {
     /// The rack name
     pub name: String,
     /// NodeAffinityLabels to pin the rack, using node affinity
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinityLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityLabels")]
     pub node_affinity_labels: Option<BTreeMap<String, String>>,
     /// Deprecated. Use nodeAffinityLabels instead. DeprecatedZone name to pin the rack, using node affinity
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8424,25 +6966,13 @@ pub struct CassandraDatacenterRacks {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterRacksAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<CassandraDatacenterRacksAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<CassandraDatacenterRacksAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<CassandraDatacenterRacksAffinityPodAntiAffinity>,
 }
 
@@ -8493,8 +7023,7 @@ pub struct CassandraDatacenterRacksAffinityNodeAffinityPreferredDuringScheduling
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterRacksAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct CassandraDatacenterRacksAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -8512,8 +7041,7 @@ pub struct CassandraDatacenterRacksAffinityNodeAffinityPreferredDuringScheduling
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterRacksAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct CassandraDatacenterRacksAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -8556,8 +7084,7 @@ pub struct CassandraDatacenterRacksAffinityNodeAffinityRequiredDuringSchedulingI
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterRacksAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct CassandraDatacenterRacksAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -8575,8 +7102,7 @@ pub struct CassandraDatacenterRacksAffinityNodeAffinityRequiredDuringSchedulingI
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterRacksAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct CassandraDatacenterRacksAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -8695,8 +7221,7 @@ pub struct CassandraDatacenterRacksAffinityPodAffinityPreferredDuringSchedulingI
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterRacksAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct CassandraDatacenterRacksAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8730,8 +7255,7 @@ pub struct CassandraDatacenterRacksAffinityPodAffinityPreferredDuringSchedulingI
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterRacksAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct CassandraDatacenterRacksAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8818,8 +7342,7 @@ pub struct CassandraDatacenterRacksAffinityPodAffinityRequiredDuringSchedulingIg
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterRacksAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct CassandraDatacenterRacksAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8853,8 +7376,7 @@ pub struct CassandraDatacenterRacksAffinityPodAffinityRequiredDuringSchedulingIg
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterRacksAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct CassandraDatacenterRacksAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8972,8 +7494,7 @@ pub struct CassandraDatacenterRacksAffinityPodAntiAffinityPreferredDuringSchedul
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterRacksAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct CassandraDatacenterRacksAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -9007,8 +7528,7 @@ pub struct CassandraDatacenterRacksAffinityPodAntiAffinityPreferredDuringSchedul
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterRacksAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct CassandraDatacenterRacksAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -9095,8 +7615,7 @@ pub struct CassandraDatacenterRacksAffinityPodAntiAffinityRequiredDuringScheduli
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterRacksAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct CassandraDatacenterRacksAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -9130,8 +7649,7 @@ pub struct CassandraDatacenterRacksAffinityPodAntiAffinityRequiredDuringScheduli
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterRacksAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct CassandraDatacenterRacksAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -9150,12 +7668,12 @@ pub struct CassandraDatacenterRacksAffinityPodAntiAffinityRequiredDuringScheduli
 pub struct CassandraDatacenterResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<CassandraDatacenterResourcesClaims>>,
@@ -9194,21 +7712,12 @@ pub enum CassandraDatacenterServerType {
 /// StorageConfig describes the persistent storage request of each server node
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterStorageConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalVolumes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalVolumes")]
     pub additional_volumes: Option<Vec<CassandraDatacenterStorageConfigAdditionalVolumes>>,
     /// PersistentVolumeClaimSpec describes the common attributes of storage devices
     /// and allows a Source for provider-specific attributes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cassandraDataVolumeClaimSpec"
-    )]
-    pub cassandra_data_volume_claim_spec:
-        Option<CassandraDatacenterStorageConfigCassandraDataVolumeClaimSpec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cassandraDataVolumeClaimSpec")]
+    pub cassandra_data_volume_claim_spec: Option<CassandraDatacenterStorageConfigCassandraDataVolumeClaimSpec>,
 }
 
 /// AdditionalVolumes defines additional storage configurations
@@ -9223,11 +7732,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pvcSpec")]
     pub pvc_spec: Option<CassandraDatacenterStorageConfigAdditionalVolumesPvcSpec>,
     /// VolumeSource to mount the volume from (such as ConfigMap / Secret). This or PVCSpec is required.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSource")]
     pub volume_source: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSource>,
 }
 
@@ -9236,11 +7741,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumes {
 pub struct CassandraDatacenterStorageConfigAdditionalVolumesPvcSpec {
     /// accessModes contains the desired access modes the volume should have.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// dataSource field can be used to specify either:
     /// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
@@ -9250,11 +7751,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesPvcSpec {
     /// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
     /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
     /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
     pub data_source: Option<CassandraDatacenterStorageConfigAdditionalVolumesPvcSpecDataSource>,
     /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
     /// volume is desired. This may be any object from a non-empty API group (non
@@ -9279,13 +7776,8 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesPvcSpec {
     ///   in any namespaces.
     /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
     /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSourceRef"
-    )]
-    pub data_source_ref:
-        Option<CassandraDatacenterStorageConfigAdditionalVolumesPvcSpecDataSourceRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
+    pub data_source_ref: Option<CassandraDatacenterStorageConfigAdditionalVolumesPvcSpecDataSourceRef>,
     /// resources represents the minimum resources the volume should have.
     /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
     /// that are lower than previous value but must still be higher than capacity recorded in the
@@ -9298,11 +7790,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesPvcSpec {
     pub selector: Option<CassandraDatacenterStorageConfigAdditionalVolumesPvcSpecSelector>,
     /// storageClassName is the name of the StorageClass required by the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
     /// If specified, the CSI driver will create or update the volume with the attributes defined
@@ -9316,26 +7804,14 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesPvcSpec {
     /// exists.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
     /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributesClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
     /// Value of Filesystem is implied when not included in claim spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     /// volumeName is the binding reference to the PersistentVolume backing this claim.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -9424,22 +7900,12 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesPvcSpecResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterStorageConfigAdditionalVolumesPvcSpecSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions: Option<
-        Vec<CassandraDatacenterStorageConfigAdditionalVolumesPvcSpecSelectorMatchExpressions>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CassandraDatacenterStorageConfigAdditionalVolumesPvcSpecSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -9466,13 +7932,8 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSource {
     /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsElasticBlockStore"
-    )]
-    pub aws_elastic_block_store:
-        Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceAwsElasticBlockStore>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
+    pub aws_elastic_block_store: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
     pub azure_disk: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceAzureDisk>,
@@ -9493,13 +7954,8 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSource {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceCsi>,
     /// downwardAPI represents downward API about the pod that should populate this volume
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
-    pub downward_api:
-        Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceDownwardApi>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
+    pub downward_api: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceDownwardApi>,
     /// emptyDir represents a temporary directory that shares a pod's lifetime.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
@@ -9507,8 +7963,8 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSource {
     /// ephemeral represents a volume that is handled by a cluster storage driver.
     /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
     /// and deleted when the pod is removed.
-    ///
-    ///
+    /// 
+    /// 
     /// Use this if:
     /// a) the volume is only needed while the pod runs,
     /// b) features of normal volumes like restoring from snapshot or capacity
@@ -9518,18 +7974,18 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSource {
     ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
     ///    information on the connection between this volume type
     ///    and PersistentVolumeClaim).
-    ///
-    ///
+    /// 
+    /// 
     /// Use PersistentVolumeClaim or one of the vendor-specific
     /// APIs for volumes that persist for longer than the lifecycle
     /// of an individual pod.
-    ///
-    ///
+    /// 
+    /// 
     /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
     /// be used that way - see the documentation of the driver for
     /// more information.
-    ///
-    ///
+    /// 
+    /// 
     /// A pod can use both types of ephemeral volumes and
     /// persistent volumes at the same time.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9539,26 +7995,16 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSource {
     pub fc: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceFc>,
     /// flexVolume represents a generic volume resource that is
     /// provisioned/attached using an exec based plugin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flexVolume"
-    )]
-    pub flex_volume:
-        Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceFlexVolume>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
+    pub flex_volume: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceFlexVolume>,
     /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flocker: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceFlocker>,
     /// gcePersistentDisk represents a GCE Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gcePersistentDisk"
-    )]
-    pub gce_persistent_disk:
-        Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceGcePersistentDisk>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
+    pub gce_persistent_disk: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceGcePersistentDisk>,
     /// gitRepo represents a git repository at a particular revision.
     /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
     /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
@@ -9591,29 +8037,14 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSource {
     /// persistentVolumeClaimVolumeSource represents a reference to a
     /// PersistentVolumeClaim in the same namespace.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
-    pub persistent_volume_claim:
-        Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourcePersistentVolumeClaim>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourcePersistentVolumeClaim>,
     /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "photonPersistentDisk"
-    )]
-    pub photon_persistent_disk:
-        Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourcePhotonPersistentDisk>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
+    pub photon_persistent_disk: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourcePhotonPersistentDisk>,
     /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portworxVolume"
-    )]
-    pub portworx_volume:
-        Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourcePortworxVolume>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
+    pub portworx_volume: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourcePortworxVolume>,
     /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projected: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceProjected>,
@@ -9635,13 +8066,8 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSource {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storageos: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceStorageos>,
     /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vsphereVolume"
-    )]
-    pub vsphere_volume:
-        Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceVsphereVolume>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
+    pub vsphere_volume: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceVsphereVolume>,
 }
 
 /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
@@ -9676,11 +8102,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceAwsElast
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceAzureDisk {
     /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachingMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
     pub caching_mode: Option<String>,
     /// diskName is the Name of the data disk in the blob storage
     #[serde(rename = "diskName")]
@@ -9733,17 +8155,12 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceCephfs {
     pub read_only: Option<bool>,
     /// secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
     pub secret_file: Option<String>,
     /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceCephfsSecretRef>,
+    pub secret_ref: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceCephfsSecretRef>,
     /// user is optional: User is the rados user name, default is admin
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9779,8 +8196,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceCinder {
     /// secretRef is optional: points to a secret object containing parameters used to connect
     /// to OpenStack.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceCinderSecretRef>,
+    pub secret_ref: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceCinderSecretRef>,
     /// volumeID used to identify the volume in cinder.
     /// More info: https://examples.k8s.io/mysql-cinder-pd/README.md
     #[serde(rename = "volumeID")]
@@ -9808,11 +8224,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceConfigMa
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items if unspecified, each key-value pair in the Data field of the referenced
     /// ConfigMap will be projected into the volume as a file whose name is the
@@ -9822,8 +8234,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceConfigMa
     /// the volume setup will error unless it is marked optional. Paths must be
     /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceConfigMapItems>>,
+    pub items: Option<Vec<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceConfigMapItems>>,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -9870,25 +8281,15 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceCsi {
     /// NodePublishVolume and NodeUnpublishVolume calls.
     /// This field is optional, and  may be empty if no secret is required. If the
     /// secret object contains more than one secret, all secret references are passed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePublishSecretRef"
-    )]
-    pub node_publish_secret_ref: Option<
-        CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceCsiNodePublishSecretRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
+    pub node_publish_secret_ref: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceCsiNodePublishSecretRef>,
     /// readOnly specifies a read-only configuration for the volume.
     /// Defaults to false (read/write).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// volumeAttributes stores driver-specific properties that are passed to the CSI
     /// driver. Consult your driver's documentation for supported values.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
@@ -9917,16 +8318,11 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceDownward
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// Items is a list of downward API volume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceDownwardApiItems>>,
+    pub items: Option<Vec<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceDownwardApiItems>>,
 }
 
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
@@ -9955,11 +8351,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceDownward
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -9969,14 +8361,9 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceDownward
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceDownwardApiItemsResourceFieldRef
-{
+pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10008,8 +8395,8 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceEmptyDir
 /// ephemeral represents a volume that is handled by a cluster storage driver.
 /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
 /// and deleted when the pod is removed.
-///
-///
+/// 
+/// 
 /// Use this if:
 /// a) the volume is only needed while the pod runs,
 /// b) features of normal volumes like restoring from snapshot or capacity
@@ -10019,18 +8406,18 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceEmptyDir
 ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
 ///    information on the connection between this volume type
 ///    and PersistentVolumeClaim).
-///
-///
+/// 
+/// 
 /// Use PersistentVolumeClaim or one of the vendor-specific
 /// APIs for volumes that persist for longer than the lifecycle
 /// of an individual pod.
-///
-///
+/// 
+/// 
 /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
 /// be used that way - see the documentation of the driver for
 /// more information.
-///
-///
+/// 
+/// 
 /// A pod can use both types of ephemeral volumes and
 /// persistent volumes at the same time.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -10042,8 +8429,8 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceEphemera
     /// `<volume name>` is the name from the `PodSpec.Volumes` array
     /// entry. Pod validation will reject the pod if the concatenated name
     /// is not valid for a PVC (for example, too long).
-    ///
-    ///
+    /// 
+    /// 
     /// An existing PVC with that name that is not owned by the pod
     /// will *not* be used for the pod to avoid using an unrelated
     /// volume by mistake. Starting the pod is then blocked until
@@ -10052,21 +8439,15 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceEphemera
     /// owner reference to the pod once the pod exists. Normally
     /// this should not be necessary, but it may be useful when
     /// manually reconstructing a broken cluster.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is read-only and no changes will be made by Kubernetes
     /// to the PVC after it has been created.
-    ///
-    ///
+    /// 
+    /// 
     /// Required, must not be nil.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimTemplate"
-    )]
-    pub volume_claim_template: Option<
-        CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceEphemeralVolumeClaimTemplate,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
+    pub volume_claim_template: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceEphemeralVolumeClaimTemplate>,
 }
 
 /// Will be used to create a stand-alone PVC to provision the volume.
@@ -10076,8 +8457,8 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceEphemera
 /// `<volume name>` is the name from the `PodSpec.Volumes` array
 /// entry. Pod validation will reject the pod if the concatenated name
 /// is not valid for a PVC (for example, too long).
-///
-///
+/// 
+/// 
 /// An existing PVC with that name that is not owned by the pod
 /// will *not* be used for the pod to avoid using an unrelated
 /// volume by mistake. Starting the pod is then blocked until
@@ -10086,12 +8467,12 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceEphemera
 /// owner reference to the pod once the pod exists. Normally
 /// this should not be necessary, but it may be useful when
 /// manually reconstructing a broken cluster.
-///
-///
+/// 
+/// 
 /// This field is read-only and no changes will be made by Kubernetes
 /// to the PVC after it has been created.
-///
-///
+/// 
+/// 
 /// Required, must not be nil.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceEphemeralVolumeClaimTemplate {
@@ -10111,8 +8492,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceEphemera
 /// when creating it. No other fields are allowed and will be rejected during
 /// validation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadata
-{
+pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceEphemeralVolumeClaimTemplateMetadata {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10216,8 +8596,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceEphemera
 /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
 /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecDataSource
-{
+pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecDataSource {
     /// APIGroup is the group for the resource being referenced.
     /// If APIGroup is not specified, the specified Kind must be in the core API group.
     /// For any other third-party types, APIGroup is required.
@@ -10253,8 +8632,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceEphemera
 /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
 /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecDataSourceRef
-{
+pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecDataSourceRef {
     /// APIGroup is the group for the resource being referenced.
     /// If APIGroup is not specified, the specified Kind must be in the core API group.
     /// For any other third-party types, APIGroup is required.
@@ -10277,8 +8655,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceEphemera
 /// status field of the claim.
 /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecResources
-{
+pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecResources {
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10307,8 +8684,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceEphemera
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions
-{
+pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -10339,11 +8715,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceFc {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// targetWWNs is Optional: FC target worldwide names (WWNs)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetWWNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
     pub target_ww_ns: Option<Vec<String>>,
     /// wwids Optional: FC volume world wide identifiers (wwids)
     /// Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
@@ -10375,8 +8747,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceFlexVolu
     /// contains more than one secret, all secrets are passed to the plugin
     /// scripts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceFlexVolumeSecretRef>,
+    pub secret_ref: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceFlexVolumeSecretRef>,
 }
 
 /// secretRef is Optional: secretRef is reference to the secret object containing
@@ -10398,18 +8769,10 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceFlexVolu
 pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceFlocker {
     /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
     /// should be considered as deprecated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
     pub dataset_name: Option<String>,
     /// datasetUUID is the UUID of the dataset. This is unique identifier of a Flocker dataset
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetUUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
     pub dataset_uuid: Option<String>,
 }
 
@@ -10506,18 +8869,10 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceHostPath
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceIscsi {
     /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthDiscovery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
     /// chapAuthSession defines whether support iSCSI Session CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthSession"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
     pub chap_auth_session: Option<bool>,
     /// fsType is the filesystem type of the volume that you want to mount.
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
@@ -10529,21 +8884,13 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceIscsi {
     /// initiatorName is the custom iSCSI Initiator Name.
     /// If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface
     /// <target portal>:<volume name> will be created for the connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initiatorName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
     pub initiator_name: Option<String>,
     /// iqn is the target iSCSI Qualified Name.
     pub iqn: String,
     /// iscsiInterface is the interface Name that uses an iSCSI transport.
     /// Defaults to 'default' (tcp).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "iscsiInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
     pub iscsi_interface: Option<String>,
     /// lun represents iSCSI Target Lun number.
     pub lun: i32,
@@ -10557,8 +8904,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceIscsi {
     pub read_only: Option<bool>,
     /// secretRef is the CHAP Secret for iSCSI target and initiator authentication
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceIscsiSecretRef>,
+    pub secret_ref: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceIscsiSecretRef>,
     /// targetPortal is iSCSI Target Portal. The Portal is either an IP or ip_addr:port if the port
     /// is other than default (typically TCP ports 860 and 3260).
     #[serde(rename = "targetPortal")]
@@ -10646,16 +8992,11 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceProjecte
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// sources is the list of volume projections
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sources:
-        Option<Vec<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceProjectedSources>>,
+    pub sources: Option<Vec<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceProjectedSources>>,
 }
 
 /// Projection that may be projected along with other supported volume types
@@ -10695,15 +9036,15 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceProjecte
 
 /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
 /// of ClusterTrustBundle objects in an auto-updating file.
-///
-///
+/// 
+/// 
 /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-///
-///
+/// 
+/// 
 /// ClusterTrustBundle objects can either be selected by name, or by the
 /// combination of signer name and a label selector.
-///
-///
+/// 
+/// 
 /// Kubelet performs aggressive normalization of the PEM contents written
 /// into the pod filesystem.  Esoteric PEM features such as inter-block
 /// comments and block headers are stripped.  Certificates are deduplicated.
@@ -10756,8 +9097,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceProjecte
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions
-{
+pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -10795,8 +9135,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceProjecte
 
 /// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceProjectedSourcesConfigMapItems
-{
+pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceProjectedSourcesConfigMapItems {
     /// key is the key to project.
     pub key: String,
     /// mode is Optional: mode bits used to set permissions on this file.
@@ -10846,14 +9185,9 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceProjecte
 
 /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceProjectedSourcesDownwardApiItemsFieldRef
-{
+pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceProjectedSourcesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -10863,14 +9197,9 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceProjecte
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef
-{
+pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10903,8 +9232,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceProjecte
 
 /// Maps a string key to a path within a volume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceProjectedSourcesSecretItems
-{
+pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceProjectedSourcesSecretItems {
     /// key is the key to project.
     pub key: String,
     /// mode is Optional: mode bits used to set permissions on this file.
@@ -10924,8 +9252,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceProjecte
 
 /// serviceAccountToken is information about the serviceAccountToken data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceProjectedSourcesServiceAccountToken
-{
+pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceProjectedSourcesServiceAccountToken {
     /// audience is the intended audience of the token. A recipient of a token
     /// must identify itself with an identifier specified in the audience of the
     /// token, and otherwise should reject the token. The audience defaults to the
@@ -10938,11 +9265,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceProjecte
     /// start trying to rotate the token if the token is older than 80 percent of
     /// its time to live or if the token is older than 24 hours.Defaults to 1 hour
     /// and must be at least 10 minutes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
     /// path is the path relative to the mount point of the file to project the
     /// token into.
@@ -11013,8 +9336,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceRbd {
     /// Default is nil.
     /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceRbdSecretRef>,
+    pub secret_ref: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceRbdSecretRef>,
     /// user is the rados user name.
     /// Default is admin.
     /// More info: https://examples.k8s.io/volumes/rbd/README.md#how-to-use-it
@@ -11047,11 +9369,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceScaleIo 
     /// gateway is the host address of the ScaleIO API Gateway.
     pub gateway: String,
     /// protectionDomain is the name of the ScaleIO Protection Domain for the configured storage.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protectionDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
     pub protection_domain: Option<String>,
     /// readOnly Defaults to false (read/write). ReadOnly here will force
     /// the ReadOnly setting in VolumeMounts.
@@ -11062,36 +9380,20 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceScaleIo 
     #[serde(rename = "secretRef")]
     pub secret_ref: CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceScaleIoSecretRef,
     /// sslEnabled Flag enable/disable SSL communication with Gateway, default false
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
     /// storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned.
     /// Default is ThinProvisioned.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
     pub storage_mode: Option<String>,
     /// storagePool is the ScaleIO Storage Pool associated with the protection domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
     pub storage_pool: Option<String>,
     /// system is the name of the storage system as configured in ScaleIO.
     pub system: String,
     /// volumeName is the name of a volume already created in the ScaleIO system
     /// that is associated with this volume source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -11117,11 +9419,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceSecret {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items If unspecified, each key-value pair in the Data field of the referenced
     /// Secret will be projected into the volume as a file whose name is the
@@ -11131,18 +9429,13 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceSecret {
     /// the volume setup will error unless it is marked optional. Paths must be
     /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceSecretItems>>,
+    pub items: Option<Vec<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceSecretItems>>,
     /// optional field specify whether the Secret or its keys must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
     /// secretName is the name of the secret in the pod's namespace to use.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -11181,15 +9474,10 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceStorageo
     /// secretRef specifies the secret to use for obtaining the StorageOS API
     /// credentials.  If not specified, default values will be attempted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceStorageosSecretRef>,
+    pub secret_ref: Option<CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceStorageosSecretRef>,
     /// volumeName is the human-readable name of the StorageOS volume.  Volume
     /// names are only unique within a namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
     /// volumeNamespace specifies the scope of the volume within StorageOS.  If no
     /// namespace is specified then the Pod's namespace will be used.  This allows the
@@ -11197,11 +9485,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceStorageo
     /// Set VolumeName to any name to override the default behaviour.
     /// Set to "default" if you are not using namespaces within StorageOS.
     /// Namespaces that do not pre-exist within StorageOS will be created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
     pub volume_namespace: Option<String>,
 }
 
@@ -11225,18 +9509,10 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceVsphereV
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// storagePolicyID is the storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
     pub storage_policy_id: Option<String>,
     /// storagePolicyName is the storage Policy Based Management (SPBM) profile name.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
     pub storage_policy_name: Option<String>,
     /// volumePath is the path that identifies vSphere volume vmdk
     #[serde(rename = "volumePath")]
@@ -11249,11 +9525,7 @@ pub struct CassandraDatacenterStorageConfigAdditionalVolumesVolumeSourceVsphereV
 pub struct CassandraDatacenterStorageConfigCassandraDataVolumeClaimSpec {
     /// accessModes contains the desired access modes the volume should have.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// dataSource field can be used to specify either:
     /// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
@@ -11263,11 +9535,7 @@ pub struct CassandraDatacenterStorageConfigCassandraDataVolumeClaimSpec {
     /// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
     /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
     /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
     pub data_source: Option<CassandraDatacenterStorageConfigCassandraDataVolumeClaimSpecDataSource>,
     /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
     /// volume is desired. This may be any object from a non-empty API group (non
@@ -11292,13 +9560,8 @@ pub struct CassandraDatacenterStorageConfigCassandraDataVolumeClaimSpec {
     ///   in any namespaces.
     /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
     /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSourceRef"
-    )]
-    pub data_source_ref:
-        Option<CassandraDatacenterStorageConfigCassandraDataVolumeClaimSpecDataSourceRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
+    pub data_source_ref: Option<CassandraDatacenterStorageConfigCassandraDataVolumeClaimSpecDataSourceRef>,
     /// resources represents the minimum resources the volume should have.
     /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
     /// that are lower than previous value but must still be higher than capacity recorded in the
@@ -11311,11 +9574,7 @@ pub struct CassandraDatacenterStorageConfigCassandraDataVolumeClaimSpec {
     pub selector: Option<CassandraDatacenterStorageConfigCassandraDataVolumeClaimSpecSelector>,
     /// storageClassName is the name of the StorageClass required by the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
     /// If specified, the CSI driver will create or update the volume with the attributes defined
@@ -11329,26 +9588,14 @@ pub struct CassandraDatacenterStorageConfigCassandraDataVolumeClaimSpec {
     /// exists.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
     /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributesClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
     /// Value of Filesystem is implied when not included in claim spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     /// volumeName is the binding reference to the PersistentVolume backing this claim.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -11437,22 +9684,12 @@ pub struct CassandraDatacenterStorageConfigCassandraDataVolumeClaimSpecResources
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterStorageConfigCassandraDataVolumeClaimSpecSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions: Option<
-        Vec<CassandraDatacenterStorageConfigCassandraDataVolumeClaimSpecSelectorMatchExpressions>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CassandraDatacenterStorageConfigCassandraDataVolumeClaimSpecSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -11478,12 +9715,12 @@ pub struct CassandraDatacenterStorageConfigCassandraDataVolumeClaimSpecSelectorM
 pub struct CassandraDatacenterSystemLoggerResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<CassandraDatacenterSystemLoggerResourcesClaims>>,
@@ -11530,11 +9767,7 @@ pub struct CassandraDatacenterTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -11553,89 +9786,41 @@ pub struct CassandraDatacenterUsers {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CassandraDatacenterStatus {
     /// Last known progress state of the Cassandra Operator
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cassandraOperatorProgress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cassandraOperatorProgress")]
     pub cassandra_operator_progress: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// DatacenterName is the name of the override used for the CassandraDatacenter
     /// This field is used to perform validation checks preventing a user from changing the override
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datacenterName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datacenterName")]
     pub datacenter_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastRollingRestart"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastRollingRestart")]
     pub last_rolling_restart: Option<String>,
     /// The timestamp when the operator last started a Server node
     /// with the management API
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastServerNodeStarted"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastServerNodeStarted")]
     pub last_server_node_started: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metadataVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataVersion")]
     pub metadata_version: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeReplacements"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeReplacements")]
     pub node_replacements: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeStatuses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeStatuses")]
     pub node_statuses: Option<BTreeMap<String, CassandraDatacenterStatusNodeStatuses>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "quietPeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "quietPeriod")]
     pub quiet_period: Option<String>,
     /// Deprecated. Use usersUpserted instead. The timestamp at
     /// which CQL superuser credentials were last upserted to the
     /// management API
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "superUserUpserted"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "superUserUpserted")]
     pub super_user_upserted: Option<String>,
     /// TrackedTasks tracks the tasks for completion that were created by the cass-operator
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trackedTasks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trackedTasks")]
     pub tracked_tasks: Option<Vec<ObjectReference>>,
     /// The timestamp at which managed cassandra users' credentials
     /// were last upserted to the management API
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "usersUpserted"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "usersUpserted")]
     pub users_upserted: Option<String>,
 }
 
@@ -11648,3 +9833,4 @@ pub struct CassandraDatacenterStatusNodeStatuses {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rack: Option<String>,
 }
+

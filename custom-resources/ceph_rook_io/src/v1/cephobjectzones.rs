@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ObjectZoneSpec represent the spec of an ObjectZone
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "ceph.rook.io",
-    version = "v1",
-    kind = "CephObjectZone",
-    plural = "cephobjectzones"
-)]
+#[kube(group = "ceph.rook.io", version = "v1", kind = "CephObjectZone", plural = "cephobjectzones")]
 #[kube(namespaced)]
 #[kube(status = "CephObjectZoneStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CephObjectZoneSpec {
     /// If this zone cannot be accessed from other peer Ceph clusters via the ClusterIP Service
     /// endpoint created by Rook, you must set this to the externally reachable endpoint(s). You may
@@ -31,39 +26,23 @@ pub struct CephObjectZoneSpec {
     /// In many cases, you should set this to the endpoint of the ingress resource that makes the
     /// CephObjectStore associated with this CephObjectStoreZone reachable to peer clusters.
     /// The list can have one or more endpoints pointing to different RGW servers in the zone.
-    ///
+    /// 
     /// If a CephObjectStore endpoint is omitted from this list, that object store's gateways will
     /// not receive multisite replication data
     /// (see CephObjectStore.spec.gateway.disableMultisiteSyncTraffic).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customEndpoints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customEndpoints")]
     pub custom_endpoints: Option<Vec<String>>,
     /// The data pool settings
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataPool")]
     pub data_pool: Option<CephObjectZoneDataPool>,
     /// The metadata pool settings
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metadataPool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataPool")]
     pub metadata_pool: Option<CephObjectZoneMetadataPool>,
     /// Preserve pools on object zone deletion
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preservePoolsOnDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preservePoolsOnDelete")]
     pub preserve_pools_on_delete: Option<bool>,
     /// The pool information when configuring RADOS namespaces in existing pools.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sharedPools"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sharedPools")]
     pub shared_pools: Option<CephObjectZoneSharedPools>,
     /// The display name for the ceph users
     #[serde(rename = "zoneGroup")]
@@ -79,49 +58,25 @@ pub struct CephObjectZoneDataPool {
     /// DEPRECATED: use Parameters instead, e.g., Parameters["compression_mode"] = "force"
     /// The inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force)
     /// Do NOT set a default value for kubebuilder as this will override the Parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "compressionMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionMode")]
     pub compression_mode: Option<CephObjectZoneDataPoolCompressionMode>,
     /// The root of the crush hierarchy utilized by the pool
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crushRoot")]
     pub crush_root: Option<String>,
     /// The device class the OSD should set to for use in the pool
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deviceClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceClass")]
     pub device_class: Option<String>,
     /// Allow rook operator to change the pool CRUSH tunables once the pool is created
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableCrushUpdates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableCrushUpdates")]
     pub enable_crush_updates: Option<bool>,
     /// EnableRBDStats is used to enable gathering of statistics for all RBD images in the pool
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableRBDStats"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableRBDStats")]
     pub enable_rbd_stats: Option<bool>,
     /// The erasure code settings
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "erasureCoded"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "erasureCoded")]
     pub erasure_coded: Option<CephObjectZoneDataPoolErasureCoded>,
     /// The failure domain: osd/host/(region or zone if available) - technically also any type in the crush map
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomain")]
     pub failure_domain: Option<String>,
     /// The mirroring settings
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -136,11 +91,7 @@ pub struct CephObjectZoneDataPool {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicated: Option<CephObjectZoneDataPoolReplicated>,
     /// The mirroring statusCheck
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusCheck")]
     pub status_check: Option<CephObjectZoneDataPoolStatusCheck>,
 }
 
@@ -189,11 +140,7 @@ pub struct CephObjectZoneDataPoolMirroring {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub peers: Option<CephObjectZoneDataPoolMirroringPeers>,
     /// SnapshotSchedules is the scheduling of snapshot for mirrored images/pools
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotSchedules"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotSchedules")]
     pub snapshot_schedules: Option<Vec<CephObjectZoneDataPoolMirroringSnapshotSchedules>>,
 }
 
@@ -201,11 +148,7 @@ pub struct CephObjectZoneDataPoolMirroring {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectZoneDataPoolMirroringPeers {
     /// SecretNames represents the Kubernetes Secret names to add rbd-mirror or cephfs-mirror peers
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretNames")]
     pub secret_names: Option<Vec<String>>,
 }
 
@@ -231,11 +174,7 @@ pub struct CephObjectZoneDataPoolQuotas {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBytes")]
     pub max_bytes: Option<i64>,
     /// MaxObjects represents the quota in objects
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxObjects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxObjects")]
     pub max_objects: Option<i64>,
     /// MaxSize represents the quota in bytes as a string
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSize")]
@@ -246,41 +185,21 @@ pub struct CephObjectZoneDataPoolQuotas {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectZoneDataPoolReplicated {
     /// HybridStorage represents hybrid storage tier settings
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hybridStorage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hybridStorage")]
     pub hybrid_storage: Option<CephObjectZoneDataPoolReplicatedHybridStorage>,
     /// ReplicasPerFailureDomain the number of replica in the specified failure domain
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicasPerFailureDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicasPerFailureDomain")]
     pub replicas_per_failure_domain: Option<i64>,
     /// RequireSafeReplicaSize if false allows you to set replica 1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requireSafeReplicaSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireSafeReplicaSize")]
     pub require_safe_replica_size: Option<bool>,
     /// Size - Number of copies per object in a replicated storage pool, including the object itself (required for replicated pool type)
     pub size: i64,
     /// SubFailureDomain the name of the sub-failure domain
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subFailureDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subFailureDomain")]
     pub sub_failure_domain: Option<String>,
     /// TargetSizeRatio gives a hint (%) to Ceph in terms of expected consumption of the total cluster capacity
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetSizeRatio"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetSizeRatio")]
     pub target_size_ratio: Option<f64>,
 }
 
@@ -324,49 +243,25 @@ pub struct CephObjectZoneMetadataPool {
     /// DEPRECATED: use Parameters instead, e.g., Parameters["compression_mode"] = "force"
     /// The inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force)
     /// Do NOT set a default value for kubebuilder as this will override the Parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "compressionMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionMode")]
     pub compression_mode: Option<CephObjectZoneMetadataPoolCompressionMode>,
     /// The root of the crush hierarchy utilized by the pool
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crushRoot")]
     pub crush_root: Option<String>,
     /// The device class the OSD should set to for use in the pool
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deviceClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceClass")]
     pub device_class: Option<String>,
     /// Allow rook operator to change the pool CRUSH tunables once the pool is created
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableCrushUpdates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableCrushUpdates")]
     pub enable_crush_updates: Option<bool>,
     /// EnableRBDStats is used to enable gathering of statistics for all RBD images in the pool
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableRBDStats"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableRBDStats")]
     pub enable_rbd_stats: Option<bool>,
     /// The erasure code settings
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "erasureCoded"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "erasureCoded")]
     pub erasure_coded: Option<CephObjectZoneMetadataPoolErasureCoded>,
     /// The failure domain: osd/host/(region or zone if available) - technically also any type in the crush map
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomain")]
     pub failure_domain: Option<String>,
     /// The mirroring settings
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -381,11 +276,7 @@ pub struct CephObjectZoneMetadataPool {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicated: Option<CephObjectZoneMetadataPoolReplicated>,
     /// The mirroring statusCheck
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusCheck")]
     pub status_check: Option<CephObjectZoneMetadataPoolStatusCheck>,
 }
 
@@ -434,11 +325,7 @@ pub struct CephObjectZoneMetadataPoolMirroring {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub peers: Option<CephObjectZoneMetadataPoolMirroringPeers>,
     /// SnapshotSchedules is the scheduling of snapshot for mirrored images/pools
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotSchedules"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotSchedules")]
     pub snapshot_schedules: Option<Vec<CephObjectZoneMetadataPoolMirroringSnapshotSchedules>>,
 }
 
@@ -446,11 +333,7 @@ pub struct CephObjectZoneMetadataPoolMirroring {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectZoneMetadataPoolMirroringPeers {
     /// SecretNames represents the Kubernetes Secret names to add rbd-mirror or cephfs-mirror peers
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretNames")]
     pub secret_names: Option<Vec<String>>,
 }
 
@@ -476,11 +359,7 @@ pub struct CephObjectZoneMetadataPoolQuotas {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBytes")]
     pub max_bytes: Option<i64>,
     /// MaxObjects represents the quota in objects
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxObjects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxObjects")]
     pub max_objects: Option<i64>,
     /// MaxSize represents the quota in bytes as a string
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSize")]
@@ -491,41 +370,21 @@ pub struct CephObjectZoneMetadataPoolQuotas {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectZoneMetadataPoolReplicated {
     /// HybridStorage represents hybrid storage tier settings
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hybridStorage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hybridStorage")]
     pub hybrid_storage: Option<CephObjectZoneMetadataPoolReplicatedHybridStorage>,
     /// ReplicasPerFailureDomain the number of replica in the specified failure domain
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicasPerFailureDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicasPerFailureDomain")]
     pub replicas_per_failure_domain: Option<i64>,
     /// RequireSafeReplicaSize if false allows you to set replica 1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requireSafeReplicaSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireSafeReplicaSize")]
     pub require_safe_replica_size: Option<bool>,
     /// Size - Number of copies per object in a replicated storage pool, including the object itself (required for replicated pool type)
     pub size: i64,
     /// SubFailureDomain the name of the sub-failure domain
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subFailureDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subFailureDomain")]
     pub sub_failure_domain: Option<String>,
     /// TargetSizeRatio gives a hint (%) to Ceph in terms of expected consumption of the total cluster capacity
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetSizeRatio"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetSizeRatio")]
     pub target_size_ratio: Option<f64>,
 }
 
@@ -564,18 +423,10 @@ pub struct CephObjectZoneMetadataPoolStatusCheckMirror {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectZoneSharedPools {
     /// The data pool used for creating RADOS namespaces in the object store
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataPoolName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataPoolName")]
     pub data_pool_name: Option<String>,
     /// The metadata pool used for creating RADOS namespaces in the object store
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metadataPoolName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataPoolName")]
     pub metadata_pool_name: Option<String>,
     /// PoolPlacements control which Pools are associated with a particular RGW bucket.
     /// Once PoolPlacements are defined, RGW client will be able to associate pool
@@ -586,18 +437,10 @@ pub struct CephObjectZoneSharedPools {
     /// is provided during bucket creation.
     /// If default placement is not provided, spec.sharedPools.dataPoolName and spec.sharedPools.MetadataPoolName will be used as default pools.
     /// If spec.sharedPools are also empty, then RGW pools (spec.dataPool and spec.metadataPool) will be used as defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "poolPlacements"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "poolPlacements")]
     pub pool_placements: Option<Vec<CephObjectZoneSharedPoolsPoolPlacements>>,
     /// Whether the RADOS namespaces should be preserved on deletion of the object store
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preserveRadosNamespaceDataOnDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preserveRadosNamespaceDataOnDelete")]
     pub preserve_rados_namespace_data_on_delete: Option<bool>,
 }
 
@@ -605,11 +448,7 @@ pub struct CephObjectZoneSharedPools {
 pub struct CephObjectZoneSharedPoolsPoolPlacements {
     /// The data pool used to store ObjectStore data that cannot use erasure coding (ex: multi-part uploads).
     /// If dataPoolName is not erasure coded, then there is no need for dataNonECPoolName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataNonECPoolName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataNonECPoolName")]
     pub data_non_ec_pool_name: Option<String>,
     /// The data pool used to store ObjectStore objects data.
     #[serde(rename = "dataPoolName")]
@@ -626,11 +465,7 @@ pub struct CephObjectZoneSharedPoolsPoolPlacements {
     /// StorageClasses can be selected by user to override dataPoolName during object creation.
     /// Each placement has default STANDARD StorageClass pointing to dataPoolName.
     /// This list allows defining additional StorageClasses on top of default STANDARD storage class.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClasses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClasses")]
     pub storage_classes: Option<Vec<CephObjectZoneSharedPoolsPoolPlacementsStorageClasses>>,
 }
 
@@ -653,12 +488,9 @@ pub struct CephObjectZoneStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// ObservedGeneration is the latest generation observed by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
 }
+

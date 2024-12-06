@@ -4,43 +4,30 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// SparkApplicationSpec defines the desired state of SparkApplication
 /// It carries every pieces of information a spark-submit command takes and recognizes.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "sparkoperator.k8s.io",
-    version = "v1beta2",
-    kind = "SparkApplication",
-    plural = "sparkapplications"
-)]
+#[kube(group = "sparkoperator.k8s.io", version = "v1beta2", kind = "SparkApplication", plural = "sparkapplications")]
 #[kube(namespaced)]
 #[kube(status = "SparkApplicationStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct SparkApplicationSpec {
     /// Arguments is a list of arguments to be passed to the application.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub arguments: Option<Vec<String>>,
     /// BatchScheduler configures which batch scheduler will be used for scheduling
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batchScheduler"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batchScheduler")]
     pub batch_scheduler: Option<String>,
     /// BatchSchedulerOptions provides fine-grained control on how to batch scheduling.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batchSchedulerOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batchSchedulerOptions")]
     pub batch_scheduler_options: Option<SparkApplicationBatchSchedulerOptions>,
     /// Deps captures all possible types of dependencies of a Spark application.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -48,64 +35,36 @@ pub struct SparkApplicationSpec {
     /// Driver is the driver specification.
     pub driver: SparkApplicationDriver,
     /// DriverIngressOptions allows configuring the Service and the Ingress to expose ports inside Spark Driver
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "driverIngressOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "driverIngressOptions")]
     pub driver_ingress_options: Option<Vec<SparkApplicationDriverIngressOptions>>,
     /// DynamicAllocation configures dynamic allocation that becomes available for the Kubernetes
     /// scheduler backend since Spark 3.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dynamicAllocation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dynamicAllocation")]
     pub dynamic_allocation: Option<SparkApplicationDynamicAllocation>,
     /// Executor is the executor specification.
     pub executor: SparkApplicationExecutor,
     /// FailureRetries is the number of times to retry a failed application before giving up.
     /// This is best effort and actual retry attempts can be >= the value specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureRetries")]
     pub failure_retries: Option<i32>,
     /// HadoopConf carries user-specified Hadoop configuration properties as they would use the "--conf" option
     /// in spark-submit. The SparkApplication controller automatically adds prefix "spark.hadoop." to Hadoop
     /// configuration properties.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hadoopConf"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hadoopConf")]
     pub hadoop_conf: Option<BTreeMap<String, String>>,
     /// HadoopConfigMap carries the name of the ConfigMap containing Hadoop configuration files such as core-site.xml.
     /// The controller will add environment variable HADOOP_CONF_DIR to the path where the ConfigMap is mounted to.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hadoopConfigMap"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hadoopConfigMap")]
     pub hadoop_config_map: Option<String>,
     /// Image is the container image for the driver, executor, and init-container. Any custom container images for the
     /// driver, executor, or init-container takes precedence over this.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// ImagePullPolicy is the image pull policy for the driver, executor, and init-container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// ImagePullSecrets is the list of image-pull secrets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<String>>,
     /// MainFile is the path to a bundled JAR, Python, or R file of the application.
     #[serde(rename = "mainApplicationFile")]
@@ -117,11 +76,7 @@ pub struct SparkApplicationSpec {
     /// This sets the Memory Overhead Factor that will allocate memory to non-JVM memory.
     /// For JVM-based jobs this value will default to 0.10, for non-JVM jobs 0.40. Value of this field will
     /// be overridden by `Spec.Driver.MemoryOverhead` and `Spec.Executor.MemoryOverhead` if they are set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "memoryOverheadFactor"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryOverheadFactor")]
     pub memory_overhead_factor: Option<String>,
     /// Mode is the deployment mode of the Spark application.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -132,11 +87,7 @@ pub struct SparkApplicationSpec {
     /// NodeSelector is the Kubernetes node selector to be added to the driver and executor pods.
     /// This field is mutually exclusive with nodeSelector at podSpec level (driver or executor).
     /// This field will be deprecated in future versions (at SparkApplicationSpec level).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// ProxyUser specifies the user to impersonate when submitting the application.
     /// It maps to the command-line flag "--proxy-user" in spark-submit.
@@ -144,25 +95,13 @@ pub struct SparkApplicationSpec {
     pub proxy_user: Option<String>,
     /// This sets the major Python version of the docker
     /// image used to run the driver and executor containers. Can either be 2 or 3, default 2.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pythonVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pythonVersion")]
     pub python_version: Option<SparkApplicationPythonVersion>,
     /// RestartPolicy defines the policy on if and in which conditions the controller should restart an application.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<SparkApplicationRestartPolicy>,
     /// RetryInterval is the unit of intervals in seconds between submission retries.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<i64>,
     /// SparkConf carries user-specified Spark configuration properties as they would use the  "--conf" option in
     /// spark-submit.
@@ -170,18 +109,10 @@ pub struct SparkApplicationSpec {
     pub spark_conf: Option<BTreeMap<String, String>>,
     /// SparkConfigMap carries the name of the ConfigMap containing Spark configuration files such as log4j.properties.
     /// The controller will add environment variable SPARK_CONF_DIR to the path where the ConfigMap is mounted to.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sparkConfigMap"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sparkConfigMap")]
     pub spark_config_map: Option<String>,
     /// SparkUIOptions allows configuring the Service and the Ingress to expose the sparkUI
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sparkUIOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sparkUIOptions")]
     pub spark_ui_options: Option<SparkApplicationSparkUiOptions>,
     /// SparkVersion is the version of Spark the application uses.
     #[serde(rename = "sparkVersion")]
@@ -190,11 +121,7 @@ pub struct SparkApplicationSpec {
     /// after its termination.
     /// The SparkApplication object will be garbage collected if the current time is more than the
     /// TimeToLiveSeconds since its termination.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeToLiveSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeToLiveSeconds")]
     pub time_to_live_seconds: Option<i64>,
     /// Type tells the type of the Spark application.
     #[serde(rename = "type")]
@@ -208,11 +135,7 @@ pub struct SparkApplicationSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationBatchSchedulerOptions {
     /// PriorityClassName stands for the name of k8s PriorityClass resource, it's being used in Volcano batch scheduler.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// Queue stands for the resource queue which the application belongs to, it's being used in Volcano batch scheduler.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -231,11 +154,7 @@ pub struct SparkApplicationDeps {
     pub archives: Option<Vec<String>>,
     /// ExcludePackages is a list of "groupId:artifactId", to exclude while resolving the
     /// dependencies provided in Packages to avoid dependency conflicts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "excludePackages"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "excludePackages")]
     pub exclude_packages: Option<Vec<String>>,
     /// Files is a list of files the Spark application depends on.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -268,11 +187,7 @@ pub struct SparkApplicationDriver {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// ConfigMaps carries information of other ConfigMaps to add to the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMaps"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMaps")]
     pub config_maps: Option<Vec<SparkApplicationDriverConfigMaps>>,
     /// CoreLimit specifies a hard limit on CPU cores for the pod.
     /// Optional
@@ -280,11 +195,7 @@ pub struct SparkApplicationDriver {
     pub core_limit: Option<String>,
     /// CoreRequest is the physical CPU core request for the driver.
     /// Maps to `spark.kubernetes.driver.request.cores` that is available since Spark 3.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "coreRequest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "coreRequest")]
     pub core_request: Option<String>,
     /// Cores maps to `spark.driver.cores` or `spark.executor.cores` for the driver and executors, respectively.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -300,11 +211,7 @@ pub struct SparkApplicationDriver {
     pub env_from: Option<Vec<SparkApplicationDriverEnvFrom>>,
     /// EnvSecretKeyRefs holds a mapping from environment variable names to SecretKeyRefs.
     /// Deprecated. Consider using `env` instead.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "envSecretKeyRefs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envSecretKeyRefs")]
     pub env_secret_key_refs: Option<BTreeMap<String, SparkApplicationDriverEnvSecretKeyRefs>>,
     /// EnvVars carries the environment variables to add to the pod.
     /// Deprecated. Consider using `env` instead.
@@ -314,44 +221,24 @@ pub struct SparkApplicationDriver {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gpu: Option<SparkApplicationDriverGpu>,
     /// HostAliases settings for the pod, following the Kubernetes specifications.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostAliases"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<SparkApplicationDriverHostAliases>>,
     /// HostNetwork indicates whether to request host networking for the pod or not.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostNetwork"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
     pub host_network: Option<bool>,
     /// Image is the container image to use. Overrides Spec.Image if set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// InitContainers is a list of init-containers that run to completion before the main Spark container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<SparkApplicationDriverInitContainers>>,
     /// JavaOptions is a string of extra JVM options to pass to the driver. For instance,
     /// GC settings or other logging.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "javaOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "javaOptions")]
     pub java_options: Option<String>,
     /// KubernetesMaster is the URL of the Kubernetes master used by the driver to manage executor pods and
     /// other Kubernetes resources. Default to https://kubernetes.default.svc.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesMaster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesMaster")]
     pub kubernetes_master: Option<String>,
     /// Labels are the Kubernetes labels to be added to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -363,19 +250,11 @@ pub struct SparkApplicationDriver {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<String>,
     /// MemoryOverhead is the amount of off-heap memory to allocate in cluster mode, in MiB unless otherwise specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "memoryOverhead"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryOverhead")]
     pub memory_overhead: Option<String>,
     /// NodeSelector is the Kubernetes node selector to be added to the driver and executor pods.
     /// This field is mutually exclusive with nodeSelector at SparkApplication level (which will be deprecated).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// PodName is the name of the driver pod that the user creates. This is used for the
     /// in-cluster client mode in which the user creates a client pod where the driver of
@@ -384,68 +263,36 @@ pub struct SparkApplicationDriver {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podName")]
     pub pod_name: Option<String>,
     /// PodSecurityContext specifies the PodSecurityContext to apply.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSecurityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
     pub pod_security_context: Option<SparkApplicationDriverPodSecurityContext>,
     /// Ports settings for the pods, following the Kubernetes specifications.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<SparkApplicationDriverPorts>>,
     /// PriorityClassName is the name of the PriorityClass for the driver pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// SchedulerName specifies the scheduler that will be used for scheduling
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schedulerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
     /// Secrets carries information of secrets to add to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secrets: Option<Vec<SparkApplicationDriverSecrets>>,
     /// SecurityContext specifies the container's SecurityContext to apply.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<SparkApplicationDriverSecurityContext>,
     /// ServiceAccount is the name of the custom Kubernetes service account used by the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
     /// ServiceAnnotations defines the annotations to be added to the Kubernetes headless service used by
     /// executors to connect to the driver.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAnnotations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAnnotations")]
     pub service_annotations: Option<BTreeMap<String, String>>,
     /// ServiceLabels defines the labels to be added to the Kubernetes headless service used by
     /// executors to connect to the driver.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceLabels")]
     pub service_labels: Option<BTreeMap<String, String>>,
     /// ShareProcessNamespace settings for the pod, following the Kubernetes specifications.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "shareProcessNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shareProcessNamespace")]
     pub share_process_namespace: Option<bool>,
     /// Sidecars is a list of sidecar containers that run along side the main Spark container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -456,21 +303,13 @@ pub struct SparkApplicationDriver {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<BTreeMap<String, serde_json::Value>>,
     /// Termination grace period seconds for the pod
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Tolerations specifies the tolerations listed in ".spec.tolerations" to be applied to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<SparkApplicationDriverTolerations>>,
     /// VolumeMounts specifies the volumes listed in ".spec.volumes" to mount into the main container's filesystem.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<SparkApplicationDriverVolumeMounts>>,
 }
 
@@ -478,25 +317,13 @@ pub struct SparkApplicationDriver {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationDriverAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<SparkApplicationDriverAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<SparkApplicationDriverAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<SparkApplicationDriverAffinityPodAntiAffinity>,
 }
 
@@ -547,8 +374,7 @@ pub struct SparkApplicationDriverAffinityNodeAffinityPreferredDuringSchedulingIg
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SparkApplicationDriverAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct SparkApplicationDriverAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -566,8 +392,7 @@ pub struct SparkApplicationDriverAffinityNodeAffinityPreferredDuringSchedulingIg
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SparkApplicationDriverAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct SparkApplicationDriverAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -610,8 +435,7 @@ pub struct SparkApplicationDriverAffinityNodeAffinityRequiredDuringSchedulingIgn
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SparkApplicationDriverAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct SparkApplicationDriverAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -629,8 +453,7 @@ pub struct SparkApplicationDriverAffinityNodeAffinityRequiredDuringSchedulingIgn
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SparkApplicationDriverAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct SparkApplicationDriverAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -749,8 +572,7 @@ pub struct SparkApplicationDriverAffinityPodAffinityPreferredDuringSchedulingIgn
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SparkApplicationDriverAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct SparkApplicationDriverAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -784,8 +606,7 @@ pub struct SparkApplicationDriverAffinityPodAffinityPreferredDuringSchedulingIgn
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SparkApplicationDriverAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct SparkApplicationDriverAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -872,8 +693,7 @@ pub struct SparkApplicationDriverAffinityPodAffinityRequiredDuringSchedulingIgno
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SparkApplicationDriverAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct SparkApplicationDriverAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -907,8 +727,7 @@ pub struct SparkApplicationDriverAffinityPodAffinityRequiredDuringSchedulingIgno
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SparkApplicationDriverAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct SparkApplicationDriverAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1026,8 +845,7 @@ pub struct SparkApplicationDriverAffinityPodAntiAffinityPreferredDuringSchedulin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SparkApplicationDriverAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct SparkApplicationDriverAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1061,8 +879,7 @@ pub struct SparkApplicationDriverAffinityPodAntiAffinityPreferredDuringSchedulin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SparkApplicationDriverAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct SparkApplicationDriverAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1149,8 +966,7 @@ pub struct SparkApplicationDriverAffinityPodAntiAffinityRequiredDuringScheduling
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SparkApplicationDriverAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct SparkApplicationDriverAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1184,8 +1000,7 @@ pub struct SparkApplicationDriverAffinityPodAntiAffinityRequiredDuringScheduling
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SparkApplicationDriverAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct SparkApplicationDriverAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1262,11 +1077,7 @@ pub struct SparkApplicationDriverEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationDriverEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<SparkApplicationDriverEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -1274,18 +1085,10 @@ pub struct SparkApplicationDriverEnvValueFrom {
     pub field_ref: Option<SparkApplicationDriverEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<SparkApplicationDriverEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SparkApplicationDriverEnvValueFromSecretKeyRef>,
 }
 
@@ -1309,11 +1112,7 @@ pub struct SparkApplicationDriverEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationDriverEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -1325,11 +1124,7 @@ pub struct SparkApplicationDriverEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationDriverEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1357,11 +1152,7 @@ pub struct SparkApplicationDriverEnvValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationDriverEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<SparkApplicationDriverEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1474,11 +1265,7 @@ pub struct SparkApplicationDriverInitContainers {
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Actions that the management system should take in response to container lifecycle events.
     /// Cannot be updated.
@@ -1488,11 +1275,7 @@ pub struct SparkApplicationDriverInitContainers {
     /// Container will be restarted if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<SparkApplicationDriverInitContainersLivenessProbe>,
     /// Name of the container specified as a DNS_LABEL.
     /// Each container in a pod must have a unique name (DNS_LABEL).
@@ -1511,18 +1294,10 @@ pub struct SparkApplicationDriverInitContainers {
     /// Container will be removed from service endpoints if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<SparkApplicationDriverInitContainersReadinessProbe>,
     /// Resources resize policy for the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resizePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
     pub resize_policy: Option<Vec<SparkApplicationDriverInitContainersResizePolicy>>,
     /// Compute Resources required by this container.
     /// Cannot be updated.
@@ -1544,20 +1319,12 @@ pub struct SparkApplicationDriverInitContainers {
     /// container. Instead, the next init container starts immediately after this
     /// init container is started, or after any startupProbe has successfully
     /// completed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     /// SecurityContext defines the security options the container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<SparkApplicationDriverInitContainersSecurityContext>,
     /// StartupProbe indicates that the Pod has successfully initialized.
     /// If specified, no other probes are executed until this completes successfully.
@@ -1566,11 +1333,7 @@ pub struct SparkApplicationDriverInitContainers {
     /// when it might take a long time to load data or warm a cache, than during steady-state operation.
     /// This cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<SparkApplicationDriverInitContainersStartupProbe>,
     /// Whether this container should allocate a buffer for stdin in the container runtime. If this
     /// is not set, reads from stdin in the container will always result in EOF.
@@ -1593,11 +1356,7 @@ pub struct SparkApplicationDriverInitContainers {
     /// all containers will be limited to 12kb.
     /// Defaults to /dev/termination-log.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
     /// Indicate how the termination message should be populated. File will use the contents of
     /// terminationMessagePath to populate the container status message on both success and failure.
@@ -1606,40 +1365,24 @@ pub struct SparkApplicationDriverInitContainers {
     /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
     /// Defaults to File.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
     /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
     /// volumeDevices is the list of block devices to be used by the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
     pub volume_devices: Option<Vec<SparkApplicationDriverInitContainersVolumeDevices>>,
     /// Pod volumes to mount into the container's filesystem.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<SparkApplicationDriverInitContainersVolumeMounts>>,
     /// Container's working directory.
     /// If not specified, the container runtime's default will be used, which
     /// might be configured in the container image.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -1668,11 +1411,7 @@ pub struct SparkApplicationDriverInitContainersEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationDriverInitContainersEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<SparkApplicationDriverInitContainersEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -1680,19 +1419,10 @@ pub struct SparkApplicationDriverInitContainersEnvValueFrom {
     pub field_ref: Option<SparkApplicationDriverInitContainersEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<SparkApplicationDriverInitContainersEnvValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<SparkApplicationDriverInitContainersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SparkApplicationDriverInitContainersEnvValueFromSecretKeyRef>,
 }
 
@@ -1716,11 +1446,7 @@ pub struct SparkApplicationDriverInitContainersEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationDriverInitContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -1732,11 +1458,7 @@ pub struct SparkApplicationDriverInitContainersEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationDriverInitContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1764,11 +1486,7 @@ pub struct SparkApplicationDriverInitContainersEnvValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationDriverInitContainersEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<SparkApplicationDriverInitContainersEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1869,13 +1587,8 @@ pub struct SparkApplicationDriverInitContainersLifecyclePostStartHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<SparkApplicationDriverInitContainersLifecyclePostStartHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<SparkApplicationDriverInitContainersLifecyclePostStartHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -1967,13 +1680,8 @@ pub struct SparkApplicationDriverInitContainersLifecyclePreStopHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<SparkApplicationDriverInitContainersLifecyclePreStopHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<SparkApplicationDriverInitContainersLifecyclePreStopHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -2029,11 +1737,7 @@ pub struct SparkApplicationDriverInitContainersLivenessProbe {
     pub exec: Option<SparkApplicationDriverInitContainersLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2043,27 +1747,15 @@ pub struct SparkApplicationDriverInitContainersLivenessProbe {
     pub http_get: Option<SparkApplicationDriverInitContainersLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -2078,20 +1770,12 @@ pub struct SparkApplicationDriverInitContainersLivenessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2114,8 +1798,8 @@ pub struct SparkApplicationDriverInitContainersLivenessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -2129,13 +1813,8 @@ pub struct SparkApplicationDriverInitContainersLivenessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<SparkApplicationDriverInitContainersLivenessProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<SparkApplicationDriverInitContainersLivenessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -2209,11 +1888,7 @@ pub struct SparkApplicationDriverInitContainersReadinessProbe {
     pub exec: Option<SparkApplicationDriverInitContainersReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2223,27 +1898,15 @@ pub struct SparkApplicationDriverInitContainersReadinessProbe {
     pub http_get: Option<SparkApplicationDriverInitContainersReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -2258,20 +1921,12 @@ pub struct SparkApplicationDriverInitContainersReadinessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2294,8 +1949,8 @@ pub struct SparkApplicationDriverInitContainersReadinessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -2309,13 +1964,8 @@ pub struct SparkApplicationDriverInitContainersReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<SparkApplicationDriverInitContainersReadinessProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<SparkApplicationDriverInitContainersReadinessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -2371,12 +2021,12 @@ pub struct SparkApplicationDriverInitContainersResizePolicy {
 pub struct SparkApplicationDriverInitContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<SparkApplicationDriverInitContainersResourcesClaims>>,
@@ -2413,11 +2063,7 @@ pub struct SparkApplicationDriverInitContainersSecurityContext {
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
@@ -2440,22 +2086,14 @@ pub struct SparkApplicationDriverInitContainersSecurityContext {
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -2463,11 +2101,7 @@ pub struct SparkApplicationDriverInitContainersSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -2481,31 +2115,19 @@ pub struct SparkApplicationDriverInitContainersSecurityContext {
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<SparkApplicationDriverInitContainersSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<SparkApplicationDriverInitContainersSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<SparkApplicationDriverInitContainersSecurityContextWindowsOptions>,
 }
 
@@ -2553,16 +2175,12 @@ pub struct SparkApplicationDriverInitContainersSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -2579,38 +2197,22 @@ pub struct SparkApplicationDriverInitContainersSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -2628,11 +2230,7 @@ pub struct SparkApplicationDriverInitContainersStartupProbe {
     pub exec: Option<SparkApplicationDriverInitContainersStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2642,27 +2240,15 @@ pub struct SparkApplicationDriverInitContainersStartupProbe {
     pub http_get: Option<SparkApplicationDriverInitContainersStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -2677,20 +2263,12 @@ pub struct SparkApplicationDriverInitContainersStartupProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2713,8 +2291,8 @@ pub struct SparkApplicationDriverInitContainersStartupProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -2728,13 +2306,8 @@ pub struct SparkApplicationDriverInitContainersStartupProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<SparkApplicationDriverInitContainersStartupProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<SparkApplicationDriverInitContainersStartupProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -2791,11 +2364,7 @@ pub struct SparkApplicationDriverInitContainersVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -2811,11 +2380,7 @@ pub struct SparkApplicationDriverInitContainersVolumeMounts {
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -2883,11 +2448,7 @@ pub struct SparkApplicationDriverLifecyclePostStartHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<SparkApplicationDriverLifecyclePostStartHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2980,11 +2541,7 @@ pub struct SparkApplicationDriverLifecyclePreStopHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<SparkApplicationDriverLifecyclePreStopHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3036,13 +2593,13 @@ pub struct SparkApplicationDriverPodSecurityContext {
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
-    ///
-    ///
+    /// 
+    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    ///
-    ///
+    /// 
+    /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
@@ -3054,11 +2611,7 @@ pub struct SparkApplicationDriverPodSecurityContext {
     /// and emptydir.
     /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
@@ -3066,11 +2619,7 @@ pub struct SparkApplicationDriverPodSecurityContext {
     /// PodSecurityContext, the value specified in SecurityContext takes precedence
     /// for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -3078,11 +2627,7 @@ pub struct SparkApplicationDriverPodSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in SecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -3098,19 +2643,11 @@ pub struct SparkApplicationDriverPodSecurityContext {
     /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
     /// takes precedence for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<SparkApplicationDriverPodSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by the containers in this pod.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<SparkApplicationDriverPodSecurityContextSeccompProfile>,
     /// A list of groups applied to the first process run in each container, in addition
     /// to the container's primary GID, the fsGroup (if specified), and group memberships
@@ -3119,11 +2656,7 @@ pub struct SparkApplicationDriverPodSecurityContext {
     /// defined in the container image for the uid of the container process are still effective,
     /// even if they are not included in this list.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
     /// sysctls (by the container runtime) might fail to launch.
@@ -3134,11 +2667,7 @@ pub struct SparkApplicationDriverPodSecurityContext {
     /// If unspecified, the options within a container's SecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<SparkApplicationDriverPodSecurityContextWindowsOptions>,
 }
 
@@ -3172,16 +2701,12 @@ pub struct SparkApplicationDriverPodSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -3207,38 +2732,22 @@ pub struct SparkApplicationDriverPodSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -3271,11 +2780,7 @@ pub struct SparkApplicationDriverSecurityContext {
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
@@ -3298,22 +2803,14 @@ pub struct SparkApplicationDriverSecurityContext {
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -3321,11 +2818,7 @@ pub struct SparkApplicationDriverSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -3339,31 +2832,19 @@ pub struct SparkApplicationDriverSecurityContext {
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<SparkApplicationDriverSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<SparkApplicationDriverSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<SparkApplicationDriverSecurityContextWindowsOptions>,
 }
 
@@ -3411,16 +2892,12 @@ pub struct SparkApplicationDriverSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -3437,38 +2914,22 @@ pub struct SparkApplicationDriverSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -3518,11 +2979,7 @@ pub struct SparkApplicationDriverSidecars {
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Actions that the management system should take in response to container lifecycle events.
     /// Cannot be updated.
@@ -3532,11 +2989,7 @@ pub struct SparkApplicationDriverSidecars {
     /// Container will be restarted if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<SparkApplicationDriverSidecarsLivenessProbe>,
     /// Name of the container specified as a DNS_LABEL.
     /// Each container in a pod must have a unique name (DNS_LABEL).
@@ -3555,18 +3008,10 @@ pub struct SparkApplicationDriverSidecars {
     /// Container will be removed from service endpoints if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<SparkApplicationDriverSidecarsReadinessProbe>,
     /// Resources resize policy for the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resizePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
     pub resize_policy: Option<Vec<SparkApplicationDriverSidecarsResizePolicy>>,
     /// Compute Resources required by this container.
     /// Cannot be updated.
@@ -3588,20 +3033,12 @@ pub struct SparkApplicationDriverSidecars {
     /// container. Instead, the next init container starts immediately after this
     /// init container is started, or after any startupProbe has successfully
     /// completed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     /// SecurityContext defines the security options the container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<SparkApplicationDriverSidecarsSecurityContext>,
     /// StartupProbe indicates that the Pod has successfully initialized.
     /// If specified, no other probes are executed until this completes successfully.
@@ -3610,11 +3047,7 @@ pub struct SparkApplicationDriverSidecars {
     /// when it might take a long time to load data or warm a cache, than during steady-state operation.
     /// This cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<SparkApplicationDriverSidecarsStartupProbe>,
     /// Whether this container should allocate a buffer for stdin in the container runtime. If this
     /// is not set, reads from stdin in the container will always result in EOF.
@@ -3637,11 +3070,7 @@ pub struct SparkApplicationDriverSidecars {
     /// all containers will be limited to 12kb.
     /// Defaults to /dev/termination-log.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
     /// Indicate how the termination message should be populated. File will use the contents of
     /// terminationMessagePath to populate the container status message on both success and failure.
@@ -3650,40 +3079,24 @@ pub struct SparkApplicationDriverSidecars {
     /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
     /// Defaults to File.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
     /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
     /// volumeDevices is the list of block devices to be used by the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
     pub volume_devices: Option<Vec<SparkApplicationDriverSidecarsVolumeDevices>>,
     /// Pod volumes to mount into the container's filesystem.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<SparkApplicationDriverSidecarsVolumeMounts>>,
     /// Container's working directory.
     /// If not specified, the container runtime's default will be used, which
     /// might be configured in the container image.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -3712,11 +3125,7 @@ pub struct SparkApplicationDriverSidecarsEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationDriverSidecarsEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<SparkApplicationDriverSidecarsEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -3724,18 +3133,10 @@ pub struct SparkApplicationDriverSidecarsEnvValueFrom {
     pub field_ref: Option<SparkApplicationDriverSidecarsEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<SparkApplicationDriverSidecarsEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SparkApplicationDriverSidecarsEnvValueFromSecretKeyRef>,
 }
 
@@ -3759,11 +3160,7 @@ pub struct SparkApplicationDriverSidecarsEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationDriverSidecarsEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -3775,11 +3172,7 @@ pub struct SparkApplicationDriverSidecarsEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationDriverSidecarsEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3807,11 +3200,7 @@ pub struct SparkApplicationDriverSidecarsEnvValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationDriverSidecarsEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<SparkApplicationDriverSidecarsEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3912,13 +3301,8 @@ pub struct SparkApplicationDriverSidecarsLifecyclePostStartHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<SparkApplicationDriverSidecarsLifecyclePostStartHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<SparkApplicationDriverSidecarsLifecyclePostStartHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -4010,11 +3394,7 @@ pub struct SparkApplicationDriverSidecarsLifecyclePreStopHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<SparkApplicationDriverSidecarsLifecyclePreStopHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4071,11 +3451,7 @@ pub struct SparkApplicationDriverSidecarsLivenessProbe {
     pub exec: Option<SparkApplicationDriverSidecarsLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4085,27 +3461,15 @@ pub struct SparkApplicationDriverSidecarsLivenessProbe {
     pub http_get: Option<SparkApplicationDriverSidecarsLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -4120,20 +3484,12 @@ pub struct SparkApplicationDriverSidecarsLivenessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -4156,8 +3512,8 @@ pub struct SparkApplicationDriverSidecarsLivenessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -4171,11 +3527,7 @@ pub struct SparkApplicationDriverSidecarsLivenessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<SparkApplicationDriverSidecarsLivenessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4250,11 +3602,7 @@ pub struct SparkApplicationDriverSidecarsReadinessProbe {
     pub exec: Option<SparkApplicationDriverSidecarsReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4264,27 +3612,15 @@ pub struct SparkApplicationDriverSidecarsReadinessProbe {
     pub http_get: Option<SparkApplicationDriverSidecarsReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -4299,20 +3635,12 @@ pub struct SparkApplicationDriverSidecarsReadinessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -4335,8 +3663,8 @@ pub struct SparkApplicationDriverSidecarsReadinessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -4350,11 +3678,7 @@ pub struct SparkApplicationDriverSidecarsReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<SparkApplicationDriverSidecarsReadinessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4411,12 +3735,12 @@ pub struct SparkApplicationDriverSidecarsResizePolicy {
 pub struct SparkApplicationDriverSidecarsResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<SparkApplicationDriverSidecarsResourcesClaims>>,
@@ -4453,11 +3777,7 @@ pub struct SparkApplicationDriverSidecarsSecurityContext {
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
@@ -4480,22 +3800,14 @@ pub struct SparkApplicationDriverSidecarsSecurityContext {
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -4503,11 +3815,7 @@ pub struct SparkApplicationDriverSidecarsSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -4521,31 +3829,19 @@ pub struct SparkApplicationDriverSidecarsSecurityContext {
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<SparkApplicationDriverSidecarsSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<SparkApplicationDriverSidecarsSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<SparkApplicationDriverSidecarsSecurityContextWindowsOptions>,
 }
 
@@ -4593,16 +3889,12 @@ pub struct SparkApplicationDriverSidecarsSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -4619,38 +3911,22 @@ pub struct SparkApplicationDriverSidecarsSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -4668,11 +3944,7 @@ pub struct SparkApplicationDriverSidecarsStartupProbe {
     pub exec: Option<SparkApplicationDriverSidecarsStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4682,27 +3954,15 @@ pub struct SparkApplicationDriverSidecarsStartupProbe {
     pub http_get: Option<SparkApplicationDriverSidecarsStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -4717,20 +3977,12 @@ pub struct SparkApplicationDriverSidecarsStartupProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -4753,8 +4005,8 @@ pub struct SparkApplicationDriverSidecarsStartupProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -4768,11 +4020,7 @@ pub struct SparkApplicationDriverSidecarsStartupProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<SparkApplicationDriverSidecarsStartupProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4830,11 +4078,7 @@ pub struct SparkApplicationDriverSidecarsVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -4850,11 +4094,7 @@ pub struct SparkApplicationDriverSidecarsVolumeMounts {
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -4880,11 +4120,7 @@ pub struct SparkApplicationDriverTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -4903,11 +4139,7 @@ pub struct SparkApplicationDriverVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -4923,11 +4155,7 @@ pub struct SparkApplicationDriverVolumeMounts {
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -4935,39 +4163,19 @@ pub struct SparkApplicationDriverVolumeMounts {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationDriverIngressOptions {
     /// IngressAnnotations is a map of key,value pairs of annotations that might be added to the ingress object. i.e. specify nginx as ingress.class
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressAnnotations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressAnnotations")]
     pub ingress_annotations: Option<BTreeMap<String, String>>,
     /// TlsHosts is useful If we need to declare SSL certificates to the ingress object
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressTLS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressTLS")]
     pub ingress_tls: Option<Vec<SparkApplicationDriverIngressOptionsIngressTls>>,
     /// IngressURLFormat is the URL for the ingress.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressURLFormat"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressURLFormat")]
     pub ingress_url_format: Option<String>,
     /// ServiceAnnotations is a map of key,value pairs of annotations that might be added to the service object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAnnotations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAnnotations")]
     pub service_annotations: Option<BTreeMap<String, String>>,
     /// ServiceLabels is a map of key,value pairs of labels that might be added to the service object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceLabels")]
     pub service_labels: Option<BTreeMap<String, String>>,
     /// ServicePort allows configuring the port at service level that might be different from the targetPort.
     #[serde(rename = "servicePort")]
@@ -4977,11 +4185,7 @@ pub struct SparkApplicationDriverIngressOptions {
     #[serde(rename = "servicePortName")]
     pub service_port_name: String,
     /// ServiceType allows configuring the type of the service. Defaults to ClusterIP.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceType")]
     pub service_type: Option<String>,
 }
 
@@ -4999,11 +4203,7 @@ pub struct SparkApplicationDriverIngressOptionsIngressTls {
     /// hostname alone. If the SNI host in a listener conflicts with the "Host"
     /// header field used by an IngressRule, the SNI host is used for termination
     /// and value of the "Host" header is used for routing.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -5016,33 +4216,17 @@ pub struct SparkApplicationDynamicAllocation {
     pub enabled: Option<bool>,
     /// InitialExecutors is the initial number of executors to request. If .spec.executor.instances
     /// is also set, the initial number of executors is set to the bigger of that and this option.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialExecutors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialExecutors")]
     pub initial_executors: Option<i32>,
     /// MaxExecutors is the upper bound for the number of executors if dynamic allocation is enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxExecutors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxExecutors")]
     pub max_executors: Option<i32>,
     /// MinExecutors is the lower bound for the number of executors if dynamic allocation is enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minExecutors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minExecutors")]
     pub min_executors: Option<i32>,
     /// ShuffleTrackingTimeout controls the timeout in milliseconds for executors that are holding
     /// shuffle data if shuffle tracking is enabled (true by default if dynamic allocation is enabled).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "shuffleTrackingTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shuffleTrackingTimeout")]
     pub shuffle_tracking_timeout: Option<i64>,
 }
 
@@ -5056,11 +4240,7 @@ pub struct SparkApplicationExecutor {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// ConfigMaps carries information of other ConfigMaps to add to the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMaps"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMaps")]
     pub config_maps: Option<Vec<SparkApplicationExecutorConfigMaps>>,
     /// CoreLimit specifies a hard limit on CPU cores for the pod.
     /// Optional
@@ -5068,22 +4248,14 @@ pub struct SparkApplicationExecutor {
     pub core_limit: Option<String>,
     /// CoreRequest is the physical CPU core request for the executors.
     /// Maps to `spark.kubernetes.executor.request.cores` that is available since Spark 2.4.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "coreRequest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "coreRequest")]
     pub core_request: Option<String>,
     /// Cores maps to `spark.driver.cores` or `spark.executor.cores` for the driver and executors, respectively.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cores: Option<i32>,
     /// DeleteOnTermination specify whether executor pods should be deleted in case of failure or normal termination.
     /// Maps to `spark.kubernetes.executor.deleteOnTermination` that is available since Spark 3.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deleteOnTermination"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deleteOnTermination")]
     pub delete_on_termination: Option<bool>,
     /// DnsConfig dns settings for the pod, following the Kubernetes specifications.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsConfig")]
@@ -5096,11 +4268,7 @@ pub struct SparkApplicationExecutor {
     pub env_from: Option<Vec<SparkApplicationExecutorEnvFrom>>,
     /// EnvSecretKeyRefs holds a mapping from environment variable names to SecretKeyRefs.
     /// Deprecated. Consider using `env` instead.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "envSecretKeyRefs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "envSecretKeyRefs")]
     pub env_secret_key_refs: Option<BTreeMap<String, SparkApplicationExecutorEnvSecretKeyRefs>>,
     /// EnvVars carries the environment variables to add to the pod.
     /// Deprecated. Consider using `env` instead.
@@ -5110,39 +4278,23 @@ pub struct SparkApplicationExecutor {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gpu: Option<SparkApplicationExecutorGpu>,
     /// HostAliases settings for the pod, following the Kubernetes specifications.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostAliases"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<SparkApplicationExecutorHostAliases>>,
     /// HostNetwork indicates whether to request host networking for the pod or not.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostNetwork"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
     pub host_network: Option<bool>,
     /// Image is the container image to use. Overrides Spec.Image if set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// InitContainers is a list of init-containers that run to completion before the main Spark container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<SparkApplicationExecutorInitContainers>>,
     /// Instances is the number of executor instances.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub instances: Option<i32>,
     /// JavaOptions is a string of extra JVM options to pass to the executors. For instance,
     /// GC settings or other logging.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "javaOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "javaOptions")]
     pub java_options: Option<String>,
     /// Labels are the Kubernetes labels to be added to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5154,67 +4306,35 @@ pub struct SparkApplicationExecutor {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub memory: Option<String>,
     /// MemoryOverhead is the amount of off-heap memory to allocate in cluster mode, in MiB unless otherwise specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "memoryOverhead"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryOverhead")]
     pub memory_overhead: Option<String>,
     /// NodeSelector is the Kubernetes node selector to be added to the driver and executor pods.
     /// This field is mutually exclusive with nodeSelector at SparkApplication level (which will be deprecated).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// PodSecurityContext specifies the PodSecurityContext to apply.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSecurityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurityContext")]
     pub pod_security_context: Option<SparkApplicationExecutorPodSecurityContext>,
     /// Ports settings for the pods, following the Kubernetes specifications.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<SparkApplicationExecutorPorts>>,
     /// PriorityClassName is the name of the PriorityClass for the executor pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// SchedulerName specifies the scheduler that will be used for scheduling
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schedulerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
     /// Secrets carries information of secrets to add to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secrets: Option<Vec<SparkApplicationExecutorSecrets>>,
     /// SecurityContext specifies the container's SecurityContext to apply.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<SparkApplicationExecutorSecurityContext>,
     /// ServiceAccount is the name of the custom Kubernetes service account used by the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
     /// ShareProcessNamespace settings for the pod, following the Kubernetes specifications.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "shareProcessNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shareProcessNamespace")]
     pub share_process_namespace: Option<bool>,
     /// Sidecars is a list of sidecar containers that run along side the main Spark container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5225,21 +4345,13 @@ pub struct SparkApplicationExecutor {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub template: Option<BTreeMap<String, serde_json::Value>>,
     /// Termination grace period seconds for the pod
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Tolerations specifies the tolerations listed in ".spec.tolerations" to be applied to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<SparkApplicationExecutorTolerations>>,
     /// VolumeMounts specifies the volumes listed in ".spec.volumes" to mount into the main container's filesystem.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<SparkApplicationExecutorVolumeMounts>>,
 }
 
@@ -5247,25 +4359,13 @@ pub struct SparkApplicationExecutor {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationExecutorAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<SparkApplicationExecutorAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<SparkApplicationExecutorAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<SparkApplicationExecutorAffinityPodAntiAffinity>,
 }
 
@@ -5316,8 +4416,7 @@ pub struct SparkApplicationExecutorAffinityNodeAffinityPreferredDuringScheduling
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SparkApplicationExecutorAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct SparkApplicationExecutorAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -5335,8 +4434,7 @@ pub struct SparkApplicationExecutorAffinityNodeAffinityPreferredDuringScheduling
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SparkApplicationExecutorAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct SparkApplicationExecutorAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -5379,8 +4477,7 @@ pub struct SparkApplicationExecutorAffinityNodeAffinityRequiredDuringSchedulingI
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SparkApplicationExecutorAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct SparkApplicationExecutorAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -5398,8 +4495,7 @@ pub struct SparkApplicationExecutorAffinityNodeAffinityRequiredDuringSchedulingI
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SparkApplicationExecutorAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct SparkApplicationExecutorAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -5518,8 +4614,7 @@ pub struct SparkApplicationExecutorAffinityPodAffinityPreferredDuringSchedulingI
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SparkApplicationExecutorAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct SparkApplicationExecutorAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5553,8 +4648,7 @@ pub struct SparkApplicationExecutorAffinityPodAffinityPreferredDuringSchedulingI
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SparkApplicationExecutorAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct SparkApplicationExecutorAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5641,8 +4735,7 @@ pub struct SparkApplicationExecutorAffinityPodAffinityRequiredDuringSchedulingIg
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SparkApplicationExecutorAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct SparkApplicationExecutorAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5676,8 +4769,7 @@ pub struct SparkApplicationExecutorAffinityPodAffinityRequiredDuringSchedulingIg
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SparkApplicationExecutorAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct SparkApplicationExecutorAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5795,8 +4887,7 @@ pub struct SparkApplicationExecutorAffinityPodAntiAffinityPreferredDuringSchedul
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SparkApplicationExecutorAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct SparkApplicationExecutorAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5830,8 +4921,7 @@ pub struct SparkApplicationExecutorAffinityPodAntiAffinityPreferredDuringSchedul
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SparkApplicationExecutorAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct SparkApplicationExecutorAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5918,8 +5008,7 @@ pub struct SparkApplicationExecutorAffinityPodAntiAffinityRequiredDuringScheduli
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SparkApplicationExecutorAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct SparkApplicationExecutorAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5953,8 +5042,7 @@ pub struct SparkApplicationExecutorAffinityPodAntiAffinityRequiredDuringScheduli
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SparkApplicationExecutorAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct SparkApplicationExecutorAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -6031,11 +5119,7 @@ pub struct SparkApplicationExecutorEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationExecutorEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<SparkApplicationExecutorEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -6043,18 +5127,10 @@ pub struct SparkApplicationExecutorEnvValueFrom {
     pub field_ref: Option<SparkApplicationExecutorEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<SparkApplicationExecutorEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SparkApplicationExecutorEnvValueFromSecretKeyRef>,
 }
 
@@ -6078,11 +5154,7 @@ pub struct SparkApplicationExecutorEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationExecutorEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -6094,11 +5166,7 @@ pub struct SparkApplicationExecutorEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationExecutorEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6126,11 +5194,7 @@ pub struct SparkApplicationExecutorEnvValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationExecutorEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<SparkApplicationExecutorEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6243,11 +5307,7 @@ pub struct SparkApplicationExecutorInitContainers {
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Actions that the management system should take in response to container lifecycle events.
     /// Cannot be updated.
@@ -6257,11 +5317,7 @@ pub struct SparkApplicationExecutorInitContainers {
     /// Container will be restarted if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<SparkApplicationExecutorInitContainersLivenessProbe>,
     /// Name of the container specified as a DNS_LABEL.
     /// Each container in a pod must have a unique name (DNS_LABEL).
@@ -6280,18 +5336,10 @@ pub struct SparkApplicationExecutorInitContainers {
     /// Container will be removed from service endpoints if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<SparkApplicationExecutorInitContainersReadinessProbe>,
     /// Resources resize policy for the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resizePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
     pub resize_policy: Option<Vec<SparkApplicationExecutorInitContainersResizePolicy>>,
     /// Compute Resources required by this container.
     /// Cannot be updated.
@@ -6313,20 +5361,12 @@ pub struct SparkApplicationExecutorInitContainers {
     /// container. Instead, the next init container starts immediately after this
     /// init container is started, or after any startupProbe has successfully
     /// completed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     /// SecurityContext defines the security options the container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<SparkApplicationExecutorInitContainersSecurityContext>,
     /// StartupProbe indicates that the Pod has successfully initialized.
     /// If specified, no other probes are executed until this completes successfully.
@@ -6335,11 +5375,7 @@ pub struct SparkApplicationExecutorInitContainers {
     /// when it might take a long time to load data or warm a cache, than during steady-state operation.
     /// This cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<SparkApplicationExecutorInitContainersStartupProbe>,
     /// Whether this container should allocate a buffer for stdin in the container runtime. If this
     /// is not set, reads from stdin in the container will always result in EOF.
@@ -6362,11 +5398,7 @@ pub struct SparkApplicationExecutorInitContainers {
     /// all containers will be limited to 12kb.
     /// Defaults to /dev/termination-log.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
     /// Indicate how the termination message should be populated. File will use the contents of
     /// terminationMessagePath to populate the container status message on both success and failure.
@@ -6375,40 +5407,24 @@ pub struct SparkApplicationExecutorInitContainers {
     /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
     /// Defaults to File.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
     /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
     /// volumeDevices is the list of block devices to be used by the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
     pub volume_devices: Option<Vec<SparkApplicationExecutorInitContainersVolumeDevices>>,
     /// Pod volumes to mount into the container's filesystem.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<SparkApplicationExecutorInitContainersVolumeMounts>>,
     /// Container's working directory.
     /// If not specified, the container runtime's default will be used, which
     /// might be configured in the container image.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -6437,32 +5453,18 @@ pub struct SparkApplicationExecutorInitContainersEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationExecutorInitContainersEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<SparkApplicationExecutorInitContainersEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<SparkApplicationExecutorInitContainersEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<SparkApplicationExecutorInitContainersEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<SparkApplicationExecutorInitContainersEnvValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<SparkApplicationExecutorInitContainersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SparkApplicationExecutorInitContainersEnvValueFromSecretKeyRef>,
 }
 
@@ -6486,11 +5488,7 @@ pub struct SparkApplicationExecutorInitContainersEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationExecutorInitContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -6502,11 +5500,7 @@ pub struct SparkApplicationExecutorInitContainersEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationExecutorInitContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6534,11 +5528,7 @@ pub struct SparkApplicationExecutorInitContainersEnvValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationExecutorInitContainersEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<SparkApplicationExecutorInitContainersEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6639,13 +5629,8 @@ pub struct SparkApplicationExecutorInitContainersLifecyclePostStartHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<SparkApplicationExecutorInitContainersLifecyclePostStartHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<SparkApplicationExecutorInitContainersLifecyclePostStartHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -6737,13 +5722,8 @@ pub struct SparkApplicationExecutorInitContainersLifecyclePreStopHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<SparkApplicationExecutorInitContainersLifecyclePreStopHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<SparkApplicationExecutorInitContainersLifecyclePreStopHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -6799,11 +5779,7 @@ pub struct SparkApplicationExecutorInitContainersLivenessProbe {
     pub exec: Option<SparkApplicationExecutorInitContainersLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6813,27 +5789,15 @@ pub struct SparkApplicationExecutorInitContainersLivenessProbe {
     pub http_get: Option<SparkApplicationExecutorInitContainersLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -6848,20 +5812,12 @@ pub struct SparkApplicationExecutorInitContainersLivenessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -6884,8 +5840,8 @@ pub struct SparkApplicationExecutorInitContainersLivenessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -6899,13 +5855,8 @@ pub struct SparkApplicationExecutorInitContainersLivenessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<SparkApplicationExecutorInitContainersLivenessProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<SparkApplicationExecutorInitContainersLivenessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -6979,11 +5930,7 @@ pub struct SparkApplicationExecutorInitContainersReadinessProbe {
     pub exec: Option<SparkApplicationExecutorInitContainersReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6993,27 +5940,15 @@ pub struct SparkApplicationExecutorInitContainersReadinessProbe {
     pub http_get: Option<SparkApplicationExecutorInitContainersReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -7028,20 +5963,12 @@ pub struct SparkApplicationExecutorInitContainersReadinessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -7064,8 +5991,8 @@ pub struct SparkApplicationExecutorInitContainersReadinessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -7079,13 +6006,8 @@ pub struct SparkApplicationExecutorInitContainersReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<SparkApplicationExecutorInitContainersReadinessProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<SparkApplicationExecutorInitContainersReadinessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -7141,12 +6063,12 @@ pub struct SparkApplicationExecutorInitContainersResizePolicy {
 pub struct SparkApplicationExecutorInitContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<SparkApplicationExecutorInitContainersResourcesClaims>>,
@@ -7183,11 +6105,7 @@ pub struct SparkApplicationExecutorInitContainersSecurityContext {
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
@@ -7210,22 +6128,14 @@ pub struct SparkApplicationExecutorInitContainersSecurityContext {
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -7233,11 +6143,7 @@ pub struct SparkApplicationExecutorInitContainersSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -7251,35 +6157,20 @@ pub struct SparkApplicationExecutorInitContainersSecurityContext {
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options:
-        Option<SparkApplicationExecutorInitContainersSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<SparkApplicationExecutorInitContainersSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile:
-        Option<SparkApplicationExecutorInitContainersSecurityContextSeccompProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<SparkApplicationExecutorInitContainersSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options:
-        Option<SparkApplicationExecutorInitContainersSecurityContextWindowsOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<SparkApplicationExecutorInitContainersSecurityContextWindowsOptions>,
 }
 
 /// The capabilities to add/drop when running containers.
@@ -7326,16 +6217,12 @@ pub struct SparkApplicationExecutorInitContainersSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -7352,38 +6239,22 @@ pub struct SparkApplicationExecutorInitContainersSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -7401,11 +6272,7 @@ pub struct SparkApplicationExecutorInitContainersStartupProbe {
     pub exec: Option<SparkApplicationExecutorInitContainersStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7415,27 +6282,15 @@ pub struct SparkApplicationExecutorInitContainersStartupProbe {
     pub http_get: Option<SparkApplicationExecutorInitContainersStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -7450,20 +6305,12 @@ pub struct SparkApplicationExecutorInitContainersStartupProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -7486,8 +6333,8 @@ pub struct SparkApplicationExecutorInitContainersStartupProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -7501,13 +6348,8 @@ pub struct SparkApplicationExecutorInitContainersStartupProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<SparkApplicationExecutorInitContainersStartupProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<SparkApplicationExecutorInitContainersStartupProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -7564,11 +6406,7 @@ pub struct SparkApplicationExecutorInitContainersVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -7584,11 +6422,7 @@ pub struct SparkApplicationExecutorInitContainersVolumeMounts {
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -7656,11 +6490,7 @@ pub struct SparkApplicationExecutorLifecyclePostStartHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<SparkApplicationExecutorLifecyclePostStartHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7753,11 +6583,7 @@ pub struct SparkApplicationExecutorLifecyclePreStopHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<SparkApplicationExecutorLifecyclePreStopHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7809,13 +6635,13 @@ pub struct SparkApplicationExecutorPodSecurityContext {
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
-    ///
-    ///
+    /// 
+    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    ///
-    ///
+    /// 
+    /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
@@ -7827,11 +6653,7 @@ pub struct SparkApplicationExecutorPodSecurityContext {
     /// and emptydir.
     /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
@@ -7839,11 +6661,7 @@ pub struct SparkApplicationExecutorPodSecurityContext {
     /// PodSecurityContext, the value specified in SecurityContext takes precedence
     /// for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -7851,11 +6669,7 @@ pub struct SparkApplicationExecutorPodSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in SecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -7871,19 +6685,11 @@ pub struct SparkApplicationExecutorPodSecurityContext {
     /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
     /// takes precedence for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<SparkApplicationExecutorPodSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by the containers in this pod.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<SparkApplicationExecutorPodSecurityContextSeccompProfile>,
     /// A list of groups applied to the first process run in each container, in addition
     /// to the container's primary GID, the fsGroup (if specified), and group memberships
@@ -7892,11 +6698,7 @@ pub struct SparkApplicationExecutorPodSecurityContext {
     /// defined in the container image for the uid of the container process are still effective,
     /// even if they are not included in this list.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
     /// sysctls (by the container runtime) might fail to launch.
@@ -7907,11 +6709,7 @@ pub struct SparkApplicationExecutorPodSecurityContext {
     /// If unspecified, the options within a container's SecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<SparkApplicationExecutorPodSecurityContextWindowsOptions>,
 }
 
@@ -7945,16 +6743,12 @@ pub struct SparkApplicationExecutorPodSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -7980,38 +6774,22 @@ pub struct SparkApplicationExecutorPodSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -8044,11 +6822,7 @@ pub struct SparkApplicationExecutorSecurityContext {
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
@@ -8071,22 +6845,14 @@ pub struct SparkApplicationExecutorSecurityContext {
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -8094,11 +6860,7 @@ pub struct SparkApplicationExecutorSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -8112,31 +6874,19 @@ pub struct SparkApplicationExecutorSecurityContext {
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<SparkApplicationExecutorSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<SparkApplicationExecutorSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<SparkApplicationExecutorSecurityContextWindowsOptions>,
 }
 
@@ -8184,16 +6934,12 @@ pub struct SparkApplicationExecutorSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -8210,38 +6956,22 @@ pub struct SparkApplicationExecutorSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -8291,11 +7021,7 @@ pub struct SparkApplicationExecutorSidecars {
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Actions that the management system should take in response to container lifecycle events.
     /// Cannot be updated.
@@ -8305,11 +7031,7 @@ pub struct SparkApplicationExecutorSidecars {
     /// Container will be restarted if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<SparkApplicationExecutorSidecarsLivenessProbe>,
     /// Name of the container specified as a DNS_LABEL.
     /// Each container in a pod must have a unique name (DNS_LABEL).
@@ -8328,18 +7050,10 @@ pub struct SparkApplicationExecutorSidecars {
     /// Container will be removed from service endpoints if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<SparkApplicationExecutorSidecarsReadinessProbe>,
     /// Resources resize policy for the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resizePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
     pub resize_policy: Option<Vec<SparkApplicationExecutorSidecarsResizePolicy>>,
     /// Compute Resources required by this container.
     /// Cannot be updated.
@@ -8361,20 +7075,12 @@ pub struct SparkApplicationExecutorSidecars {
     /// container. Instead, the next init container starts immediately after this
     /// init container is started, or after any startupProbe has successfully
     /// completed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     /// SecurityContext defines the security options the container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<SparkApplicationExecutorSidecarsSecurityContext>,
     /// StartupProbe indicates that the Pod has successfully initialized.
     /// If specified, no other probes are executed until this completes successfully.
@@ -8383,11 +7089,7 @@ pub struct SparkApplicationExecutorSidecars {
     /// when it might take a long time to load data or warm a cache, than during steady-state operation.
     /// This cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<SparkApplicationExecutorSidecarsStartupProbe>,
     /// Whether this container should allocate a buffer for stdin in the container runtime. If this
     /// is not set, reads from stdin in the container will always result in EOF.
@@ -8410,11 +7112,7 @@ pub struct SparkApplicationExecutorSidecars {
     /// all containers will be limited to 12kb.
     /// Defaults to /dev/termination-log.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
     /// Indicate how the termination message should be populated. File will use the contents of
     /// terminationMessagePath to populate the container status message on both success and failure.
@@ -8423,40 +7121,24 @@ pub struct SparkApplicationExecutorSidecars {
     /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
     /// Defaults to File.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
     /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
     /// volumeDevices is the list of block devices to be used by the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
     pub volume_devices: Option<Vec<SparkApplicationExecutorSidecarsVolumeDevices>>,
     /// Pod volumes to mount into the container's filesystem.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<SparkApplicationExecutorSidecarsVolumeMounts>>,
     /// Container's working directory.
     /// If not specified, the container runtime's default will be used, which
     /// might be configured in the container image.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -8485,11 +7167,7 @@ pub struct SparkApplicationExecutorSidecarsEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationExecutorSidecarsEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<SparkApplicationExecutorSidecarsEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -8497,18 +7175,10 @@ pub struct SparkApplicationExecutorSidecarsEnvValueFrom {
     pub field_ref: Option<SparkApplicationExecutorSidecarsEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<SparkApplicationExecutorSidecarsEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SparkApplicationExecutorSidecarsEnvValueFromSecretKeyRef>,
 }
 
@@ -8532,11 +7202,7 @@ pub struct SparkApplicationExecutorSidecarsEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationExecutorSidecarsEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -8548,11 +7214,7 @@ pub struct SparkApplicationExecutorSidecarsEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationExecutorSidecarsEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8580,11 +7242,7 @@ pub struct SparkApplicationExecutorSidecarsEnvValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationExecutorSidecarsEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<SparkApplicationExecutorSidecarsEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8685,13 +7343,8 @@ pub struct SparkApplicationExecutorSidecarsLifecyclePostStartHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<SparkApplicationExecutorSidecarsLifecyclePostStartHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<SparkApplicationExecutorSidecarsLifecyclePostStartHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -8783,13 +7436,8 @@ pub struct SparkApplicationExecutorSidecarsLifecyclePreStopHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<SparkApplicationExecutorSidecarsLifecyclePreStopHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<SparkApplicationExecutorSidecarsLifecyclePreStopHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -8845,11 +7493,7 @@ pub struct SparkApplicationExecutorSidecarsLivenessProbe {
     pub exec: Option<SparkApplicationExecutorSidecarsLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8859,27 +7503,15 @@ pub struct SparkApplicationExecutorSidecarsLivenessProbe {
     pub http_get: Option<SparkApplicationExecutorSidecarsLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -8894,20 +7526,12 @@ pub struct SparkApplicationExecutorSidecarsLivenessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -8930,8 +7554,8 @@ pub struct SparkApplicationExecutorSidecarsLivenessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -8945,11 +7569,7 @@ pub struct SparkApplicationExecutorSidecarsLivenessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<SparkApplicationExecutorSidecarsLivenessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9024,11 +7644,7 @@ pub struct SparkApplicationExecutorSidecarsReadinessProbe {
     pub exec: Option<SparkApplicationExecutorSidecarsReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9038,27 +7654,15 @@ pub struct SparkApplicationExecutorSidecarsReadinessProbe {
     pub http_get: Option<SparkApplicationExecutorSidecarsReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -9073,20 +7677,12 @@ pub struct SparkApplicationExecutorSidecarsReadinessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -9109,8 +7705,8 @@ pub struct SparkApplicationExecutorSidecarsReadinessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -9124,11 +7720,7 @@ pub struct SparkApplicationExecutorSidecarsReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<SparkApplicationExecutorSidecarsReadinessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9185,12 +7777,12 @@ pub struct SparkApplicationExecutorSidecarsResizePolicy {
 pub struct SparkApplicationExecutorSidecarsResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<SparkApplicationExecutorSidecarsResourcesClaims>>,
@@ -9227,11 +7819,7 @@ pub struct SparkApplicationExecutorSidecarsSecurityContext {
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
@@ -9254,22 +7842,14 @@ pub struct SparkApplicationExecutorSidecarsSecurityContext {
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -9277,11 +7857,7 @@ pub struct SparkApplicationExecutorSidecarsSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -9295,31 +7871,19 @@ pub struct SparkApplicationExecutorSidecarsSecurityContext {
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<SparkApplicationExecutorSidecarsSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<SparkApplicationExecutorSidecarsSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<SparkApplicationExecutorSidecarsSecurityContextWindowsOptions>,
 }
 
@@ -9367,16 +7931,12 @@ pub struct SparkApplicationExecutorSidecarsSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -9393,38 +7953,22 @@ pub struct SparkApplicationExecutorSidecarsSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -9442,11 +7986,7 @@ pub struct SparkApplicationExecutorSidecarsStartupProbe {
     pub exec: Option<SparkApplicationExecutorSidecarsStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9456,27 +7996,15 @@ pub struct SparkApplicationExecutorSidecarsStartupProbe {
     pub http_get: Option<SparkApplicationExecutorSidecarsStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -9491,20 +8019,12 @@ pub struct SparkApplicationExecutorSidecarsStartupProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -9527,8 +8047,8 @@ pub struct SparkApplicationExecutorSidecarsStartupProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -9542,11 +8062,7 @@ pub struct SparkApplicationExecutorSidecarsStartupProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<SparkApplicationExecutorSidecarsStartupProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9604,11 +8120,7 @@ pub struct SparkApplicationExecutorSidecarsVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -9624,11 +8136,7 @@ pub struct SparkApplicationExecutorSidecarsVolumeMounts {
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -9654,11 +8162,7 @@ pub struct SparkApplicationExecutorTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -9677,11 +8181,7 @@ pub struct SparkApplicationExecutorVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -9697,11 +8197,7 @@ pub struct SparkApplicationExecutorVolumeMounts {
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -9726,19 +8222,11 @@ pub struct SparkApplicationMonitoring {
     pub expose_executor_metrics: bool,
     /// MetricsProperties is the content of a custom metrics.properties for configuring the Spark metric system.
     /// If not specified, the content in spark-docker/conf/metrics.properties will be used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricsProperties"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsProperties")]
     pub metrics_properties: Option<String>,
     /// MetricsPropertiesFile is the container local path of file metrics.properties for configuring
     /// the Spark metric system. If not specified, value /etc/metrics/conf/metrics.properties will be used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricsPropertiesFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsPropertiesFile")]
     pub metrics_properties_file: Option<String>,
     /// Prometheus is for configuring the Prometheus JMX exporter.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9750,11 +8238,7 @@ pub struct SparkApplicationMonitoring {
 pub struct SparkApplicationMonitoringPrometheus {
     /// ConfigFile is the path to the custom Prometheus configuration file provided in the Spark image.
     /// ConfigFile takes precedence over Configuration, which is shown below.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configFile")]
     pub config_file: Option<String>,
     /// Configuration is the content of the Prometheus configuration needed by the Prometheus JMX exporter.
     /// If not specified, the content in spark-docker/conf/prometheus.yaml will be used.
@@ -9788,34 +8272,18 @@ pub enum SparkApplicationPythonVersion {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationRestartPolicy {
     /// OnFailureRetries the number of times to retry running an application before giving up.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "onFailureRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "onFailureRetries")]
     pub on_failure_retries: Option<i32>,
     /// OnFailureRetryInterval is the interval in seconds between retries on failed runs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "onFailureRetryInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "onFailureRetryInterval")]
     pub on_failure_retry_interval: Option<i64>,
     /// OnSubmissionFailureRetries is the number of times to retry submitting an application before giving up.
     /// This is best effort and actual retry attempts can be >= the value specified due to caching.
     /// These are required if RestartPolicy is OnFailure.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "onSubmissionFailureRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "onSubmissionFailureRetries")]
     pub on_submission_failure_retries: Option<i32>,
     /// OnSubmissionFailureRetryInterval is the interval in seconds between retries on failed submissions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "onSubmissionFailureRetryInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "onSubmissionFailureRetryInterval")]
     pub on_submission_failure_retry_interval: Option<i64>,
     /// Type specifies the RestartPolicyType.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -9834,56 +8302,28 @@ pub enum SparkApplicationRestartPolicyType {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationSparkUiOptions {
     /// IngressAnnotations is a map of key,value pairs of annotations that might be added to the ingress object. i.e. specify nginx as ingress.class
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressAnnotations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressAnnotations")]
     pub ingress_annotations: Option<BTreeMap<String, String>>,
     /// TlsHosts is useful If we need to declare SSL certificates to the ingress object
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressTLS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressTLS")]
     pub ingress_tls: Option<Vec<SparkApplicationSparkUiOptionsIngressTls>>,
     /// ServiceAnnotations is a map of key,value pairs of annotations that might be added to the service object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAnnotations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAnnotations")]
     pub service_annotations: Option<BTreeMap<String, String>>,
     /// ServiceLabels is a map of key,value pairs of labels that might be added to the service object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceLabels")]
     pub service_labels: Option<BTreeMap<String, String>>,
     /// ServicePort allows configuring the port at service level that might be different from the targetPort.
     /// TargetPort should be the same as the one defined in spark.ui.port
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "servicePort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "servicePort")]
     pub service_port: Option<i32>,
     /// ServicePortName allows configuring the name of the service port.
     /// This may be useful for sidecar proxies like Envoy injected by Istio which require specific ports names to treat traffic as proper HTTP.
     /// Defaults to spark-driver-ui-port.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "servicePortName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "servicePortName")]
     pub service_port_name: Option<String>,
     /// ServiceType allows configuring the type of the service. Defaults to ClusterIP.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceType")]
     pub service_type: Option<String>,
 }
 
@@ -9901,11 +8341,7 @@ pub struct SparkApplicationSparkUiOptionsIngressTls {
     /// hostname alone. If the SNI host in a listener conflicts with the "Host"
     /// header field used by an IngressRule, the SNI host is used for termination
     /// and value of the "Host" header is used for routing.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -9925,11 +8361,7 @@ pub struct SparkApplicationVolumes {
     /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsElasticBlockStore"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
     pub aws_elastic_block_store: Option<SparkApplicationVolumesAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
@@ -9951,11 +8383,7 @@ pub struct SparkApplicationVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<SparkApplicationVolumesCsi>,
     /// downwardAPI represents downward API about the pod that should populate this volume
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<SparkApplicationVolumesDownwardApi>,
     /// emptyDir represents a temporary directory that shares a pod's lifetime.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
@@ -9964,8 +8392,8 @@ pub struct SparkApplicationVolumes {
     /// ephemeral represents a volume that is handled by a cluster storage driver.
     /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
     /// and deleted when the pod is removed.
-    ///
-    ///
+    /// 
+    /// 
     /// Use this if:
     /// a) the volume is only needed while the pod runs,
     /// b) features of normal volumes like restoring from snapshot or capacity
@@ -9975,18 +8403,18 @@ pub struct SparkApplicationVolumes {
     ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
     ///    information on the connection between this volume type
     ///    and PersistentVolumeClaim).
-    ///
-    ///
+    /// 
+    /// 
     /// Use PersistentVolumeClaim or one of the vendor-specific
     /// APIs for volumes that persist for longer than the lifecycle
     /// of an individual pod.
-    ///
-    ///
+    /// 
+    /// 
     /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
     /// be used that way - see the documentation of the driver for
     /// more information.
-    ///
-    ///
+    /// 
+    /// 
     /// A pod can use both types of ephemeral volumes and
     /// persistent volumes at the same time.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9996,11 +8424,7 @@ pub struct SparkApplicationVolumes {
     pub fc: Option<SparkApplicationVolumesFc>,
     /// flexVolume represents a generic volume resource that is
     /// provisioned/attached using an exec based plugin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flexVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<SparkApplicationVolumesFlexVolume>,
     /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10008,11 +8432,7 @@ pub struct SparkApplicationVolumes {
     /// gcePersistentDisk represents a GCE Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gcePersistentDisk"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
     pub gce_persistent_disk: Option<SparkApplicationVolumesGcePersistentDisk>,
     /// gitRepo represents a git repository at a particular revision.
     /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
@@ -10050,25 +8470,13 @@ pub struct SparkApplicationVolumes {
     /// persistentVolumeClaimVolumeSource represents a reference to a
     /// PersistentVolumeClaim in the same namespace.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<SparkApplicationVolumesPersistentVolumeClaim>,
     /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "photonPersistentDisk"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
     pub photon_persistent_disk: Option<SparkApplicationVolumesPhotonPersistentDisk>,
     /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portworxVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
     pub portworx_volume: Option<SparkApplicationVolumesPortworxVolume>,
     /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10091,11 +8499,7 @@ pub struct SparkApplicationVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storageos: Option<SparkApplicationVolumesStorageos>,
     /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vsphereVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
     pub vsphere_volume: Option<SparkApplicationVolumesVsphereVolume>,
 }
 
@@ -10131,11 +8535,7 @@ pub struct SparkApplicationVolumesAwsElasticBlockStore {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationVolumesAzureDisk {
     /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachingMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
     pub caching_mode: Option<String>,
     /// diskName is the Name of the data disk in the blob storage
     #[serde(rename = "diskName")]
@@ -10188,11 +8588,7 @@ pub struct SparkApplicationVolumesCephfs {
     pub read_only: Option<bool>,
     /// secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
     pub secret_file: Option<String>,
     /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
@@ -10261,11 +8657,7 @@ pub struct SparkApplicationVolumesConfigMap {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items if unspecified, each key-value pair in the Data field of the referenced
     /// ConfigMap will be projected into the volume as a file whose name is the
@@ -10322,11 +8714,7 @@ pub struct SparkApplicationVolumesCsi {
     /// NodePublishVolume and NodeUnpublishVolume calls.
     /// This field is optional, and  may be empty if no secret is required. If the
     /// secret object contains more than one secret, all secret references are passed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePublishSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
     pub node_publish_secret_ref: Option<SparkApplicationVolumesCsiNodePublishSecretRef>,
     /// readOnly specifies a read-only configuration for the volume.
     /// Defaults to false (read/write).
@@ -10334,11 +8722,7 @@ pub struct SparkApplicationVolumesCsi {
     pub read_only: Option<bool>,
     /// volumeAttributes stores driver-specific properties that are passed to the CSI
     /// driver. Consult your driver's documentation for supported values.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
@@ -10367,11 +8751,7 @@ pub struct SparkApplicationVolumesDownwardApi {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// Items is a list of downward API volume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10396,11 +8776,7 @@ pub struct SparkApplicationVolumesDownwardApiItems {
     pub path: String,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<SparkApplicationVolumesDownwardApiItemsResourceFieldRef>,
 }
 
@@ -10408,11 +8784,7 @@ pub struct SparkApplicationVolumesDownwardApiItems {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationVolumesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -10424,11 +8796,7 @@ pub struct SparkApplicationVolumesDownwardApiItemsFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationVolumesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10460,8 +8828,8 @@ pub struct SparkApplicationVolumesEmptyDir {
 /// ephemeral represents a volume that is handled by a cluster storage driver.
 /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
 /// and deleted when the pod is removed.
-///
-///
+/// 
+/// 
 /// Use this if:
 /// a) the volume is only needed while the pod runs,
 /// b) features of normal volumes like restoring from snapshot or capacity
@@ -10471,18 +8839,18 @@ pub struct SparkApplicationVolumesEmptyDir {
 ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
 ///    information on the connection between this volume type
 ///    and PersistentVolumeClaim).
-///
-///
+/// 
+/// 
 /// Use PersistentVolumeClaim or one of the vendor-specific
 /// APIs for volumes that persist for longer than the lifecycle
 /// of an individual pod.
-///
-///
+/// 
+/// 
 /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
 /// be used that way - see the documentation of the driver for
 /// more information.
-///
-///
+/// 
+/// 
 /// A pod can use both types of ephemeral volumes and
 /// persistent volumes at the same time.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -10494,8 +8862,8 @@ pub struct SparkApplicationVolumesEphemeral {
     /// `<volume name>` is the name from the `PodSpec.Volumes` array
     /// entry. Pod validation will reject the pod if the concatenated name
     /// is not valid for a PVC (for example, too long).
-    ///
-    ///
+    /// 
+    /// 
     /// An existing PVC with that name that is not owned by the pod
     /// will *not* be used for the pod to avoid using an unrelated
     /// volume by mistake. Starting the pod is then blocked until
@@ -10504,18 +8872,14 @@ pub struct SparkApplicationVolumesEphemeral {
     /// owner reference to the pod once the pod exists. Normally
     /// this should not be necessary, but it may be useful when
     /// manually reconstructing a broken cluster.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is read-only and no changes will be made by Kubernetes
     /// to the PVC after it has been created.
-    ///
-    ///
+    /// 
+    /// 
     /// Required, must not be nil.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
     pub volume_claim_template: Option<SparkApplicationVolumesEphemeralVolumeClaimTemplate>,
 }
 
@@ -10526,8 +8890,8 @@ pub struct SparkApplicationVolumesEphemeral {
 /// `<volume name>` is the name from the `PodSpec.Volumes` array
 /// entry. Pod validation will reject the pod if the concatenated name
 /// is not valid for a PVC (for example, too long).
-///
-///
+/// 
+/// 
 /// An existing PVC with that name that is not owned by the pod
 /// will *not* be used for the pod to avoid using an unrelated
 /// volume by mistake. Starting the pod is then blocked until
@@ -10536,12 +8900,12 @@ pub struct SparkApplicationVolumesEphemeral {
 /// owner reference to the pod once the pod exists. Normally
 /// this should not be necessary, but it may be useful when
 /// manually reconstructing a broken cluster.
-///
-///
+/// 
+/// 
 /// This field is read-only and no changes will be made by Kubernetes
 /// to the PVC after it has been created.
-///
-///
+/// 
+/// 
 /// Required, must not be nil.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationVolumesEphemeralVolumeClaimTemplate {
@@ -10582,11 +8946,7 @@ pub struct SparkApplicationVolumesEphemeralVolumeClaimTemplateMetadata {
 pub struct SparkApplicationVolumesEphemeralVolumeClaimTemplateSpec {
     /// accessModes contains the desired access modes the volume should have.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// dataSource field can be used to specify either:
     /// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
@@ -10596,11 +8956,7 @@ pub struct SparkApplicationVolumesEphemeralVolumeClaimTemplateSpec {
     /// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
     /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
     /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
     pub data_source: Option<SparkApplicationVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
     /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
     /// volume is desired. This may be any object from a non-empty API group (non
@@ -10625,13 +8981,8 @@ pub struct SparkApplicationVolumesEphemeralVolumeClaimTemplateSpec {
     ///   in any namespaces.
     /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
     /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSourceRef"
-    )]
-    pub data_source_ref:
-        Option<SparkApplicationVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
+    pub data_source_ref: Option<SparkApplicationVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
     /// resources represents the minimum resources the volume should have.
     /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
     /// that are lower than previous value but must still be higher than capacity recorded in the
@@ -10644,11 +8995,7 @@ pub struct SparkApplicationVolumesEphemeralVolumeClaimTemplateSpec {
     pub selector: Option<SparkApplicationVolumesEphemeralVolumeClaimTemplateSpecSelector>,
     /// storageClassName is the name of the StorageClass required by the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
     /// If specified, the CSI driver will create or update the volume with the attributes defined
@@ -10662,26 +9009,14 @@ pub struct SparkApplicationVolumesEphemeralVolumeClaimTemplateSpec {
     /// exists.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
     /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributesClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
     /// Value of Filesystem is implied when not included in claim spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     /// volumeName is the binding reference to the PersistentVolume backing this claim.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -10770,22 +9105,12 @@ pub struct SparkApplicationVolumesEphemeralVolumeClaimTemplateSpecResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationVolumesEphemeralVolumeClaimTemplateSpecSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions: Option<
-        Vec<SparkApplicationVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<SparkApplicationVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -10823,11 +9148,7 @@ pub struct SparkApplicationVolumesFc {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// targetWWNs is Optional: FC target worldwide names (WWNs)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetWWNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
     pub target_ww_ns: Option<Vec<String>>,
     /// wwids Optional: FC volume world wide identifiers (wwids)
     /// Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
@@ -10881,18 +9202,10 @@ pub struct SparkApplicationVolumesFlexVolumeSecretRef {
 pub struct SparkApplicationVolumesFlocker {
     /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
     /// should be considered as deprecated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
     pub dataset_name: Option<String>,
     /// datasetUUID is the UUID of the dataset. This is unique identifier of a Flocker dataset
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetUUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
     pub dataset_uuid: Option<String>,
 }
 
@@ -10989,18 +9302,10 @@ pub struct SparkApplicationVolumesHostPath {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationVolumesIscsi {
     /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthDiscovery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
     /// chapAuthSession defines whether support iSCSI Session CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthSession"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
     pub chap_auth_session: Option<bool>,
     /// fsType is the filesystem type of the volume that you want to mount.
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
@@ -11012,21 +9317,13 @@ pub struct SparkApplicationVolumesIscsi {
     /// initiatorName is the custom iSCSI Initiator Name.
     /// If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface
     /// <target portal>:<volume name> will be created for the connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initiatorName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
     pub initiator_name: Option<String>,
     /// iqn is the target iSCSI Qualified Name.
     pub iqn: String,
     /// iscsiInterface is the interface Name that uses an iSCSI transport.
     /// Defaults to 'default' (tcp).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "iscsiInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
     pub iscsi_interface: Option<String>,
     /// lun represents iSCSI Target Lun number.
     pub lun: i32,
@@ -11128,11 +9425,7 @@ pub struct SparkApplicationVolumesProjected {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// sources is the list of volume projections
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -11144,59 +9437,47 @@ pub struct SparkApplicationVolumesProjected {
 pub struct SparkApplicationVolumesProjectedSources {
     /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
     /// of ClusterTrustBundle objects in an auto-updating file.
-    ///
-    ///
+    /// 
+    /// 
     /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// ClusterTrustBundle objects can either be selected by name, or by the
     /// combination of signer name and a label selector.
-    ///
-    ///
+    /// 
+    /// 
     /// Kubelet performs aggressive normalization of the PEM contents written
     /// into the pod filesystem.  Esoteric PEM features such as inter-block
     /// comments and block headers are stripped.  Certificates are deduplicated.
     /// The ordering of certificates within the file is arbitrary, and Kubelet
     /// may change the order over time.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterTrustBundle"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
     pub cluster_trust_bundle: Option<SparkApplicationVolumesProjectedSourcesClusterTrustBundle>,
     /// configMap information about the configMap data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<SparkApplicationVolumesProjectedSourcesConfigMap>,
     /// downwardAPI information about the downwardAPI data to project
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<SparkApplicationVolumesProjectedSourcesDownwardApi>,
     /// secret information about the secret data to project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<SparkApplicationVolumesProjectedSourcesSecret>,
     /// serviceAccountToken is information about the serviceAccountToken data to project
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
     pub service_account_token: Option<SparkApplicationVolumesProjectedSourcesServiceAccountToken>,
 }
 
 /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
 /// of ClusterTrustBundle objects in an auto-updating file.
-///
-///
+/// 
+/// 
 /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-///
-///
+/// 
+/// 
 /// ClusterTrustBundle objects can either be selected by name, or by the
 /// combination of signer name and a label selector.
-///
-///
+/// 
+/// 
 /// Kubelet performs aggressive normalization of the PEM contents written
 /// into the pod filesystem.  Esoteric PEM features such as inter-block
 /// comments and block headers are stripped.  Certificates are deduplicated.
@@ -11208,13 +9489,8 @@ pub struct SparkApplicationVolumesProjectedSourcesClusterTrustBundle {
     /// effect if signerName is set.  Mutually-exclusive with name.  If unset,
     /// interpreted as "match nothing".  If set but empty, interpreted as "match
     /// everything".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector:
-        Option<SparkApplicationVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<SparkApplicationVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
     /// Select a single ClusterTrustBundle by object name.  Mutually-exclusive
     /// with signerName and labelSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -11231,11 +9507,7 @@ pub struct SparkApplicationVolumesProjectedSourcesClusterTrustBundle {
     /// Select all ClusterTrustBundles that match this signer name.
     /// Mutually-exclusive with name.  The contents of all selected
     /// ClusterTrustBundles will be unified and deduplicated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "signerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
     pub signer_name: Option<String>,
 }
 
@@ -11246,22 +9518,12 @@ pub struct SparkApplicationVolumesProjectedSourcesClusterTrustBundle {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationVolumesProjectedSourcesClusterTrustBundleLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions: Option<
-        Vec<SparkApplicationVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<SparkApplicationVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -11350,24 +9612,15 @@ pub struct SparkApplicationVolumesProjectedSourcesDownwardApiItems {
     pub path: String,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<SparkApplicationVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<SparkApplicationVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
 }
 
 /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationVolumesProjectedSourcesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -11379,11 +9632,7 @@ pub struct SparkApplicationVolumesProjectedSourcesDownwardApiItemsFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -11449,11 +9698,7 @@ pub struct SparkApplicationVolumesProjectedSourcesServiceAccountToken {
     /// start trying to rotate the token if the token is older than 80 percent of
     /// its time to live or if the token is older than 24 hours.Defaults to 1 hour
     /// and must be at least 10 minutes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
     /// path is the path relative to the mount point of the file to project the
     /// token into.
@@ -11557,11 +9802,7 @@ pub struct SparkApplicationVolumesScaleIo {
     /// gateway is the host address of the ScaleIO API Gateway.
     pub gateway: String,
     /// protectionDomain is the name of the ScaleIO Protection Domain for the configured storage.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protectionDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
     pub protection_domain: Option<String>,
     /// readOnly Defaults to false (read/write). ReadOnly here will force
     /// the ReadOnly setting in VolumeMounts.
@@ -11572,36 +9813,20 @@ pub struct SparkApplicationVolumesScaleIo {
     #[serde(rename = "secretRef")]
     pub secret_ref: SparkApplicationVolumesScaleIoSecretRef,
     /// sslEnabled Flag enable/disable SSL communication with Gateway, default false
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
     /// storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned.
     /// Default is ThinProvisioned.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
     pub storage_mode: Option<String>,
     /// storagePool is the ScaleIO Storage Pool associated with the protection domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
     pub storage_pool: Option<String>,
     /// system is the name of the storage system as configured in ScaleIO.
     pub system: String,
     /// volumeName is the name of a volume already created in the ScaleIO system
     /// that is associated with this volume source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -11627,11 +9852,7 @@ pub struct SparkApplicationVolumesSecret {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items If unspecified, each key-value pair in the Data field of the referenced
     /// Secret will be projected into the volume as a file whose name is the
@@ -11647,11 +9868,7 @@ pub struct SparkApplicationVolumesSecret {
     pub optional: Option<bool>,
     /// secretName is the name of the secret in the pod's namespace to use.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -11693,11 +9910,7 @@ pub struct SparkApplicationVolumesStorageos {
     pub secret_ref: Option<SparkApplicationVolumesStorageosSecretRef>,
     /// volumeName is the human-readable name of the StorageOS volume.  Volume
     /// names are only unique within a namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
     /// volumeNamespace specifies the scope of the volume within StorageOS.  If no
     /// namespace is specified then the Pod's namespace will be used.  This allows the
@@ -11705,11 +9918,7 @@ pub struct SparkApplicationVolumesStorageos {
     /// Set VolumeName to any name to override the default behaviour.
     /// Set to "default" if you are not using namespaces within StorageOS.
     /// Namespaces that do not pre-exist within StorageOS will be created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
     pub volume_namespace: Option<String>,
 }
 
@@ -11733,18 +9942,10 @@ pub struct SparkApplicationVolumesVsphereVolume {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// storagePolicyID is the storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
     pub storage_policy_id: Option<String>,
     /// storagePolicyName is the storage Policy Based Management (SPBM) profile name.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
     pub storage_policy_name: Option<String>,
     /// volumePath is the path that identifies vSphere volume vmdk
     #[serde(rename = "volumePath")]
@@ -11755,76 +9956,40 @@ pub struct SparkApplicationVolumesVsphereVolume {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationStatus {
     /// AppState tells the overall application state.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "applicationState"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "applicationState")]
     pub application_state: Option<SparkApplicationStatusApplicationState>,
     /// DriverInfo has information about the driver.
     #[serde(rename = "driverInfo")]
     pub driver_info: SparkApplicationStatusDriverInfo,
     /// ExecutionAttempts is the total number of attempts to run a submitted application to completion.
     /// Incremented upon each attempted run of the application and reset upon invalidation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "executionAttempts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionAttempts")]
     pub execution_attempts: Option<i32>,
     /// ExecutorState records the state of executors by executor Pod names.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "executorState"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "executorState")]
     pub executor_state: Option<BTreeMap<String, String>>,
     /// LastSubmissionAttemptTime is the time for the last application submission attempt.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastSubmissionAttemptTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSubmissionAttemptTime")]
     pub last_submission_attempt_time: Option<String>,
     /// SparkApplicationID is set by the spark-distribution(via spark.app.id config) on the driver and executor pods
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sparkApplicationId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sparkApplicationId")]
     pub spark_application_id: Option<String>,
     /// SubmissionAttempts is the total number of attempts to submit an application to run.
     /// Incremented upon each attempted submission of the application and reset upon invalidation and rerun.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "submissionAttempts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "submissionAttempts")]
     pub submission_attempts: Option<i32>,
     /// SubmissionID is a unique ID of the current submission of the application.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "submissionID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "submissionID")]
     pub submission_id: Option<String>,
     /// CompletionTime is the time when the application runs to completion if it does.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationTime")]
     pub termination_time: Option<String>,
 }
 
 /// AppState tells the overall application state.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SparkApplicationStatusApplicationState {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorMessage")]
     pub error_message: Option<String>,
     /// ApplicationStateType represents the type of the current state of an application.
     pub state: String,
@@ -11836,31 +10001,16 @@ pub struct SparkApplicationStatusDriverInfo {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podName")]
     pub pod_name: Option<String>,
     /// UI Details for the UI created via ClusterIP service accessible from within the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "webUIAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "webUIAddress")]
     pub web_ui_address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "webUIIngressAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "webUIIngressAddress")]
     pub web_ui_ingress_address: Option<String>,
     /// Ingress Details if an ingress for the UI was created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "webUIIngressName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "webUIIngressName")]
     pub web_ui_ingress_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "webUIPort")]
     pub web_ui_port: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "webUIServiceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "webUIServiceName")]
     pub web_ui_service_name: Option<String>,
 }
+

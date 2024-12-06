@@ -5,37 +5,24 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "egressgateway.spidernet.io",
-    version = "v1beta1",
-    kind = "EgressPolicy",
-    plural = "egresspolicies"
-)]
+#[kube(group = "egressgateway.spidernet.io", version = "v1beta1", kind = "EgressPolicy", plural = "egresspolicies")]
 #[kube(namespaced)]
 #[kube(status = "EgressPolicyStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct EgressPolicySpec {
     #[serde(rename = "appliedTo")]
     pub applied_to: EgressPolicyAppliedTo,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "destSubnet"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "destSubnet")]
     pub dest_subnet: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "egressGatewayName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressGatewayName")]
     pub egress_gateway_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressIP")]
     pub egress_ip: Option<EgressPolicyEgressIp>,
@@ -48,11 +35,7 @@ pub struct EgressPolicyAppliedTo {
     /// A label selector is a label query over a set of resources. The result of matchLabels and
     /// matchExpressions are ANDed. An empty label selector matches all objects. A null
     /// label selector matches no objects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSelector")]
     pub pod_selector: Option<EgressPolicyAppliedToPodSelector>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSubnet")]
     pub pod_subnet: Option<Vec<String>>,
@@ -64,20 +47,12 @@ pub struct EgressPolicyAppliedTo {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EgressPolicyAppliedToPodSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<EgressPolicyAppliedToPodSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -100,11 +75,7 @@ pub struct EgressPolicyAppliedToPodSelectorMatchExpressions {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct EgressPolicyEgressIp {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allocatorPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allocatorPolicy")]
     pub allocator_policy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ipv4: Option<String>,
@@ -129,3 +100,4 @@ pub struct EgressPolicyStatusEip {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ipv6: Option<String>,
 }
+

@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ObjectStoreSpec represent the spec of a pool
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "ceph.rook.io",
-    version = "v1",
-    kind = "CephObjectStore",
-    plural = "cephobjectstores"
-)]
+#[kube(group = "ceph.rook.io", version = "v1", kind = "CephObjectStore", plural = "cephobjectstores")]
 #[kube(namespaced)]
 #[kube(status = "CephObjectStoreStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CephObjectStoreSpec {
     /// The list of allowed namespaces in addition to the object store namespace
     /// where ceph object store users may be created. Specify "*" to allow all
@@ -32,11 +27,7 @@ pub struct CephObjectStoreSpec {
     /// This is useful for applications that need object store credentials
     /// to be created in their own namespace, where neither OBCs nor COSI
     /// is being used to create buckets. The default is empty.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowUsersInNamespaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowUsersInNamespaces")]
     pub allow_users_in_namespaces: Option<Vec<String>>,
     /// The authentication configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -48,11 +39,7 @@ pub struct CephObjectStoreSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub gateway: Option<CephObjectStoreGateway>,
     /// The RGW health probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<CephObjectStoreHealthCheck>,
     /// Hosting settings for the object store.
     /// A common use case for hosting configuration is to inform Rook of endpoints that support DNS
@@ -60,18 +47,10 @@ pub struct CephObjectStoreSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hosting: Option<CephObjectStoreHosting>,
     /// The metadata pool settings
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metadataPool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataPool")]
     pub metadata_pool: Option<CephObjectStoreMetadataPool>,
     /// Preserve pools on object store deletion
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preservePoolsOnDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preservePoolsOnDelete")]
     pub preserve_pools_on_delete: Option<bool>,
     /// The protocol specification
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -80,11 +59,7 @@ pub struct CephObjectStoreSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub security: Option<CephObjectStoreSecurity>,
     /// The pool information when configuring RADOS namespaces in existing pools.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sharedPools"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sharedPools")]
     pub shared_pools: Option<CephObjectStoreSharedPools>,
     /// The multisite info
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -106,28 +81,16 @@ pub struct CephObjectStoreAuthKeystone {
     #[serde(rename = "acceptedRoles")]
     pub accepted_roles: Vec<String>,
     /// Create new users in their own tenants of the same name. Possible values are true, false, swift and s3. The latter have the effect of splitting the identity space such that only the indicated protocol will use implicit tenants.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "implicitTenants"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "implicitTenants")]
     pub implicit_tenants: Option<String>,
     /// The number of seconds between token revocation checks.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "revocationInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "revocationInterval")]
     pub revocation_interval: Option<i64>,
     /// The name of the secret containing the credentials for the service user account used by RGW. It has to be in the same namespace as the object store resource.
     #[serde(rename = "serviceUserSecretName")]
     pub service_user_secret_name: String,
     /// The maximum number of entries in each Keystone token cache.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tokenCacheSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenCacheSize")]
     pub token_cache_size: Option<i64>,
     /// The URL for the Keystone server.
     pub url: String,
@@ -142,49 +105,25 @@ pub struct CephObjectStoreDataPool {
     /// DEPRECATED: use Parameters instead, e.g., Parameters["compression_mode"] = "force"
     /// The inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force)
     /// Do NOT set a default value for kubebuilder as this will override the Parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "compressionMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionMode")]
     pub compression_mode: Option<CephObjectStoreDataPoolCompressionMode>,
     /// The root of the crush hierarchy utilized by the pool
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crushRoot")]
     pub crush_root: Option<String>,
     /// The device class the OSD should set to for use in the pool
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deviceClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceClass")]
     pub device_class: Option<String>,
     /// Allow rook operator to change the pool CRUSH tunables once the pool is created
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableCrushUpdates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableCrushUpdates")]
     pub enable_crush_updates: Option<bool>,
     /// EnableRBDStats is used to enable gathering of statistics for all RBD images in the pool
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableRBDStats"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableRBDStats")]
     pub enable_rbd_stats: Option<bool>,
     /// The erasure code settings
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "erasureCoded"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "erasureCoded")]
     pub erasure_coded: Option<CephObjectStoreDataPoolErasureCoded>,
     /// The failure domain: osd/host/(region or zone if available) - technically also any type in the crush map
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomain")]
     pub failure_domain: Option<String>,
     /// The mirroring settings
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -199,11 +138,7 @@ pub struct CephObjectStoreDataPool {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicated: Option<CephObjectStoreDataPoolReplicated>,
     /// The mirroring statusCheck
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusCheck")]
     pub status_check: Option<CephObjectStoreDataPoolStatusCheck>,
 }
 
@@ -252,11 +187,7 @@ pub struct CephObjectStoreDataPoolMirroring {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub peers: Option<CephObjectStoreDataPoolMirroringPeers>,
     /// SnapshotSchedules is the scheduling of snapshot for mirrored images/pools
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotSchedules"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotSchedules")]
     pub snapshot_schedules: Option<Vec<CephObjectStoreDataPoolMirroringSnapshotSchedules>>,
 }
 
@@ -264,11 +195,7 @@ pub struct CephObjectStoreDataPoolMirroring {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreDataPoolMirroringPeers {
     /// SecretNames represents the Kubernetes Secret names to add rbd-mirror or cephfs-mirror peers
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretNames")]
     pub secret_names: Option<Vec<String>>,
 }
 
@@ -294,11 +221,7 @@ pub struct CephObjectStoreDataPoolQuotas {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBytes")]
     pub max_bytes: Option<i64>,
     /// MaxObjects represents the quota in objects
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxObjects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxObjects")]
     pub max_objects: Option<i64>,
     /// MaxSize represents the quota in bytes as a string
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSize")]
@@ -309,41 +232,21 @@ pub struct CephObjectStoreDataPoolQuotas {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreDataPoolReplicated {
     /// HybridStorage represents hybrid storage tier settings
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hybridStorage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hybridStorage")]
     pub hybrid_storage: Option<CephObjectStoreDataPoolReplicatedHybridStorage>,
     /// ReplicasPerFailureDomain the number of replica in the specified failure domain
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicasPerFailureDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicasPerFailureDomain")]
     pub replicas_per_failure_domain: Option<i64>,
     /// RequireSafeReplicaSize if false allows you to set replica 1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requireSafeReplicaSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireSafeReplicaSize")]
     pub require_safe_replica_size: Option<bool>,
     /// Size - Number of copies per object in a replicated storage pool, including the object itself (required for replicated pool type)
     pub size: i64,
     /// SubFailureDomain the name of the sub-failure domain
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subFailureDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subFailureDomain")]
     pub sub_failure_domain: Option<String>,
     /// TargetSizeRatio gives a hint (%) to Ceph in terms of expected consumption of the total cluster capacity
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetSizeRatio"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetSizeRatio")]
     pub target_size_ratio: Option<f64>,
 }
 
@@ -385,55 +288,31 @@ pub struct CephObjectStoreGateway {
     /// The root directory for each additional volume mount is `/var/rgw`.
     /// Example: for an additional mount at subPath `ldap`, mounted from a secret that has key
     /// `bindpass.secret`, the file would reside at `/var/rgw/ldap/bindpass.secret`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalVolumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalVolumeMounts")]
     pub additional_volume_mounts: Option<Vec<CephObjectStoreGatewayAdditionalVolumeMounts>>,
     /// The annotations-related configuration to add/set on each Pod related object.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// The name of the secret that stores custom ca-bundle with root and intermediate certificates.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caBundleRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caBundleRef")]
     pub ca_bundle_ref: Option<String>,
     /// Whether rgw dashboard is enabled for the rgw daemon. If not set, the rgw dashboard will be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dashboardEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dashboardEnabled")]
     pub dashboard_enabled: Option<bool>,
     /// DisableMultisiteSyncTraffic, when true, prevents this object store's gateways from
     /// transmitting multisite replication data. Note that this value does not affect whether
     /// gateways receive multisite replication traffic: see ObjectZone.spec.customEndpoints for that.
     /// If false or unset, this object store's gateways will be able to transmit multisite
     /// replication data.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableMultisiteSyncTraffic"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableMultisiteSyncTraffic")]
     pub disable_multisite_sync_traffic: Option<bool>,
     /// ExternalRgwEndpoints points to external RGW endpoint(s). Multiple endpoints can be given, but
     /// for stability of ObjectBucketClaims, we highly recommend that users give only a single
     /// external RGW endpoint that is a load balancer that sends requests to the multiple RGWs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalRgwEndpoints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalRgwEndpoints")]
     pub external_rgw_endpoints: Option<Vec<CephObjectStoreGatewayExternalRgwEndpoints>>,
     /// Whether host networking is enabled for the rgw daemon. If not set, the network settings from the cluster CR will be applied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostNetwork"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
     pub host_network: Option<bool>,
     /// The number of pods in the rgw replicaset.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -447,31 +326,19 @@ pub struct CephObjectStoreGateway {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// PriorityClassName sets priority classes on the rgw pods
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// The resource requirements for the rgw pods
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<CephObjectStoreGatewayResources>,
     /// The port the rgw service will be listening on (https)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securePort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securePort")]
     pub secure_port: Option<i32>,
     /// The configuration related to add/set on each rgw service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<CephObjectStoreGatewayService>,
     /// The name of the secret that stores the ssl certificate for secure rgw connections
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslCertificateRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslCertificateRef")]
     pub ssl_certificate_ref: Option<String>,
 }
 
@@ -497,13 +364,8 @@ pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSource {
     pub empty_dir: Option<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceEmptyDir>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
     pub host_path: Option<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceHostPath>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
-    pub persistent_volume_claim:
-        Option<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourcePersistentVolumeClaim>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourcePersistentVolumeClaim>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projected: Option<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjected>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -512,11 +374,7 @@ pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSource {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceConfigMap {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceConfigMapItems>>,
@@ -559,48 +417,24 @@ pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourcePersistentVol
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjected {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sources:
-        Option<Vec<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSources>>,
+    pub sources: Option<Vec<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSources>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSources {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterTrustBundle"
-    )]
-    pub cluster_trust_bundle: Option<
-        CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesClusterTrustBundle,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesClusterTrustBundle>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesConfigMap>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
-    pub downward_api:
-        Option<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesDownwardApi>,
+    pub config_map: Option<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesConfigMap>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
+    pub downward_api: Option<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesDownwardApi>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret:
-        Option<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesSecret>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountToken"
-    )]
-    pub service_account_token: Option<
-        CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesServiceAccountToken,
-    >,
+    pub secret: Option<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesSecret>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
+    pub service_account_token: Option<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesServiceAccountToken>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -625,8 +459,7 @@ pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSour
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions
-{
+pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -636,9 +469,7 @@ pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSour
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesConfigMap {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<
-        Vec<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesConfigMapItems>,
-    >,
+    pub items: Option<Vec<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesConfigMapItems>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -671,26 +502,16 @@ pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSour
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesDownwardApiItemsFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesDownwardApiItemsFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     #[serde(rename = "fieldPath")]
     pub field_path: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub divisor: Option<IntOrString>,
@@ -700,9 +521,7 @@ pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSour
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesSecret {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<
-        Vec<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesSecretItems>,
-    >,
+    pub items: Option<Vec<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesSecretItems>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -718,36 +537,23 @@ pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSour
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesServiceAccountToken
-{
+pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceProjectedSourcesServiceAccountToken {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
     pub path: String,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceSecret {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<CephObjectStoreGatewayAdditionalVolumeMountsVolumeSourceSecretItems>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -773,33 +579,16 @@ pub struct CephObjectStoreGatewayExternalRgwEndpoints {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacement {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<CephObjectStoreGatewayPlacementNodeAffinity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<CephObjectStoreGatewayPlacementPodAffinity>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<CephObjectStoreGatewayPlacementPodAntiAffinity>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<CephObjectStoreGatewayPlacementTolerations>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologySpreadConstraints"
-    )]
-    pub topology_spread_constraints:
-        Option<Vec<CephObjectStoreGatewayPlacementTopologySpreadConstraints>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
+    pub topology_spread_constraints: Option<Vec<CephObjectStoreGatewayPlacementTopologySpreadConstraints>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -825,8 +614,7 @@ pub struct CephObjectStoreGatewayPlacementNodeAffinityPreferredDuringSchedulingI
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephObjectStoreGatewayPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct CephObjectStoreGatewayPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -834,8 +622,7 @@ pub struct CephObjectStoreGatewayPlacementNodeAffinityPreferredDuringSchedulingI
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephObjectStoreGatewayPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct CephObjectStoreGatewayPlacementNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -857,8 +644,7 @@ pub struct CephObjectStoreGatewayPlacementNodeAffinityRequiredDuringSchedulingIg
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephObjectStoreGatewayPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct CephObjectStoreGatewayPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -866,8 +652,7 @@ pub struct CephObjectStoreGatewayPlacementNodeAffinityRequiredDuringSchedulingIg
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephObjectStoreGatewayPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct CephObjectStoreGatewayPlacementNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -914,8 +699,7 @@ pub struct CephObjectStoreGatewayPlacementPodAffinityPreferredDuringSchedulingIg
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephObjectStoreGatewayPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct CephObjectStoreGatewayPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -931,8 +715,7 @@ pub struct CephObjectStoreGatewayPlacementPodAffinityPreferredDuringSchedulingIg
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephObjectStoreGatewayPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct CephObjectStoreGatewayPlacementPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -964,8 +747,7 @@ pub struct CephObjectStoreGatewayPlacementPodAffinityRequiredDuringSchedulingIgn
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephObjectStoreGatewayPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct CephObjectStoreGatewayPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -981,8 +763,7 @@ pub struct CephObjectStoreGatewayPlacementPodAffinityRequiredDuringSchedulingIgn
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephObjectStoreGatewayPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct CephObjectStoreGatewayPlacementPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1029,8 +810,7 @@ pub struct CephObjectStoreGatewayPlacementPodAntiAffinityPreferredDuringScheduli
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephObjectStoreGatewayPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct CephObjectStoreGatewayPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1046,8 +826,7 @@ pub struct CephObjectStoreGatewayPlacementPodAntiAffinityPreferredDuringScheduli
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephObjectStoreGatewayPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct CephObjectStoreGatewayPlacementPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1079,8 +858,7 @@ pub struct CephObjectStoreGatewayPlacementPodAntiAffinityRequiredDuringSchedulin
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephObjectStoreGatewayPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct CephObjectStoreGatewayPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1096,8 +874,7 @@ pub struct CephObjectStoreGatewayPlacementPodAntiAffinityRequiredDuringSchedulin
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct CephObjectStoreGatewayPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct CephObjectStoreGatewayPlacementPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     pub key: String,
     pub operator: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1112,11 +889,7 @@ pub struct CephObjectStoreGatewayPlacementTolerations {
     pub key: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
@@ -1124,38 +897,17 @@ pub struct CephObjectStoreGatewayPlacementTolerations {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementTopologySpreadConstraints {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector:
-        Option<CephObjectStoreGatewayPlacementTopologySpreadConstraintsLabelSelector>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabelKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<CephObjectStoreGatewayPlacementTopologySpreadConstraintsLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     #[serde(rename = "maxSkew")]
     pub max_skew: i32,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinityPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeTaintsPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
     #[serde(rename = "topologyKey")]
     pub topology_key: String,
@@ -1165,19 +917,9 @@ pub struct CephObjectStoreGatewayPlacementTopologySpreadConstraints {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreGatewayPlacementTopologySpreadConstraintsLabelSelector {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions: Option<
-        Vec<CephObjectStoreGatewayPlacementTopologySpreadConstraintsLabelSelectorMatchExpressions>,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CephObjectStoreGatewayPlacementTopologySpreadConstraintsLabelSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -1194,10 +936,10 @@ pub struct CephObjectStoreGatewayPlacementTopologySpreadConstraintsLabelSelector
 pub struct CephObjectStoreGatewayResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<CephObjectStoreGatewayResourcesClaims>>,
@@ -1241,18 +983,10 @@ pub struct CephObjectStoreGatewayService {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreHealthCheck {
     /// ProbeSpec is a wrapper around Probe so it can be enabled or disabled for a Ceph daemon
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<CephObjectStoreHealthCheckReadinessProbe>,
     /// ProbeSpec is a wrapper around Probe so it can be enabled or disabled for a Ceph daemon
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<CephObjectStoreHealthCheckStartupProbe>,
 }
 
@@ -1277,11 +1011,7 @@ pub struct CephObjectStoreHealthCheckReadinessProbeProbe {
     pub exec: Option<CephObjectStoreHealthCheckReadinessProbeProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1291,45 +1021,25 @@ pub struct CephObjectStoreHealthCheckReadinessProbeProbe {
     pub http_get: Option<CephObjectStoreHealthCheckReadinessProbeProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<CephObjectStoreHealthCheckReadinessProbeProbeTcpSocket>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -1352,7 +1062,7 @@ pub struct CephObjectStoreHealthCheckReadinessProbeProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -1366,11 +1076,7 @@ pub struct CephObjectStoreHealthCheckReadinessProbeProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<CephObjectStoreHealthCheckReadinessProbeProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1428,11 +1134,7 @@ pub struct CephObjectStoreHealthCheckStartupProbeProbe {
     pub exec: Option<CephObjectStoreHealthCheckStartupProbeProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1442,45 +1144,25 @@ pub struct CephObjectStoreHealthCheckStartupProbeProbe {
     pub http_get: Option<CephObjectStoreHealthCheckStartupProbeProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<CephObjectStoreHealthCheckStartupProbeProbeTcpSocket>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -1503,7 +1185,7 @@ pub struct CephObjectStoreHealthCheckStartupProbeProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -1517,11 +1199,7 @@ pub struct CephObjectStoreHealthCheckStartupProbeProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<CephObjectStoreHealthCheckStartupProbeProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1568,11 +1246,7 @@ pub struct CephObjectStoreHosting {
     /// and COSI Buckets/Accesses.
     /// By default, Rook returns the endpoint for the object store's Kubernetes service using HTTPS
     /// with `gateway.securePort` if it is defined (otherwise, HTTP with `gateway.port`).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "advertiseEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "advertiseEndpoint")]
     pub advertise_endpoint: Option<CephObjectStoreHostingAdvertiseEndpoint>,
     /// A list of DNS host names on which object store gateways will accept client S3 connections.
     /// When specified, object store gateways will reject client S3 connections to hostnames that are
@@ -1616,49 +1290,25 @@ pub struct CephObjectStoreMetadataPool {
     /// DEPRECATED: use Parameters instead, e.g., Parameters["compression_mode"] = "force"
     /// The inline compression mode in Bluestore OSD to set to (options are: none, passive, aggressive, force)
     /// Do NOT set a default value for kubebuilder as this will override the Parameters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "compressionMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionMode")]
     pub compression_mode: Option<CephObjectStoreMetadataPoolCompressionMode>,
     /// The root of the crush hierarchy utilized by the pool
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "crushRoot")]
     pub crush_root: Option<String>,
     /// The device class the OSD should set to for use in the pool
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deviceClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceClass")]
     pub device_class: Option<String>,
     /// Allow rook operator to change the pool CRUSH tunables once the pool is created
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableCrushUpdates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableCrushUpdates")]
     pub enable_crush_updates: Option<bool>,
     /// EnableRBDStats is used to enable gathering of statistics for all RBD images in the pool
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableRBDStats"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableRBDStats")]
     pub enable_rbd_stats: Option<bool>,
     /// The erasure code settings
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "erasureCoded"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "erasureCoded")]
     pub erasure_coded: Option<CephObjectStoreMetadataPoolErasureCoded>,
     /// The failure domain: osd/host/(region or zone if available) - technically also any type in the crush map
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomain")]
     pub failure_domain: Option<String>,
     /// The mirroring settings
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1673,11 +1323,7 @@ pub struct CephObjectStoreMetadataPool {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicated: Option<CephObjectStoreMetadataPoolReplicated>,
     /// The mirroring statusCheck
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusCheck")]
     pub status_check: Option<CephObjectStoreMetadataPoolStatusCheck>,
 }
 
@@ -1726,11 +1372,7 @@ pub struct CephObjectStoreMetadataPoolMirroring {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub peers: Option<CephObjectStoreMetadataPoolMirroringPeers>,
     /// SnapshotSchedules is the scheduling of snapshot for mirrored images/pools
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotSchedules"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotSchedules")]
     pub snapshot_schedules: Option<Vec<CephObjectStoreMetadataPoolMirroringSnapshotSchedules>>,
 }
 
@@ -1738,11 +1380,7 @@ pub struct CephObjectStoreMetadataPoolMirroring {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreMetadataPoolMirroringPeers {
     /// SecretNames represents the Kubernetes Secret names to add rbd-mirror or cephfs-mirror peers
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretNames")]
     pub secret_names: Option<Vec<String>>,
 }
 
@@ -1768,11 +1406,7 @@ pub struct CephObjectStoreMetadataPoolQuotas {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBytes")]
     pub max_bytes: Option<i64>,
     /// MaxObjects represents the quota in objects
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxObjects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxObjects")]
     pub max_objects: Option<i64>,
     /// MaxSize represents the quota in bytes as a string
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxSize")]
@@ -1783,41 +1417,21 @@ pub struct CephObjectStoreMetadataPoolQuotas {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreMetadataPoolReplicated {
     /// HybridStorage represents hybrid storage tier settings
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hybridStorage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hybridStorage")]
     pub hybrid_storage: Option<CephObjectStoreMetadataPoolReplicatedHybridStorage>,
     /// ReplicasPerFailureDomain the number of replica in the specified failure domain
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicasPerFailureDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicasPerFailureDomain")]
     pub replicas_per_failure_domain: Option<i64>,
     /// RequireSafeReplicaSize if false allows you to set replica 1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requireSafeReplicaSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requireSafeReplicaSize")]
     pub require_safe_replica_size: Option<bool>,
     /// Size - Number of copies per object in a replicated storage pool, including the object itself (required for replicated pool type)
     pub size: i64,
     /// SubFailureDomain the name of the sub-failure domain
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subFailureDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subFailureDomain")]
     pub sub_failure_domain: Option<String>,
     /// TargetSizeRatio gives a hint (%) to Ceph in terms of expected consumption of the total cluster capacity
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetSizeRatio"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetSizeRatio")]
     pub target_size_ratio: Option<f64>,
 }
 
@@ -1867,11 +1481,7 @@ pub struct CephObjectStoreProtocols {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreProtocolsS3 {
     /// Whether to use Keystone for authentication. This option maps directly to the rgw_s3_auth_use_keystone option. Enabling it allows generating S3 credentials via an OpenStack API call, see the docs. If not given, the defaults of the corresponding RGW option apply.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authUseKeystone"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authUseKeystone")]
     pub auth_use_keystone: Option<bool>,
     /// Whether to enable S3. This defaults to true (even if protocols.s3 is not present in the CRD). This maintains backwards compatibility – by default S3 is enabled.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1882,21 +1492,13 @@ pub struct CephObjectStoreProtocolsS3 {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreProtocolsSwift {
     /// Whether or not the Swift account name should be included in the Swift API URL. If set to false (the default), then the Swift API will listen on a URL formed like http://host:port/<rgw_swift_url_prefix>/v1. If set to true, the Swift API URL will be http://host:port/<rgw_swift_url_prefix>/v1/AUTH_<account_name>. You must set this option to true (and update the Keystone service catalog) if you want radosgw to support publicly-readable containers and temporary URLs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accountInUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accountInUrl")]
     pub account_in_url: Option<bool>,
     /// The URL prefix for the Swift API, to distinguish it from the S3 API endpoint. The default is swift, which makes the Swift API available at the URL http://host:port/swift/v1 (or http://host:port/swift/v1/AUTH_%(tenant_id)s if rgw swift account in url is enabled).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "urlPrefix")]
     pub url_prefix: Option<String>,
     /// Enables the Object Versioning of OpenStack Object Storage API. This allows clients to put the X-Versions-Location attribute on containers that should be versioned.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "versioningEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "versioningEnabled")]
     pub versioning_enabled: Option<bool>,
 }
 
@@ -1904,11 +1506,7 @@ pub struct CephObjectStoreProtocolsSwift {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreSecurity {
     /// KeyRotation defines options for Key Rotation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keyRotation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyRotation")]
     pub key_rotation: Option<CephObjectStoreSecurityKeyRotation>,
     /// KeyManagementService is the main Key Management option
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1933,18 +1531,10 @@ pub struct CephObjectStoreSecurityKeyRotation {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreSecurityKms {
     /// ConnectionDetails contains the KMS connection details (address, port etc)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionDetails"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionDetails")]
     pub connection_details: Option<BTreeMap<String, String>>,
     /// TokenSecretName is the kubernetes secret containing the KMS token
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tokenSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenSecretName")]
     pub token_secret_name: Option<String>,
 }
 
@@ -1952,18 +1542,10 @@ pub struct CephObjectStoreSecurityKms {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreSecurityS3 {
     /// ConnectionDetails contains the KMS connection details (address, port etc)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionDetails"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionDetails")]
     pub connection_details: Option<BTreeMap<String, String>>,
     /// TokenSecretName is the kubernetes secret containing the KMS token
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tokenSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tokenSecretName")]
     pub token_secret_name: Option<String>,
 }
 
@@ -1971,18 +1553,10 @@ pub struct CephObjectStoreSecurityS3 {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephObjectStoreSharedPools {
     /// The data pool used for creating RADOS namespaces in the object store
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataPoolName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataPoolName")]
     pub data_pool_name: Option<String>,
     /// The metadata pool used for creating RADOS namespaces in the object store
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metadataPoolName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataPoolName")]
     pub metadata_pool_name: Option<String>,
     /// PoolPlacements control which Pools are associated with a particular RGW bucket.
     /// Once PoolPlacements are defined, RGW client will be able to associate pool
@@ -1993,18 +1567,10 @@ pub struct CephObjectStoreSharedPools {
     /// is provided during bucket creation.
     /// If default placement is not provided, spec.sharedPools.dataPoolName and spec.sharedPools.MetadataPoolName will be used as default pools.
     /// If spec.sharedPools are also empty, then RGW pools (spec.dataPool and spec.metadataPool) will be used as defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "poolPlacements"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "poolPlacements")]
     pub pool_placements: Option<Vec<CephObjectStoreSharedPoolsPoolPlacements>>,
     /// Whether the RADOS namespaces should be preserved on deletion of the object store
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preserveRadosNamespaceDataOnDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preserveRadosNamespaceDataOnDelete")]
     pub preserve_rados_namespace_data_on_delete: Option<bool>,
 }
 
@@ -2012,11 +1578,7 @@ pub struct CephObjectStoreSharedPools {
 pub struct CephObjectStoreSharedPoolsPoolPlacements {
     /// The data pool used to store ObjectStore data that cannot use erasure coding (ex: multi-part uploads).
     /// If dataPoolName is not erasure coded, then there is no need for dataNonECPoolName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataNonECPoolName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataNonECPoolName")]
     pub data_non_ec_pool_name: Option<String>,
     /// The data pool used to store ObjectStore objects data.
     #[serde(rename = "dataPoolName")]
@@ -2033,11 +1595,7 @@ pub struct CephObjectStoreSharedPoolsPoolPlacements {
     /// StorageClasses can be selected by user to override dataPoolName during object creation.
     /// Each placement has default STANDARD StorageClass pointing to dataPoolName.
     /// This list allows defining additional StorageClasses on top of default STANDARD storage class.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClasses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClasses")]
     pub storage_classes: Option<Vec<CephObjectStoreSharedPoolsPoolPlacementsStorageClasses>>,
 }
 
@@ -2073,11 +1631,7 @@ pub struct CephObjectStoreStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     /// ObservedGeneration is the latest generation observed by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// ConditionType represent a resource's status
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2091,3 +1645,4 @@ pub struct CephObjectStoreStatusEndpoints {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secure: Option<Vec<String>>,
 }
+

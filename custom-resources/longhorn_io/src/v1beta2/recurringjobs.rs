@@ -5,24 +5,19 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// RecurringJobSpec defines the desired state of the Longhorn recurring job
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "longhorn.io",
-    version = "v1beta2",
-    kind = "RecurringJob",
-    plural = "recurringjobs"
-)]
+#[kube(group = "longhorn.io", version = "v1beta2", kind = "RecurringJob", plural = "recurringjobs")]
 #[kube(namespaced)]
 #[kube(status = "RecurringJobStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct RecurringJobSpec {
     /// The concurrency of taking the snapshot/backup.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -75,13 +70,10 @@ pub enum RecurringJobTask {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct RecurringJobStatus {
     /// The number of jobs that have been triggered.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "executionCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionCount")]
     pub execution_count: Option<i64>,
     /// The owner ID which is responsible to reconcile this recurring job CR.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerID")]
     pub owner_id: Option<String>,
 }
+

@@ -5,24 +5,19 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// ServiceLevelSpec is the spec for a PrometheusServiceLevel.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "sloth.slok.dev",
-    version = "v1",
-    kind = "PrometheusServiceLevel",
-    plural = "prometheusservicelevels"
-)]
+#[kube(group = "sloth.slok.dev", version = "v1", kind = "PrometheusServiceLevel", plural = "prometheusservicelevels")]
 #[kube(namespaced)]
 #[kube(status = "PrometheusServiceLevelStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PrometheusServiceLevelSpec {
     /// Labels are the Prometheus labels that will have all the recording and alerting rules generated for the service SLOs.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -69,11 +64,7 @@ pub struct PrometheusServiceLevelSlosAlerting {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pageAlert")]
     pub page_alert: Option<PrometheusServiceLevelSlosAlertingPageAlert>,
     /// TicketAlert alert refers to the warning alert (check multiwindow-multiburn alerts).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ticketAlert"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ticketAlert")]
     pub ticket_alert: Option<PrometheusServiceLevelSlosAlertingTicketAlert>,
 }
 
@@ -151,11 +142,7 @@ pub struct PrometheusServiceLevelSlosSliRaw {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PrometheusServiceLevelStatus {
     /// LastPromOpRulesGeneration tells the last atemp made for a successful SLO rules generate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastPromOpRulesSuccessfulGenerated"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastPromOpRulesSuccessfulGenerated")]
     pub last_prom_op_rules_successful_generated: Option<String>,
     /// ObservedGeneration tells the generation was acted on, normally this is required to stop an infinite loop when the status is updated because it sends a watch updated event to the watchers of the K8s object.
     #[serde(rename = "observedGeneration")]
@@ -170,3 +157,4 @@ pub struct PrometheusServiceLevelStatus {
     #[serde(rename = "promOpRulesGeneratedSLOs")]
     pub prom_op_rules_generated_sl_os: i64,
 }
+

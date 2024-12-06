@@ -4,36 +4,27 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// BeegfsDriverSpec defines the desired state of BeegfsDriver
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "beegfs.csi.netapp.com",
-    version = "v1",
-    kind = "BeegfsDriver",
-    plural = "beegfsdrivers"
-)]
+#[kube(group = "beegfs.csi.netapp.com", version = "v1", kind = "BeegfsDriver", plural = "beegfsdrivers")]
 #[kube(namespaced)]
 #[kube(status = "BeegfsDriverStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct BeegfsDriverSpec {
     /// A structure that allows for default container images and tags to be overridden. Use it in air-gapped networks,
     /// networks with private registry mirrors, or to pin a particular container version. Unless otherwise noted, versions
     /// other than the default are not supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerImageOverrides"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerImageOverrides")]
     pub container_image_overrides: Option<BeegfsDriverContainerImageOverrides>,
     /// The ContainerResourceOverrides allow for customization of the container resource limits and requests.
     /// Each container has default requests and limits for both cpu and memory resources. Only explicitly defined
@@ -41,11 +32,7 @@ pub struct BeegfsDriverSpec {
     /// controller's beegfs container is the only resource with an override set, only the controller's beegfs container
     /// cpu limit setting will be overridden. Every other value will use the default setting. Storage resources are not
     /// used by the BeeGFS CSI driver. Any storage resource values configured will be ignored.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerResourceOverrides"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerResourceOverrides")]
     pub container_resource_overrides: Option<BeegfsDriverContainerResourceOverrides>,
     /// The logging level of deployed containers expressed as an integer from 0 (low detail) to 5 (high detail). 0
     /// only logs errors. 3 logs most RPC requests/responses and some detail about driver actions. 5 logs all RPC
@@ -55,29 +42,17 @@ pub struct BeegfsDriverSpec {
     /// The controller service consists of a single Pod. It preferably runs on an infrastructure/master node, but the
     /// running node must have the beegfs-utils and beegfs-client packages installed. E.g.
     /// "preferred: node-role.kubernetes.io/master Exists" and/or "required: node.openshift.io/os_id NotIn rhcos".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinityControllerService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityControllerService")]
     pub node_affinity_controller_service: Option<BeegfsDriverNodeAffinityControllerService>,
     /// The node service consists of one Pod running on each eligible node. It runs on every node expected to host a
     /// workload that requires BeeGFS. Running nodes must have the beegfs-utils and beegfs-client packages installed.
     /// E.g. "required: node.openshift.io/os_id NotIn rhcos".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinityNodeService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityNodeService")]
     pub node_affinity_node_service: Option<BeegfsDriverNodeAffinityNodeService>,
     /// The top level configuration structure containing default configuration (applied to all file systems on all nodes),
     /// file system specific configuration, and node specific configuration. Fields from node and file system specific
     /// configurations override fields from the default configuration. Often not required.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pluginConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pluginConfig")]
     pub plugin_config: Option<BeegfsDriverPluginConfig>,
 }
 
@@ -87,40 +62,19 @@ pub struct BeegfsDriverSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BeegfsDriverContainerImageOverrides {
     /// Defaults to ghcr.io/thinkparq/beegfs-csi-driver:<the operator version>.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "beegfsCsiDriver"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "beegfsCsiDriver")]
     pub beegfs_csi_driver: Option<BeegfsDriverContainerImageOverridesBeegfsCsiDriver>,
     /// Defaults to registry.k8s.io/sig-storage/csi-node-driver-registrar:<the most current version at operator release>.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "csiNodeDriverRegistrar"
-    )]
-    pub csi_node_driver_registrar:
-        Option<BeegfsDriverContainerImageOverridesCsiNodeDriverRegistrar>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "csiNodeDriverRegistrar")]
+    pub csi_node_driver_registrar: Option<BeegfsDriverContainerImageOverridesCsiNodeDriverRegistrar>,
     /// Defaults to registry.k8s.io/sig-storage/csi-provisioner:<the most current version at operator release>.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "csiProvisioner"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "csiProvisioner")]
     pub csi_provisioner: Option<BeegfsDriverContainerImageOverridesCsiProvisioner>,
     /// Defaults to registry.k8s.io/sig-storage/csi-resizer:<the most current version at operator release>.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "csiResizer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "csiResizer")]
     pub csi_resizer: Option<BeegfsDriverContainerImageOverridesCsiResizer>,
     /// Defaults to registry.k8s.io/sig-storage/livenessprobe:<the most current version at operator release>.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<BeegfsDriverContainerImageOverridesLivenessProbe>,
 }
 
@@ -190,48 +144,27 @@ pub struct BeegfsDriverContainerResourceOverrides {
     /// The resource specifications for the beegfs container of the BeeGFS driver controller pod.
     /// The default values for requests are (cpu: 100m, memory: 16Mi).
     /// The default values for limits are (cpu: None, memory: 256Mi).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controllerBeegfs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerBeegfs")]
     pub controller_beegfs: Option<BeegfsDriverContainerResourceOverridesControllerBeegfs>,
     /// The resource specifications for the csi-provisioner container of the BeeGFS driver controller pod.
     /// The default values for requests are (cpu: 80m, memory: 24Mi)
     /// The default values for limits are (cpu: None, memory 256Mi)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controllerCsiProvisioner"
-    )]
-    pub controller_csi_provisioner:
-        Option<BeegfsDriverContainerResourceOverridesControllerCsiProvisioner>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerCsiProvisioner")]
+    pub controller_csi_provisioner: Option<BeegfsDriverContainerResourceOverridesControllerCsiProvisioner>,
     /// The resource specifications for the beegfs container of the BeeGFS driver node pod.
     /// The default values for requests are (cpu: 100m, memory: 20Mi)
     /// The default values for limits are (cpu: None, memory: 128Mi)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeBeegfs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeBeegfs")]
     pub node_beegfs: Option<BeegfsDriverContainerResourceOverridesNodeBeegfs>,
     /// The resource specifications for the node-driver-registrar container of the BeeGFS driver node pod.
     /// The default values for requests are (cpu: 80m, memory: 10Mi)
     /// The default values for limits are (cpu: None, memory 128Mi)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeDriverRegistrar"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDriverRegistrar")]
     pub node_driver_registrar: Option<BeegfsDriverContainerResourceOverridesNodeDriverRegistrar>,
     /// The resource specifications for the liveness-probe container of the BeeGFS driver node pod.
     /// The default values for requests are (cpu: 60m, memory: 20Mi)
     /// The default values for limits are (cpu: None, memory: 128Mi)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeLivenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeLivenessProbe")]
     pub node_liveness_probe: Option<BeegfsDriverContainerResourceOverridesNodeLivenessProbe>,
 }
 
@@ -242,10 +175,10 @@ pub struct BeegfsDriverContainerResourceOverrides {
 pub struct BeegfsDriverContainerResourceOverridesControllerBeegfs {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<BeegfsDriverContainerResourceOverridesControllerBeegfsClaims>>,
@@ -282,10 +215,10 @@ pub struct BeegfsDriverContainerResourceOverridesControllerBeegfsClaims {
 pub struct BeegfsDriverContainerResourceOverridesControllerCsiProvisioner {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<BeegfsDriverContainerResourceOverridesControllerCsiProvisionerClaims>>,
@@ -322,10 +255,10 @@ pub struct BeegfsDriverContainerResourceOverridesControllerCsiProvisionerClaims 
 pub struct BeegfsDriverContainerResourceOverridesNodeBeegfs {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<BeegfsDriverContainerResourceOverridesNodeBeegfsClaims>>,
@@ -362,10 +295,10 @@ pub struct BeegfsDriverContainerResourceOverridesNodeBeegfsClaims {
 pub struct BeegfsDriverContainerResourceOverridesNodeDriverRegistrar {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<BeegfsDriverContainerResourceOverridesNodeDriverRegistrarClaims>>,
@@ -402,10 +335,10 @@ pub struct BeegfsDriverContainerResourceOverridesNodeDriverRegistrarClaims {
 pub struct BeegfsDriverContainerResourceOverridesNodeLivenessProbe {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<BeegfsDriverContainerResourceOverridesNodeLivenessProbeClaims>>,
@@ -484,8 +417,7 @@ pub struct BeegfsDriverNodeAffinityControllerServicePreferredDuringSchedulingIgn
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct BeegfsDriverNodeAffinityControllerServicePreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct BeegfsDriverNodeAffinityControllerServicePreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -503,8 +435,7 @@ pub struct BeegfsDriverNodeAffinityControllerServicePreferredDuringSchedulingIgn
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct BeegfsDriverNodeAffinityControllerServicePreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct BeegfsDriverNodeAffinityControllerServicePreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -547,8 +478,7 @@ pub struct BeegfsDriverNodeAffinityControllerServiceRequiredDuringSchedulingIgno
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct BeegfsDriverNodeAffinityControllerServiceRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct BeegfsDriverNodeAffinityControllerServiceRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -566,8 +496,7 @@ pub struct BeegfsDriverNodeAffinityControllerServiceRequiredDuringSchedulingIgno
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct BeegfsDriverNodeAffinityControllerServiceRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct BeegfsDriverNodeAffinityControllerServiceRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -596,26 +525,15 @@ pub struct BeegfsDriverNodeAffinityNodeService {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node matches the corresponding matchExpressions; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<BeegfsDriverNodeAffinityNodeServicePreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<BeegfsDriverNodeAffinityNodeServicePreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
     /// at some point during pod execution (e.g. due to an update), the system
     /// may or may not try to eventually evict the pod from its node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<BeegfsDriverNodeAffinityNodeServiceRequiredDuringSchedulingIgnoredDuringExecution>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<BeegfsDriverNodeAffinityNodeServiceRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
 /// An empty preferred scheduling term matches all objects with implicit weight 0
@@ -642,8 +560,7 @@ pub struct BeegfsDriverNodeAffinityNodeServicePreferredDuringSchedulingIgnoredDu
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct BeegfsDriverNodeAffinityNodeServicePreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct BeegfsDriverNodeAffinityNodeServicePreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -661,8 +578,7 @@ pub struct BeegfsDriverNodeAffinityNodeServicePreferredDuringSchedulingIgnoredDu
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct BeegfsDriverNodeAffinityNodeServicePreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct BeegfsDriverNodeAffinityNodeServicePreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -705,8 +621,7 @@ pub struct BeegfsDriverNodeAffinityNodeServiceRequiredDuringSchedulingIgnoredDur
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct BeegfsDriverNodeAffinityNodeServiceRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct BeegfsDriverNodeAffinityNodeServiceRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -724,8 +639,7 @@ pub struct BeegfsDriverNodeAffinityNodeServiceRequiredDuringSchedulingIgnoredDur
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct BeegfsDriverNodeAffinityNodeServiceRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct BeegfsDriverNodeAffinityNodeServiceRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -753,20 +667,11 @@ pub struct BeegfsDriverPluginConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<BeegfsDriverPluginConfigConfig>,
     /// A list of file system specific configurations that override the default configuration for specific file systems.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fileSystemSpecificConfigs"
-    )]
-    pub file_system_specific_configs:
-        Option<Vec<BeegfsDriverPluginConfigFileSystemSpecificConfigs>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemSpecificConfigs")]
+    pub file_system_specific_configs: Option<Vec<BeegfsDriverPluginConfigFileSystemSpecificConfigs>>,
     /// A list of node specific configurations that override file system specific configurations and the default
     /// configuration on specific nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSpecificConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSpecificConfigs")]
     pub node_specific_configs: Option<Vec<BeegfsDriverPluginConfigNodeSpecificConfigs>>,
 }
 
@@ -780,44 +685,24 @@ pub struct BeegfsDriverPluginConfigConfig {
     /// A map of additional key value pairs matching key value pairs in the beegfs-client.conf file. See
     /// beegfs-client.conf for more details. Values MUST be specified as strings, even if they appear to be integers or
     /// booleans (e.g. "8000", not 8000 and "true", not true).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "beegfsClientConf"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "beegfsClientConf")]
     pub beegfs_client_conf: Option<BTreeMap<String, String>>,
     /// A list of interfaces the BeeGFS client service can communicate over (e.g. "ib0" or "eth0"). Often not required.
     /// See beegfs-client.conf for more details.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connInterfaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connInterfaces")]
     pub conn_interfaces: Option<Vec<String>>,
     /// A list of subnets the BeeGFS client service can use for outgoing communication (e.g. "10.10.10.10/24"). Often
     /// not required. See beegfs-client.conf for more details.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connNetFilter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connNetFilter")]
     pub conn_net_filter: Option<Vec<String>>,
     /// A list of interfaces the BeeGFS client will use for outbound RDMA connections. This is used in support
     /// of the BeeGFS multi-rail feature. This feature does not depend on or use the connInterfaces parameter.
     /// This feature requires the BeeGFS client version 7.3.0 or later.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connRDMAInterfaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connRDMAInterfaces")]
     pub conn_rdma_interfaces: Option<Vec<String>>,
     /// A list of subnets in which RDMA communication cannot or should not be established (e.g. "10.10.10.11/24").
     /// Often not required. See beegfs-client.conf for more details.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connTcpOnlyFilter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connTcpOnlyFilter")]
     pub conn_tcp_only_filter: Option<Vec<String>>,
 }
 
@@ -846,44 +731,24 @@ pub struct BeegfsDriverPluginConfigFileSystemSpecificConfigsConfig {
     /// A map of additional key value pairs matching key value pairs in the beegfs-client.conf file. See
     /// beegfs-client.conf for more details. Values MUST be specified as strings, even if they appear to be integers or
     /// booleans (e.g. "8000", not 8000 and "true", not true).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "beegfsClientConf"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "beegfsClientConf")]
     pub beegfs_client_conf: Option<BTreeMap<String, String>>,
     /// A list of interfaces the BeeGFS client service can communicate over (e.g. "ib0" or "eth0"). Often not required.
     /// See beegfs-client.conf for more details.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connInterfaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connInterfaces")]
     pub conn_interfaces: Option<Vec<String>>,
     /// A list of subnets the BeeGFS client service can use for outgoing communication (e.g. "10.10.10.10/24"). Often
     /// not required. See beegfs-client.conf for more details.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connNetFilter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connNetFilter")]
     pub conn_net_filter: Option<Vec<String>>,
     /// A list of interfaces the BeeGFS client will use for outbound RDMA connections. This is used in support
     /// of the BeeGFS multi-rail feature. This feature does not depend on or use the connInterfaces parameter.
     /// This feature requires the BeeGFS client version 7.3.0 or later.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connRDMAInterfaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connRDMAInterfaces")]
     pub conn_rdma_interfaces: Option<Vec<String>>,
     /// A list of subnets in which RDMA communication cannot or should not be established (e.g. "10.10.10.11/24").
     /// Often not required. See beegfs-client.conf for more details.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connTcpOnlyFilter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connTcpOnlyFilter")]
     pub conn_tcp_only_filter: Option<Vec<String>>,
 }
 
@@ -900,13 +765,8 @@ pub struct BeegfsDriverPluginConfigNodeSpecificConfigs {
     pub config: Option<BeegfsDriverPluginConfigNodeSpecificConfigsConfig>,
     /// A list of file system specific configurations that override the default configuration for specific file systems
     /// on these nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fileSystemSpecificConfigs"
-    )]
-    pub file_system_specific_configs:
-        Option<Vec<BeegfsDriverPluginConfigNodeSpecificConfigsFileSystemSpecificConfigs>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemSpecificConfigs")]
+    pub file_system_specific_configs: Option<Vec<BeegfsDriverPluginConfigNodeSpecificConfigsFileSystemSpecificConfigs>>,
     /// The list of nodes this configuration should be applied on. Each entry is the hostname of the node or the name
     /// assigned to the node by the container orchestrator (e.g. "node1" or "cluster05-node03").
     #[serde(rename = "nodeList")]
@@ -923,44 +783,24 @@ pub struct BeegfsDriverPluginConfigNodeSpecificConfigsConfig {
     /// A map of additional key value pairs matching key value pairs in the beegfs-client.conf file. See
     /// beegfs-client.conf for more details. Values MUST be specified as strings, even if they appear to be integers or
     /// booleans (e.g. "8000", not 8000 and "true", not true).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "beegfsClientConf"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "beegfsClientConf")]
     pub beegfs_client_conf: Option<BTreeMap<String, String>>,
     /// A list of interfaces the BeeGFS client service can communicate over (e.g. "ib0" or "eth0"). Often not required.
     /// See beegfs-client.conf for more details.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connInterfaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connInterfaces")]
     pub conn_interfaces: Option<Vec<String>>,
     /// A list of subnets the BeeGFS client service can use for outgoing communication (e.g. "10.10.10.10/24"). Often
     /// not required. See beegfs-client.conf for more details.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connNetFilter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connNetFilter")]
     pub conn_net_filter: Option<Vec<String>>,
     /// A list of interfaces the BeeGFS client will use for outbound RDMA connections. This is used in support
     /// of the BeeGFS multi-rail feature. This feature does not depend on or use the connInterfaces parameter.
     /// This feature requires the BeeGFS client version 7.3.0 or later.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connRDMAInterfaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connRDMAInterfaces")]
     pub conn_rdma_interfaces: Option<Vec<String>>,
     /// A list of subnets in which RDMA communication cannot or should not be established (e.g. "10.10.10.11/24").
     /// Often not required. See beegfs-client.conf for more details.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connTcpOnlyFilter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connTcpOnlyFilter")]
     pub conn_tcp_only_filter: Option<Vec<String>>,
 }
 
@@ -989,44 +829,24 @@ pub struct BeegfsDriverPluginConfigNodeSpecificConfigsFileSystemSpecificConfigsC
     /// A map of additional key value pairs matching key value pairs in the beegfs-client.conf file. See
     /// beegfs-client.conf for more details. Values MUST be specified as strings, even if they appear to be integers or
     /// booleans (e.g. "8000", not 8000 and "true", not true).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "beegfsClientConf"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "beegfsClientConf")]
     pub beegfs_client_conf: Option<BTreeMap<String, String>>,
     /// A list of interfaces the BeeGFS client service can communicate over (e.g. "ib0" or "eth0"). Often not required.
     /// See beegfs-client.conf for more details.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connInterfaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connInterfaces")]
     pub conn_interfaces: Option<Vec<String>>,
     /// A list of subnets the BeeGFS client service can use for outgoing communication (e.g. "10.10.10.10/24"). Often
     /// not required. See beegfs-client.conf for more details.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connNetFilter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connNetFilter")]
     pub conn_net_filter: Option<Vec<String>>,
     /// A list of interfaces the BeeGFS client will use for outbound RDMA connections. This is used in support
     /// of the BeeGFS multi-rail feature. This feature does not depend on or use the connInterfaces parameter.
     /// This feature requires the BeeGFS client version 7.3.0 or later.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connRDMAInterfaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connRDMAInterfaces")]
     pub conn_rdma_interfaces: Option<Vec<String>>,
     /// A list of subnets in which RDMA communication cannot or should not be established (e.g. "10.10.10.11/24").
     /// Often not required. See beegfs-client.conf for more details.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connTcpOnlyFilter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connTcpOnlyFilter")]
     pub conn_tcp_only_filter: Option<Vec<String>>,
 }
 
@@ -1036,3 +856,4 @@ pub struct BeegfsDriverStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

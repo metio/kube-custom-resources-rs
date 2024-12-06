@@ -5,82 +5,45 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// MySQLServerSpec defines the desired state of MySQLServer
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "azure.microsoft.com",
-    version = "v1alpha2",
-    kind = "MySQLServer",
-    plural = "mysqlservers"
-)]
+#[kube(group = "azure.microsoft.com", version = "v1alpha2", kind = "MySQLServer", plural = "mysqlservers")]
 #[kube(namespaced)]
 #[kube(status = "MySQLServerStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct MySQLServerSpec {
     /// AdminSecret is the name of a Kubernetes secret containing the username and password of the MySQLServer administrator account. When specified, the `username` and `password` fields of this secret will be included in the generated secret associated with this MySQLServer. If AdminSecret is specified but a secret with the given name is not found in the same namespace as the MySQLServer, then reconciliation will block until the secret is created. If this is not specified, a username and password will be automatically generated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminSecret")]
     pub admin_secret: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "createMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "createMode")]
     pub create_mode: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keyVaultToStoreSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyVaultToStoreSecrets")]
     pub key_vault_to_store_secrets: Option<String>,
     pub location: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicaProperties"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicaProperties")]
     pub replica_properties: Option<MySQLServerReplicaProperties>,
     #[serde(rename = "resourceGroup")]
     pub resource_group: String,
     /// ServerVersion enumerates the values for server version.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverVersion")]
     pub server_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sku: Option<MySQLServerSku>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslEnforcement"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnforcement")]
     pub ssl_enforcement: Option<MySQLServerSslEnforcement>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageProfile")]
     pub storage_profile: Option<MySQLServerStorageProfile>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MySQLServerReplicaProperties {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceServerId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceServerId")]
     pub source_server_id: Option<String>,
 }
 
@@ -120,25 +83,13 @@ pub enum MySQLServerSslEnforcement {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MySQLServerStorageProfile {
     /// BackupRetentionDays - Backup retention days for the server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupRetentionDays"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupRetentionDays")]
     pub backup_retention_days: Option<i32>,
     /// GeoRedundantBackup - Enable Geo-redundant or not for server backup. Possible values include: 'Enabled', 'Disabled'
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "geoRedundantBackup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "geoRedundantBackup")]
     pub geo_redundant_backup: Option<String>,
     /// StorageAutogrow - Enable Storage Auto Grow. Possible values include: 'Enabled', 'Disabled'
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageAutogrow"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageAutogrow")]
     pub storage_autogrow: Option<MySQLServerStorageProfileStorageAutogrow>,
     /// StorageMB - Max storage allowed for a server.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMB")]
@@ -156,39 +107,19 @@ pub enum MySQLServerStorageProfileStorageAutogrow {
 pub struct MySQLServerStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub completed: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containsUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containsUpdate")]
     pub contains_update: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failedProvisioning"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failedProvisioning")]
     pub failed_provisioning: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flattenedSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flattenedSecrets")]
     pub flattened_secrets: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub output: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pollingUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pollingUrl")]
     pub polling_url: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pollingUrlKind"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pollingUrlKind")]
     pub polling_url_kind: Option<MySQLServerStatusPollingUrlKind>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub provisioned: Option<bool>,
@@ -196,11 +127,7 @@ pub struct MySQLServerStatus {
     pub provisioning: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub requested: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceId")]
     pub resource_id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "specHash")]
     pub spec_hash: Option<String>,
@@ -214,3 +141,4 @@ pub enum MySQLServerStatusPollingUrlKind {
     CreateOrUpdate,
     Delete,
 }
+

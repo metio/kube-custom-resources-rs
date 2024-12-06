@@ -4,72 +4,47 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// GooseFSRuntimeSpec defines the desired state of GooseFSRuntime
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "data.fluid.io",
-    version = "v1alpha1",
-    kind = "GooseFSRuntime",
-    plural = "goosefsruntimes"
-)]
+#[kube(group = "data.fluid.io", version = "v1alpha1", kind = "GooseFSRuntime", plural = "goosefsruntimes")]
 #[kube(namespaced)]
 #[kube(status = "GooseFSRuntimeStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct GooseFSRuntimeSpec {
     /// The component spec of GooseFS API Gateway
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiGateway"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGateway")]
     pub api_gateway: Option<GooseFSRuntimeApiGateway>,
     /// CleanCachePolicy defines cleanCache Policy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cleanCachePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanCachePolicy")]
     pub clean_cache_policy: Option<GooseFSRuntimeCleanCachePolicy>,
     /// Management strategies for the dataset to which the runtime is bound
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<GooseFSRuntimeData>,
     /// Disable monitoring for GooseFS Runtime
     /// Prometheus is enabled by default
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disablePrometheus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disablePrometheus")]
     pub disable_prometheus: Option<bool>,
     /// The component spec of GooseFS Fuse
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fuse: Option<GooseFSRuntimeFuse>,
     /// The version information that instructs fluid to orchestrate a particular version of GooseFS.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "goosefsVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "goosefsVersion")]
     pub goosefs_version: Option<GooseFSRuntimeGoosefsVersion>,
     /// Name of the configMap used to support HDFS configurations when using HDFS as GooseFS's UFS. The configMap
     /// must be in the same namespace with the GooseFSRuntime. The configMap should contain user-specific HDFS conf files in it.
     /// For now, only "hdfs-site.xml" and "core-site.xml" are supported. It must take the filename of the conf file as the key and content
     /// of the file as the value.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hadoopConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hadoopConfig")]
     pub hadoop_config: Option<String>,
     /// The spec of init users
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "initUsers")]
@@ -81,11 +56,7 @@ pub struct GooseFSRuntimeSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobWorker")]
     pub job_worker: Option<GooseFSRuntimeJobWorker>,
     /// Options for JVM
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jvmOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmOptions")]
     pub jvm_options: Option<Vec<String>>,
     /// The component spec of GooseFS master
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -126,18 +97,10 @@ pub struct GooseFSRuntimeApiGateway {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<BTreeMap<String, String>>,
     /// Options for JVM
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jvmOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmOptions")]
     pub jvm_options: Option<Vec<String>>,
     /// NodeSelector is a selector which must be true for the master to fit on a node
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Ports used by GooseFS(e.g. rpc: 19998 for master)
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -167,12 +130,12 @@ pub struct GooseFSRuntimeApiGateway {
 pub struct GooseFSRuntimeApiGatewayResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<GooseFSRuntimeApiGatewayResourcesClaims>>,
@@ -207,20 +170,12 @@ pub struct GooseFSRuntimeCleanCachePolicy {
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with timeout command.
     /// Set this value longer than the expected cleanup time for your process.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracePeriodSeconds")]
     pub grace_period_seconds: Option<i32>,
     /// Optional max retry Attempts when cleanCache function returns an error after execution, runtime attempts
     /// to run it three more times by default. With Maximum Retry Attempts, you can customize the maximum number
     /// of retries. This gives you the option to continue processing retries.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRetryAttempts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetryAttempts")]
     pub max_retry_attempts: Option<i32>,
 }
 
@@ -252,11 +207,7 @@ pub struct GooseFSRuntimeFuse {
     /// OnDemand cleans fuse pod once th fuse pod on some node is not needed
     /// OnRuntimeDeleted cleans fuse pod only when the cache runtime is deleted
     /// Defaults to OnRuntimeDeleted
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cleanPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanPolicy")]
     pub clean_policy: Option<String>,
     /// Environment variables that will be used by GooseFS Fuse
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -265,29 +216,17 @@ pub struct GooseFSRuntimeFuse {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// One of the three policies: `Always`, `IfNotPresent`, `Never`
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Image Tag for GooseFS Fuse(e.g. v1.0.1)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageTag")]
     pub image_tag: Option<String>,
     /// Options for JVM
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jvmOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmOptions")]
     pub jvm_options: Option<Vec<String>>,
     /// NodeSelector is a selector which must be true for the fuse client to fit on a node,
     /// this option only effect when global is enabled
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Configurable properties for the GOOSEFS component. <br>
     /// Refer to <a href="https://cloud.tencent.com/document/product/436/56415">GOOSEFS Configuration Properties</a> for more info
@@ -309,12 +248,12 @@ pub struct GooseFSRuntimeFuse {
 pub struct GooseFSRuntimeFuseResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<GooseFSRuntimeFuseResourcesClaims>>,
@@ -346,11 +285,7 @@ pub struct GooseFSRuntimeGoosefsVersion {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// One of the three policies: `Always`, `IfNotPresent`, `Never`
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Image tag (e.g. 2.3.0-SNAPSHOT)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageTag")]
@@ -367,11 +302,7 @@ pub struct GooseFSRuntimeInitUsers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// One of the three policies: `Always`, `IfNotPresent`, `Never`
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Image Tag for initialize the users for runtime(e.g. 2.3.0-SNAPSHOT)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageTag")]
@@ -392,12 +323,12 @@ pub struct GooseFSRuntimeInitUsers {
 pub struct GooseFSRuntimeInitUsersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<GooseFSRuntimeInitUsersResourcesClaims>>,
@@ -438,18 +369,10 @@ pub struct GooseFSRuntimeJobMaster {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<BTreeMap<String, String>>,
     /// Options for JVM
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jvmOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmOptions")]
     pub jvm_options: Option<Vec<String>>,
     /// NodeSelector is a selector which must be true for the master to fit on a node
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Ports used by GooseFS(e.g. rpc: 19998 for master)
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -479,12 +402,12 @@ pub struct GooseFSRuntimeJobMaster {
 pub struct GooseFSRuntimeJobMasterResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<GooseFSRuntimeJobMasterResourcesClaims>>,
@@ -525,18 +448,10 @@ pub struct GooseFSRuntimeJobWorker {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<BTreeMap<String, String>>,
     /// Options for JVM
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jvmOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmOptions")]
     pub jvm_options: Option<Vec<String>>,
     /// NodeSelector is a selector which must be true for the master to fit on a node
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Ports used by GooseFS(e.g. rpc: 19998 for master)
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -566,12 +481,12 @@ pub struct GooseFSRuntimeJobWorker {
 pub struct GooseFSRuntimeJobWorkerResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<GooseFSRuntimeJobWorkerResourcesClaims>>,
@@ -612,18 +527,10 @@ pub struct GooseFSRuntimeMaster {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<BTreeMap<String, String>>,
     /// Options for JVM
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jvmOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmOptions")]
     pub jvm_options: Option<Vec<String>>,
     /// NodeSelector is a selector which must be true for the master to fit on a node
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Ports used by GooseFS(e.g. rpc: 19998 for master)
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -653,12 +560,12 @@ pub struct GooseFSRuntimeMaster {
 pub struct GooseFSRuntimeMasterResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<GooseFSRuntimeMasterResourcesClaims>>,
@@ -737,19 +644,11 @@ pub struct GooseFSRuntimeTieredstoreLevels {
     pub quota_list: Option<String>,
     /// VolumeSource is the volume source of the tier. It follows the form of corev1.VolumeSource.
     /// For now, users should only specify VolumeSource when VolumeType is set to emptyDir.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSource")]
     pub volume_source: Option<GooseFSRuntimeTieredstoreLevelsVolumeSource>,
     /// VolumeType is the volume type of the tier. Should be one of the three types: `hostPath`, `emptyDir` and `volumeTemplate`.
     /// If not set, defaults to hostPath.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeType")]
     pub volume_type: Option<GooseFSRuntimeTieredstoreLevelsVolumeType>,
 }
 
@@ -772,13 +671,8 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSource {
     /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsElasticBlockStore"
-    )]
-    pub aws_elastic_block_store:
-        Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceAwsElasticBlockStore>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
+    pub aws_elastic_block_store: Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
     pub azure_disk: Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceAzureDisk>,
@@ -799,11 +693,7 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSource {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceCsi>,
     /// downwardAPI represents downward API about the pod that should populate this volume
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceDownwardApi>,
     /// emptyDir represents a temporary directory that shares a pod's lifetime.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
@@ -812,8 +702,8 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSource {
     /// ephemeral represents a volume that is handled by a cluster storage driver.
     /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
     /// and deleted when the pod is removed.
-    ///
-    ///
+    /// 
+    /// 
     /// Use this if:
     /// a) the volume is only needed while the pod runs,
     /// b) features of normal volumes like restoring from snapshot or capacity
@@ -823,18 +713,18 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSource {
     ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
     ///    information on the connection between this volume type
     ///    and PersistentVolumeClaim).
-    ///
-    ///
+    /// 
+    /// 
     /// Use PersistentVolumeClaim or one of the vendor-specific
     /// APIs for volumes that persist for longer than the lifecycle
     /// of an individual pod.
-    ///
-    ///
+    /// 
+    /// 
     /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
     /// be used that way - see the documentation of the driver for
     /// more information.
-    ///
-    ///
+    /// 
+    /// 
     /// A pod can use both types of ephemeral volumes and
     /// persistent volumes at the same time.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -844,11 +734,7 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSource {
     pub fc: Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceFc>,
     /// flexVolume represents a generic volume resource that is
     /// provisioned/attached using an exec based plugin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flexVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceFlexVolume>,
     /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -856,11 +742,7 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSource {
     /// gcePersistentDisk represents a GCE Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gcePersistentDisk"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
     pub gce_persistent_disk: Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceGcePersistentDisk>,
     /// gitRepo represents a git repository at a particular revision.
     /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
@@ -894,27 +776,13 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSource {
     /// persistentVolumeClaimVolumeSource represents a reference to a
     /// PersistentVolumeClaim in the same namespace.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
-    pub persistent_volume_claim:
-        Option<GooseFSRuntimeTieredstoreLevelsVolumeSourcePersistentVolumeClaim>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<GooseFSRuntimeTieredstoreLevelsVolumeSourcePersistentVolumeClaim>,
     /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "photonPersistentDisk"
-    )]
-    pub photon_persistent_disk:
-        Option<GooseFSRuntimeTieredstoreLevelsVolumeSourcePhotonPersistentDisk>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
+    pub photon_persistent_disk: Option<GooseFSRuntimeTieredstoreLevelsVolumeSourcePhotonPersistentDisk>,
     /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portworxVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
     pub portworx_volume: Option<GooseFSRuntimeTieredstoreLevelsVolumeSourcePortworxVolume>,
     /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -937,11 +805,7 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSource {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storageos: Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceStorageos>,
     /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vsphereVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
     pub vsphere_volume: Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceVsphereVolume>,
 }
 
@@ -977,11 +841,7 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceAwsElasticBlockStore {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceAzureDisk {
     /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachingMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
     pub caching_mode: Option<String>,
     /// diskName is the Name of the data disk in the blob storage
     #[serde(rename = "diskName")]
@@ -1034,11 +894,7 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceCephfs {
     pub read_only: Option<bool>,
     /// secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
     pub secret_file: Option<String>,
     /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
@@ -1107,11 +963,7 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceConfigMap {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items if unspecified, each key-value pair in the Data field of the referenced
     /// ConfigMap will be projected into the volume as a file whose name is the
@@ -1168,24 +1020,15 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceCsi {
     /// NodePublishVolume and NodeUnpublishVolume calls.
     /// This field is optional, and  may be empty if no secret is required. If the
     /// secret object contains more than one secret, all secret references are passed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePublishSecretRef"
-    )]
-    pub node_publish_secret_ref:
-        Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceCsiNodePublishSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
+    pub node_publish_secret_ref: Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceCsiNodePublishSecretRef>,
     /// readOnly specifies a read-only configuration for the volume.
     /// Defaults to false (read/write).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// volumeAttributes stores driver-specific properties that are passed to the CSI
     /// driver. Consult your driver's documentation for supported values.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
@@ -1214,11 +1057,7 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceDownwardApi {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// Items is a list of downward API volume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1243,24 +1082,15 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceDownwardApiItems {
     pub path: String,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceDownwardApiItemsResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceDownwardApiItemsResourceFieldRef>,
 }
 
 /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -1272,11 +1102,7 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceDownwardApiItemsFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1308,8 +1134,8 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceEmptyDir {
 /// ephemeral represents a volume that is handled by a cluster storage driver.
 /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
 /// and deleted when the pod is removed.
-///
-///
+/// 
+/// 
 /// Use this if:
 /// a) the volume is only needed while the pod runs,
 /// b) features of normal volumes like restoring from snapshot or capacity
@@ -1319,18 +1145,18 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceEmptyDir {
 ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
 ///    information on the connection between this volume type
 ///    and PersistentVolumeClaim).
-///
-///
+/// 
+/// 
 /// Use PersistentVolumeClaim or one of the vendor-specific
 /// APIs for volumes that persist for longer than the lifecycle
 /// of an individual pod.
-///
-///
+/// 
+/// 
 /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
 /// be used that way - see the documentation of the driver for
 /// more information.
-///
-///
+/// 
+/// 
 /// A pod can use both types of ephemeral volumes and
 /// persistent volumes at the same time.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1342,8 +1168,8 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceEphemeral {
     /// `<volume name>` is the name from the `PodSpec.Volumes` array
     /// entry. Pod validation will reject the pod if the concatenated name
     /// is not valid for a PVC (for example, too long).
-    ///
-    ///
+    /// 
+    /// 
     /// An existing PVC with that name that is not owned by the pod
     /// will *not* be used for the pod to avoid using an unrelated
     /// volume by mistake. Starting the pod is then blocked until
@@ -1352,20 +1178,15 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceEphemeral {
     /// owner reference to the pod once the pod exists. Normally
     /// this should not be necessary, but it may be useful when
     /// manually reconstructing a broken cluster.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is read-only and no changes will be made by Kubernetes
     /// to the PVC after it has been created.
-    ///
-    ///
+    /// 
+    /// 
     /// Required, must not be nil.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimTemplate"
-    )]
-    pub volume_claim_template:
-        Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplate>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
+    pub volume_claim_template: Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplate>,
 }
 
 /// Will be used to create a stand-alone PVC to provision the volume.
@@ -1375,8 +1196,8 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceEphemeral {
 /// `<volume name>` is the name from the `PodSpec.Volumes` array
 /// entry. Pod validation will reject the pod if the concatenated name
 /// is not valid for a PVC (for example, too long).
-///
-///
+/// 
+/// 
 /// An existing PVC with that name that is not owned by the pod
 /// will *not* be used for the pod to avoid using an unrelated
 /// volume by mistake. Starting the pod is then blocked until
@@ -1385,12 +1206,12 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceEphemeral {
 /// owner reference to the pod once the pod exists. Normally
 /// this should not be necessary, but it may be useful when
 /// manually reconstructing a broken cluster.
-///
-///
+/// 
+/// 
 /// This field is read-only and no changes will be made by Kubernetes
 /// to the PVC after it has been created.
-///
-///
+/// 
+/// 
 /// Required, must not be nil.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplate {
@@ -1398,8 +1219,7 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTempla
     /// when creating it. No other fields are allowed and will be rejected during
     /// validation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub metadata:
-        Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateMetadata>,
+    pub metadata: Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateMetadata>,
     /// The specification for the PersistentVolumeClaim. The entire content is
     /// copied unchanged into the PVC that gets created from this
     /// template. The same fields as in a PersistentVolumeClaim
@@ -1411,7 +1231,8 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTempla
 /// when creating it. No other fields are allowed and will be rejected during
 /// validation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateMetadata {}
+pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateMetadata {
+}
 
 /// The specification for the PersistentVolumeClaim. The entire content is
 /// copied unchanged into the PVC that gets created from this
@@ -1421,11 +1242,7 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTempla
 pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpec {
     /// accessModes contains the desired access modes the volume should have.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// dataSource field can be used to specify either:
     /// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
@@ -1435,14 +1252,8 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTempla
     /// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
     /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
     /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSource"
-    )]
-    pub data_source: Option<
-        GooseFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecDataSource,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
+    pub data_source: Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecDataSource>,
     /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
     /// volume is desired. This may be any object from a non-empty API group (non
     /// core object) or a PersistentVolumeClaim object.
@@ -1466,34 +1277,21 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTempla
     ///   in any namespaces.
     /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
     /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSourceRef"
-    )]
-    pub data_source_ref: Option<
-        GooseFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecDataSourceRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
+    pub data_source_ref: Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecDataSourceRef>,
     /// resources represents the minimum resources the volume should have.
     /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
     /// that are lower than previous value but must still be higher than capacity recorded in the
     /// status field of the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<
-        GooseFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecResources,
-    >,
+    pub resources: Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecResources>,
     /// selector is a label query over volumes to consider for binding.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub selector:
-        Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecSelector>,
+    pub selector: Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecSelector>,
     /// storageClassName is the name of the StorageClass required by the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
     /// If specified, the CSI driver will create or update the volume with the attributes defined
@@ -1507,26 +1305,14 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTempla
     /// exists.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
     /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributesClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
     /// Value of Filesystem is implied when not included in claim spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     /// volumeName is the binding reference to the PersistentVolume backing this claim.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -1575,8 +1361,7 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTempla
 /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
 /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecDataSourceRef
-{
+pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecDataSourceRef {
     /// APIGroup is the group for the resource being referenced.
     /// If APIGroup is not specified, the specified Kind must be in the core API group.
     /// For any other third-party types, APIGroup is required.
@@ -1628,8 +1413,7 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTempla
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions
-{
+pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1660,11 +1444,7 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceFc {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// targetWWNs is Optional: FC target worldwide names (WWNs)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetWWNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
     pub target_ww_ns: Option<Vec<String>>,
     /// wwids Optional: FC volume world wide identifiers (wwids)
     /// Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
@@ -1718,18 +1498,10 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceFlexVolumeSecretRef {
 pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceFlocker {
     /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
     /// should be considered as deprecated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
     pub dataset_name: Option<String>,
     /// datasetUUID is the UUID of the dataset. This is unique identifier of a Flocker dataset
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetUUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
     pub dataset_uuid: Option<String>,
 }
 
@@ -1826,18 +1598,10 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceHostPath {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceIscsi {
     /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthDiscovery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
     /// chapAuthSession defines whether support iSCSI Session CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthSession"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
     pub chap_auth_session: Option<bool>,
     /// fsType is the filesystem type of the volume that you want to mount.
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
@@ -1849,21 +1613,13 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceIscsi {
     /// initiatorName is the custom iSCSI Initiator Name.
     /// If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface
     /// <target portal>:<volume name> will be created for the connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initiatorName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
     pub initiator_name: Option<String>,
     /// iqn is the target iSCSI Qualified Name.
     pub iqn: String,
     /// iscsiInterface is the interface Name that uses an iSCSI transport.
     /// Defaults to 'default' (tcp).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "iscsiInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
     pub iscsi_interface: Option<String>,
     /// lun represents iSCSI Target Lun number.
     pub lun: i32,
@@ -1965,11 +1721,7 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceProjected {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// sources is the list of volume projections
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1981,62 +1733,47 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceProjected {
 pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSources {
     /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
     /// of ClusterTrustBundle objects in an auto-updating file.
-    ///
-    ///
+    /// 
+    /// 
     /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// ClusterTrustBundle objects can either be selected by name, or by the
     /// combination of signer name and a label selector.
-    ///
-    ///
+    /// 
+    /// 
     /// Kubelet performs aggressive normalization of the PEM contents written
     /// into the pod filesystem.  Esoteric PEM features such as inter-block
     /// comments and block headers are stripped.  Certificates are deduplicated.
     /// The ordering of certificates within the file is arbitrary, and Kubelet
     /// may change the order over time.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterTrustBundle"
-    )]
-    pub cluster_trust_bundle:
-        Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesClusterTrustBundle>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesClusterTrustBundle>,
     /// configMap information about the configMap data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesConfigMap>,
     /// downwardAPI information about the downwardAPI data to project
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
-    pub downward_api:
-        Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardApi>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
+    pub downward_api: Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardApi>,
     /// secret information about the secret data to project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesSecret>,
     /// serviceAccountToken is information about the serviceAccountToken data to project
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountToken"
-    )]
-    pub service_account_token:
-        Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesServiceAccountToken>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
+    pub service_account_token: Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesServiceAccountToken>,
 }
 
 /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
 /// of ClusterTrustBundle objects in an auto-updating file.
-///
-///
+/// 
+/// 
 /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-///
-///
+/// 
+/// 
 /// ClusterTrustBundle objects can either be selected by name, or by the
 /// combination of signer name and a label selector.
-///
-///
+/// 
+/// 
 /// Kubelet performs aggressive normalization of the PEM contents written
 /// into the pod filesystem.  Esoteric PEM features such as inter-block
 /// comments and block headers are stripped.  Certificates are deduplicated.
@@ -2048,14 +1785,8 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesClusterTru
     /// effect if signerName is set.  Mutually-exclusive with name.  If unset,
     /// interpreted as "match nothing".  If set but empty, interpreted as "match
     /// everything".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector: Option<
-        GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesClusterTrustBundleLabelSelector,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesClusterTrustBundleLabelSelector>,
     /// Select a single ClusterTrustBundle by object name.  Mutually-exclusive
     /// with signerName and labelSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2072,11 +1803,7 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesClusterTru
     /// Select all ClusterTrustBundles that match this signer name.
     /// Mutually-exclusive with name.  The contents of all selected
     /// ClusterTrustBundles will be unified and deduplicated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "signerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
     pub signer_name: Option<String>,
 }
 
@@ -2099,8 +1826,7 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesClusterTru
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions
-{
+pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2125,8 +1851,7 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesConfigMap 
     /// the volume setup will error unless it is marked optional. Paths must be
     /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesConfigMapItems>>,
+    pub items: Option<Vec<GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesConfigMapItems>>,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -2162,8 +1887,7 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesConfigMapI
 pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardApi {
     /// Items is a list of DownwardAPIVolume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardApiItems>>,
+    pub items: Option<Vec<GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardApiItems>>,
 }
 
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
@@ -2171,8 +1895,7 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardAp
 pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardApiItems {
     /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardApiItemsFieldRef>,
+    pub field_ref: Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
     /// between 0000 and 0777 or a decimal value between 0 and 511.
     /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
@@ -2185,25 +1908,15 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardAp
     pub path: String,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef>,
 }
 
 /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -2213,14 +1926,9 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardAp
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef
-{
+pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2286,11 +1994,7 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesServiceAcc
     /// start trying to rotate the token if the token is older than 80 percent of
     /// its time to live or if the token is older than 24 hours.Defaults to 1 hour
     /// and must be at least 10 minutes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
     /// path is the path relative to the mount point of the file to project the
     /// token into.
@@ -2394,11 +2098,7 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceScaleIo {
     /// gateway is the host address of the ScaleIO API Gateway.
     pub gateway: String,
     /// protectionDomain is the name of the ScaleIO Protection Domain for the configured storage.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protectionDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
     pub protection_domain: Option<String>,
     /// readOnly Defaults to false (read/write). ReadOnly here will force
     /// the ReadOnly setting in VolumeMounts.
@@ -2409,36 +2109,20 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceScaleIo {
     #[serde(rename = "secretRef")]
     pub secret_ref: GooseFSRuntimeTieredstoreLevelsVolumeSourceScaleIoSecretRef,
     /// sslEnabled Flag enable/disable SSL communication with Gateway, default false
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
     /// storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned.
     /// Default is ThinProvisioned.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
     pub storage_mode: Option<String>,
     /// storagePool is the ScaleIO Storage Pool associated with the protection domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
     pub storage_pool: Option<String>,
     /// system is the name of the storage system as configured in ScaleIO.
     pub system: String,
     /// volumeName is the name of a volume already created in the ScaleIO system
     /// that is associated with this volume source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -2464,11 +2148,7 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceSecret {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items If unspecified, each key-value pair in the Data field of the referenced
     /// Secret will be projected into the volume as a file whose name is the
@@ -2484,11 +2164,7 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceSecret {
     pub optional: Option<bool>,
     /// secretName is the name of the secret in the pod's namespace to use.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -2530,11 +2206,7 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceStorageos {
     pub secret_ref: Option<GooseFSRuntimeTieredstoreLevelsVolumeSourceStorageosSecretRef>,
     /// volumeName is the human-readable name of the StorageOS volume.  Volume
     /// names are only unique within a namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
     /// volumeNamespace specifies the scope of the volume within StorageOS.  If no
     /// namespace is specified then the Pod's namespace will be used.  This allows the
@@ -2542,11 +2214,7 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceStorageos {
     /// Set VolumeName to any name to override the default behaviour.
     /// Set to "default" if you are not using namespaces within StorageOS.
     /// Namespaces that do not pre-exist within StorageOS will be created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
     pub volume_namespace: Option<String>,
 }
 
@@ -2570,18 +2238,10 @@ pub struct GooseFSRuntimeTieredstoreLevelsVolumeSourceVsphereVolume {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// storagePolicyID is the storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
     pub storage_policy_id: Option<String>,
     /// storagePolicyName is the storage Policy Based Management (SPBM) profile name.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
     pub storage_policy_name: Option<String>,
     /// volumePath is the path that identifies vSphere volume vmdk
     #[serde(rename = "volumePath")]
@@ -2614,18 +2274,10 @@ pub struct GooseFSRuntimeWorker {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<BTreeMap<String, String>>,
     /// Options for JVM
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jvmOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmOptions")]
     pub jvm_options: Option<Vec<String>>,
     /// NodeSelector is a selector which must be true for the master to fit on a node
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Ports used by GooseFS(e.g. rpc: 19998 for master)
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2655,12 +2307,12 @@ pub struct GooseFSRuntimeWorker {
 pub struct GooseFSRuntimeWorkerResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<GooseFSRuntimeWorkerResourcesClaims>>,
@@ -2689,25 +2341,13 @@ pub struct GooseFSRuntimeWorkerResourcesClaims {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GooseFSRuntimeStatus {
     /// APIGatewayStatus represents rest api gateway status
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiGateway"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGateway")]
     pub api_gateway: Option<GooseFSRuntimeStatusApiGateway>,
     /// CacheAffinity represents the runtime worker pods node affinity including node selector
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheAffinity")]
     pub cache_affinity: Option<GooseFSRuntimeStatusCacheAffinity>,
     /// CacheStatus represents the total resources of the dataset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheStates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheStates")]
     pub cache_states: Option<BTreeMap<String, String>>,
     /// Represents the latest available observations of a ddc runtime's current state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2739,11 +2379,7 @@ pub struct GooseFSRuntimeStatus {
     /// The number of nodes that should be running the
     /// runtime Fuse pod and have one or more of the runtime Fuse pod running and
     /// available (ready for at least spec.minReadySeconds)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fuseNumberAvailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fuseNumberAvailable")]
     pub fuse_number_available: Option<i32>,
     /// The number of nodes that should be running the runtime Fuse pod and have one
     /// or more of the runtime Fuse pod running and ready.
@@ -2752,21 +2388,13 @@ pub struct GooseFSRuntimeStatus {
     /// The number of nodes that should be running the
     /// runtime fuse pod and have none of the runtime fuse pod running and available
     /// (ready for at least spec.minReadySeconds)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fuseNumberUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fuseNumberUnavailable")]
     pub fuse_number_unavailable: Option<i32>,
     /// FusePhase is the Fuse running phase
     #[serde(rename = "fusePhase")]
     pub fuse_phase: String,
     /// Reason for the condition's last transition.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fuseReason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fuseReason")]
     pub fuse_reason: Option<String>,
     /// The number of nodes that should be running the runtime worker pod and have zero
     /// or more of the runtime master pod running and ready.
@@ -2776,11 +2404,7 @@ pub struct GooseFSRuntimeStatus {
     #[serde(rename = "masterPhase")]
     pub master_phase: String,
     /// Reason for Master's condition transition
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "masterReason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "masterReason")]
     pub master_reason: Option<String>,
     /// MountTime represents time last mount happened
     /// if Mounttime is earlier than master starting time, remount will be required
@@ -2793,11 +2417,7 @@ pub struct GooseFSRuntimeStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<String>,
     /// Duration tell user how much time was spent to setup the runtime
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "setupDuration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "setupDuration")]
     pub setup_duration: Option<String>,
     /// config map used to set configurations
     #[serde(rename = "valueFile")]
@@ -2805,11 +2425,7 @@ pub struct GooseFSRuntimeStatus {
     /// The number of nodes that should be running the
     /// runtime worker pod and have one or more of the runtime worker pod running and
     /// available (ready for at least spec.minReadySeconds)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workerNumberAvailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workerNumberAvailable")]
     pub worker_number_available: Option<i32>,
     /// The number of nodes that should be running the runtime worker pod and have one
     /// or more of the runtime worker pod running and ready.
@@ -2818,21 +2434,13 @@ pub struct GooseFSRuntimeStatus {
     /// The number of nodes that should be running the
     /// runtime worker pod and have none of the runtime worker pod running and available
     /// (ready for at least spec.minReadySeconds)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workerNumberUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workerNumberUnavailable")]
     pub worker_number_unavailable: Option<i32>,
     /// WorkerPhase is the worker running phase
     #[serde(rename = "workerPhase")]
     pub worker_phase: String,
     /// Reason for Worker's condition transition
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workerReason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workerReason")]
     pub worker_reason: Option<String>,
 }
 
@@ -2856,26 +2464,15 @@ pub struct GooseFSRuntimeStatusCacheAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node matches the corresponding matchExpressions; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<GooseFSRuntimeStatusCacheAffinityPreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<GooseFSRuntimeStatusCacheAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
     /// at some point during pod execution (e.g. due to an update), the system
     /// may or may not try to eventually evict the pod from its node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<GooseFSRuntimeStatusCacheAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<GooseFSRuntimeStatusCacheAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
 /// An empty preferred scheduling term matches all objects with implicit weight 0
@@ -2883,8 +2480,7 @@ pub struct GooseFSRuntimeStatusCacheAffinity {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GooseFSRuntimeStatusCacheAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// A node selector term, associated with the corresponding weight.
-    pub preference:
-        GooseFSRuntimeStatusCacheAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
+    pub preference: GooseFSRuntimeStatusCacheAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
     /// Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.
     pub weight: i32,
 }
@@ -2903,8 +2499,7 @@ pub struct GooseFSRuntimeStatusCacheAffinityPreferredDuringSchedulingIgnoredDuri
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GooseFSRuntimeStatusCacheAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct GooseFSRuntimeStatusCacheAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -2922,8 +2517,7 @@ pub struct GooseFSRuntimeStatusCacheAffinityPreferredDuringSchedulingIgnoredDuri
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GooseFSRuntimeStatusCacheAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct GooseFSRuntimeStatusCacheAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -2966,8 +2560,7 @@ pub struct GooseFSRuntimeStatusCacheAffinityRequiredDuringSchedulingIgnoredDurin
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GooseFSRuntimeStatusCacheAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct GooseFSRuntimeStatusCacheAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -2985,8 +2578,7 @@ pub struct GooseFSRuntimeStatusCacheAffinityRequiredDuringSchedulingIgnoredDurin
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct GooseFSRuntimeStatusCacheAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct GooseFSRuntimeStatusCacheAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -3006,11 +2598,7 @@ pub struct GooseFSRuntimeStatusCacheAffinityRequiredDuringSchedulingIgnoredDurin
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GooseFSRuntimeStatusMounts {
     /// The secret information
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "encryptOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptOptions")]
     pub encrypt_options: Option<Vec<GooseFSRuntimeStatusMountsEncryptOptions>>,
     /// MountPoint is the mount point of source.
     #[serde(rename = "mountPoint")]
@@ -3048,11 +2636,7 @@ pub struct GooseFSRuntimeStatusMountsEncryptOptions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct GooseFSRuntimeStatusMountsEncryptOptionsValueFrom {
     /// The encryptInfo obtained from secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<GooseFSRuntimeStatusMountsEncryptOptionsValueFromSecretKeyRef>,
 }
 
@@ -3065,3 +2649,4 @@ pub struct GooseFSRuntimeStatusMountsEncryptOptionsValueFromSecretKeyRef {
     /// The name of required secret
     pub name: String,
 }
+

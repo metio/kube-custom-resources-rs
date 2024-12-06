@@ -5,24 +5,19 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// KafkaTopicSpec defines the desired state of KafkaTopic
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kafka.banzaicloud.io",
-    version = "v1alpha1",
-    kind = "KafkaTopic",
-    plural = "kafkatopics"
-)]
+#[kube(group = "kafka.banzaicloud.io", version = "v1alpha1", kind = "KafkaTopic", plural = "kafkatopics")]
 #[kube(namespaced)]
 #[kube(status = "KafkaTopicStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct KafkaTopicSpec {
     /// ClusterReference states a reference to a cluster for topic/user provisioning
     #[serde(rename = "clusterRef")]
@@ -54,3 +49,4 @@ pub struct KafkaTopicStatus {
     /// TopicState defines the state of a KafkaTopic
     pub state: String,
 }
+

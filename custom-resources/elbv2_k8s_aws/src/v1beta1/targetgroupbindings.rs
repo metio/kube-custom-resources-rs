@@ -4,50 +4,33 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// TargetGroupBindingSpec defines the desired state of TargetGroupBinding
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "elbv2.k8s.aws",
-    version = "v1beta1",
-    kind = "TargetGroupBinding",
-    plural = "targetgroupbindings"
-)]
+#[kube(group = "elbv2.k8s.aws", version = "v1beta1", kind = "TargetGroupBinding", plural = "targetgroupbindings")]
 #[kube(namespaced)]
 #[kube(status = "TargetGroupBindingStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TargetGroupBindingSpec {
     /// ipAddressType specifies whether the target group is of type IPv4 or IPv6. If unspecified, it will be automatically inferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipAddressType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipAddressType")]
     pub ip_address_type: Option<TargetGroupBindingIpAddressType>,
     /// MultiClusterTargetGroup Denotes if the TargetGroup is shared among multiple clusters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "multiClusterTargetGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multiClusterTargetGroup")]
     pub multi_cluster_target_group: Option<bool>,
     /// networking defines the networking rules to allow ELBV2 LoadBalancer to access targets in TargetGroup.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub networking: Option<TargetGroupBindingNetworking>,
     /// node selector for instance type target groups to only register certain nodes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<TargetGroupBindingNodeSelector>,
     /// serviceRef is a reference to a Kubernetes Service and ServicePort.
     #[serde(rename = "serviceRef")]
@@ -56,11 +39,7 @@ pub struct TargetGroupBindingSpec {
     #[serde(rename = "targetGroupARN")]
     pub target_group_arn: String,
     /// targetType is the TargetType of TargetGroup. If unspecified, it will be automatically inferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetType")]
     pub target_type: Option<TargetGroupBindingTargetType>,
     /// VpcID is the VPC of the TargetGroup. If unspecified, it will be automatically inferred.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpcID")]
@@ -104,11 +83,7 @@ pub struct TargetGroupBindingNetworkingIngressFrom {
     pub ip_block: Option<TargetGroupBindingNetworkingIngressFromIpBlock>,
     /// SecurityGroup defines a SecurityGroup peer.
     /// If specified, none of the other fields can be set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroup")]
     pub security_group: Option<TargetGroupBindingNetworkingIngressFromSecurityGroup>,
 }
 
@@ -158,20 +133,12 @@ pub enum TargetGroupBindingNetworkingIngressPortsProtocol {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TargetGroupBindingNodeSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<TargetGroupBindingNodeSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -214,10 +181,7 @@ pub enum TargetGroupBindingTargetType {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TargetGroupBindingStatus {
     /// The generation observed by the TargetGroupBinding controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
 }
+

@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// BucketNotificationSpec represent the spec of a Bucket Notification
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "ceph.rook.io",
-    version = "v1",
-    kind = "CephBucketNotification",
-    plural = "cephbucketnotifications"
-)]
+#[kube(group = "ceph.rook.io", version = "v1", kind = "CephBucketNotification", plural = "cephbucketnotifications")]
 #[kube(namespaced)]
 #[kube(status = "CephBucketNotificationStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CephBucketNotificationSpec {
     /// List of events that should trigger the notification
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -38,25 +33,13 @@ pub struct CephBucketNotificationSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CephBucketNotificationFilter {
     /// Filters based on the object's key
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keyFilters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFilters")]
     pub key_filters: Option<Vec<CephBucketNotificationFilterKeyFilters>>,
     /// Filters based on the object's metadata
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metadataFilters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataFilters")]
     pub metadata_filters: Option<Vec<CephBucketNotificationFilterMetadataFilters>>,
     /// Filters based on the object's tags
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tagFilters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tagFilters")]
     pub tag_filters: Option<Vec<CephBucketNotificationFilterTagFilters>>,
 }
 
@@ -104,12 +87,9 @@ pub struct CephBucketNotificationStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// ObservedGeneration is the latest generation observed by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
 }
+

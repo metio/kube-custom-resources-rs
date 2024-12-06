@@ -4,28 +4,23 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// DeploymentSpec defines the desired state of Deployment.
-///
+/// 
 /// An immutable representation of an API that can be called by users. A Deployment
 /// must be associated with a Stage for it to be callable over the internet.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "apigatewayv2.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "Deployment",
-    plural = "deployments"
-)]
+#[kube(group = "apigatewayv2.services.k8s.aws", version = "v1alpha1", kind = "Deployment", plural = "deployments")]
 #[kube(namespaced)]
 #[kube(status = "DeploymentStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DeploymentSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiID")]
     pub api_id: Option<String>,
@@ -33,7 +28,7 @@ pub struct DeploymentSpec {
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiRef")]
@@ -48,7 +43,7 @@ pub struct DeploymentSpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -75,17 +70,9 @@ pub struct DeploymentStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<DeploymentStatusAckResourceMetadata>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoDeployed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoDeployed")]
     pub auto_deployed: Option<bool>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -93,29 +80,13 @@ pub struct DeploymentStatus {
     /// resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "createdDate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "createdDate")]
     pub created_date: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deploymentID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentID")]
     pub deployment_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deploymentStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentStatus")]
     pub deployment_status: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deploymentStatusMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentStatusMessage")]
     pub deployment_status_message: Option<String>,
 }
 
@@ -140,3 +111,4 @@ pub struct DeploymentStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

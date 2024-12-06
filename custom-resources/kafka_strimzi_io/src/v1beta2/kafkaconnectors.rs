@@ -4,40 +4,27 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// The specification of the Kafka Connector.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kafka.strimzi.io",
-    version = "v1beta2",
-    kind = "KafkaConnector",
-    plural = "kafkaconnectors"
-)]
+#[kube(group = "kafka.strimzi.io", version = "v1beta2", kind = "KafkaConnector", plural = "kafkaconnectors")]
 #[kube(namespaced)]
 #[kube(status = "KafkaConnectorStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct KafkaConnectorSpec {
     /// Configuration for altering offsets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "alterOffsets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "alterOffsets")]
     pub alter_offsets: Option<KafkaConnectorAlterOffsets>,
     /// Automatic restart of connector and tasks configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoRestart"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoRestart")]
     pub auto_restart: Option<KafkaConnectorAutoRestart>,
     /// The Class for the Kafka Connector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -46,11 +33,7 @@ pub struct KafkaConnectorSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub config: Option<BTreeMap<String, serde_json::Value>>,
     /// Configuration for listing offsets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "listOffsets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "listOffsets")]
     pub list_offsets: Option<KafkaConnectorListOffsets>,
     /// Whether the connector should be paused. Defaults to false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -85,11 +68,7 @@ pub struct KafkaConnectorAutoRestart {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// The maximum number of connector restarts that the operator will try. If the connector remains in a failed state after reaching this limit, it must be restarted manually by the user. Defaults to an unlimited number of restarts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRestarts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRestarts")]
     pub max_restarts: Option<i64>,
 }
 
@@ -123,28 +102,16 @@ pub enum KafkaConnectorState {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaConnectorStatus {
     /// The auto restart status.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoRestart"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoRestart")]
     pub auto_restart: Option<KafkaConnectorStatusAutoRestart>,
     /// List of status conditions.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The connector status, as reported by the Kafka Connect REST API.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectorStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectorStatus")]
     pub connector_status: Option<BTreeMap<String, serde_json::Value>>,
     /// The generation of the CRD that was last reconciled by the operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// The maximum number of tasks for the Kafka Connector.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tasksMax")]
@@ -158,20 +125,13 @@ pub struct KafkaConnectorStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct KafkaConnectorStatusAutoRestart {
     /// The name of the connector being restarted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectorName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectorName")]
     pub connector_name: Option<String>,
     /// The number of times the connector or task is restarted.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub count: Option<i64>,
     /// The last time the automatic restart was attempted. The required format is 'yyyy-MM-ddTHH:mm:ssZ' in the UTC time zone.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastRestartTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastRestartTimestamp")]
     pub last_restart_timestamp: Option<String>,
 }
+

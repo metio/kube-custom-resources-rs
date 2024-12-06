@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// Spec defines the desired behavior of the FederatedObject.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "core.kubeadmiral.io",
-    version = "v1alpha1",
-    kind = "ClusterFederatedObject",
-    plural = "clusterfederatedobjects"
-)]
+#[kube(group = "core.kubeadmiral.io", version = "v1alpha1", kind = "ClusterFederatedObject", plural = "clusterfederatedobjects")]
 #[kube(status = "ClusterFederatedObjectStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterFederatedObjectSpec {
     /// Follows defines other objects, or "leaders", that the Kubernetes object should follow during propagation, i.e. the Kubernetes object should be propagated to all member clusters that its "leaders" are placed in.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -101,11 +96,7 @@ pub struct ClusterFederatedObjectStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<ClusterFederatedObjectStatusConditions>>,
     /// SyncedGeneration is the generation of this FederatedObject when it was last synced to selected member clusters.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "syncedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncedGeneration")]
     pub synced_generation: Option<i64>,
 }
 
@@ -115,11 +106,7 @@ pub struct ClusterFederatedObjectStatusClusters {
     /// Cluster is the name of the member cluster.
     pub cluster: String,
     /// LastObservedGeneration is the last observed generation of the Kubernetes object in the member cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastObservedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastObservedGeneration")]
     pub last_observed_generation: Option<i64>,
     /// Status describes the current status of propagating the Kubernetes object to the member cluster.
     pub status: String,
@@ -129,18 +116,10 @@ pub struct ClusterFederatedObjectStatusClusters {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterFederatedObjectStatusConditions {
     /// LastTransitionTime is the last time the status of this condition changed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastTransitionTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastTransitionTime")]
     pub last_transition_time: Option<String>,
     /// LastUpdateTime is the last time a reconciliation for this condition occurred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdateTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdateTime")]
     pub last_update_time: Option<String>,
     /// Reason is the reason for the last status change of this condition.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -151,3 +130,4 @@ pub struct ClusterFederatedObjectStatusConditions {
     #[serde(rename = "type")]
     pub r#type: String,
 }
+

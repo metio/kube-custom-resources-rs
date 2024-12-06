@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// SonataFlowPlatformSpec defines the desired state of SonataFlowPlatform
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "sonataflow.org",
-    version = "v1alpha08",
-    kind = "SonataFlowPlatform",
-    plural = "sonataflowplatforms"
-)]
+#[kube(group = "sonataflow.org", version = "v1alpha08", kind = "SonataFlowPlatform", plural = "sonataflowplatforms")]
 #[kube(namespaced)]
 #[kube(status = "SonataFlowPlatformStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SonataFlowPlatformSpec {
     /// Build Attributes for building workflows in the target platform
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -45,7 +40,7 @@ pub struct SonataFlowPlatformSpec {
     /// Properties defines the property set for a given actor in the current context.
     /// For example, the workflow managed properties. One can define here a set of properties for SonataFlow deployments
     /// that will be reused across every workflow deployment.
-    ///
+    /// 
     /// These properties MAY NOT be propagated to a SonataFlowClusterPlatform since PropertyVarSource can only refer local context sources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub properties: Option<SonataFlowPlatformProperties>,
@@ -84,11 +79,7 @@ pub struct SonataFlowPlatformBuildConfig {
     pub strategy: Option<String>,
     /// BuildStrategyOptions additional options to add to the build strategy.
     /// See https://sonataflow.org/serverlessworkflow/main/cloud/operator/build-and-deploy-workflows.html
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "strategyOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "strategyOptions")]
     pub strategy_options: Option<BTreeMap<String, String>>,
     /// how much time to wait before time out the build process
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -166,32 +157,18 @@ pub struct SonataFlowPlatformBuildTemplateBuildArgs {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformBuildTemplateBuildArgsValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<SonataFlowPlatformBuildTemplateBuildArgsValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<SonataFlowPlatformBuildTemplateBuildArgsValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<SonataFlowPlatformBuildTemplateBuildArgsValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<SonataFlowPlatformBuildTemplateBuildArgsValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<SonataFlowPlatformBuildTemplateBuildArgsValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SonataFlowPlatformBuildTemplateBuildArgsValueFromSecretKeyRef>,
 }
 
@@ -217,11 +194,7 @@ pub struct SonataFlowPlatformBuildTemplateBuildArgsValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformBuildTemplateBuildArgsValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -233,11 +206,7 @@ pub struct SonataFlowPlatformBuildTemplateBuildArgsValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformBuildTemplateBuildArgsValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -288,11 +257,7 @@ pub struct SonataFlowPlatformBuildTemplateEnvs {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformBuildTemplateEnvsValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<SonataFlowPlatformBuildTemplateEnvsValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -300,18 +265,10 @@ pub struct SonataFlowPlatformBuildTemplateEnvsValueFrom {
     pub field_ref: Option<SonataFlowPlatformBuildTemplateEnvsValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<SonataFlowPlatformBuildTemplateEnvsValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SonataFlowPlatformBuildTemplateEnvsValueFromSecretKeyRef>,
 }
 
@@ -337,11 +294,7 @@ pub struct SonataFlowPlatformBuildTemplateEnvsValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformBuildTemplateEnvsValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -353,11 +306,7 @@ pub struct SonataFlowPlatformBuildTemplateEnvsValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformBuildTemplateEnvsValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -388,10 +337,10 @@ pub struct SonataFlowPlatformBuildTemplateEnvsValueFromSecretKeyRef {
 pub struct SonataFlowPlatformBuildTemplateResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<SonataFlowPlatformBuildTemplateResourcesClaims>>,
@@ -468,11 +417,7 @@ pub struct SonataFlowPlatformEventingBrokerRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Group of the API, without the version of the group. This can be used as an alternative to the APIVersion, and then resolved using ResolveGroup.
     /// Note: This API is EXPERIMENTAL and might break anytime. For more details: https://github.com/knative/eventing/issues/5086
@@ -520,11 +465,7 @@ pub struct SonataFlowPlatformPersistencePostgresql {
     #[serde(rename = "secretRef")]
     pub secret_ref: SonataFlowPlatformPersistencePostgresqlSecretRef,
     /// Service reference to postgresql datasource. Mutually exclusive to jdbcUrl.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceRef")]
     pub service_ref: Option<SonataFlowPlatformPersistencePostgresqlServiceRef>,
 }
 
@@ -534,11 +475,7 @@ pub struct SonataFlowPlatformPersistencePostgresqlSecretRef {
     /// Name of the postgresql credentials secret.
     pub name: String,
     /// Defaults to POSTGRESQL_PASSWORD
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passwordKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordKey")]
     pub password_key: Option<String>,
     /// Defaults to POSTGRESQL_USER
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userKey")]
@@ -549,11 +486,7 @@ pub struct SonataFlowPlatformPersistencePostgresqlSecretRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformPersistencePostgresqlServiceRef {
     /// Name of postgresql database to be used. Defaults to "sonataflow"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "databaseName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseName")]
     pub database_name: Option<String>,
     /// Name of the postgresql k8s service.
     pub name: String,
@@ -568,7 +501,7 @@ pub struct SonataFlowPlatformPersistencePostgresqlServiceRef {
 /// Properties defines the property set for a given actor in the current context.
 /// For example, the workflow managed properties. One can define here a set of properties for SonataFlow deployments
 /// that will be reused across every workflow deployment.
-///
+/// 
 /// These properties MAY NOT be propagated to a SonataFlowClusterPlatform since PropertyVarSource can only refer local context sources.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformProperties {
@@ -595,18 +528,10 @@ pub struct SonataFlowPlatformPropertiesFlow {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformPropertiesFlowValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<SonataFlowPlatformPropertiesFlowValueFromConfigMapKeyRef>,
     /// Selects a key of a secret in the flow's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SonataFlowPlatformPropertiesFlowValueFromSecretKeyRef>,
 }
 
@@ -653,11 +578,7 @@ pub struct SonataFlowPlatformServices {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataIndex")]
     pub data_index: Option<SonataFlowPlatformServicesDataIndex>,
     /// Deploys the Job service for use by workflows without the `sonataflow.org/profile: dev` annotation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jobService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobService")]
     pub job_service: Option<SonataFlowPlatformServicesJobService>,
 }
 
@@ -671,11 +592,7 @@ pub struct SonataFlowPlatformServicesDataIndex {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub persistence: Option<SonataFlowPlatformServicesDataIndexPersistence>,
     /// PodTemplate describes the deployment details of this platform service instance.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podTemplate")]
     pub pod_template: Option<SonataFlowPlatformServicesDataIndexPodTemplate>,
     /// Defines the source where the Dataindex receives events from
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -686,11 +603,7 @@ pub struct SonataFlowPlatformServicesDataIndex {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesDataIndexPersistence {
     /// Whether to migrate database on service startup?
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "migrateDBOnStartUp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "migrateDBOnStartUp")]
     pub migrate_db_on_start_up: Option<bool>,
     /// Connect configured services to a postgresql database.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -708,11 +621,7 @@ pub struct SonataFlowPlatformServicesDataIndexPersistencePostgresql {
     #[serde(rename = "secretRef")]
     pub secret_ref: SonataFlowPlatformServicesDataIndexPersistencePostgresqlSecretRef,
     /// Service reference to postgresql datasource. Mutually exclusive to jdbcUrl.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceRef")]
     pub service_ref: Option<SonataFlowPlatformServicesDataIndexPersistencePostgresqlServiceRef>,
 }
 
@@ -722,11 +631,7 @@ pub struct SonataFlowPlatformServicesDataIndexPersistencePostgresqlSecretRef {
     /// Name of the postgresql credentials secret.
     pub name: String,
     /// Defaults to POSTGRESQL_PASSWORD
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passwordKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordKey")]
     pub password_key: Option<String>,
     /// Defaults to POSTGRESQL_USER
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userKey")]
@@ -737,18 +642,10 @@ pub struct SonataFlowPlatformServicesDataIndexPersistencePostgresqlSecretRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesDataIndexPersistencePostgresqlServiceRef {
     /// Name of postgresql database to be used. Defaults to "sonataflow"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "databaseName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseName")]
     pub database_name: Option<String>,
     /// Schema of postgresql database to be used. Defaults to "data-index-service"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "databaseSchema"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseSchema")]
     pub database_schema: Option<String>,
     /// Name of the postgresql k8s service.
     pub name: String,
@@ -766,21 +663,13 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplate {
     /// Optional duration in seconds the pod may be active on the node relative to
     /// StartTime before the system will actively try to mark it failed and kill associated containers.
     /// Value must be a positive integer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "activeDeadlineSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeDeadlineSeconds")]
     pub active_deadline_seconds: Option<i64>,
     /// If specified, the pod's scheduling constraints
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<SonataFlowPlatformServicesDataIndexPodTemplateAffinity>,
     /// AutomountServiceAccountToken indicates whether a service account token should be automatically mounted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "automountServiceAccountToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "automountServiceAccountToken")]
     pub automount_service_account_token: Option<bool>,
     /// Container is the Kubernetes container where the application should run.
     /// One can change this attribute in order to override the defaults provided by the operator.
@@ -808,19 +697,11 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplate {
     /// EnableServiceLinks indicates whether information about services should be injected into pod's
     /// environment variables, matching the syntax of Docker links.
     /// Optional: Defaults to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableServiceLinks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableServiceLinks")]
     pub enable_service_links: Option<bool>,
     /// HostAliases is an optional list of hosts and IPs that will be injected into the pod's hosts
     /// file if specified. This is only valid for non-hostNetwork pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostAliases"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateHostAliases>>,
     /// Use the host's ipc namespace.
     /// Optional: Default to false.
@@ -829,11 +710,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplate {
     /// Host networking requested for this pod. Use the host's network namespace.
     /// If this option is set, the ports that will be used must be specified.
     /// Default to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostNetwork"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
     pub host_network: Option<bool>,
     /// Use the host's pid namespace.
     /// Optional: Default to false.
@@ -857,13 +734,8 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplate {
     /// ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of the images used by this PodSpec.
     /// If specified, these secrets will be passed to individual puller implementations for them to use.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#specifying-imagepullsecrets-on-a-pod
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
-    pub image_pull_secrets:
-        Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateImagePullSecrets>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
+    pub image_pull_secrets: Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateImagePullSecrets>>,
     /// List of initialization containers belonging to the pod.
     /// Init containers are executed in order prior to containers being started. If any
     /// init container fails, the pod is considered to have failed and is handled according
@@ -877,11 +749,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplate {
     /// Init containers cannot currently be added or removed.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateInitContainers>>,
     /// NodeName is a request to schedule this pod onto a specific node. If it is non-empty,
     /// the scheduler simply schedules this pod onto that node, assuming that it fits resource
@@ -891,18 +759,14 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplate {
     /// NodeSelector is a selector which must be true for the pod to fit on a node.
     /// Selector which must match a node's labels for the pod to be scheduled on that node.
     /// More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Specifies the OS of the containers in the pod.
     /// Some pod and container fields are restricted if this is set.
-    ///
+    /// 
     /// If the OS field is set to linux, the following fields must be unset:
     /// -securityContext.windowsOptions
-    ///
+    /// 
     /// If the OS field is set to windows, following fields must be unset:
     /// - spec.hostPID
     /// - spec.hostIPC
@@ -939,11 +803,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplate {
     /// PreemptionPolicy is the Policy for preempting pods with lower priority.
     /// One of Never, PreemptLowerPriority.
     /// Defaults to PreemptLowerPriority if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preemptionPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preemptionPolicy")]
     pub preemption_policy: Option<String>,
     /// The priority value. Various system components use this field to find the
     /// priority of the pod. When Priority Admission Controller is enabled, it
@@ -958,21 +818,13 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplate {
     /// name must be defined by creating a PriorityClass object with that name.
     /// If not specified, the pod priority will be default or zero if there is no
     /// default.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// If specified, all readiness gates will be evaluated for pod readiness.
     /// A pod is ready when all its containers are ready AND
     /// all conditions specified in the readiness gates have status equal to "True"
     /// More info: https://git.k8s.io/enhancements/keps/sig-network/580-pod-readiness-gates
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessGates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessGates")]
     pub readiness_gates: Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateReadinessGates>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
@@ -980,97 +832,60 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplate {
     /// and reserved before the Pod is allowed to start. The resources
     /// will be made available to those containers which consume them
     /// by name.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceClaims"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaims")]
     pub resource_claims: Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateResourceClaims>>,
     /// Restart policy for all containers within the pod.
     /// One of Always, OnFailure, Never. In some contexts, only a subset of those values may be permitted.
     /// Default to Always.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     /// RuntimeClassName refers to a RuntimeClass object in the node.k8s.io group, which should be used
     /// to run this pod.  If no RuntimeClass resource matches the named class, the pod will not be run.
     /// If unset or empty, the "legacy" RuntimeClass will be used, which is an implicit class with an
     /// empty definition that uses the default runtime handler.
     /// More info: https://git.k8s.io/enhancements/keps/sig-node/585-runtime-class
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runtimeClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeClassName")]
     pub runtime_class_name: Option<String>,
     /// If specified, the pod will be dispatched by specified scheduler.
     /// If not specified, the pod will be dispatched by default scheduler.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schedulerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
     /// SchedulingGates is an opaque list of values that if specified will block scheduling the pod.
     /// If schedulingGates is not empty, the pod will stay in the SchedulingGated state and the
     /// scheduler will not attempt to schedule the pod.
-    ///
+    /// 
     /// SchedulingGates can only be set at pod creation time, and be removed only afterwards.
-    ///
+    /// 
     /// This is a beta feature enabled by the PodSchedulingReadiness feature gate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schedulingGates"
-    )]
-    pub scheduling_gates:
-        Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateSchedulingGates>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingGates")]
+    pub scheduling_gates: Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateSchedulingGates>>,
     /// SecurityContext holds pod-level security attributes and common container settings.
     /// Optional: Defaults to empty.  See type description for default values of each field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<SonataFlowPlatformServicesDataIndexPodTemplateSecurityContext>,
     /// ServiceAccountName is the name of the ServiceAccount to use to run this pod.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
     /// If true the pod's hostname will be configured as the pod's FQDN, rather than the leaf name (the default).
     /// In Linux containers, this means setting the FQDN in the hostname field of the kernel (the nodename field of struct utsname).
     /// In Windows containers, this means setting the registry value of hostname for the registry key HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters to FQDN.
     /// If a pod does not have FQDN, this has no effect.
     /// Default to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "setHostnameAsFQDN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "setHostnameAsFQDN")]
     pub set_hostname_as_fqdn: Option<bool>,
     /// Share a single process namespace between all of the containers in a pod.
     /// When this is set containers will be able to view and signal processes from other containers
     /// in the same pod, and the first process in each container will not be assigned PID 1.
     /// HostPID and ShareProcessNamespace cannot both be set.
     /// Optional: Default to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "shareProcessNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shareProcessNamespace")]
     pub share_process_namespace: Option<bool>,
     /// If specified, the fully qualified Pod hostname will be "<hostname>.<subdomain>.<pod namespace>.svc.<cluster domain>".
     /// If not specified, the pod will not have a domainname at all.
@@ -1084,11 +899,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplate {
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
     /// Set this value longer than the expected cleanup time for your process.
     /// Defaults to 30 seconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// If specified, the pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1096,13 +907,8 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplate {
     /// TopologySpreadConstraints describes how a group of pods ought to spread across topology
     /// domains. Scheduler will schedule pods in a way which abides by the constraints.
     /// All topologySpreadConstraints are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologySpreadConstraints"
-    )]
-    pub topology_spread_constraints:
-        Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateTopologySpreadConstraints>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
+    pub topology_spread_constraints: Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateTopologySpreadConstraints>>,
     /// List of volumes that can be mounted by containers belonging to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1113,27 +919,14 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplate {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<SonataFlowPlatformServicesDataIndexPodTemplateAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<SonataFlowPlatformServicesDataIndexPodTemplateAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
-    pub pod_anti_affinity:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateAffinityPodAntiAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<SonataFlowPlatformServicesDataIndexPodTemplateAffinityPodAntiAffinity>,
 }
 
 /// Describes node affinity scheduling rules for the pod.
@@ -1183,8 +976,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityNodeAffinityPre
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1202,8 +994,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityNodeAffinityPre
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1246,8 +1037,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityNodeAffinityReq
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1265,8 +1055,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityNodeAffinityReq
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1385,8 +1174,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityPodAffinityPref
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1420,8 +1208,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityPodAffinityPref
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1508,8 +1295,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityPodAffinityRequ
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1543,8 +1329,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityPodAffinityRequ
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1662,8 +1447,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityPodAntiAffinity
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1697,8 +1481,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityPodAntiAffinity
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1785,8 +1568,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityPodAntiAffinity
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1820,8 +1602,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityPodAntiAffinity
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1882,11 +1663,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainer {
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Actions that the management system should take in response to container lifecycle events.
     /// Cannot be updated.
@@ -1896,13 +1673,8 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainer {
     /// Container will be restarted if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
-    pub liveness_probe:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerLivenessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
+    pub liveness_probe: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerLivenessProbe>,
     /// List of ports to expose from the container. Not specifying a port here
     /// DOES NOT prevent that port from being exposed. Any port which is
     /// listening on the default "0.0.0.0" address inside a container will be
@@ -1916,21 +1688,11 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainer {
     /// Container will be removed from service endpoints if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
-    pub readiness_probe:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerReadinessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
+    pub readiness_probe: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerReadinessProbe>,
     /// Resources resize policy for the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resizePolicy"
-    )]
-    pub resize_policy:
-        Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateContainerResizePolicy>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
+    pub resize_policy: Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateContainerResizePolicy>>,
     /// Compute Resources required by this container.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
@@ -1939,13 +1701,8 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainer {
     /// SecurityContext defines the security options the container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
-    pub security_context:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerSecurityContext>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
+    pub security_context: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerSecurityContext>,
     /// StartupProbe indicates that the Pod has successfully initialized.
     /// If specified, no other probes are executed until this completes successfully.
     /// If this probe fails, the Pod will be restarted, just as if the livenessProbe failed.
@@ -1953,11 +1710,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainer {
     /// when it might take a long time to load data or warm a cache, than during steady-state operation.
     /// This cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerStartupProbe>,
     /// Whether this container should allocate a buffer for stdin in the container runtime. If this
     /// is not set, reads from stdin in the container will always result in EOF.
@@ -1980,11 +1733,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainer {
     /// all containers will be limited to 12kb.
     /// Defaults to /dev/termination-log.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
     /// Indicate how the termination message should be populated. File will use the contents of
     /// terminationMessagePath to populate the container status message on both success and failure.
@@ -1993,33 +1742,19 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainer {
     /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
     /// Defaults to File.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
     /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
     /// volumeDevices is the list of block devices to be used by the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
-    pub volume_devices:
-        Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateContainerVolumeDevices>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
+    pub volume_devices: Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateContainerVolumeDevices>>,
     /// Pod volumes to mount into the container's filesystem.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
-    pub volume_mounts:
-        Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateContainerVolumeMounts>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateContainerVolumeMounts>>,
 }
 
 /// EnvVar represents an environment variable present in a Container.
@@ -2047,35 +1782,19 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerEnvValueFromFieldRef>,
+    pub field_ref: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerEnvValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerEnvValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
@@ -2100,11 +1819,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerEnvValueFromCo
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -2116,11 +1831,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerEnvValueFromFi
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2150,13 +1861,8 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerEnvValueFromSe
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
-    pub config_map_ref:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerEnvFromConfigMapRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
@@ -2204,8 +1910,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerLifecycle {
     /// Other management of the container blocks until the hook completes.
     /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
-    pub post_start:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerLifecyclePostStart>,
+    pub post_start: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerLifecyclePostStart>,
     /// PreStop is called immediately before a container is terminated due to an
     /// API request or management event such as liveness/startup probe failure,
     /// preemption, resource contention, etc. The handler is not called if the
@@ -2230,18 +1935,15 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerLifecyclePostS
     pub exec: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerLifecyclePostStartExec>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerLifecyclePostStartHttpGet>,
+    pub http_get: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerLifecyclePostStartHttpGet>,
     /// Sleep represents the duration that the container should sleep before being terminated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sleep:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerLifecyclePostStartSleep>,
+    pub sleep: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerLifecyclePostStartSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerLifecyclePostStartTcpSocket>,
+    pub tcp_socket: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerLifecyclePostStartTcpSocket>,
 }
 
 /// Exec specifies the action to take.
@@ -2281,8 +1983,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerLifecyclePostS
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerLifecyclePostStartHttpGetHttpHeaders
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerLifecyclePostStartHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -2327,8 +2028,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerLifecyclePreSt
     pub exec: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerLifecyclePreStopExec>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerLifecyclePreStopHttpGet>,
+    pub http_get: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerLifecyclePreStopHttpGet>,
     /// Sleep represents the duration that the container should sleep before being terminated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sleep: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerLifecyclePreStopSleep>,
@@ -2336,8 +2036,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerLifecyclePreSt
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerLifecyclePreStopTcpSocket>,
+    pub tcp_socket: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerLifecyclePreStopTcpSocket>,
 }
 
 /// Exec specifies the action to take.
@@ -2377,8 +2076,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerLifecyclePreSt
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerLifecyclePreStopHttpGetHttpHeaders
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerLifecyclePreStopHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -2418,47 +2116,29 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerLivenessProbe 
     pub exec: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerLivenessProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerLivenessProbeHttpGet>,
+    pub http_get: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerLivenessProbeTcpSocket>,
+    pub tcp_socket: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerLivenessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -2469,20 +2149,12 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerLivenessProbe 
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2505,7 +2177,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerLivenessProbeG
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -2519,14 +2191,8 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerLivenessProbeH
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<SonataFlowPlatformServicesDataIndexPodTemplateContainerLivenessProbeHttpGetHttpHeaders>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateContainerLivenessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -2600,47 +2266,29 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerReadinessProbe
     pub exec: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerReadinessProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerReadinessProbeHttpGet>,
+    pub http_get: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerReadinessProbeTcpSocket>,
+    pub tcp_socket: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerReadinessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -2651,20 +2299,12 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerReadinessProbe
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2687,7 +2327,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerReadinessProbe
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -2701,16 +2341,8 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerReadinessProbe
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<
-            SonataFlowPlatformServicesDataIndexPodTemplateContainerReadinessProbeHttpGetHttpHeaders,
-        >,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateContainerReadinessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -2766,10 +2398,10 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerResizePolicy {
 pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateContainerResourcesClaims>>,
@@ -2811,29 +2443,18 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerSecurityContex
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
     /// overrides the pod's appArmorProfile.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appArmorProfile"
-    )]
-    pub app_armor_profile: Option<
-        SonataFlowPlatformServicesDataIndexPodTemplateContainerSecurityContextAppArmorProfile,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub capabilities:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerSecurityContextCapabilities>,
+    pub capabilities: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerSecurityContextCapabilities>,
     /// Run container in privileged mode.
     /// Processes in privileged containers are essentially equivalent to root on the host.
     /// Defaults to false.
@@ -2850,22 +2471,14 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerSecurityContex
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -2873,11 +2486,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerSecurityContex
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -2891,38 +2500,20 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerSecurityContex
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options: Option<
-        SonataFlowPlatformServicesDataIndexPodTemplateContainerSecurityContextSeLinuxOptions,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile: Option<
-        SonataFlowPlatformServicesDataIndexPodTemplateContainerSecurityContextSeccompProfile,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options: Option<
-        SonataFlowPlatformServicesDataIndexPodTemplateContainerSecurityContextWindowsOptions,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerSecurityContextWindowsOptions>,
 }
 
 /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
@@ -2934,11 +2525,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerSecurityContex
     /// The profile must be preconfigured on the node to work.
     /// Must match the loaded name of the profile.
     /// Must be set if and only if type is "Localhost".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of AppArmor profile will be applied.
     /// Valid options are:
@@ -2993,15 +2580,11 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerSecurityContex
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -3018,38 +2601,22 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerSecurityContex
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -3067,47 +2634,29 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerStartupProbe {
     pub exec: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerStartupProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerStartupProbeHttpGet>,
+    pub http_get: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerStartupProbeTcpSocket>,
+    pub tcp_socket: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainerStartupProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -3118,20 +2667,12 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerStartupProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -3154,7 +2695,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerStartupProbeGr
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -3168,14 +2709,8 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerStartupProbeHt
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<SonataFlowPlatformServicesDataIndexPodTemplateContainerStartupProbeHttpGetHttpHeaders>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateContainerStartupProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -3234,11 +2769,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerVolumeMounts {
     /// This field is beta in 1.10.
     /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
     /// (which defaults to None).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -3248,25 +2779,21 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerVolumeMounts {
     pub read_only: Option<bool>,
     /// RecursiveReadOnly specifies whether read-only mounts should be handled
     /// recursively.
-    ///
+    /// 
     /// If ReadOnly is false, this field has no meaning and must be unspecified.
-    ///
+    /// 
     /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
     /// recursively read-only.  If this field is set to IfPossible, the mount is made
     /// recursively read-only, if it is supported by the container runtime.  If this
     /// field is set to Enabled, the mount is made recursively read-only if it is
     /// supported by the container runtime, otherwise the pod will not be started and
     /// an error will be generated to indicate the reason.
-    ///
+    /// 
     /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
     /// None (or be unspecified, which defaults to None).
-    ///
+    /// 
     /// If this field is not specified, it is treated as an equivalent of Disabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recursiveReadOnly"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
     pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
@@ -3276,11 +2803,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainerVolumeMounts {
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -3330,11 +2853,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainers {
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Actions that the management system should take in response to container lifecycle events.
     /// Cannot be updated.
@@ -3344,13 +2863,8 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainers {
     /// Container will be restarted if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
-    pub liveness_probe:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersLivenessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
+    pub liveness_probe: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersLivenessProbe>,
     /// Name of the container specified as a DNS_LABEL.
     /// Each container in a pod must have a unique name (DNS_LABEL).
     /// Cannot be updated.
@@ -3368,21 +2882,11 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainers {
     /// Container will be removed from service endpoints if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
-    pub readiness_probe:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersReadinessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
+    pub readiness_probe: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersReadinessProbe>,
     /// Resources resize policy for the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resizePolicy"
-    )]
-    pub resize_policy:
-        Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateContainersResizePolicy>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
+    pub resize_policy: Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateContainersResizePolicy>>,
     /// Compute Resources required by this container.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
@@ -3403,22 +2907,13 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainers {
     /// container. Instead, the next init container starts immediately after this
     /// init container is started, or after any startupProbe has successfully
     /// completed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     /// SecurityContext defines the security options the container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
-    pub security_context:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersSecurityContext>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
+    pub security_context: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersSecurityContext>,
     /// StartupProbe indicates that the Pod has successfully initialized.
     /// If specified, no other probes are executed until this completes successfully.
     /// If this probe fails, the Pod will be restarted, just as if the livenessProbe failed.
@@ -3426,11 +2921,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainers {
     /// when it might take a long time to load data or warm a cache, than during steady-state operation.
     /// This cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersStartupProbe>,
     /// Whether this container should allocate a buffer for stdin in the container runtime. If this
     /// is not set, reads from stdin in the container will always result in EOF.
@@ -3453,11 +2944,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainers {
     /// all containers will be limited to 12kb.
     /// Defaults to /dev/termination-log.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
     /// Indicate how the termination message should be populated. File will use the contents of
     /// terminationMessagePath to populate the container status message on both success and failure.
@@ -3466,42 +2953,24 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainers {
     /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
     /// Defaults to File.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
     /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
     /// volumeDevices is the list of block devices to be used by the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
-    pub volume_devices:
-        Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateContainersVolumeDevices>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
+    pub volume_devices: Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateContainersVolumeDevices>>,
     /// Pod volumes to mount into the container's filesystem.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
-    pub volume_mounts:
-        Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateContainersVolumeMounts>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateContainersVolumeMounts>>,
     /// Container's working directory.
     /// If not specified, the container runtime's default will be used, which
     /// might be configured in the container image.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -3530,36 +2999,19 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersEnvValueFromFieldRef>,
+    pub field_ref: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        SonataFlowPlatformServicesDataIndexPodTemplateContainersEnvValueFromResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersEnvValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
@@ -3584,11 +3036,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersEnvValueFromC
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -3600,11 +3048,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersEnvValueFromF
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3634,20 +3078,14 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersEnvValueFromS
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
-    pub config_map_ref:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersEnvFromConfigMapRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersEnvFromSecretRef>,
+    pub secret_ref: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersEnvFromSecretRef>,
 }
 
 /// The ConfigMap to select from
@@ -3689,8 +3127,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersLifecycle {
     /// Other management of the container blocks until the hook completes.
     /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
-    pub post_start:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersLifecyclePostStart>,
+    pub post_start: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersLifecyclePostStart>,
     /// PreStop is called immediately before a container is terminated due to an
     /// API request or management event such as liveness/startup probe failure,
     /// preemption, resource contention, etc. The handler is not called if the
@@ -3712,22 +3149,18 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersLifecycle {
 pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersLifecyclePostStart {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersLifecyclePostStartExec>,
+    pub exec: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersLifecyclePostStartExec>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersLifecyclePostStartHttpGet>,
+    pub http_get: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersLifecyclePostStartHttpGet>,
     /// Sleep represents the duration that the container should sleep before being terminated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sleep:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersLifecyclePostStartSleep>,
+    pub sleep: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersLifecyclePostStartSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersLifecyclePostStartTcpSocket>,
+    pub tcp_socket: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersLifecyclePostStartTcpSocket>,
 }
 
 /// Exec specifies the action to take.
@@ -3767,8 +3200,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersLifecyclePost
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersLifecyclePostStartHttpGetHttpHeaders
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersLifecyclePostStartHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -3813,18 +3245,15 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersLifecyclePreS
     pub exec: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersLifecyclePreStopExec>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersLifecyclePreStopHttpGet>,
+    pub http_get: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersLifecyclePreStopHttpGet>,
     /// Sleep represents the duration that the container should sleep before being terminated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sleep:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersLifecyclePreStopSleep>,
+    pub sleep: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersLifecyclePreStopSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersLifecyclePreStopTcpSocket>,
+    pub tcp_socket: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersLifecyclePreStopTcpSocket>,
 }
 
 /// Exec specifies the action to take.
@@ -3864,8 +3293,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersLifecyclePreS
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersLifecyclePreStopHttpGetHttpHeaders
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersLifecyclePreStopHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -3905,47 +3333,29 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersLivenessProbe
     pub exec: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersLivenessProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersLivenessProbeHttpGet>,
+    pub http_get: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersLivenessProbeTcpSocket>,
+    pub tcp_socket: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersLivenessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -3956,20 +3366,12 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersLivenessProbe
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -3992,7 +3394,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersLivenessProbe
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -4006,16 +3408,8 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersLivenessProbe
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<
-            SonataFlowPlatformServicesDataIndexPodTemplateContainersLivenessProbeHttpGetHttpHeaders,
-        >,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateContainersLivenessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -4089,47 +3483,29 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersReadinessProb
     pub exec: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersReadinessProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersReadinessProbeHttpGet>,
+    pub http_get: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersReadinessProbeTcpSocket>,
+    pub tcp_socket: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersReadinessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -4140,20 +3516,12 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersReadinessProb
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -4176,7 +3544,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersReadinessProb
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -4207,8 +3575,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersReadinessProb
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersReadinessProbeHttpGetHttpHeaders
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersReadinessProbeHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -4248,14 +3615,13 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersResizePolicy 
 pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims:
-        Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateContainersResourcesClaims>>,
+    pub claims: Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4294,29 +3660,18 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersSecurityConte
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
     /// overrides the pod's appArmorProfile.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appArmorProfile"
-    )]
-    pub app_armor_profile: Option<
-        SonataFlowPlatformServicesDataIndexPodTemplateContainersSecurityContextAppArmorProfile,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub capabilities:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersSecurityContextCapabilities>,
+    pub capabilities: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersSecurityContextCapabilities>,
     /// Run container in privileged mode.
     /// Processes in privileged containers are essentially equivalent to root on the host.
     /// Defaults to false.
@@ -4333,22 +3688,14 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersSecurityConte
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -4356,11 +3703,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersSecurityConte
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -4374,38 +3717,20 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersSecurityConte
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options: Option<
-        SonataFlowPlatformServicesDataIndexPodTemplateContainersSecurityContextSeLinuxOptions,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile: Option<
-        SonataFlowPlatformServicesDataIndexPodTemplateContainersSecurityContextSeccompProfile,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options: Option<
-        SonataFlowPlatformServicesDataIndexPodTemplateContainersSecurityContextWindowsOptions,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersSecurityContextWindowsOptions>,
 }
 
 /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
@@ -4417,11 +3742,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersSecurityConte
     /// The profile must be preconfigured on the node to work.
     /// Must match the loaded name of the profile.
     /// Must be set if and only if type is "Localhost".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of AppArmor profile will be applied.
     /// Valid options are:
@@ -4476,15 +3797,11 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersSecurityConte
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -4501,38 +3818,22 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersSecurityConte
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -4550,47 +3851,29 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersStartupProbe 
     pub exec: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersStartupProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersStartupProbeHttpGet>,
+    pub http_get: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersStartupProbeTcpSocket>,
+    pub tcp_socket: Option<SonataFlowPlatformServicesDataIndexPodTemplateContainersStartupProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -4601,20 +3884,12 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersStartupProbe 
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -4637,7 +3912,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersStartupProbeG
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -4651,14 +3926,8 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersStartupProbeH
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<SonataFlowPlatformServicesDataIndexPodTemplateContainersStartupProbeHttpGetHttpHeaders>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateContainersStartupProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -4717,11 +3986,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersVolumeMounts 
     /// This field is beta in 1.10.
     /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
     /// (which defaults to None).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -4731,25 +3996,21 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersVolumeMounts 
     pub read_only: Option<bool>,
     /// RecursiveReadOnly specifies whether read-only mounts should be handled
     /// recursively.
-    ///
+    /// 
     /// If ReadOnly is false, this field has no meaning and must be unspecified.
-    ///
+    /// 
     /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
     /// recursively read-only.  If this field is set to IfPossible, the mount is made
     /// recursively read-only, if it is supported by the container runtime.  If this
     /// field is set to Enabled, the mount is made recursively read-only if it is
     /// supported by the container runtime, otherwise the pod will not be started and
     /// an error will be generated to indicate the reason.
-    ///
+    /// 
     /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
     /// None (or be unspecified, which defaults to None).
-    ///
+    /// 
     /// If this field is not specified, it is treated as an equivalent of Disabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recursiveReadOnly"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
     pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
@@ -4759,11 +4020,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateContainersVolumeMounts 
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -4870,11 +4127,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainers {
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Actions that the management system should take in response to container lifecycle events.
     /// Cannot be updated.
@@ -4884,13 +4137,8 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainers {
     /// Container will be restarted if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
-    pub liveness_probe:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLivenessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
+    pub liveness_probe: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLivenessProbe>,
     /// Name of the container specified as a DNS_LABEL.
     /// Each container in a pod must have a unique name (DNS_LABEL).
     /// Cannot be updated.
@@ -4908,21 +4156,11 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainers {
     /// Container will be removed from service endpoints if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
-    pub readiness_probe:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersReadinessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
+    pub readiness_probe: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersReadinessProbe>,
     /// Resources resize policy for the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resizePolicy"
-    )]
-    pub resize_policy:
-        Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersResizePolicy>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
+    pub resize_policy: Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersResizePolicy>>,
     /// Compute Resources required by this container.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
@@ -4943,22 +4181,13 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainers {
     /// container. Instead, the next init container starts immediately after this
     /// init container is started, or after any startupProbe has successfully
     /// completed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     /// SecurityContext defines the security options the container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
-    pub security_context:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersSecurityContext>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
+    pub security_context: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersSecurityContext>,
     /// StartupProbe indicates that the Pod has successfully initialized.
     /// If specified, no other probes are executed until this completes successfully.
     /// If this probe fails, the Pod will be restarted, just as if the livenessProbe failed.
@@ -4966,13 +4195,8 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainers {
     /// when it might take a long time to load data or warm a cache, than during steady-state operation.
     /// This cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
-    pub startup_probe:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersStartupProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
+    pub startup_probe: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersStartupProbe>,
     /// Whether this container should allocate a buffer for stdin in the container runtime. If this
     /// is not set, reads from stdin in the container will always result in EOF.
     /// Default is false.
@@ -4994,11 +4218,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainers {
     /// all containers will be limited to 12kb.
     /// Defaults to /dev/termination-log.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
     /// Indicate how the termination message should be populated. File will use the contents of
     /// terminationMessagePath to populate the container status message on both success and failure.
@@ -5007,42 +4227,24 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainers {
     /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
     /// Defaults to File.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
     /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
     /// volumeDevices is the list of block devices to be used by the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
-    pub volume_devices:
-        Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersVolumeDevices>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
+    pub volume_devices: Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersVolumeDevices>>,
     /// Pod volumes to mount into the container's filesystem.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
-    pub volume_mounts:
-        Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersVolumeMounts>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersVolumeMounts>>,
     /// Container's working directory.
     /// If not specified, the container runtime's default will be used, which
     /// might be configured in the container image.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -5064,46 +4266,26 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersEnv {
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersEnvValueFrom>,
+    pub value_from: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersEnvValueFrom>,
 }
 
 /// Source for the environment variable's value. Cannot be used if value is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref: Option<
-        SonataFlowPlatformServicesDataIndexPodTemplateInitContainersEnvValueFromConfigMapKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersEnvValueFromFieldRef>,
+    pub field_ref: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        SonataFlowPlatformServicesDataIndexPodTemplateInitContainersEnvValueFromResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref: Option<
-        SonataFlowPlatformServicesDataIndexPodTemplateInitContainersEnvValueFromSecretKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
@@ -5128,11 +4310,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersEnvValueF
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -5142,14 +4320,9 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersEnvValueF
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersEnvValueFromResourceFieldRef
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5179,20 +4352,14 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersEnvValueF
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
-    pub config_map_ref:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersEnvFromConfigMapRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersEnvFromSecretRef>,
+    pub secret_ref: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersEnvFromSecretRef>,
 }
 
 /// The ConfigMap to select from
@@ -5234,8 +4401,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLifecycle
     /// Other management of the container blocks until the hook completes.
     /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
-    pub post_start:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLifecyclePostStart>,
+    pub post_start: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLifecyclePostStart>,
     /// PreStop is called immediately before a container is terminated due to an
     /// API request or management event such as liveness/startup probe failure,
     /// preemption, resource contention, etc. The handler is not called if the
@@ -5246,8 +4412,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLifecycle
     /// or until the termination grace period is reached.
     /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
-    pub pre_stop:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLifecyclePreStop>,
+    pub pre_stop: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLifecyclePreStop>,
 }
 
 /// PostStart is called immediately after a container is created. If the handler fails,
@@ -5258,24 +4423,18 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLifecycle
 pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLifecyclePostStart {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLifecyclePostStartExec>,
+    pub exec: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLifecyclePostStartExec>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<
-        SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLifecyclePostStartHttpGet,
-    >,
+    pub http_get: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLifecyclePostStartHttpGet>,
     /// Sleep represents the duration that the container should sleep before being terminated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sleep:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLifecyclePostStartSleep>,
+    pub sleep: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLifecyclePostStartSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<
-        SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLifecyclePostStartTcpSocket,
-    >,
+    pub tcp_socket: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLifecyclePostStartTcpSocket>,
 }
 
 /// Exec specifies the action to take.
@@ -5315,8 +4474,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLifecycle
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLifecyclePostStartHttpGetHttpHeaders
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLifecyclePostStartHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -5358,23 +4516,18 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLifecycle
 pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLifecyclePreStop {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLifecyclePreStopExec>,
+    pub exec: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLifecyclePreStopExec>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLifecyclePreStopHttpGet>,
+    pub http_get: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLifecyclePreStopHttpGet>,
     /// Sleep represents the duration that the container should sleep before being terminated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sleep:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLifecyclePreStopSleep>,
+    pub sleep: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLifecyclePreStopSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<
-        SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLifecyclePreStopTcpSocket,
-    >,
+    pub tcp_socket: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLifecyclePreStopTcpSocket>,
 }
 
 /// Exec specifies the action to take.
@@ -5414,8 +4567,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLifecycle
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLifecyclePreStopHttpGetHttpHeaders
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLifecyclePreStopHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -5455,47 +4607,29 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLivenessP
     pub exec: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLivenessProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLivenessProbeHttpGet>,
+    pub http_get: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLivenessProbeTcpSocket>,
+    pub tcp_socket: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLivenessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -5506,20 +4640,12 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLivenessP
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -5542,7 +4668,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLivenessP
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -5573,8 +4699,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLivenessP
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLivenessProbeHttpGetHttpHeaders
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersLivenessProbeHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -5629,52 +4754,32 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersPorts {
 pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersReadinessProbe {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersReadinessProbeExec>,
+    pub exec: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub grpc:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersReadinessProbeGrpc>,
+    pub grpc: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersReadinessProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersReadinessProbeHttpGet>,
+    pub http_get: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersReadinessProbeTcpSocket>,
+    pub tcp_socket: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersReadinessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -5685,20 +4790,12 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersReadiness
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -5721,7 +4818,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersReadiness
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -5752,8 +4849,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersReadiness
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersReadinessProbeHttpGetHttpHeaders
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersReadinessProbeHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -5793,14 +4889,13 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersResizePol
 pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims:
-        Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersResourcesClaims>>,
+    pub claims: Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5839,30 +4934,18 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersSecurityC
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
     /// overrides the pod's appArmorProfile.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appArmorProfile"
-    )]
-    pub app_armor_profile: Option<
-        SonataFlowPlatformServicesDataIndexPodTemplateInitContainersSecurityContextAppArmorProfile,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub capabilities: Option<
-        SonataFlowPlatformServicesDataIndexPodTemplateInitContainersSecurityContextCapabilities,
-    >,
+    pub capabilities: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersSecurityContextCapabilities>,
     /// Run container in privileged mode.
     /// Processes in privileged containers are essentially equivalent to root on the host.
     /// Defaults to false.
@@ -5879,22 +4962,14 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersSecurityC
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -5902,11 +4977,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersSecurityC
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -5920,55 +4991,32 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersSecurityC
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options: Option<
-        SonataFlowPlatformServicesDataIndexPodTemplateInitContainersSecurityContextSeLinuxOptions,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile: Option<
-        SonataFlowPlatformServicesDataIndexPodTemplateInitContainersSecurityContextSeccompProfile,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options: Option<
-        SonataFlowPlatformServicesDataIndexPodTemplateInitContainersSecurityContextWindowsOptions,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersSecurityContextWindowsOptions>,
 }
 
 /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
 /// overrides the pod's appArmorProfile.
 /// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersSecurityContextAppArmorProfile
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersSecurityContextAppArmorProfile {
     /// localhostProfile indicates a profile loaded on the node that should be used.
     /// The profile must be preconfigured on the node to work.
     /// Must match the loaded name of the profile.
     /// Must be set if and only if type is "Localhost".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of AppArmor profile will be applied.
     /// Valid options are:
@@ -5998,8 +5046,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersSecurityC
 /// PodSecurityContext, the value specified in SecurityContext takes precedence.
 /// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersSecurityContextSeLinuxOptions
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersSecurityContextSeLinuxOptions {
     /// Level is SELinux level label that applies to the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<String>,
@@ -6019,21 +5066,16 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersSecurityC
 /// override the pod options.
 /// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersSecurityContextSeccompProfile
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersSecurityContextSeccompProfile {
     /// localhostProfile indicates a profile defined in a file on the node should be used.
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -6046,43 +5088,26 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersSecurityC
 /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
 /// Note that this field cannot be set when spec.os.name is linux.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersSecurityContextWindowsOptions
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -6100,47 +5125,29 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersStartupPr
     pub exec: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersStartupProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersStartupProbeHttpGet>,
+    pub http_get: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersStartupProbeTcpSocket>,
+    pub tcp_socket: Option<SonataFlowPlatformServicesDataIndexPodTemplateInitContainersStartupProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -6151,20 +5158,12 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersStartupPr
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -6187,7 +5186,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersStartupPr
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -6218,8 +5217,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersStartupPr
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersStartupProbeHttpGetHttpHeaders
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersStartupProbeHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -6262,11 +5260,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersVolumeMou
     /// This field is beta in 1.10.
     /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
     /// (which defaults to None).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -6276,25 +5270,21 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersVolumeMou
     pub read_only: Option<bool>,
     /// RecursiveReadOnly specifies whether read-only mounts should be handled
     /// recursively.
-    ///
+    /// 
     /// If ReadOnly is false, this field has no meaning and must be unspecified.
-    ///
+    /// 
     /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
     /// recursively read-only.  If this field is set to IfPossible, the mount is made
     /// recursively read-only, if it is supported by the container runtime.  If this
     /// field is set to Enabled, the mount is made recursively read-only if it is
     /// supported by the container runtime, otherwise the pod will not be started and
     /// an error will be generated to indicate the reason.
-    ///
+    /// 
     /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
     /// None (or be unspecified, which defaults to None).
-    ///
+    /// 
     /// If this field is not specified, it is treated as an equivalent of Disabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recursiveReadOnly"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
     pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
@@ -6304,20 +5294,16 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateInitContainersVolumeMou
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
 /// Specifies the OS of the containers in the pod.
 /// Some pod and container fields are restricted if this is set.
-///
+/// 
 /// If the OS field is set to linux, the following fields must be unset:
 /// -securityContext.windowsOptions
-///
+/// 
 /// If the OS field is set to windows, following fields must be unset:
 /// - spec.hostPID
 /// - spec.hostIPC
@@ -6360,7 +5346,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateReadinessGates {
 /// PodResourceClaim references exactly one ResourceClaim, either directly
 /// or by naming a ResourceClaimTemplate which is then turned into a ResourceClaim
 /// for the pod.
-///
+/// 
 /// It adds a name to it that uniquely identifies the ResourceClaim inside the Pod.
 /// Containers that need access to the ResourceClaim reference it with this name.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6370,35 +5356,27 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateResourceClaims {
     pub name: String,
     /// ResourceClaimName is the name of a ResourceClaim object in the same
     /// namespace as this pod.
-    ///
+    /// 
     /// Exactly one of ResourceClaimName and ResourceClaimTemplateName must
     /// be set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceClaimName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaimName")]
     pub resource_claim_name: Option<String>,
     /// ResourceClaimTemplateName is the name of a ResourceClaimTemplate
     /// object in the same namespace as this pod.
-    ///
+    /// 
     /// The template will be used to create a new ResourceClaim, which will
     /// be bound to this pod. When this pod is deleted, the ResourceClaim
     /// will also be deleted. The pod name and resource name, along with a
     /// generated component, will be used to form a unique name for the
     /// ResourceClaim, which will be recorded in pod.status.resourceClaimStatuses.
-    ///
+    /// 
     /// This field is immutable and no changes will be made to the
     /// corresponding ResourceClaim by the control plane after creating the
     /// ResourceClaim.
-    ///
+    /// 
     /// Exactly one of ResourceClaimName and ResourceClaimTemplateName must
     /// be set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceClaimTemplateName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaimTemplateName")]
     pub resource_claim_template_name: Option<String>,
 }
 
@@ -6416,21 +5394,16 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateSchedulingGates {
 pub struct SonataFlowPlatformServicesDataIndexPodTemplateSecurityContext {
     /// appArmorProfile is the AppArmor options to use by the containers in this pod.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appArmorProfile"
-    )]
-    pub app_armor_profile:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateSecurityContextAppArmorProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<SonataFlowPlatformServicesDataIndexPodTemplateSecurityContextAppArmorProfile>,
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
-    ///
+    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    ///
+    /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
@@ -6442,11 +5415,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateSecurityContext {
     /// and emptydir.
     /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
@@ -6454,11 +5423,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateSecurityContext {
     /// PodSecurityContext, the value specified in SecurityContext takes precedence
     /// for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -6466,11 +5431,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in SecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -6486,22 +5447,12 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateSecurityContext {
     /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
     /// takes precedence for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<SonataFlowPlatformServicesDataIndexPodTemplateSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by the containers in this pod.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateSecurityContextSeccompProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<SonataFlowPlatformServicesDataIndexPodTemplateSecurityContextSeccompProfile>,
     /// A list of groups applied to the first process run in each container, in
     /// addition to the container's primary GID and fsGroup (if specified).  If
     /// the SupplementalGroupsPolicy feature is enabled, the
@@ -6511,22 +5462,14 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateSecurityContext {
     /// defined in the container image may still be used, depending on the
     /// supplementalGroupsPolicy field.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
     /// Defines how supplemental groups of the first container processes are calculated.
     /// Valid values are "Merge" and "Strict". If not specified, "Merge" is used.
     /// (Alpha) Using the field requires the SupplementalGroupsPolicy feature gate to be enabled
     /// and the container runtime must implement support for this feature.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroupsPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
     pub supplemental_groups_policy: Option<String>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
     /// sysctls (by the container runtime) might fail to launch.
@@ -6537,13 +5480,8 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateSecurityContext {
     /// If unspecified, the options within a container's SecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateSecurityContextWindowsOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<SonataFlowPlatformServicesDataIndexPodTemplateSecurityContextWindowsOptions>,
 }
 
 /// appArmorProfile is the AppArmor options to use by the containers in this pod.
@@ -6554,11 +5492,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateSecurityContextAppArmor
     /// The profile must be preconfigured on the node to work.
     /// Must match the loaded name of the profile.
     /// Must be set if and only if type is "Localhost".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of AppArmor profile will be applied.
     /// Valid options are:
@@ -6599,15 +5533,11 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateSecurityContextSeccompP
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -6633,38 +5563,22 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateSecurityContextWindowsO
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -6690,11 +5604,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -6708,14 +5618,8 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateTopologySpreadConstrain
     /// LabelSelector is used to find matching pods.
     /// Pods that match this label selector are counted to determine the number of pods
     /// in their corresponding topology domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector: Option<
-        SonataFlowPlatformServicesDataIndexPodTemplateTopologySpreadConstraintsLabelSelector,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<SonataFlowPlatformServicesDataIndexPodTemplateTopologySpreadConstraintsLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select the pods over which
     /// spreading will be calculated. The keys are used to lookup values from the
     /// incoming pod labels, those key-value labels are ANDed with labelSelector
@@ -6724,13 +5628,9 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateTopologySpreadConstrain
     /// MatchLabelKeys cannot be set when LabelSelector isn't set.
     /// Keys that don't exist in the incoming pod labels will
     /// be ignored. A null or empty list means only match against labelSelector.
-    ///
+    /// 
     /// This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabelKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MaxSkew describes the degree to which pods may be unevenly distributed.
     /// When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference
@@ -6761,7 +5661,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateTopologySpreadConstrain
     /// If value is nil, the constraint behaves as if MinDomains is equal to 1.
     /// Valid values are integers greater than 0.
     /// When value is not nil, WhenUnsatisfiable must be DoNotSchedule.
-    ///
+    /// 
     /// For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same
     /// labelSelector spread as 2/2/2:
     /// | zone1 | zone2 | zone3 |
@@ -6770,38 +5670,26 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateTopologySpreadConstrain
     /// In this situation, new pod with the same labelSelector cannot be scheduled,
     /// because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,
     /// it will violate MaxSkew.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
     /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector
     /// when calculating pod topology spread skew. Options are:
     /// - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.
     /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
-    ///
+    /// 
     /// If this value is nil, the behavior is equivalent to the Honor policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinityPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
     /// NodeTaintsPolicy indicates how we will treat node taints when calculating
     /// pod topology spread skew. Options are:
     /// - Honor: nodes without taints, along with tainted nodes for which the incoming pod
     /// has a toleration, are included.
     /// - Ignore: node taints are ignored. All nodes are included.
-    ///
+    /// 
     /// If this value is nil, the behavior is equivalent to the Ignore policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeTaintsPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
     /// TopologyKey is the key of node labels. Nodes that have a label with this key
     /// and identical values are considered to be in the same topology.
@@ -6855,8 +5743,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateTopologySpreadConstrain
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateTopologySpreadConstraintsLabelSelectorMatchExpressions
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateTopologySpreadConstraintsLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -6876,13 +5763,8 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumes {
     /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsElasticBlockStore"
-    )]
-    pub aws_elastic_block_store:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesAwsElasticBlockStore>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
+    pub aws_elastic_block_store: Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
     pub azure_disk: Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesAzureDisk>,
@@ -6903,11 +5785,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesCsi>,
     /// downwardAPI represents downward API about the pod that should populate this volume
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesDownwardApi>,
     /// emptyDir represents a temporary directory that shares a pod's lifetime.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
@@ -6916,7 +5794,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumes {
     /// ephemeral represents a volume that is handled by a cluster storage driver.
     /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
     /// and deleted when the pod is removed.
-    ///
+    /// 
     /// Use this if:
     /// a) the volume is only needed while the pod runs,
     /// b) features of normal volumes like restoring from snapshot or capacity
@@ -6926,15 +5804,15 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumes {
     ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
     ///    information on the connection between this volume type
     ///    and PersistentVolumeClaim).
-    ///
+    /// 
     /// Use PersistentVolumeClaim or one of the vendor-specific
     /// APIs for volumes that persist for longer than the lifecycle
     /// of an individual pod.
-    ///
+    /// 
     /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
     /// be used that way - see the documentation of the driver for
     /// more information.
-    ///
+    /// 
     /// A pod can use both types of ephemeral volumes and
     /// persistent volumes at the same time.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6944,11 +5822,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumes {
     pub fc: Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesFc>,
     /// flexVolume represents a generic volume resource that is
     /// provisioned/attached using an exec based plugin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flexVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesFlexVolume>,
     /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6956,13 +5830,8 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumes {
     /// gcePersistentDisk represents a GCE Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gcePersistentDisk"
-    )]
-    pub gce_persistent_disk:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesGcePersistentDisk>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
+    pub gce_persistent_disk: Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesGcePersistentDisk>,
     /// gitRepo represents a git repository at a particular revision.
     /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
     /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
@@ -6982,11 +5851,11 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumes {
     pub host_path: Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesHostPath>,
     /// image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.
     /// The volume is resolved at pod startup depending on which PullPolicy value is provided:
-    ///
+    /// 
     /// - Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
     /// - Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
     /// - IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
-    ///
+    /// 
     /// The volume gets re-resolved if the pod gets deleted and recreated, which means that new remote content will become available on pod recreation.
     /// A failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message.
     /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
@@ -7012,29 +5881,14 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumes {
     /// persistentVolumeClaimVolumeSource represents a reference to a
     /// PersistentVolumeClaim in the same namespace.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
-    pub persistent_volume_claim:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesPersistentVolumeClaim>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesPersistentVolumeClaim>,
     /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "photonPersistentDisk"
-    )]
-    pub photon_persistent_disk:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesPhotonPersistentDisk>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
+    pub photon_persistent_disk: Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesPhotonPersistentDisk>,
     /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portworxVolume"
-    )]
-    pub portworx_volume:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesPortworxVolume>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
+    pub portworx_volume: Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesPortworxVolume>,
     /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projected: Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjected>,
@@ -7056,11 +5910,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storageos: Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesStorageos>,
     /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vsphereVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
     pub vsphere_volume: Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesVsphereVolume>,
 }
 
@@ -7095,11 +5945,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesAwsElasticBlockS
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesAzureDisk {
     /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachingMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
     pub caching_mode: Option<String>,
     /// diskName is the Name of the data disk in the blob storage
     #[serde(rename = "diskName")]
@@ -7152,11 +5998,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesCephfs {
     pub read_only: Option<bool>,
     /// secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
     pub secret_file: Option<String>,
     /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
@@ -7229,11 +6071,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesConfigMap {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items if unspecified, each key-value pair in the Data field of the referenced
     /// ConfigMap will be projected into the volume as a file whose name is the
@@ -7292,24 +6130,15 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesCsi {
     /// NodePublishVolume and NodeUnpublishVolume calls.
     /// This field is optional, and  may be empty if no secret is required. If the
     /// secret object contains more than one secret, all secret references are passed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePublishSecretRef"
-    )]
-    pub node_publish_secret_ref:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesCsiNodePublishSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
+    pub node_publish_secret_ref: Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesCsiNodePublishSecretRef>,
     /// readOnly specifies a read-only configuration for the volume.
     /// Defaults to false (read/write).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// volumeAttributes stores driver-specific properties that are passed to the CSI
     /// driver. Consult your driver's documentation for supported values.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
@@ -7340,11 +6169,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesDownwardApi {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// Items is a list of downward API volume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7356,8 +6181,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesDownwardApi {
 pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesDownwardApiItems {
     /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesDownwardApiItemsFieldRef>,
+    pub field_ref: Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
     /// between 0000 and 0777 or a decimal value between 0 and 511.
     /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
@@ -7370,25 +6194,15 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesDownwardApiItems
     pub path: String,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        SonataFlowPlatformServicesDataIndexPodTemplateVolumesDownwardApiItemsResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesDownwardApiItemsResourceFieldRef>,
 }
 
 /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -7400,11 +6214,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesDownwardApiItems
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7436,7 +6246,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesEmptyDir {
 /// ephemeral represents a volume that is handled by a cluster storage driver.
 /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
 /// and deleted when the pod is removed.
-///
+/// 
 /// Use this if:
 /// a) the volume is only needed while the pod runs,
 /// b) features of normal volumes like restoring from snapshot or capacity
@@ -7446,15 +6256,15 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesEmptyDir {
 ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
 ///    information on the connection between this volume type
 ///    and PersistentVolumeClaim).
-///
+/// 
 /// Use PersistentVolumeClaim or one of the vendor-specific
 /// APIs for volumes that persist for longer than the lifecycle
 /// of an individual pod.
-///
+/// 
 /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
 /// be used that way - see the documentation of the driver for
 /// more information.
-///
+/// 
 /// A pod can use both types of ephemeral volumes and
 /// persistent volumes at the same time.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -7466,7 +6276,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesEphemeral {
     /// `<volume name>` is the name from the `PodSpec.Volumes` array
     /// entry. Pod validation will reject the pod if the concatenated name
     /// is not valid for a PVC (for example, too long).
-    ///
+    /// 
     /// An existing PVC with that name that is not owned by the pod
     /// will *not* be used for the pod to avoid using an unrelated
     /// volume by mistake. Starting the pod is then blocked until
@@ -7475,18 +6285,13 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesEphemeral {
     /// owner reference to the pod once the pod exists. Normally
     /// this should not be necessary, but it may be useful when
     /// manually reconstructing a broken cluster.
-    ///
+    /// 
     /// This field is read-only and no changes will be made by Kubernetes
     /// to the PVC after it has been created.
-    ///
+    /// 
     /// Required, must not be nil.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimTemplate"
-    )]
-    pub volume_claim_template:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesEphemeralVolumeClaimTemplate>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
+    pub volume_claim_template: Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesEphemeralVolumeClaimTemplate>,
 }
 
 /// Will be used to create a stand-alone PVC to provision the volume.
@@ -7496,7 +6301,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesEphemeral {
 /// `<volume name>` is the name from the `PodSpec.Volumes` array
 /// entry. Pod validation will reject the pod if the concatenated name
 /// is not valid for a PVC (for example, too long).
-///
+/// 
 /// An existing PVC with that name that is not owned by the pod
 /// will *not* be used for the pod to avoid using an unrelated
 /// volume by mistake. Starting the pod is then blocked until
@@ -7505,10 +6310,10 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesEphemeral {
 /// owner reference to the pod once the pod exists. Normally
 /// this should not be necessary, but it may be useful when
 /// manually reconstructing a broken cluster.
-///
+/// 
 /// This field is read-only and no changes will be made by Kubernetes
 /// to the PVC after it has been created.
-///
+/// 
 /// Required, must not be nil.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesEphemeralVolumeClaimTemplate {
@@ -7516,9 +6321,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesEphemeralVolumeC
     /// when creating it. No other fields are allowed and will be rejected during
     /// validation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<
-        SonataFlowPlatformServicesDataIndexPodTemplateVolumesEphemeralVolumeClaimTemplateMetadata,
-    >,
+    pub metadata: Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesEphemeralVolumeClaimTemplateMetadata>,
     /// The specification for the PersistentVolumeClaim. The entire content is
     /// copied unchanged into the PVC that gets created from this
     /// template. The same fields as in a PersistentVolumeClaim
@@ -7530,8 +6333,8 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesEphemeralVolumeC
 /// when creating it. No other fields are allowed and will be rejected during
 /// validation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesEphemeralVolumeClaimTemplateMetadata
-{}
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesEphemeralVolumeClaimTemplateMetadata {
+}
 
 /// The specification for the PersistentVolumeClaim. The entire content is
 /// copied unchanged into the PVC that gets created from this
@@ -7624,8 +6427,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesEphemeralVolumeC
 /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
 /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesEphemeralVolumeClaimTemplateSpecDataSource
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesEphemeralVolumeClaimTemplateSpecDataSource {
     /// APIGroup is the group for the resource being referenced.
     /// If APIGroup is not specified, the specified Kind must be in the core API group.
     /// For any other third-party types, APIGroup is required.
@@ -7661,8 +6463,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesEphemeralVolumeC
 /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
 /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef {
     /// APIGroup is the group for the resource being referenced.
     /// If APIGroup is not specified, the specified Kind must be in the core API group.
     /// For any other third-party types, APIGroup is required.
@@ -7685,8 +6486,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesEphemeralVolumeC
 /// status field of the claim.
 /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesEphemeralVolumeClaimTemplateSpecResources
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesEphemeralVolumeClaimTemplateSpecResources {
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7715,8 +6515,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesEphemeralVolumeC
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -7746,11 +6545,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesFc {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// targetWWNs is Optional: FC target worldwide names (WWNs)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetWWNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
     pub target_ww_ns: Option<Vec<String>>,
     /// wwids Optional: FC volume world wide identifiers (wwids)
     /// Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
@@ -7782,8 +6577,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesFlexVolume {
     /// contains more than one secret, all secrets are passed to the plugin
     /// scripts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesFlexVolumeSecretRef>,
+    pub secret_ref: Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesFlexVolumeSecretRef>,
 }
 
 /// secretRef is Optional: secretRef is reference to the secret object containing
@@ -7807,18 +6601,10 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesFlexVolumeSecret
 pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesFlocker {
     /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
     /// should be considered as deprecated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
     pub dataset_name: Option<String>,
     /// datasetUUID is the UUID of the dataset. This is unique identifier of a Flocker dataset
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetUUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
     pub dataset_uuid: Option<String>,
 }
 
@@ -7907,11 +6693,11 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesHostPath {
 
 /// image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.
 /// The volume is resolved at pod startup depending on which PullPolicy value is provided:
-///
+/// 
 /// - Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
 /// - Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
 /// - IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
-///
+/// 
 /// The volume gets re-resolved if the pod gets deleted and recreated, which means that new remote content will become available on pod recreation.
 /// A failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message.
 /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
@@ -7926,11 +6712,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesImage {
     /// Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
     /// IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
     pub pull_policy: Option<String>,
     /// Required: Image or artifact reference to be used.
     /// Behaves in the same way as pod.spec.containers[*].image.
@@ -7948,18 +6730,10 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesImage {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesIscsi {
     /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthDiscovery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
     /// chapAuthSession defines whether support iSCSI Session CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthSession"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
     pub chap_auth_session: Option<bool>,
     /// fsType is the filesystem type of the volume that you want to mount.
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
@@ -7970,21 +6744,13 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesIscsi {
     /// initiatorName is the custom iSCSI Initiator Name.
     /// If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface
     /// <target portal>:<volume name> will be created for the connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initiatorName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
     pub initiator_name: Option<String>,
     /// iqn is the target iSCSI Qualified Name.
     pub iqn: String,
     /// iscsiInterface is the interface Name that uses an iSCSI transport.
     /// Defaults to 'default' (tcp).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "iscsiInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
     pub iscsi_interface: Option<String>,
     /// lun represents iSCSI Target Lun number.
     pub lun: i32,
@@ -8088,11 +6854,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjected {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// sources is the list of volume projections. Each entry in this list
     /// handles one source.
@@ -8106,59 +6868,41 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjected {
 pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjectedSources {
     /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
     /// of ClusterTrustBundle objects in an auto-updating file.
-    ///
+    /// 
     /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-    ///
+    /// 
     /// ClusterTrustBundle objects can either be selected by name, or by the
     /// combination of signer name and a label selector.
-    ///
+    /// 
     /// Kubelet performs aggressive normalization of the PEM contents written
     /// into the pod filesystem.  Esoteric PEM features such as inter-block
     /// comments and block headers are stripped.  Certificates are deduplicated.
     /// The ordering of certificates within the file is arbitrary, and Kubelet
     /// may change the order over time.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterTrustBundle"
-    )]
-    pub cluster_trust_bundle: Option<
-        SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjectedSourcesClusterTrustBundle,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjectedSourcesClusterTrustBundle>,
     /// configMap information about the configMap data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjectedSourcesConfigMap>,
+    pub config_map: Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjectedSourcesConfigMap>,
     /// downwardAPI information about the downwardAPI data to project
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
-    pub downward_api:
-        Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjectedSourcesDownwardApi>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
+    pub downward_api: Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjectedSourcesDownwardApi>,
     /// secret information about the secret data to project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjectedSourcesSecret>,
     /// serviceAccountToken is information about the serviceAccountToken data to project
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountToken"
-    )]
-    pub service_account_token: Option<
-        SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjectedSourcesServiceAccountToken,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
+    pub service_account_token: Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjectedSourcesServiceAccountToken>,
 }
 
 /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
 /// of ClusterTrustBundle objects in an auto-updating file.
-///
+/// 
 /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-///
+/// 
 /// ClusterTrustBundle objects can either be selected by name, or by the
 /// combination of signer name and a label selector.
-///
+/// 
 /// Kubelet performs aggressive normalization of the PEM contents written
 /// into the pod filesystem.  Esoteric PEM features such as inter-block
 /// comments and block headers are stripped.  Certificates are deduplicated.
@@ -8211,8 +6955,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjectedSources
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8237,9 +6980,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjectedSources
     /// the volume setup will error unless it is marked optional. Paths must be
     /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<
-        Vec<SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjectedSourcesConfigMapItems>,
-    >,
+    pub items: Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjectedSourcesConfigMapItems>>,
     /// Name of the referent.
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
@@ -8277,9 +7018,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjectedSources
 pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjectedSourcesDownwardApi {
     /// Items is a list of DownwardAPIVolume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<
-        Vec<SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjectedSourcesDownwardApiItems>,
-    >,
+    pub items: Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjectedSourcesDownwardApiItems>>,
 }
 
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
@@ -8306,14 +7045,9 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjectedSources
 
 /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjectedSourcesDownwardApiItemsFieldRef
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjectedSourcesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -8323,14 +7057,9 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjectedSources
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjectedSourcesDownwardApiItemsResourceFieldRef
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8350,9 +7079,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjectedSources
     /// the volume setup will error unless it is marked optional. Paths must be
     /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<
-        Vec<SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjectedSourcesSecretItems>,
-    >,
+    pub items: Option<Vec<SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjectedSourcesSecretItems>>,
     /// Name of the referent.
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
@@ -8387,8 +7114,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjectedSources
 
 /// serviceAccountToken is information about the serviceAccountToken data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjectedSourcesServiceAccountToken
-{
+pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjectedSourcesServiceAccountToken {
     /// audience is the intended audience of the token. A recipient of a token
     /// must identify itself with an identifier specified in the audience of the
     /// token, and otherwise should reject the token. The audience defaults to the
@@ -8401,11 +7127,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesProjectedSources
     /// start trying to rotate the token if the token is older than 80 percent of
     /// its time to live or if the token is older than 24 hours.Defaults to 1 hour
     /// and must be at least 10 minutes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
     /// path is the path relative to the mount point of the file to project the
     /// token into.
@@ -8510,11 +7232,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesScaleIo {
     /// gateway is the host address of the ScaleIO API Gateway.
     pub gateway: String,
     /// protectionDomain is the name of the ScaleIO Protection Domain for the configured storage.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protectionDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
     pub protection_domain: Option<String>,
     /// readOnly Defaults to false (read/write). ReadOnly here will force
     /// the ReadOnly setting in VolumeMounts.
@@ -8525,36 +7243,20 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesScaleIo {
     #[serde(rename = "secretRef")]
     pub secret_ref: SonataFlowPlatformServicesDataIndexPodTemplateVolumesScaleIoSecretRef,
     /// sslEnabled Flag enable/disable SSL communication with Gateway, default false
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
     /// storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned.
     /// Default is ThinProvisioned.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
     pub storage_mode: Option<String>,
     /// storagePool is the ScaleIO Storage Pool associated with the protection domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
     pub storage_pool: Option<String>,
     /// system is the name of the storage system as configured in ScaleIO.
     pub system: String,
     /// volumeName is the name of a volume already created in the ScaleIO system
     /// that is associated with this volume source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -8582,11 +7284,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesSecret {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items If unspecified, each key-value pair in the Data field of the referenced
     /// Secret will be projected into the volume as a file whose name is the
@@ -8602,11 +7300,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesSecret {
     pub optional: Option<bool>,
     /// secretName is the name of the secret in the pod's namespace to use.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -8648,11 +7342,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesStorageos {
     pub secret_ref: Option<SonataFlowPlatformServicesDataIndexPodTemplateVolumesStorageosSecretRef>,
     /// volumeName is the human-readable name of the StorageOS volume.  Volume
     /// names are only unique within a namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
     /// volumeNamespace specifies the scope of the volume within StorageOS.  If no
     /// namespace is specified then the Pod's namespace will be used.  This allows the
@@ -8660,11 +7350,7 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesStorageos {
     /// Set VolumeName to any name to override the default behaviour.
     /// Set to "default" if you are not using namespaces within StorageOS.
     /// Namespaces that do not pre-exist within StorageOS will be created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
     pub volume_namespace: Option<String>,
 }
 
@@ -8690,18 +7376,10 @@ pub struct SonataFlowPlatformServicesDataIndexPodTemplateVolumesVsphereVolume {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// storagePolicyID is the storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
     pub storage_policy_id: Option<String>,
     /// storagePolicyName is the storage Policy Based Management (SPBM) profile name.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
     pub storage_policy_name: Option<String>,
     /// volumePath is the path that identifies vSphere volume vmdk
     #[serde(rename = "volumePath")]
@@ -8739,11 +7417,7 @@ pub struct SonataFlowPlatformServicesDataIndexSourceRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Group of the API, without the version of the group. This can be used as an alternative to the APIVersion, and then resolved using ResolveGroup.
     /// Note: This API is EXPERIMENTAL and might break anytime. For more details: https://github.com/knative/eventing/issues/5086
@@ -8772,11 +7446,7 @@ pub struct SonataFlowPlatformServicesJobService {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub persistence: Option<SonataFlowPlatformServicesJobServicePersistence>,
     /// PodTemplate describes the deployment details of this platform service instance.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podTemplate")]
     pub pod_template: Option<SonataFlowPlatformServicesJobServicePodTemplate>,
     /// Defines the sink where the Jobservice sends events to
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8790,11 +7460,7 @@ pub struct SonataFlowPlatformServicesJobService {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesJobServicePersistence {
     /// Whether to migrate database on service startup?
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "migrateDBOnStartUp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "migrateDBOnStartUp")]
     pub migrate_db_on_start_up: Option<bool>,
     /// Connect configured services to a postgresql database.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8812,11 +7478,7 @@ pub struct SonataFlowPlatformServicesJobServicePersistencePostgresql {
     #[serde(rename = "secretRef")]
     pub secret_ref: SonataFlowPlatformServicesJobServicePersistencePostgresqlSecretRef,
     /// Service reference to postgresql datasource. Mutually exclusive to jdbcUrl.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceRef")]
     pub service_ref: Option<SonataFlowPlatformServicesJobServicePersistencePostgresqlServiceRef>,
 }
 
@@ -8826,11 +7488,7 @@ pub struct SonataFlowPlatformServicesJobServicePersistencePostgresqlSecretRef {
     /// Name of the postgresql credentials secret.
     pub name: String,
     /// Defaults to POSTGRESQL_PASSWORD
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passwordKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordKey")]
     pub password_key: Option<String>,
     /// Defaults to POSTGRESQL_USER
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userKey")]
@@ -8841,18 +7499,10 @@ pub struct SonataFlowPlatformServicesJobServicePersistencePostgresqlSecretRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesJobServicePersistencePostgresqlServiceRef {
     /// Name of postgresql database to be used. Defaults to "sonataflow"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "databaseName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseName")]
     pub database_name: Option<String>,
     /// Schema of postgresql database to be used. Defaults to "data-index-service"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "databaseSchema"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "databaseSchema")]
     pub database_schema: Option<String>,
     /// Name of the postgresql k8s service.
     pub name: String,
@@ -8870,21 +7520,13 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplate {
     /// Optional duration in seconds the pod may be active on the node relative to
     /// StartTime before the system will actively try to mark it failed and kill associated containers.
     /// Value must be a positive integer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "activeDeadlineSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeDeadlineSeconds")]
     pub active_deadline_seconds: Option<i64>,
     /// If specified, the pod's scheduling constraints
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<SonataFlowPlatformServicesJobServicePodTemplateAffinity>,
     /// AutomountServiceAccountToken indicates whether a service account token should be automatically mounted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "automountServiceAccountToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "automountServiceAccountToken")]
     pub automount_service_account_token: Option<bool>,
     /// Container is the Kubernetes container where the application should run.
     /// One can change this attribute in order to override the defaults provided by the operator.
@@ -8912,19 +7554,11 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplate {
     /// EnableServiceLinks indicates whether information about services should be injected into pod's
     /// environment variables, matching the syntax of Docker links.
     /// Optional: Defaults to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableServiceLinks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableServiceLinks")]
     pub enable_service_links: Option<bool>,
     /// HostAliases is an optional list of hosts and IPs that will be injected into the pod's hosts
     /// file if specified. This is only valid for non-hostNetwork pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostAliases"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostAliases")]
     pub host_aliases: Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateHostAliases>>,
     /// Use the host's ipc namespace.
     /// Optional: Default to false.
@@ -8933,11 +7567,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplate {
     /// Host networking requested for this pod. Use the host's network namespace.
     /// If this option is set, the ports that will be used must be specified.
     /// Default to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostNetwork"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
     pub host_network: Option<bool>,
     /// Use the host's pid namespace.
     /// Optional: Default to false.
@@ -8961,13 +7591,8 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplate {
     /// ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of the images used by this PodSpec.
     /// If specified, these secrets will be passed to individual puller implementations for them to use.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#specifying-imagepullsecrets-on-a-pod
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
-    pub image_pull_secrets:
-        Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateImagePullSecrets>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
+    pub image_pull_secrets: Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateImagePullSecrets>>,
     /// List of initialization containers belonging to the pod.
     /// Init containers are executed in order prior to containers being started. If any
     /// init container fails, the pod is considered to have failed and is handled according
@@ -8981,11 +7606,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplate {
     /// Init containers cannot currently be added or removed.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/init-containers/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateInitContainers>>,
     /// NodeName is a request to schedule this pod onto a specific node. If it is non-empty,
     /// the scheduler simply schedules this pod onto that node, assuming that it fits resource
@@ -8995,18 +7616,14 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplate {
     /// NodeSelector is a selector which must be true for the pod to fit on a node.
     /// Selector which must match a node's labels for the pod to be scheduled on that node.
     /// More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Specifies the OS of the containers in the pod.
     /// Some pod and container fields are restricted if this is set.
-    ///
+    /// 
     /// If the OS field is set to linux, the following fields must be unset:
     /// -securityContext.windowsOptions
-    ///
+    /// 
     /// If the OS field is set to windows, following fields must be unset:
     /// - spec.hostPID
     /// - spec.hostIPC
@@ -9043,11 +7660,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplate {
     /// PreemptionPolicy is the Policy for preempting pods with lower priority.
     /// One of Never, PreemptLowerPriority.
     /// Defaults to PreemptLowerPriority if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preemptionPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preemptionPolicy")]
     pub preemption_policy: Option<String>,
     /// The priority value. Various system components use this field to find the
     /// priority of the pod. When Priority Admission Controller is enabled, it
@@ -9062,21 +7675,13 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplate {
     /// name must be defined by creating a PriorityClass object with that name.
     /// If not specified, the pod priority will be default or zero if there is no
     /// default.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// If specified, all readiness gates will be evaluated for pod readiness.
     /// A pod is ready when all its containers are ready AND
     /// all conditions specified in the readiness gates have status equal to "True"
     /// More info: https://git.k8s.io/enhancements/keps/sig-network/580-pod-readiness-gates
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessGates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessGates")]
     pub readiness_gates: Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateReadinessGates>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
@@ -9084,97 +7689,60 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplate {
     /// and reserved before the Pod is allowed to start. The resources
     /// will be made available to those containers which consume them
     /// by name.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceClaims"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaims")]
     pub resource_claims: Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateResourceClaims>>,
     /// Restart policy for all containers within the pod.
     /// One of Always, OnFailure, Never. In some contexts, only a subset of those values may be permitted.
     /// Default to Always.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     /// RuntimeClassName refers to a RuntimeClass object in the node.k8s.io group, which should be used
     /// to run this pod.  If no RuntimeClass resource matches the named class, the pod will not be run.
     /// If unset or empty, the "legacy" RuntimeClass will be used, which is an implicit class with an
     /// empty definition that uses the default runtime handler.
     /// More info: https://git.k8s.io/enhancements/keps/sig-node/585-runtime-class
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runtimeClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeClassName")]
     pub runtime_class_name: Option<String>,
     /// If specified, the pod will be dispatched by specified scheduler.
     /// If not specified, the pod will be dispatched by default scheduler.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schedulerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
     /// SchedulingGates is an opaque list of values that if specified will block scheduling the pod.
     /// If schedulingGates is not empty, the pod will stay in the SchedulingGated state and the
     /// scheduler will not attempt to schedule the pod.
-    ///
+    /// 
     /// SchedulingGates can only be set at pod creation time, and be removed only afterwards.
-    ///
+    /// 
     /// This is a beta feature enabled by the PodSchedulingReadiness feature gate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schedulingGates"
-    )]
-    pub scheduling_gates:
-        Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateSchedulingGates>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulingGates")]
+    pub scheduling_gates: Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateSchedulingGates>>,
     /// SecurityContext holds pod-level security attributes and common container settings.
     /// Optional: Defaults to empty.  See type description for default values of each field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<SonataFlowPlatformServicesJobServicePodTemplateSecurityContext>,
     /// ServiceAccountName is the name of the ServiceAccount to use to run this pod.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
     /// If true the pod's hostname will be configured as the pod's FQDN, rather than the leaf name (the default).
     /// In Linux containers, this means setting the FQDN in the hostname field of the kernel (the nodename field of struct utsname).
     /// In Windows containers, this means setting the registry value of hostname for the registry key HKEY_LOCAL_MACHINE\\SYSTEM\\CurrentControlSet\\Services\\Tcpip\\Parameters to FQDN.
     /// If a pod does not have FQDN, this has no effect.
     /// Default to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "setHostnameAsFQDN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "setHostnameAsFQDN")]
     pub set_hostname_as_fqdn: Option<bool>,
     /// Share a single process namespace between all of the containers in a pod.
     /// When this is set containers will be able to view and signal processes from other containers
     /// in the same pod, and the first process in each container will not be assigned PID 1.
     /// HostPID and ShareProcessNamespace cannot both be set.
     /// Optional: Default to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "shareProcessNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shareProcessNamespace")]
     pub share_process_namespace: Option<bool>,
     /// If specified, the fully qualified Pod hostname will be "<hostname>.<subdomain>.<pod namespace>.svc.<cluster domain>".
     /// If not specified, the pod will not have a domainname at all.
@@ -9188,11 +7756,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplate {
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
     /// Set this value longer than the expected cleanup time for your process.
     /// Defaults to 30 seconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// If specified, the pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9200,13 +7764,8 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplate {
     /// TopologySpreadConstraints describes how a group of pods ought to spread across topology
     /// domains. Scheduler will schedule pods in a way which abides by the constraints.
     /// All topologySpreadConstraints are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologySpreadConstraints"
-    )]
-    pub topology_spread_constraints:
-        Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateTopologySpreadConstraints>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
+    pub topology_spread_constraints: Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateTopologySpreadConstraints>>,
     /// List of volumes that can be mounted by containers belonging to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9217,27 +7776,14 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplate {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<SonataFlowPlatformServicesJobServicePodTemplateAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<SonataFlowPlatformServicesJobServicePodTemplateAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
-    pub pod_anti_affinity:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateAffinityPodAntiAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<SonataFlowPlatformServicesJobServicePodTemplateAffinityPodAntiAffinity>,
 }
 
 /// Describes node affinity scheduling rules for the pod.
@@ -9287,8 +7833,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityNodeAffinityPr
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -9306,8 +7851,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityNodeAffinityPr
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -9350,8 +7894,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityNodeAffinityRe
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -9369,8 +7912,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityNodeAffinityRe
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -9489,8 +8031,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityPodAffinityPre
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -9524,8 +8065,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityPodAffinityPre
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -9612,8 +8152,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityPodAffinityReq
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -9647,8 +8186,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityPodAffinityReq
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -9766,8 +8304,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityPodAntiAffinit
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -9801,8 +8338,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityPodAntiAffinit
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -9889,8 +8425,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityPodAntiAffinit
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -9924,8 +8459,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityPodAntiAffinit
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -9986,11 +8520,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainer {
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Actions that the management system should take in response to container lifecycle events.
     /// Cannot be updated.
@@ -10000,13 +8530,8 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainer {
     /// Container will be restarted if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
-    pub liveness_probe:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainerLivenessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
+    pub liveness_probe: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerLivenessProbe>,
     /// List of ports to expose from the container. Not specifying a port here
     /// DOES NOT prevent that port from being exposed. Any port which is
     /// listening on the default "0.0.0.0" address inside a container will be
@@ -10020,21 +8545,11 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainer {
     /// Container will be removed from service endpoints if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
-    pub readiness_probe:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainerReadinessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
+    pub readiness_probe: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerReadinessProbe>,
     /// Resources resize policy for the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resizePolicy"
-    )]
-    pub resize_policy:
-        Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateContainerResizePolicy>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
+    pub resize_policy: Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateContainerResizePolicy>>,
     /// Compute Resources required by this container.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
@@ -10043,13 +8558,8 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainer {
     /// SecurityContext defines the security options the container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
-    pub security_context:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainerSecurityContext>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
+    pub security_context: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerSecurityContext>,
     /// StartupProbe indicates that the Pod has successfully initialized.
     /// If specified, no other probes are executed until this completes successfully.
     /// If this probe fails, the Pod will be restarted, just as if the livenessProbe failed.
@@ -10057,11 +8567,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainer {
     /// when it might take a long time to load data or warm a cache, than during steady-state operation.
     /// This cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerStartupProbe>,
     /// Whether this container should allocate a buffer for stdin in the container runtime. If this
     /// is not set, reads from stdin in the container will always result in EOF.
@@ -10084,11 +8590,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainer {
     /// all containers will be limited to 12kb.
     /// Defaults to /dev/termination-log.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
     /// Indicate how the termination message should be populated. File will use the contents of
     /// terminationMessagePath to populate the container status message on both success and failure.
@@ -10097,33 +8599,19 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainer {
     /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
     /// Defaults to File.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
     /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
     /// volumeDevices is the list of block devices to be used by the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
-    pub volume_devices:
-        Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateContainerVolumeDevices>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
+    pub volume_devices: Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateContainerVolumeDevices>>,
     /// Pod volumes to mount into the container's filesystem.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
-    pub volume_mounts:
-        Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateContainerVolumeMounts>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateContainerVolumeMounts>>,
 }
 
 /// EnvVar represents an environment variable present in a Container.
@@ -10151,36 +8639,19 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainerEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainerEnvValueFromFieldRef>,
+    pub field_ref: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        SonataFlowPlatformServicesJobServicePodTemplateContainerEnvValueFromResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainerEnvValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
@@ -10205,11 +8676,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerEnvValueFromC
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -10221,11 +8688,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerEnvValueFromF
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10255,20 +8718,14 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerEnvValueFromS
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
-    pub config_map_ref:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainerEnvFromConfigMapRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainerEnvFromSecretRef>,
+    pub secret_ref: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerEnvFromSecretRef>,
 }
 
 /// The ConfigMap to select from
@@ -10310,8 +8767,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerLifecycle {
     /// Other management of the container blocks until the hook completes.
     /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
-    pub post_start:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainerLifecyclePostStart>,
+    pub post_start: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerLifecyclePostStart>,
     /// PreStop is called immediately before a container is terminated due to an
     /// API request or management event such as liveness/startup probe failure,
     /// preemption, resource contention, etc. The handler is not called if the
@@ -10333,22 +8789,18 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerLifecycle {
 pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerLifecyclePostStart {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainerLifecyclePostStartExec>,
+    pub exec: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerLifecyclePostStartExec>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainerLifecyclePostStartHttpGet>,
+    pub http_get: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerLifecyclePostStartHttpGet>,
     /// Sleep represents the duration that the container should sleep before being terminated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sleep:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainerLifecyclePostStartSleep>,
+    pub sleep: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerLifecyclePostStartSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainerLifecyclePostStartTcpSocket>,
+    pub tcp_socket: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerLifecyclePostStartTcpSocket>,
 }
 
 /// Exec specifies the action to take.
@@ -10388,8 +8840,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerLifecyclePost
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerLifecyclePostStartHttpGetHttpHeaders
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerLifecyclePostStartHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -10434,18 +8885,15 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerLifecyclePreS
     pub exec: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerLifecyclePreStopExec>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainerLifecyclePreStopHttpGet>,
+    pub http_get: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerLifecyclePreStopHttpGet>,
     /// Sleep represents the duration that the container should sleep before being terminated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sleep:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainerLifecyclePreStopSleep>,
+    pub sleep: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerLifecyclePreStopSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainerLifecyclePreStopTcpSocket>,
+    pub tcp_socket: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerLifecyclePreStopTcpSocket>,
 }
 
 /// Exec specifies the action to take.
@@ -10485,8 +8933,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerLifecyclePreS
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerLifecyclePreStopHttpGetHttpHeaders
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerLifecyclePreStopHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -10526,47 +8973,29 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerLivenessProbe
     pub exec: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerLivenessProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainerLivenessProbeHttpGet>,
+    pub http_get: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainerLivenessProbeTcpSocket>,
+    pub tcp_socket: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerLivenessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -10577,20 +9006,12 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerLivenessProbe
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -10613,7 +9034,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerLivenessProbe
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -10627,16 +9048,8 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerLivenessProbe
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<
-            SonataFlowPlatformServicesJobServicePodTemplateContainerLivenessProbeHttpGetHttpHeaders,
-        >,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateContainerLivenessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -10710,47 +9123,29 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerReadinessProb
     pub exec: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerReadinessProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainerReadinessProbeHttpGet>,
+    pub http_get: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainerReadinessProbeTcpSocket>,
+    pub tcp_socket: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerReadinessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -10761,20 +9156,12 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerReadinessProb
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -10797,7 +9184,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerReadinessProb
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -10828,8 +9215,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerReadinessProb
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerReadinessProbeHttpGetHttpHeaders
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerReadinessProbeHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -10869,14 +9255,13 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerResizePolicy 
 pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims:
-        Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateContainerResourcesClaims>>,
+    pub claims: Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateContainerResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10915,29 +9300,18 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerSecurityConte
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
     /// overrides the pod's appArmorProfile.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appArmorProfile"
-    )]
-    pub app_armor_profile: Option<
-        SonataFlowPlatformServicesJobServicePodTemplateContainerSecurityContextAppArmorProfile,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub capabilities:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainerSecurityContextCapabilities>,
+    pub capabilities: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerSecurityContextCapabilities>,
     /// Run container in privileged mode.
     /// Processes in privileged containers are essentially equivalent to root on the host.
     /// Defaults to false.
@@ -10954,22 +9328,14 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerSecurityConte
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -10977,11 +9343,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerSecurityConte
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -10995,38 +9357,20 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerSecurityConte
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options: Option<
-        SonataFlowPlatformServicesJobServicePodTemplateContainerSecurityContextSeLinuxOptions,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile: Option<
-        SonataFlowPlatformServicesJobServicePodTemplateContainerSecurityContextSeccompProfile,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options: Option<
-        SonataFlowPlatformServicesJobServicePodTemplateContainerSecurityContextWindowsOptions,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerSecurityContextWindowsOptions>,
 }
 
 /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
@@ -11038,11 +9382,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerSecurityConte
     /// The profile must be preconfigured on the node to work.
     /// Must match the loaded name of the profile.
     /// Must be set if and only if type is "Localhost".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of AppArmor profile will be applied.
     /// Valid options are:
@@ -11097,15 +9437,11 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerSecurityConte
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -11122,38 +9458,22 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerSecurityConte
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -11171,47 +9491,29 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerStartupProbe 
     pub exec: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerStartupProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainerStartupProbeHttpGet>,
+    pub http_get: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainerStartupProbeTcpSocket>,
+    pub tcp_socket: Option<SonataFlowPlatformServicesJobServicePodTemplateContainerStartupProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -11222,20 +9524,12 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerStartupProbe 
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -11258,7 +9552,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerStartupProbeG
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -11272,14 +9566,8 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerStartupProbeH
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<SonataFlowPlatformServicesJobServicePodTemplateContainerStartupProbeHttpGetHttpHeaders>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateContainerStartupProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -11338,11 +9626,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerVolumeMounts 
     /// This field is beta in 1.10.
     /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
     /// (which defaults to None).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -11352,25 +9636,21 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerVolumeMounts 
     pub read_only: Option<bool>,
     /// RecursiveReadOnly specifies whether read-only mounts should be handled
     /// recursively.
-    ///
+    /// 
     /// If ReadOnly is false, this field has no meaning and must be unspecified.
-    ///
+    /// 
     /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
     /// recursively read-only.  If this field is set to IfPossible, the mount is made
     /// recursively read-only, if it is supported by the container runtime.  If this
     /// field is set to Enabled, the mount is made recursively read-only if it is
     /// supported by the container runtime, otherwise the pod will not be started and
     /// an error will be generated to indicate the reason.
-    ///
+    /// 
     /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
     /// None (or be unspecified, which defaults to None).
-    ///
+    /// 
     /// If this field is not specified, it is treated as an equivalent of Disabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recursiveReadOnly"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
     pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
@@ -11380,11 +9660,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainerVolumeMounts 
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -11434,11 +9710,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainers {
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Actions that the management system should take in response to container lifecycle events.
     /// Cannot be updated.
@@ -11448,13 +9720,8 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainers {
     /// Container will be restarted if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
-    pub liveness_probe:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainersLivenessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
+    pub liveness_probe: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersLivenessProbe>,
     /// Name of the container specified as a DNS_LABEL.
     /// Each container in a pod must have a unique name (DNS_LABEL).
     /// Cannot be updated.
@@ -11472,21 +9739,11 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainers {
     /// Container will be removed from service endpoints if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
-    pub readiness_probe:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainersReadinessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
+    pub readiness_probe: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersReadinessProbe>,
     /// Resources resize policy for the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resizePolicy"
-    )]
-    pub resize_policy:
-        Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateContainersResizePolicy>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
+    pub resize_policy: Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateContainersResizePolicy>>,
     /// Compute Resources required by this container.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
@@ -11507,22 +9764,13 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainers {
     /// container. Instead, the next init container starts immediately after this
     /// init container is started, or after any startupProbe has successfully
     /// completed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     /// SecurityContext defines the security options the container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
-    pub security_context:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainersSecurityContext>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
+    pub security_context: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersSecurityContext>,
     /// StartupProbe indicates that the Pod has successfully initialized.
     /// If specified, no other probes are executed until this completes successfully.
     /// If this probe fails, the Pod will be restarted, just as if the livenessProbe failed.
@@ -11530,13 +9778,8 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainers {
     /// when it might take a long time to load data or warm a cache, than during steady-state operation.
     /// This cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
-    pub startup_probe:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainersStartupProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
+    pub startup_probe: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersStartupProbe>,
     /// Whether this container should allocate a buffer for stdin in the container runtime. If this
     /// is not set, reads from stdin in the container will always result in EOF.
     /// Default is false.
@@ -11558,11 +9801,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainers {
     /// all containers will be limited to 12kb.
     /// Defaults to /dev/termination-log.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
     /// Indicate how the termination message should be populated. File will use the contents of
     /// terminationMessagePath to populate the container status message on both success and failure.
@@ -11571,42 +9810,24 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainers {
     /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
     /// Defaults to File.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
     /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
     /// volumeDevices is the list of block devices to be used by the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
-    pub volume_devices:
-        Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateContainersVolumeDevices>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
+    pub volume_devices: Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateContainersVolumeDevices>>,
     /// Pod volumes to mount into the container's filesystem.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
-    pub volume_mounts:
-        Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateContainersVolumeMounts>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateContainersVolumeMounts>>,
     /// Container's working directory.
     /// If not specified, the container runtime's default will be used, which
     /// might be configured in the container image.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -11635,37 +9856,19 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref: Option<
-        SonataFlowPlatformServicesJobServicePodTemplateContainersEnvValueFromConfigMapKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainersEnvValueFromFieldRef>,
+    pub field_ref: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        SonataFlowPlatformServicesJobServicePodTemplateContainersEnvValueFromResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainersEnvValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
@@ -11690,11 +9893,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersEnvValueFrom
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -11706,11 +9905,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersEnvValueFrom
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -11740,20 +9935,14 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersEnvValueFrom
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
-    pub config_map_ref:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainersEnvFromConfigMapRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainersEnvFromSecretRef>,
+    pub secret_ref: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersEnvFromSecretRef>,
 }
 
 /// The ConfigMap to select from
@@ -11795,8 +9984,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersLifecycle {
     /// Other management of the container blocks until the hook completes.
     /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
-    pub post_start:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainersLifecyclePostStart>,
+    pub post_start: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersLifecyclePostStart>,
     /// PreStop is called immediately before a container is terminated due to an
     /// API request or management event such as liveness/startup probe failure,
     /// preemption, resource contention, etc. The handler is not called if the
@@ -11818,23 +10006,18 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersLifecycle {
 pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersLifecyclePostStart {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainersLifecyclePostStartExec>,
+    pub exec: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersLifecyclePostStartExec>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainersLifecyclePostStartHttpGet>,
+    pub http_get: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersLifecyclePostStartHttpGet>,
     /// Sleep represents the duration that the container should sleep before being terminated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sleep:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainersLifecyclePostStartSleep>,
+    pub sleep: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersLifecyclePostStartSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<
-        SonataFlowPlatformServicesJobServicePodTemplateContainersLifecyclePostStartTcpSocket,
-    >,
+    pub tcp_socket: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersLifecyclePostStartTcpSocket>,
 }
 
 /// Exec specifies the action to take.
@@ -11874,8 +10057,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersLifecyclePos
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersLifecyclePostStartHttpGetHttpHeaders
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersLifecyclePostStartHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -11920,18 +10102,15 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersLifecyclePre
     pub exec: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersLifecyclePreStopExec>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainersLifecyclePreStopHttpGet>,
+    pub http_get: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersLifecyclePreStopHttpGet>,
     /// Sleep represents the duration that the container should sleep before being terminated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sleep:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainersLifecyclePreStopSleep>,
+    pub sleep: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersLifecyclePreStopSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainersLifecyclePreStopTcpSocket>,
+    pub tcp_socket: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersLifecyclePreStopTcpSocket>,
 }
 
 /// Exec specifies the action to take.
@@ -11971,8 +10150,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersLifecyclePre
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersLifecyclePreStopHttpGetHttpHeaders
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersLifecyclePreStopHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -12012,47 +10190,29 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersLivenessProb
     pub exec: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersLivenessProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainersLivenessProbeHttpGet>,
+    pub http_get: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainersLivenessProbeTcpSocket>,
+    pub tcp_socket: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersLivenessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -12063,20 +10223,12 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersLivenessProb
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -12099,7 +10251,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersLivenessProb
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -12130,8 +10282,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersLivenessProb
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersLivenessProbeHttpGetHttpHeaders
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersLivenessProbeHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -12189,47 +10340,29 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersReadinessPro
     pub exec: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersReadinessProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainersReadinessProbeHttpGet>,
+    pub http_get: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainersReadinessProbeTcpSocket>,
+    pub tcp_socket: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersReadinessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -12240,20 +10373,12 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersReadinessPro
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -12276,7 +10401,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersReadinessPro
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -12307,8 +10432,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersReadinessPro
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersReadinessProbeHttpGetHttpHeaders
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersReadinessProbeHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -12348,14 +10472,13 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersResizePolicy
 pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims:
-        Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateContainersResourcesClaims>>,
+    pub claims: Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -12394,30 +10517,18 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersSecurityCont
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
     /// overrides the pod's appArmorProfile.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appArmorProfile"
-    )]
-    pub app_armor_profile: Option<
-        SonataFlowPlatformServicesJobServicePodTemplateContainersSecurityContextAppArmorProfile,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub capabilities: Option<
-        SonataFlowPlatformServicesJobServicePodTemplateContainersSecurityContextCapabilities,
-    >,
+    pub capabilities: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersSecurityContextCapabilities>,
     /// Run container in privileged mode.
     /// Processes in privileged containers are essentially equivalent to root on the host.
     /// Defaults to false.
@@ -12434,22 +10545,14 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersSecurityCont
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -12457,11 +10560,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersSecurityCont
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -12475,38 +10574,20 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersSecurityCont
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options: Option<
-        SonataFlowPlatformServicesJobServicePodTemplateContainersSecurityContextSeLinuxOptions,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile: Option<
-        SonataFlowPlatformServicesJobServicePodTemplateContainersSecurityContextSeccompProfile,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options: Option<
-        SonataFlowPlatformServicesJobServicePodTemplateContainersSecurityContextWindowsOptions,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersSecurityContextWindowsOptions>,
 }
 
 /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
@@ -12518,11 +10599,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersSecurityCont
     /// The profile must be preconfigured on the node to work.
     /// Must match the loaded name of the profile.
     /// Must be set if and only if type is "Localhost".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of AppArmor profile will be applied.
     /// Valid options are:
@@ -12577,15 +10654,11 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersSecurityCont
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -12602,38 +10675,22 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersSecurityCont
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -12651,47 +10708,29 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersStartupProbe
     pub exec: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersStartupProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainersStartupProbeHttpGet>,
+    pub http_get: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateContainersStartupProbeTcpSocket>,
+    pub tcp_socket: Option<SonataFlowPlatformServicesJobServicePodTemplateContainersStartupProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -12702,20 +10741,12 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersStartupProbe
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -12738,7 +10769,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersStartupProbe
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -12752,16 +10783,8 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersStartupProbe
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<
-            SonataFlowPlatformServicesJobServicePodTemplateContainersStartupProbeHttpGetHttpHeaders,
-        >,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateContainersStartupProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -12820,11 +10843,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersVolumeMounts
     /// This field is beta in 1.10.
     /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
     /// (which defaults to None).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -12834,25 +10853,21 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersVolumeMounts
     pub read_only: Option<bool>,
     /// RecursiveReadOnly specifies whether read-only mounts should be handled
     /// recursively.
-    ///
+    /// 
     /// If ReadOnly is false, this field has no meaning and must be unspecified.
-    ///
+    /// 
     /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
     /// recursively read-only.  If this field is set to IfPossible, the mount is made
     /// recursively read-only, if it is supported by the container runtime.  If this
     /// field is set to Enabled, the mount is made recursively read-only if it is
     /// supported by the container runtime, otherwise the pod will not be started and
     /// an error will be generated to indicate the reason.
-    ///
+    /// 
     /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
     /// None (or be unspecified, which defaults to None).
-    ///
+    /// 
     /// If this field is not specified, it is treated as an equivalent of Disabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recursiveReadOnly"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
     pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
@@ -12862,11 +10877,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateContainersVolumeMounts
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -12973,11 +10984,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainers {
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Actions that the management system should take in response to container lifecycle events.
     /// Cannot be updated.
@@ -12987,13 +10994,8 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainers {
     /// Container will be restarted if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
-    pub liveness_probe:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersLivenessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
+    pub liveness_probe: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersLivenessProbe>,
     /// Name of the container specified as a DNS_LABEL.
     /// Each container in a pod must have a unique name (DNS_LABEL).
     /// Cannot be updated.
@@ -13011,21 +11013,11 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainers {
     /// Container will be removed from service endpoints if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
-    pub readiness_probe:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersReadinessProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
+    pub readiness_probe: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersReadinessProbe>,
     /// Resources resize policy for the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resizePolicy"
-    )]
-    pub resize_policy:
-        Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateInitContainersResizePolicy>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
+    pub resize_policy: Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateInitContainersResizePolicy>>,
     /// Compute Resources required by this container.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
@@ -13046,22 +11038,13 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainers {
     /// container. Instead, the next init container starts immediately after this
     /// init container is started, or after any startupProbe has successfully
     /// completed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     /// SecurityContext defines the security options the container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
-    pub security_context:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersSecurityContext>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
+    pub security_context: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersSecurityContext>,
     /// StartupProbe indicates that the Pod has successfully initialized.
     /// If specified, no other probes are executed until this completes successfully.
     /// If this probe fails, the Pod will be restarted, just as if the livenessProbe failed.
@@ -13069,13 +11052,8 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainers {
     /// when it might take a long time to load data or warm a cache, than during steady-state operation.
     /// This cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
-    pub startup_probe:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersStartupProbe>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
+    pub startup_probe: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersStartupProbe>,
     /// Whether this container should allocate a buffer for stdin in the container runtime. If this
     /// is not set, reads from stdin in the container will always result in EOF.
     /// Default is false.
@@ -13097,11 +11075,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainers {
     /// all containers will be limited to 12kb.
     /// Defaults to /dev/termination-log.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
     /// Indicate how the termination message should be populated. File will use the contents of
     /// terminationMessagePath to populate the container status message on both success and failure.
@@ -13110,42 +11084,24 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainers {
     /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
     /// Defaults to File.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
     /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
     /// volumeDevices is the list of block devices to be used by the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
-    pub volume_devices:
-        Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateInitContainersVolumeDevices>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
+    pub volume_devices: Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateInitContainersVolumeDevices>>,
     /// Pod volumes to mount into the container's filesystem.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
-    pub volume_mounts:
-        Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateInitContainersVolumeMounts>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
+    pub volume_mounts: Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateInitContainersVolumeMounts>>,
     /// Container's working directory.
     /// If not specified, the container runtime's default will be used, which
     /// might be configured in the container image.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -13167,52 +11123,31 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersEnv {
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersEnvValueFrom>,
+    pub value_from: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersEnvValueFrom>,
 }
 
 /// Source for the environment variable's value. Cannot be used if value is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref: Option<
-        SonataFlowPlatformServicesJobServicePodTemplateInitContainersEnvValueFromConfigMapKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersEnvValueFromFieldRef>,
+    pub field_ref: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        SonataFlowPlatformServicesJobServicePodTemplateInitContainersEnvValueFromResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref: Option<
-        SonataFlowPlatformServicesJobServicePodTemplateInitContainersEnvValueFromSecretKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersEnvValueFromConfigMapKeyRef
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
@@ -13232,11 +11167,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersEnvValue
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -13246,14 +11177,9 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersEnvValue
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersEnvValueFromResourceFieldRef
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -13283,20 +11209,14 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersEnvValue
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
-    pub config_map_ref:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersEnvFromConfigMapRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
+    pub config_map_ref: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
     /// The Secret to select from
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersEnvFromSecretRef>,
+    pub secret_ref: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersEnvFromSecretRef>,
 }
 
 /// The ConfigMap to select from
@@ -13338,8 +11258,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecycl
     /// Other management of the container blocks until the hook completes.
     /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStart")]
-    pub post_start:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecyclePostStart>,
+    pub post_start: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecyclePostStart>,
     /// PreStop is called immediately before a container is terminated due to an
     /// API request or management event such as liveness/startup probe failure,
     /// preemption, resource contention, etc. The handler is not called if the
@@ -13350,8 +11269,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecycl
     /// or until the termination grace period is reached.
     /// More info: https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/#container-hooks
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStop")]
-    pub pre_stop:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecyclePreStop>,
+    pub pre_stop: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecyclePreStop>,
 }
 
 /// PostStart is called immediately after a container is created. If the handler fails,
@@ -13362,25 +11280,18 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecycl
 pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecyclePostStart {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecyclePostStartExec>,
+    pub exec: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecyclePostStartExec>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<
-        SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecyclePostStartHttpGet,
-    >,
+    pub http_get: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecyclePostStartHttpGet>,
     /// Sleep represents the duration that the container should sleep before being terminated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sleep: Option<
-        SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecyclePostStartSleep,
-    >,
+    pub sleep: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecyclePostStartSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<
-        SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecyclePostStartTcpSocket,
-    >,
+    pub tcp_socket: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecyclePostStartTcpSocket>,
 }
 
 /// Exec specifies the action to take.
@@ -13420,8 +11331,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecycl
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecyclePostStartHttpGetHttpHeaders
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecyclePostStartHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -13440,8 +11350,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecycl
 /// for the backward compatibility. There are no validation of this field and
 /// lifecycle hooks will fail in runtime when tcp handler is specified.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecyclePostStartTcpSocket
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecyclePostStartTcpSocket {
     /// Optional: Host name to connect to, defaults to the pod IP.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
@@ -13464,24 +11373,18 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecycl
 pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecyclePreStop {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecyclePreStopExec>,
+    pub exec: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecyclePreStopExec>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get: Option<
-        SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecyclePreStopHttpGet,
-    >,
+    pub http_get: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecyclePreStopHttpGet>,
     /// Sleep represents the duration that the container should sleep before being terminated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sleep:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecyclePreStopSleep>,
+    pub sleep: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecyclePreStopSleep>,
     /// Deprecated. TCPSocket is NOT supported as a LifecycleHandler and kept
     /// for the backward compatibility. There are no validation of this field and
     /// lifecycle hooks will fail in runtime when tcp handler is specified.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<
-        SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecyclePreStopTcpSocket,
-    >,
+    pub tcp_socket: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecyclePreStopTcpSocket>,
 }
 
 /// Exec specifies the action to take.
@@ -13521,8 +11424,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecycl
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecyclePreStopHttpGetHttpHeaders
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecyclePreStopHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -13559,52 +11461,32 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersLifecycl
 pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersLivenessProbe {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersLivenessProbeExec>,
+    pub exec: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub grpc:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersLivenessProbeGrpc>,
+    pub grpc: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersLivenessProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersLivenessProbeHttpGet>,
+    pub http_get: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersLivenessProbeTcpSocket>,
+    pub tcp_socket: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersLivenessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -13615,20 +11497,12 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersLiveness
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -13651,7 +11525,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersLiveness
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -13682,8 +11556,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersLiveness
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersLivenessProbeHttpGetHttpHeaders
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersLivenessProbeHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -13738,53 +11611,32 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersPorts {
 pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersReadinessProbe {
     /// Exec specifies the action to take.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub exec:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersReadinessProbeExec>,
+    pub exec: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub grpc:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersReadinessProbeGrpc>,
+    pub grpc: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersReadinessProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersReadinessProbeHttpGet>,
+    pub http_get: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket: Option<
-        SonataFlowPlatformServicesJobServicePodTemplateInitContainersReadinessProbeTcpSocket,
-    >,
+    pub tcp_socket: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersReadinessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -13795,20 +11647,12 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersReadines
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -13831,7 +11675,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersReadines
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -13862,8 +11706,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersReadines
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersReadinessProbeHttpGetHttpHeaders
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersReadinessProbeHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -13903,14 +11746,13 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersResizePo
 pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims:
-        Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateInitContainersResourcesClaims>>,
+    pub claims: Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateInitContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -13949,30 +11791,18 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersSecurity
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
     /// overrides the pod's appArmorProfile.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appArmorProfile"
-    )]
-    pub app_armor_profile: Option<
-        SonataFlowPlatformServicesJobServicePodTemplateInitContainersSecurityContextAppArmorProfile,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersSecurityContextAppArmorProfile>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub capabilities: Option<
-        SonataFlowPlatformServicesJobServicePodTemplateInitContainersSecurityContextCapabilities,
-    >,
+    pub capabilities: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersSecurityContextCapabilities>,
     /// Run container in privileged mode.
     /// Processes in privileged containers are essentially equivalent to root on the host.
     /// Defaults to false.
@@ -13989,22 +11819,14 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersSecurity
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -14012,11 +11834,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersSecurity
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -14030,55 +11848,32 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersSecurity
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options: Option<
-        SonataFlowPlatformServicesJobServicePodTemplateInitContainersSecurityContextSeLinuxOptions,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile: Option<
-        SonataFlowPlatformServicesJobServicePodTemplateInitContainersSecurityContextSeccompProfile,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options: Option<
-        SonataFlowPlatformServicesJobServicePodTemplateInitContainersSecurityContextWindowsOptions,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersSecurityContextWindowsOptions>,
 }
 
 /// appArmorProfile is the AppArmor options to use by this container. If set, this profile
 /// overrides the pod's appArmorProfile.
 /// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersSecurityContextAppArmorProfile
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersSecurityContextAppArmorProfile {
     /// localhostProfile indicates a profile loaded on the node that should be used.
     /// The profile must be preconfigured on the node to work.
     /// Must match the loaded name of the profile.
     /// Must be set if and only if type is "Localhost".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of AppArmor profile will be applied.
     /// Valid options are:
@@ -14093,8 +11888,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersSecurity
 /// Defaults to the default set of capabilities granted by the container runtime.
 /// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersSecurityContextCapabilities
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersSecurityContextCapabilities {
     /// Added capabilities
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub add: Option<Vec<String>>,
@@ -14109,8 +11903,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersSecurity
 /// PodSecurityContext, the value specified in SecurityContext takes precedence.
 /// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersSecurityContextSeLinuxOptions
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersSecurityContextSeLinuxOptions {
     /// Level is SELinux level label that applies to the container.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<String>,
@@ -14130,21 +11923,16 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersSecurity
 /// override the pod options.
 /// Note that this field cannot be set when spec.os.name is windows.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersSecurityContextSeccompProfile
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersSecurityContextSeccompProfile {
     /// localhostProfile indicates a profile defined in a file on the node should be used.
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -14157,43 +11945,26 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersSecurity
 /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
 /// Note that this field cannot be set when spec.os.name is linux.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersSecurityContextWindowsOptions
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -14211,47 +11982,29 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersStartupP
     pub exec: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub grpc: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersStartupProbeGrpc>,
     /// HTTPGet specifies the http request to perform.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
-    pub http_get:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersStartupProbeHttpGet>,
+    pub http_get: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
-    pub tcp_socket:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersStartupProbeTcpSocket>,
+    pub tcp_socket: Option<SonataFlowPlatformServicesJobServicePodTemplateInitContainersStartupProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure.
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
@@ -14262,20 +12015,12 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersStartupP
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -14298,7 +12043,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersStartupP
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -14329,8 +12074,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersStartupP
 
 /// HTTPHeader describes a custom header to be used in HTTP probes
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersStartupProbeHttpGetHttpHeaders
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersStartupProbeHttpGetHttpHeaders {
     /// The header field name.
     /// This will be canonicalized upon output, so case-variant names will be understood as the same header.
     pub name: String,
@@ -14373,11 +12117,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersVolumeMo
     /// This field is beta in 1.10.
     /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
     /// (which defaults to None).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -14387,25 +12127,21 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersVolumeMo
     pub read_only: Option<bool>,
     /// RecursiveReadOnly specifies whether read-only mounts should be handled
     /// recursively.
-    ///
+    /// 
     /// If ReadOnly is false, this field has no meaning and must be unspecified.
-    ///
+    /// 
     /// If ReadOnly is true, and this field is set to Disabled, the mount is not made
     /// recursively read-only.  If this field is set to IfPossible, the mount is made
     /// recursively read-only, if it is supported by the container runtime.  If this
     /// field is set to Enabled, the mount is made recursively read-only if it is
     /// supported by the container runtime, otherwise the pod will not be started and
     /// an error will be generated to indicate the reason.
-    ///
+    /// 
     /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
     /// None (or be unspecified, which defaults to None).
-    ///
+    /// 
     /// If this field is not specified, it is treated as an equivalent of Disabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recursiveReadOnly"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
     pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
@@ -14415,20 +12151,16 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateInitContainersVolumeMo
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
 /// Specifies the OS of the containers in the pod.
 /// Some pod and container fields are restricted if this is set.
-///
+/// 
 /// If the OS field is set to linux, the following fields must be unset:
 /// -securityContext.windowsOptions
-///
+/// 
 /// If the OS field is set to windows, following fields must be unset:
 /// - spec.hostPID
 /// - spec.hostIPC
@@ -14471,7 +12203,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateReadinessGates {
 /// PodResourceClaim references exactly one ResourceClaim, either directly
 /// or by naming a ResourceClaimTemplate which is then turned into a ResourceClaim
 /// for the pod.
-///
+/// 
 /// It adds a name to it that uniquely identifies the ResourceClaim inside the Pod.
 /// Containers that need access to the ResourceClaim reference it with this name.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -14481,35 +12213,27 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateResourceClaims {
     pub name: String,
     /// ResourceClaimName is the name of a ResourceClaim object in the same
     /// namespace as this pod.
-    ///
+    /// 
     /// Exactly one of ResourceClaimName and ResourceClaimTemplateName must
     /// be set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceClaimName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaimName")]
     pub resource_claim_name: Option<String>,
     /// ResourceClaimTemplateName is the name of a ResourceClaimTemplate
     /// object in the same namespace as this pod.
-    ///
+    /// 
     /// The template will be used to create a new ResourceClaim, which will
     /// be bound to this pod. When this pod is deleted, the ResourceClaim
     /// will also be deleted. The pod name and resource name, along with a
     /// generated component, will be used to form a unique name for the
     /// ResourceClaim, which will be recorded in pod.status.resourceClaimStatuses.
-    ///
+    /// 
     /// This field is immutable and no changes will be made to the
     /// corresponding ResourceClaim by the control plane after creating the
     /// ResourceClaim.
-    ///
+    /// 
     /// Exactly one of ResourceClaimName and ResourceClaimTemplateName must
     /// be set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceClaimTemplateName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceClaimTemplateName")]
     pub resource_claim_template_name: Option<String>,
 }
 
@@ -14527,21 +12251,16 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateSchedulingGates {
 pub struct SonataFlowPlatformServicesJobServicePodTemplateSecurityContext {
     /// appArmorProfile is the AppArmor options to use by the containers in this pod.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appArmorProfile"
-    )]
-    pub app_armor_profile:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateSecurityContextAppArmorProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appArmorProfile")]
+    pub app_armor_profile: Option<SonataFlowPlatformServicesJobServicePodTemplateSecurityContextAppArmorProfile>,
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
-    ///
+    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    ///
+    /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
@@ -14553,11 +12272,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateSecurityContext {
     /// and emptydir.
     /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
@@ -14565,11 +12280,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateSecurityContext {
     /// PodSecurityContext, the value specified in SecurityContext takes precedence
     /// for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -14577,11 +12288,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in SecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -14597,22 +12304,12 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateSecurityContext {
     /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
     /// takes precedence for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<SonataFlowPlatformServicesJobServicePodTemplateSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by the containers in this pod.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateSecurityContextSeccompProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<SonataFlowPlatformServicesJobServicePodTemplateSecurityContextSeccompProfile>,
     /// A list of groups applied to the first process run in each container, in
     /// addition to the container's primary GID and fsGroup (if specified).  If
     /// the SupplementalGroupsPolicy feature is enabled, the
@@ -14622,22 +12319,14 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateSecurityContext {
     /// defined in the container image may still be used, depending on the
     /// supplementalGroupsPolicy field.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
     /// Defines how supplemental groups of the first container processes are calculated.
     /// Valid values are "Merge" and "Strict". If not specified, "Merge" is used.
     /// (Alpha) Using the field requires the SupplementalGroupsPolicy feature gate to be enabled
     /// and the container runtime must implement support for this feature.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroupsPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroupsPolicy")]
     pub supplemental_groups_policy: Option<String>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
     /// sysctls (by the container runtime) might fail to launch.
@@ -14648,13 +12337,8 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateSecurityContext {
     /// If unspecified, the options within a container's SecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateSecurityContextWindowsOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<SonataFlowPlatformServicesJobServicePodTemplateSecurityContextWindowsOptions>,
 }
 
 /// appArmorProfile is the AppArmor options to use by the containers in this pod.
@@ -14665,11 +12349,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateSecurityContextAppArmo
     /// The profile must be preconfigured on the node to work.
     /// Must match the loaded name of the profile.
     /// Must be set if and only if type is "Localhost".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of AppArmor profile will be applied.
     /// Valid options are:
@@ -14710,15 +12390,11 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateSecurityContextSeccomp
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -14744,38 +12420,22 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateSecurityContextWindows
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -14801,11 +12461,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -14819,14 +12475,8 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateTopologySpreadConstrai
     /// LabelSelector is used to find matching pods.
     /// Pods that match this label selector are counted to determine the number of pods
     /// in their corresponding topology domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector: Option<
-        SonataFlowPlatformServicesJobServicePodTemplateTopologySpreadConstraintsLabelSelector,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<SonataFlowPlatformServicesJobServicePodTemplateTopologySpreadConstraintsLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select the pods over which
     /// spreading will be calculated. The keys are used to lookup values from the
     /// incoming pod labels, those key-value labels are ANDed with labelSelector
@@ -14835,13 +12485,9 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateTopologySpreadConstrai
     /// MatchLabelKeys cannot be set when LabelSelector isn't set.
     /// Keys that don't exist in the incoming pod labels will
     /// be ignored. A null or empty list means only match against labelSelector.
-    ///
+    /// 
     /// This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabelKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MaxSkew describes the degree to which pods may be unevenly distributed.
     /// When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference
@@ -14872,7 +12518,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateTopologySpreadConstrai
     /// If value is nil, the constraint behaves as if MinDomains is equal to 1.
     /// Valid values are integers greater than 0.
     /// When value is not nil, WhenUnsatisfiable must be DoNotSchedule.
-    ///
+    /// 
     /// For example, in a 3-zone cluster, MaxSkew is set to 2, MinDomains is set to 5 and pods with the same
     /// labelSelector spread as 2/2/2:
     /// | zone1 | zone2 | zone3 |
@@ -14881,38 +12527,26 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateTopologySpreadConstrai
     /// In this situation, new pod with the same labelSelector cannot be scheduled,
     /// because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,
     /// it will violate MaxSkew.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
     /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector
     /// when calculating pod topology spread skew. Options are:
     /// - Honor: only nodes matching nodeAffinity/nodeSelector are included in the calculations.
     /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
-    ///
+    /// 
     /// If this value is nil, the behavior is equivalent to the Honor policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinityPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
     /// NodeTaintsPolicy indicates how we will treat node taints when calculating
     /// pod topology spread skew. Options are:
     /// - Honor: nodes without taints, along with tainted nodes for which the incoming pod
     /// has a toleration, are included.
     /// - Ignore: node taints are ignored. All nodes are included.
-    ///
+    /// 
     /// If this value is nil, the behavior is equivalent to the Ignore policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeTaintsPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
     /// TopologyKey is the key of node labels. Nodes that have a label with this key
     /// and identical values are considered to be in the same topology.
@@ -14966,8 +12600,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateTopologySpreadConstrai
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateTopologySpreadConstraintsLabelSelectorMatchExpressions
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateTopologySpreadConstraintsLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -14987,13 +12620,8 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumes {
     /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsElasticBlockStore"
-    )]
-    pub aws_elastic_block_store:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesAwsElasticBlockStore>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
+    pub aws_elastic_block_store: Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
     pub azure_disk: Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesAzureDisk>,
@@ -15014,11 +12642,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesCsi>,
     /// downwardAPI represents downward API about the pod that should populate this volume
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesDownwardApi>,
     /// emptyDir represents a temporary directory that shares a pod's lifetime.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
@@ -15027,7 +12651,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumes {
     /// ephemeral represents a volume that is handled by a cluster storage driver.
     /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
     /// and deleted when the pod is removed.
-    ///
+    /// 
     /// Use this if:
     /// a) the volume is only needed while the pod runs,
     /// b) features of normal volumes like restoring from snapshot or capacity
@@ -15037,15 +12661,15 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumes {
     ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
     ///    information on the connection between this volume type
     ///    and PersistentVolumeClaim).
-    ///
+    /// 
     /// Use PersistentVolumeClaim or one of the vendor-specific
     /// APIs for volumes that persist for longer than the lifecycle
     /// of an individual pod.
-    ///
+    /// 
     /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
     /// be used that way - see the documentation of the driver for
     /// more information.
-    ///
+    /// 
     /// A pod can use both types of ephemeral volumes and
     /// persistent volumes at the same time.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -15055,11 +12679,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumes {
     pub fc: Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesFc>,
     /// flexVolume represents a generic volume resource that is
     /// provisioned/attached using an exec based plugin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flexVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesFlexVolume>,
     /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -15067,13 +12687,8 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumes {
     /// gcePersistentDisk represents a GCE Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gcePersistentDisk"
-    )]
-    pub gce_persistent_disk:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesGcePersistentDisk>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
+    pub gce_persistent_disk: Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesGcePersistentDisk>,
     /// gitRepo represents a git repository at a particular revision.
     /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
     /// EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir
@@ -15093,11 +12708,11 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumes {
     pub host_path: Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesHostPath>,
     /// image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.
     /// The volume is resolved at pod startup depending on which PullPolicy value is provided:
-    ///
+    /// 
     /// - Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
     /// - Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
     /// - IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
-    ///
+    /// 
     /// The volume gets re-resolved if the pod gets deleted and recreated, which means that new remote content will become available on pod recreation.
     /// A failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message.
     /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
@@ -15123,29 +12738,14 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumes {
     /// persistentVolumeClaimVolumeSource represents a reference to a
     /// PersistentVolumeClaim in the same namespace.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
-    pub persistent_volume_claim:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesPersistentVolumeClaim>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesPersistentVolumeClaim>,
     /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "photonPersistentDisk"
-    )]
-    pub photon_persistent_disk:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesPhotonPersistentDisk>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
+    pub photon_persistent_disk: Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesPhotonPersistentDisk>,
     /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portworxVolume"
-    )]
-    pub portworx_volume:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesPortworxVolume>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
+    pub portworx_volume: Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesPortworxVolume>,
     /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub projected: Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesProjected>,
@@ -15167,11 +12767,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storageos: Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesStorageos>,
     /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vsphereVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
     pub vsphere_volume: Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesVsphereVolume>,
 }
 
@@ -15206,11 +12802,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesAwsElasticBlock
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesAzureDisk {
     /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachingMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
     pub caching_mode: Option<String>,
     /// diskName is the Name of the data disk in the blob storage
     #[serde(rename = "diskName")]
@@ -15263,11 +12855,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesCephfs {
     pub read_only: Option<bool>,
     /// secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
     pub secret_file: Option<String>,
     /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
@@ -15340,11 +12928,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesConfigMap {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items if unspecified, each key-value pair in the Data field of the referenced
     /// ConfigMap will be projected into the volume as a file whose name is the
@@ -15403,24 +12987,15 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesCsi {
     /// NodePublishVolume and NodeUnpublishVolume calls.
     /// This field is optional, and  may be empty if no secret is required. If the
     /// secret object contains more than one secret, all secret references are passed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePublishSecretRef"
-    )]
-    pub node_publish_secret_ref:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesCsiNodePublishSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
+    pub node_publish_secret_ref: Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesCsiNodePublishSecretRef>,
     /// readOnly specifies a read-only configuration for the volume.
     /// Defaults to false (read/write).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// volumeAttributes stores driver-specific properties that are passed to the CSI
     /// driver. Consult your driver's documentation for supported values.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
@@ -15451,11 +13026,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesDownwardApi {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// Items is a list of downward API volume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -15467,8 +13038,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesDownwardApi {
 pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesDownwardApiItems {
     /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesDownwardApiItemsFieldRef>,
+    pub field_ref: Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
     /// between 0000 and 0777 or a decimal value between 0 and 511.
     /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
@@ -15481,25 +13051,15 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesDownwardApiItem
     pub path: String,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        SonataFlowPlatformServicesJobServicePodTemplateVolumesDownwardApiItemsResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesDownwardApiItemsResourceFieldRef>,
 }
 
 /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -15511,11 +13071,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesDownwardApiItem
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -15547,7 +13103,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesEmptyDir {
 /// ephemeral represents a volume that is handled by a cluster storage driver.
 /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
 /// and deleted when the pod is removed.
-///
+/// 
 /// Use this if:
 /// a) the volume is only needed while the pod runs,
 /// b) features of normal volumes like restoring from snapshot or capacity
@@ -15557,15 +13113,15 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesEmptyDir {
 ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
 ///    information on the connection between this volume type
 ///    and PersistentVolumeClaim).
-///
+/// 
 /// Use PersistentVolumeClaim or one of the vendor-specific
 /// APIs for volumes that persist for longer than the lifecycle
 /// of an individual pod.
-///
+/// 
 /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
 /// be used that way - see the documentation of the driver for
 /// more information.
-///
+/// 
 /// A pod can use both types of ephemeral volumes and
 /// persistent volumes at the same time.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -15577,7 +13133,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesEphemeral {
     /// `<volume name>` is the name from the `PodSpec.Volumes` array
     /// entry. Pod validation will reject the pod if the concatenated name
     /// is not valid for a PVC (for example, too long).
-    ///
+    /// 
     /// An existing PVC with that name that is not owned by the pod
     /// will *not* be used for the pod to avoid using an unrelated
     /// volume by mistake. Starting the pod is then blocked until
@@ -15586,18 +13142,13 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesEphemeral {
     /// owner reference to the pod once the pod exists. Normally
     /// this should not be necessary, but it may be useful when
     /// manually reconstructing a broken cluster.
-    ///
+    /// 
     /// This field is read-only and no changes will be made by Kubernetes
     /// to the PVC after it has been created.
-    ///
+    /// 
     /// Required, must not be nil.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimTemplate"
-    )]
-    pub volume_claim_template:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesEphemeralVolumeClaimTemplate>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
+    pub volume_claim_template: Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesEphemeralVolumeClaimTemplate>,
 }
 
 /// Will be used to create a stand-alone PVC to provision the volume.
@@ -15607,7 +13158,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesEphemeral {
 /// `<volume name>` is the name from the `PodSpec.Volumes` array
 /// entry. Pod validation will reject the pod if the concatenated name
 /// is not valid for a PVC (for example, too long).
-///
+/// 
 /// An existing PVC with that name that is not owned by the pod
 /// will *not* be used for the pod to avoid using an unrelated
 /// volume by mistake. Starting the pod is then blocked until
@@ -15616,10 +13167,10 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesEphemeral {
 /// owner reference to the pod once the pod exists. Normally
 /// this should not be necessary, but it may be useful when
 /// manually reconstructing a broken cluster.
-///
+/// 
 /// This field is read-only and no changes will be made by Kubernetes
 /// to the PVC after it has been created.
-///
+/// 
 /// Required, must not be nil.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesEphemeralVolumeClaimTemplate {
@@ -15627,23 +13178,20 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesEphemeralVolume
     /// when creating it. No other fields are allowed and will be rejected during
     /// validation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<
-        SonataFlowPlatformServicesJobServicePodTemplateVolumesEphemeralVolumeClaimTemplateMetadata,
-    >,
+    pub metadata: Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesEphemeralVolumeClaimTemplateMetadata>,
     /// The specification for the PersistentVolumeClaim. The entire content is
     /// copied unchanged into the PVC that gets created from this
     /// template. The same fields as in a PersistentVolumeClaim
     /// are also valid here.
-    pub spec:
-        SonataFlowPlatformServicesJobServicePodTemplateVolumesEphemeralVolumeClaimTemplateSpec,
+    pub spec: SonataFlowPlatformServicesJobServicePodTemplateVolumesEphemeralVolumeClaimTemplateSpec,
 }
 
 /// May contain labels and annotations that will be copied into the PVC
 /// when creating it. No other fields are allowed and will be rejected during
 /// validation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesEphemeralVolumeClaimTemplateMetadata
-{}
+pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesEphemeralVolumeClaimTemplateMetadata {
+}
 
 /// The specification for the PersistentVolumeClaim. The entire content is
 /// copied unchanged into the PVC that gets created from this
@@ -15736,8 +13284,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesEphemeralVolume
 /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
 /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesEphemeralVolumeClaimTemplateSpecDataSource
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesEphemeralVolumeClaimTemplateSpecDataSource {
     /// APIGroup is the group for the resource being referenced.
     /// If APIGroup is not specified, the specified Kind must be in the core API group.
     /// For any other third-party types, APIGroup is required.
@@ -15773,8 +13320,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesEphemeralVolume
 /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
 /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef {
     /// APIGroup is the group for the resource being referenced.
     /// If APIGroup is not specified, the specified Kind must be in the core API group.
     /// For any other third-party types, APIGroup is required.
@@ -15797,8 +13343,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesEphemeralVolume
 /// status field of the claim.
 /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesEphemeralVolumeClaimTemplateSpecResources
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesEphemeralVolumeClaimTemplateSpecResources {
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -15827,8 +13372,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesEphemeralVolume
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -15858,11 +13402,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesFc {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// targetWWNs is Optional: FC target worldwide names (WWNs)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetWWNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
     pub target_ww_ns: Option<Vec<String>>,
     /// wwids Optional: FC volume world wide identifiers (wwids)
     /// Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
@@ -15894,8 +13434,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesFlexVolume {
     /// contains more than one secret, all secrets are passed to the plugin
     /// scripts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesFlexVolumeSecretRef>,
+    pub secret_ref: Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesFlexVolumeSecretRef>,
 }
 
 /// secretRef is Optional: secretRef is reference to the secret object containing
@@ -15919,18 +13458,10 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesFlexVolumeSecre
 pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesFlocker {
     /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
     /// should be considered as deprecated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
     pub dataset_name: Option<String>,
     /// datasetUUID is the UUID of the dataset. This is unique identifier of a Flocker dataset
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetUUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
     pub dataset_uuid: Option<String>,
 }
 
@@ -16019,11 +13550,11 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesHostPath {
 
 /// image represents an OCI object (a container image or artifact) pulled and mounted on the kubelet's host machine.
 /// The volume is resolved at pod startup depending on which PullPolicy value is provided:
-///
+/// 
 /// - Always: the kubelet always attempts to pull the reference. Container creation will fail If the pull fails.
 /// - Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
 /// - IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
-///
+/// 
 /// The volume gets re-resolved if the pod gets deleted and recreated, which means that new remote content will become available on pod recreation.
 /// A failure to resolve or pull the image during pod startup will block containers from starting and may add significant latency. Failures will be retried using normal volume backoff and will be reported on the pod reason and message.
 /// The types of objects that may be mounted by this volume are defined by the container runtime implementation on a host machine and at minimum must include all valid types supported by the container image field.
@@ -16038,11 +13569,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesImage {
     /// Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
     /// IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
     pub pull_policy: Option<String>,
     /// Required: Image or artifact reference to be used.
     /// Behaves in the same way as pod.spec.containers[*].image.
@@ -16060,18 +13587,10 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesImage {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesIscsi {
     /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthDiscovery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
     /// chapAuthSession defines whether support iSCSI Session CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthSession"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
     pub chap_auth_session: Option<bool>,
     /// fsType is the filesystem type of the volume that you want to mount.
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
@@ -16082,21 +13601,13 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesIscsi {
     /// initiatorName is the custom iSCSI Initiator Name.
     /// If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface
     /// <target portal>:<volume name> will be created for the connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initiatorName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
     pub initiator_name: Option<String>,
     /// iqn is the target iSCSI Qualified Name.
     pub iqn: String,
     /// iscsiInterface is the interface Name that uses an iSCSI transport.
     /// Defaults to 'default' (tcp).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "iscsiInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
     pub iscsi_interface: Option<String>,
     /// lun represents iSCSI Target Lun number.
     pub lun: i32,
@@ -16200,17 +13711,12 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesProjected {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// sources is the list of volume projections. Each entry in this list
     /// handles one source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub sources:
-        Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSources>>,
+    pub sources: Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSources>>,
 }
 
 /// Projection that may be projected along with other supported volume types.
@@ -16219,60 +13725,41 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesProjected {
 pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSources {
     /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
     /// of ClusterTrustBundle objects in an auto-updating file.
-    ///
+    /// 
     /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-    ///
+    /// 
     /// ClusterTrustBundle objects can either be selected by name, or by the
     /// combination of signer name and a label selector.
-    ///
+    /// 
     /// Kubelet performs aggressive normalization of the PEM contents written
     /// into the pod filesystem.  Esoteric PEM features such as inter-block
     /// comments and block headers are stripped.  Certificates are deduplicated.
     /// The ordering of certificates within the file is arbitrary, and Kubelet
     /// may change the order over time.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterTrustBundle"
-    )]
-    pub cluster_trust_bundle: Option<
-        SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSourcesClusterTrustBundle,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSourcesClusterTrustBundle>,
     /// configMap information about the configMap data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSourcesConfigMap>,
+    pub config_map: Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSourcesConfigMap>,
     /// downwardAPI information about the downwardAPI data to project
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
-    pub downward_api:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSourcesDownwardApi>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
+    pub downward_api: Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSourcesDownwardApi>,
     /// secret information about the secret data to project
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSourcesSecret>,
+    pub secret: Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSourcesSecret>,
     /// serviceAccountToken is information about the serviceAccountToken data to project
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountToken"
-    )]
-    pub service_account_token: Option<
-        SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSourcesServiceAccountToken,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
+    pub service_account_token: Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSourcesServiceAccountToken>,
 }
 
 /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
 /// of ClusterTrustBundle objects in an auto-updating file.
-///
+/// 
 /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-///
+/// 
 /// ClusterTrustBundle objects can either be selected by name, or by the
 /// combination of signer name and a label selector.
-///
+/// 
 /// Kubelet performs aggressive normalization of the PEM contents written
 /// into the pod filesystem.  Esoteric PEM features such as inter-block
 /// comments and block headers are stripped.  Certificates are deduplicated.
@@ -16325,8 +13812,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSource
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -16351,9 +13837,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSource
     /// the volume setup will error unless it is marked optional. Paths must be
     /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<
-        Vec<SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSourcesConfigMapItems>,
-    >,
+    pub items: Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSourcesConfigMapItems>>,
     /// Name of the referent.
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
@@ -16391,9 +13875,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSource
 pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSourcesDownwardApi {
     /// Items is a list of DownwardAPIVolume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<
-        Vec<SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSourcesDownwardApiItems>,
-    >,
+    pub items: Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSourcesDownwardApiItems>>,
 }
 
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
@@ -16420,14 +13902,9 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSource
 
 /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSourcesDownwardApiItemsFieldRef
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSourcesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -16437,14 +13914,9 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSource
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSourcesDownwardApiItemsResourceFieldRef
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -16464,9 +13936,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSource
     /// the volume setup will error unless it is marked optional. Paths must be
     /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<
-        Vec<SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSourcesSecretItems>,
-    >,
+    pub items: Option<Vec<SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSourcesSecretItems>>,
     /// Name of the referent.
     /// This field is effectively required, but due to backwards compatibility is
     /// allowed to be empty. Instances of this type with an empty value here are
@@ -16501,8 +13971,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSource
 
 /// serviceAccountToken is information about the serviceAccountToken data to project
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSourcesServiceAccountToken
-{
+pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSourcesServiceAccountToken {
     /// audience is the intended audience of the token. A recipient of a token
     /// must identify itself with an identifier specified in the audience of the
     /// token, and otherwise should reject the token. The audience defaults to the
@@ -16515,11 +13984,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesProjectedSource
     /// start trying to rotate the token if the token is older than 80 percent of
     /// its time to live or if the token is older than 24 hours.Defaults to 1 hour
     /// and must be at least 10 minutes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
     /// path is the path relative to the mount point of the file to project the
     /// token into.
@@ -16624,11 +14089,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesScaleIo {
     /// gateway is the host address of the ScaleIO API Gateway.
     pub gateway: String,
     /// protectionDomain is the name of the ScaleIO Protection Domain for the configured storage.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protectionDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
     pub protection_domain: Option<String>,
     /// readOnly Defaults to false (read/write). ReadOnly here will force
     /// the ReadOnly setting in VolumeMounts.
@@ -16639,36 +14100,20 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesScaleIo {
     #[serde(rename = "secretRef")]
     pub secret_ref: SonataFlowPlatformServicesJobServicePodTemplateVolumesScaleIoSecretRef,
     /// sslEnabled Flag enable/disable SSL communication with Gateway, default false
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
     /// storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned.
     /// Default is ThinProvisioned.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
     pub storage_mode: Option<String>,
     /// storagePool is the ScaleIO Storage Pool associated with the protection domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
     pub storage_pool: Option<String>,
     /// system is the name of the storage system as configured in ScaleIO.
     pub system: String,
     /// volumeName is the name of a volume already created in the ScaleIO system
     /// that is associated with this volume source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -16696,11 +14141,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesSecret {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items If unspecified, each key-value pair in the Data field of the referenced
     /// Secret will be projected into the volume as a file whose name is the
@@ -16716,11 +14157,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesSecret {
     pub optional: Option<bool>,
     /// secretName is the name of the secret in the pod's namespace to use.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -16759,15 +14196,10 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesStorageos {
     /// secretRef specifies the secret to use for obtaining the StorageOS API
     /// credentials.  If not specified, default values will be attempted.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
-    pub secret_ref:
-        Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesStorageosSecretRef>,
+    pub secret_ref: Option<SonataFlowPlatformServicesJobServicePodTemplateVolumesStorageosSecretRef>,
     /// volumeName is the human-readable name of the StorageOS volume.  Volume
     /// names are only unique within a namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
     /// volumeNamespace specifies the scope of the volume within StorageOS.  If no
     /// namespace is specified then the Pod's namespace will be used.  This allows the
@@ -16775,11 +14207,7 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesStorageos {
     /// Set VolumeName to any name to override the default behaviour.
     /// Set to "default" if you are not using namespaces within StorageOS.
     /// Namespaces that do not pre-exist within StorageOS will be created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
     pub volume_namespace: Option<String>,
 }
 
@@ -16805,18 +14233,10 @@ pub struct SonataFlowPlatformServicesJobServicePodTemplateVolumesVsphereVolume {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// storagePolicyID is the storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
     pub storage_policy_id: Option<String>,
     /// storagePolicyName is the storage Policy Based Management (SPBM) profile name.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
     pub storage_policy_name: Option<String>,
     /// volumePath is the path that identifies vSphere volume vmdk
     #[serde(rename = "volumePath")]
@@ -16854,11 +14274,7 @@ pub struct SonataFlowPlatformServicesJobServiceSinkRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Group of the API, without the version of the group. This can be used as an alternative to the APIVersion, and then resolved using ResolveGroup.
     /// Note: This API is EXPERIMENTAL and might break anytime. For more details: https://github.com/knative/eventing/issues/5086
@@ -16908,11 +14324,7 @@ pub struct SonataFlowPlatformServicesJobServiceSourceRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Group of the API, without the version of the group. This can be used as an alternative to the APIVersion, and then resolved using ResolveGroup.
     /// Note: This API is EXPERIMENTAL and might break anytime. For more details: https://github.com/knative/eventing/issues/5086
@@ -16938,11 +14350,7 @@ pub struct SonataFlowPlatformStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cluster: Option<SonataFlowPlatformStatusCluster>,
     /// ClusterPlatformRef information related to the (optional) active SonataFlowClusterPlatform
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterPlatformRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterPlatformRef")]
     pub cluster_platform_ref: Option<SonataFlowPlatformStatusClusterPlatformRef>,
     /// The latest available observations of a resource's current state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -16951,11 +14359,7 @@ pub struct SonataFlowPlatformStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub info: Option<BTreeMap<String, String>>,
     /// The generation observed by the deployment controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// Triggers list of triggers created for the SonataFlowPlatform
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -16981,11 +14385,7 @@ pub struct SonataFlowPlatformStatusClusterPlatformRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// PlatformRef displays which SonataFlowPlatform has been referenced by the active SonataFlowClusterPlatform
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "platformRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "platformRef")]
     pub platform_ref: Option<SonataFlowPlatformStatusClusterPlatformRefPlatformRef>,
     /// Services displays which cluster-wide services are being used by this SonataFlowPlatform
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -17005,18 +14405,10 @@ pub struct SonataFlowPlatformStatusClusterPlatformRefPlatformRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformStatusClusterPlatformRefServices {
     /// DataIndexRef displays information on the cluster-wide Data Index service
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataIndexRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataIndexRef")]
     pub data_index_ref: Option<SonataFlowPlatformStatusClusterPlatformRefServicesDataIndexRef>,
     /// JobServiceRef displays information on the cluster-wide Job Service
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jobServiceRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobServiceRef")]
     pub job_service_ref: Option<SonataFlowPlatformStatusClusterPlatformRefServicesJobServiceRef>,
 }
 
@@ -17040,11 +14432,7 @@ pub struct SonataFlowPlatformStatusClusterPlatformRefServicesJobServiceRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowPlatformStatusConditions {
     /// The last time this condition was updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdateTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdateTime")]
     pub last_update_time: Option<String>,
     /// A human-readable message indicating details about the transition.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -17067,3 +14455,4 @@ pub struct SonataFlowPlatformStatusTriggers {
     /// Namespace of the Trigger
     pub namespace: String,
 }
+

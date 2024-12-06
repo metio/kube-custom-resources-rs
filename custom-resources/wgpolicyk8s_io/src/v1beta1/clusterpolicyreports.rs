@@ -4,10 +4,10 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::api::core::v1::ObjectReference;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::api::core::v1::ObjectReference;
 }
 use self::prelude::*;
 
@@ -20,18 +20,10 @@ pub struct ClusterPolicyReportConfiguration {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPolicyReportConfigurationLimits {
     /// MaxResults is the maximum number of results contained in the report
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxResults"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxResults")]
     pub max_results: Option<i64>,
     /// StatusFilter indicates that the PolicyReport contains only those reports with statuses specified in this list
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusFilter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusFilter")]
     pub status_filter: Option<Vec<String>>,
 }
 
@@ -50,11 +42,7 @@ pub struct ClusterPolicyReportResults {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub properties: Option<BTreeMap<String, String>>,
     /// ResourceSelector is an optional label selector for checked Kubernetes resources. For example, a policy result may apply to all pods that match a label. Either a Subject or a ResourceSelector can be specified. If neither are provided, the result is assumed to be for the policy report scope.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceSelector")]
     pub resource_selector: Option<ClusterPolicyReportResultsResourceSelector>,
     /// Subjects is an optional reference to the checked Kubernetes resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -83,18 +71,10 @@ pub struct ClusterPolicyReportResults {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPolicyReportResultsResourceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ClusterPolicyReportResultsResourceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -153,11 +133,7 @@ pub struct ClusterPolicyReportResultsTimestamp {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPolicyReportScope {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2]. For example, if the object reference is to a container within a pod, this would take on a value like: "spec.containers{name}" (where "name" refers to the name of the container that triggered the event) or if no container name is specified "spec.containers[2]" (container with index 2 in this pod). This syntax is chosen only to have some well-defined way of referencing a part of an object. TODO: this design is not final and this field is subject to change in the future.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldPath")]
@@ -172,11 +148,7 @@ pub struct ClusterPolicyReportScope {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -187,18 +159,10 @@ pub struct ClusterPolicyReportScope {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterPolicyReportScopeSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ClusterPolicyReportScopeSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -233,3 +197,4 @@ pub struct ClusterPolicyReportSummary {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub warn: Option<i64>,
 }
+

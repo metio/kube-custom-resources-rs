@@ -4,39 +4,30 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::api::core::v1::ObjectReference;
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
+    pub use k8s_openapi::api::core::v1::ObjectReference;
 }
 use self::prelude::*;
 
 /// MachineDeploymentSpec defines the desired state of MachineDeployment.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "cluster.x-k8s.io",
-    version = "v1beta1",
-    kind = "MachineDeployment",
-    plural = "machinedeployments"
-)]
+#[kube(group = "cluster.x-k8s.io", version = "v1beta1", kind = "MachineDeployment", plural = "machinedeployments")]
 #[kube(namespaced)]
 #[kube(status = "MachineDeploymentStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct MachineDeploymentSpec {
     /// clusterName is the name of the Cluster this object belongs to.
     #[serde(rename = "clusterName")]
     pub cluster_name: String,
     /// minReadySeconds is the minimum number of seconds for which a Node for a newly created machine should be ready before considering the replica available.
     /// Defaults to 0 (machine will be considered available as soon as the Node is ready)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minReadySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
     /// Indicates that the deployment is paused.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -46,15 +37,11 @@ pub struct MachineDeploymentSpec {
     /// process failed deployments and a condition with a ProgressDeadlineExceeded
     /// reason will be surfaced in the deployment status. Note that progress will
     /// not be estimated during the time a deployment is paused. Defaults to 600s.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "progressDeadlineSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "progressDeadlineSeconds")]
     pub progress_deadline_seconds: Option<i32>,
     /// Number of desired machines.
     /// This is a pointer to distinguish between explicit zero and not specified.
-    ///
+    /// 
     /// Defaults to:
     /// * if the Kubernetes autoscaler min size and max size annotations are set:
     ///   - if it's a new MachineDeployment, use min size
@@ -74,13 +61,9 @@ pub struct MachineDeploymentSpec {
     /// The number of old MachineSets to retain to allow rollback.
     /// This is a pointer to distinguish between explicit zero and not specified.
     /// Defaults to 1.
-    ///
+    /// 
     /// Deprecated: This field is deprecated and is going to be removed in the next apiVersion. Please see https://github.com/kubernetes-sigs/cluster-api/issues/10479 for more details.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "revisionHistoryLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "revisionHistoryLimit")]
     pub revision_history_limit: Option<i32>,
     /// rolloutAfter is a field to indicate a rollout should be performed
     /// after the specified time even if no changes have been made to the
@@ -88,11 +71,7 @@ pub struct MachineDeploymentSpec {
     /// Example: In the YAML the time can be specified in the RFC3339 format.
     /// To specify the rolloutAfter target as March 9, 2023, at 9 am UTC
     /// use "2023-03-09T09:00:00Z".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rolloutAfter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rolloutAfter")]
     pub rollout_after: Option<String>,
     /// Label selector for machines. Existing MachineSets whose machines are
     /// selected by this will be the ones affected by this deployment.
@@ -112,20 +91,12 @@ pub struct MachineDeploymentSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineDeploymentSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<MachineDeploymentSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -156,11 +127,7 @@ pub struct MachineDeploymentStrategy {
     pub remediation: Option<MachineDeploymentStrategyRemediation>,
     /// Rolling update config params. Present only if
     /// MachineDeploymentStrategyType = RollingUpdate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollingUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<MachineDeploymentStrategyRollingUpdate>,
     /// type of deployment. Allowed values are RollingUpdate and OnDelete.
     /// The default is RollingUpdate.
@@ -173,24 +140,20 @@ pub struct MachineDeploymentStrategy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineDeploymentStrategyRemediation {
     /// maxInFlight determines how many in flight remediations should happen at the same time.
-    ///
+    /// 
     /// Remediation only happens on the MachineSet with the most current revision, while
     /// older MachineSets (usually present during rollout operations) aren't allowed to remediate.
-    ///
+    /// 
     /// Note: In general (independent of remediations), unhealthy machines are always
     /// prioritized during scale down operations over healthy ones.
-    ///
+    /// 
     /// MaxInFlight can be set to a fixed number or a percentage.
     /// Example: when this is set to 20%, the MachineSet controller deletes at most 20% of
     /// the desired replicas.
-    ///
+    /// 
     /// If not set, remediation is limited to all machines (bounded by replicas)
     /// under the active MachineSet's management.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxInFlight"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxInFlight")]
     pub max_in_flight: Option<IntOrString>,
 }
 
@@ -201,11 +164,7 @@ pub struct MachineDeploymentStrategyRollingUpdate {
     /// deletePolicy defines the policy used by the MachineDeployment to identify nodes to delete when downscaling.
     /// Valid values are "Random, "Newest", "Oldest"
     /// When no value is supplied, the default DeletePolicy of MachineSet is used
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deletePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletePolicy")]
     pub delete_policy: Option<MachineDeploymentStrategyRollingUpdateDeletePolicy>,
     /// The maximum number of machines that can be scheduled above the
     /// desired number of machines.
@@ -234,11 +193,7 @@ pub struct MachineDeploymentStrategyRollingUpdate {
     /// down further, followed by scaling up the new MachineSet, ensuring
     /// that the total number of machines available at all times
     /// during the update is at least 70% of desired machines.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
 }
 
@@ -302,11 +257,7 @@ pub struct MachineDeploymentTemplateSpec {
     pub cluster_name: String,
     /// failureDomain is the failure domain the machine will be created in.
     /// Must match a key in the FailureDomains map stored on the cluster object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomain")]
     pub failure_domain: Option<String>,
     /// infrastructureRef is a required reference to a custom resource
     /// offered by an infrastructure provider.
@@ -315,28 +266,16 @@ pub struct MachineDeploymentTemplateSpec {
     /// nodeDeletionTimeout defines how long the controller will attempt to delete the Node that the Machine
     /// hosts after the Machine is marked for deletion. A duration of 0 will retry deletion indefinitely.
     /// Defaults to 10 seconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeDeletionTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDeletionTimeout")]
     pub node_deletion_timeout: Option<String>,
     /// nodeDrainTimeout is the total amount of time that the controller will spend on draining a node.
     /// The default value is 0, meaning that the node can be drained without any time limitations.
     /// NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeDrainTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDrainTimeout")]
     pub node_drain_timeout: Option<String>,
     /// nodeVolumeDetachTimeout is the total amount of time that the controller will spend on waiting for all volumes
     /// to be detached. The default value is 0, meaning that the volumes can be detached without any time limitations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeVolumeDetachTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeVolumeDetachTimeout")]
     pub node_volume_detach_timeout: Option<String>,
     /// providerID is the identification ID of the machine provided by the provider.
     /// This field must match the provider ID as seen on the node object corresponding to this machine.
@@ -348,27 +287,19 @@ pub struct MachineDeploymentTemplateSpec {
     /// and then a comparison is done to find out unregistered machines and are marked for delete.
     /// This field will be set by the actuators and consumed by higher level entities like autoscaler that will
     /// be interfacing with cluster-api as generic provider.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "providerID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerID")]
     pub provider_id: Option<String>,
     /// readinessGates specifies additional conditions to include when evaluating Machine Ready condition.
-    ///
+    /// 
     /// This field can be used e.g. by Cluster API control plane providers to extend the semantic of the
     /// Ready condition for the Machine they control, like the kubeadm control provider adding ReadinessGates
     /// for the APIServerPodHealthy, SchedulerPodHealthy conditions, etc.
-    ///
+    /// 
     /// Another example are external controllers, e.g. responsible to install special software/hardware on the Machines;
     /// they can include the status of those components with a new condition and add this condition to ReadinessGates.
-    ///
+    /// 
     /// NOTE: this field is considered only for computing v1beta2 conditions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessGates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessGates")]
     pub readiness_gates: Option<Vec<MachineDeploymentTemplateSpecReadinessGates>>,
     /// version defines the desired Kubernetes version.
     /// This field is meant to be optionally used by bootstrap providers.
@@ -388,11 +319,7 @@ pub struct MachineDeploymentTemplateSpecBootstrap {
     pub config_ref: Option<ObjectReference>,
     /// dataSecretName is the name of the secret that stores the bootstrap data script.
     /// If nil, the Machine should remain in the Pending state.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSecretName")]
     pub data_secret_name: Option<String>,
 }
 
@@ -403,11 +330,7 @@ pub struct MachineDeploymentTemplateSpecBootstrap {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineDeploymentTemplateSpecBootstrapConfigRef {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -432,11 +355,7 @@ pub struct MachineDeploymentTemplateSpecBootstrapConfigRef {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -449,11 +368,7 @@ pub struct MachineDeploymentTemplateSpecBootstrapConfigRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineDeploymentTemplateSpecInfrastructureRef {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -478,11 +393,7 @@ pub struct MachineDeploymentTemplateSpecInfrastructureRef {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -505,31 +416,19 @@ pub struct MachineDeploymentTemplateSpecReadinessGates {
 pub struct MachineDeploymentStatus {
     /// Total number of available machines (ready for at least minReadySeconds)
     /// targeted by this deployment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availableReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableReplicas")]
     pub available_replicas: Option<i32>,
     /// conditions defines current service state of the MachineDeployment.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The generation observed by the deployment controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// phase represents the current phase of a MachineDeployment (ScalingUp, ScalingDown, Running, Failed, or Unknown).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
     /// Total number of ready machines targeted by this deployment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readyReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]
     pub ready_replicas: Option<i32>,
     /// Total number of non-terminated machines targeted by this deployment
     /// (their labels match the selector).
@@ -545,19 +444,11 @@ pub struct MachineDeploymentStatus {
     /// the deployment to have 100% available capacity. They may either
     /// be machines that are running but not yet available or machines
     /// that still have not been created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unavailableReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unavailableReplicas")]
     pub unavailable_replicas: Option<i32>,
     /// Total number of non-terminated machines targeted by this deployment
     /// that have the desired template spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updatedReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatedReplicas")]
     pub updated_replicas: Option<i32>,
     /// v1beta2 groups all the fields that will be added or modified in MachineDeployment's status with the V1Beta2 version.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -568,28 +459,17 @@ pub struct MachineDeploymentStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineDeploymentStatusV1beta2 {
     /// availableReplicas is the number of available replicas for this MachineDeployment. A machine is considered available when Machine's Available condition is true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availableReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableReplicas")]
     pub available_replicas: Option<i32>,
     /// conditions represents the observations of a MachineDeployment's current state.
     /// Known condition types are Available, MachinesReady, MachinesUpToDate, ScalingUp, ScalingDown, Remediating, Deleting, Paused.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// readyReplicas is the number of ready replicas for this MachineDeployment. A machine is considered ready when Machine's Ready condition is true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readyReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]
     pub ready_replicas: Option<i32>,
     /// upToDateReplicas is the number of up-to-date replicas targeted by this deployment. A machine is considered up-to-date when Machine's UpToDate condition is true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "upToDateReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upToDateReplicas")]
     pub up_to_date_replicas: Option<i32>,
 }
+

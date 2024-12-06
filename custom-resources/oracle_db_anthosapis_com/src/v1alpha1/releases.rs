@@ -5,26 +5,23 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// ReleaseSpec defines the desired state of Release.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "oracle.db.anthosapis.com",
-    version = "v1alpha1",
-    kind = "Release",
-    plural = "releases"
-)]
+#[kube(group = "oracle.db.anthosapis.com", version = "v1alpha1", kind = "Release", plural = "releases")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ReleaseSpec {
     pub version: String,
 }
 
 /// ReleaseStatus defines the observed state of Release.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReleaseStatus {}
+pub struct ReleaseStatus {
+}
+

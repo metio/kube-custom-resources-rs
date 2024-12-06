@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// OIDCConnector resource definition v3 from Teleport
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "resources.teleport.dev",
-    version = "v3",
-    kind = "TeleportOIDCConnector",
-    plural = "teleportoidcconnectors"
-)]
+#[kube(group = "resources.teleport.dev", version = "v3", kind = "TeleportOIDCConnector", plural = "teleportoidcconnectors")]
 #[kube(namespaced)]
 #[kube(status = "TeleportOIDCConnectorStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TeleportOIDCConnectorSpec {
     /// ACR is an Authentication Context Class Reference value. The meaning of the ACR value is context-specific and varies for identity providers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -133,10 +128,7 @@ pub struct TeleportOIDCConnectorStatus {
     /// Conditions represent the latest available observations of an object's state
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "teleportResourceID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "teleportResourceID")]
     pub teleport_resource_id: Option<i64>,
 }
+

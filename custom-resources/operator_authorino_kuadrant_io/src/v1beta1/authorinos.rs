@@ -4,55 +4,34 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// AuthorinoSpec defines the desired state of Authorino
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "operator.authorino.kuadrant.io",
-    version = "v1beta1",
-    kind = "Authorino",
-    plural = "authorinos"
-)]
+#[kube(group = "operator.authorino.kuadrant.io", version = "v1beta1", kind = "Authorino", plural = "authorinos")]
 #[kube(namespaced)]
 #[kube(status = "AuthorinoStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct AuthorinoSpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authConfigLabelSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authConfigLabelSelectors")]
     pub auth_config_label_selectors: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterWide"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterWide")]
     pub cluster_wide: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "evaluatorCacheSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evaluatorCacheSize")]
     pub evaluator_cache_size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub healthz: Option<AuthorinoHealthz>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// PullPolicy describes a policy for if/when to pull a container image
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     pub listener: AuthorinoListener,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
@@ -65,17 +44,9 @@ pub struct AuthorinoSpec {
     pub oidc_server: AuthorinoOidcServer,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretLabelSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretLabelSelectors")]
     pub secret_label_selectors: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supersedingHostSubsets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supersedingHostSubsets")]
     pub superseding_host_subsets: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tracing: Option<AuthorinoTracing>,
@@ -93,11 +64,7 @@ pub struct AuthorinoHealthz {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AuthorinoListener {
     /// Maximum payload (request body) size for the auth service (HTTP interface), in bytes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxHttpRequestBodySize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxHttpRequestBodySize")]
     pub max_http_request_body_size: Option<i64>,
     /// Port number of the GRPC interface.
     /// DEPRECATED: use 'ports.grpc' instead.
@@ -127,11 +94,7 @@ pub struct AuthorinoListenerPorts {
 pub struct AuthorinoListenerTls {
     /// LocalObjectReference contains enough information to let you locate the
     /// referenced object inside the same namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certSecretRef")]
     pub cert_secret_ref: Option<AuthorinoListenerTlsCertSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
@@ -167,11 +130,7 @@ pub struct AuthorinoOidcServer {
 pub struct AuthorinoOidcServerTls {
     /// LocalObjectReference contains enough information to let you locate the
     /// referenced object inside the same namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certSecretRef")]
     pub cert_secret_ref: Option<AuthorinoOidcServerTlsCertSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
@@ -200,11 +159,7 @@ pub struct AuthorinoTracing {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AuthorinoVolumes {
     /// Permissions mode.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub items: Option<Vec<AuthorinoVolumesItems>>,
@@ -213,11 +168,7 @@ pub struct AuthorinoVolumes {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AuthorinoVolumesItems {
     /// Allow multiple configmaps to mount to the same directory
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMaps"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMaps")]
     pub config_maps: Option<Vec<String>>,
     /// Mount details
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -261,3 +212,4 @@ pub struct AuthorinoStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ManagedZoneSpec defines the desired state of ManagedZone
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kuadrant.io",
-    version = "v1alpha1",
-    kind = "ManagedZone",
-    plural = "managedzones"
-)]
+#[kube(group = "kuadrant.io", version = "v1alpha1", kind = "ManagedZone", plural = "managedzones")]
 #[kube(namespaced)]
 #[kube(status = "ManagedZoneStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ManagedZoneSpec {
     /// description for this ManagedZone
     pub description: String,
@@ -36,11 +31,7 @@ pub struct ManagedZoneSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// parentManagedZone reference to another managed zone that this managed zone belongs to.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "parentManagedZone"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentManagedZone")]
     pub parent_managed_zone: Option<ManagedZoneParentManagedZone>,
 }
 
@@ -69,24 +60,13 @@ pub struct ManagedZoneStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// The NameServers assigned by the provider for this zone (i.e. route53.DelegationSet.NameServers)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nameServers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nameServers")]
     pub name_servers: Option<Vec<String>>,
     /// observedGeneration is the most recently observed generation of the ManagedZone.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// The number of records in the provider zone
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recordCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recordCount")]
     pub record_count: Option<i64>,
 }
+

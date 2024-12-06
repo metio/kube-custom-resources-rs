@@ -4,38 +4,29 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// LimitadorSpec defines the desired state of Limitador
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "limitador.kuadrant.io",
-    version = "v1alpha1",
-    kind = "Limitador",
-    plural = "limitadors"
-)]
+#[kube(group = "limitador.kuadrant.io", version = "v1alpha1", kind = "Limitador", plural = "limitadors")]
 #[kube(namespaced)]
 #[kube(status = "LimitadorStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct LimitadorSpec {
     /// Affinity is a group of affinity scheduling rules.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<LimitadorAffinity>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<LimitadorImagePullSecrets>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<Vec<LimitadorLimits>>,
@@ -44,20 +35,12 @@ pub struct LimitadorSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pdb: Option<LimitadorPdb>,
     /// RateLimitHeadersType defines the valid options for the --rate-limit-headers arg
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rateLimitHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rateLimitHeaders")]
     pub rate_limit_headers: Option<LimitadorRateLimitHeaders>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i64>,
     /// ResourceRequirements describes the compute resource requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceRequirements"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceRequirements")]
     pub resource_requirements: Option<LimitadorResourceRequirements>,
     /// Storage contains the options for Limitador counters database or in-memory data storage
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -80,25 +63,13 @@ pub struct LimitadorSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LimitadorAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<LimitadorAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<LimitadorAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<LimitadorAffinityPodAntiAffinity>,
 }
 
@@ -114,25 +85,15 @@ pub struct LimitadorAffinityNodeAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node matches the corresponding matchExpressions; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution:
-        Option<Vec<LimitadorAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<LimitadorAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
     /// at some point during pod execution (e.g. due to an update), the system
     /// may or may not try to eventually evict the pod from its node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<LimitadorAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<LimitadorAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
 /// An empty preferred scheduling term matches all objects with implicit weight 0
@@ -140,8 +101,7 @@ pub struct LimitadorAffinityNodeAffinity {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LimitadorAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// A node selector term, associated with the corresponding weight.
-    pub preference:
-        LimitadorAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
+    pub preference: LimitadorAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
     /// Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.
     pub weight: i32,
 }
@@ -160,8 +120,7 @@ pub struct LimitadorAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringEx
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LimitadorAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct LimitadorAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -179,8 +138,7 @@ pub struct LimitadorAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringEx
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LimitadorAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct LimitadorAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -223,8 +181,7 @@ pub struct LimitadorAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExe
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LimitadorAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct LimitadorAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -242,8 +199,7 @@ pub struct LimitadorAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExe
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LimitadorAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct LimitadorAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -270,13 +226,8 @@ pub struct LimitadorAffinityPodAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution:
-        Option<Vec<LimitadorAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<LimitadorAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
@@ -284,13 +235,8 @@ pub struct LimitadorAffinityPodAffinity {
     /// system may or may not try to eventually evict the pod from its node.
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<Vec<LimitadorAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<LimitadorAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -298,8 +244,7 @@ pub struct LimitadorAffinityPodAffinity {
 pub struct LimitadorAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// Required. A pod affinity term, associated with the corresponding weight.
     #[serde(rename = "podAffinityTerm")]
-    pub pod_affinity_term:
-        LimitadorAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
+    pub pod_affinity_term: LimitadorAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTerm,
     /// weight associated with matching the corresponding podAffinityTerm,
     /// in the range 1-100.
     pub weight: i32,
@@ -349,8 +294,7 @@ pub struct LimitadorAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExe
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LimitadorAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct LimitadorAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -384,8 +328,7 @@ pub struct LimitadorAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExe
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LimitadorAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct LimitadorAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -408,27 +351,15 @@ pub struct LimitadorAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExe
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LimitadorAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecution {
     /// A label query over a set of resources, in this case pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector: Option<
-        LimitadorAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<LimitadorAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelector>,
     /// A label query over the set of namespaces that the term applies to.
     /// The term is applied to the union of the namespaces selected by this field
     /// and the ones listed in the namespaces field.
     /// null selector and null or empty namespaces list means "this pod's namespace".
     /// An empty selector ({}) matches all namespaces.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceSelector"
-    )]
-    pub namespace_selector: Option<
-        LimitadorAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
+    pub namespace_selector: Option<LimitadorAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelector>,
     /// namespaces specifies a static list of namespace names that the term applies to.
     /// The term is applied to the union of the namespaces listed in this field
     /// and the ones selected by namespaceSelector.
@@ -460,8 +391,7 @@ pub struct LimitadorAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExec
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LimitadorAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct LimitadorAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -495,8 +425,7 @@ pub struct LimitadorAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExec
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LimitadorAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct LimitadorAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -522,14 +451,8 @@ pub struct LimitadorAffinityPodAntiAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node has pods which matches the corresponding podAffinityTerm; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<LimitadorAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<LimitadorAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the anti-affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the anti-affinity requirements specified by this field cease to be met
@@ -537,13 +460,8 @@ pub struct LimitadorAffinityPodAntiAffinity {
     /// system may or may not try to eventually evict the pod from its node.
     /// When there are multiple elements, the lists of nodes corresponding to each
     /// podAffinityTerm are intersected, i.e. all terms must be satisfied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<Vec<LimitadorAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<Vec<LimitadorAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecution>>,
 }
 
 /// The weights of all of the matched WeightedPodAffinityTerm fields are added per-node to find the most preferred node(s)
@@ -601,8 +519,7 @@ pub struct LimitadorAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDurin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LimitadorAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct LimitadorAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -636,8 +553,7 @@ pub struct LimitadorAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDurin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LimitadorAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct LimitadorAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -700,8 +616,7 @@ pub struct LimitadorAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuring
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LimitadorAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct LimitadorAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -735,8 +650,7 @@ pub struct LimitadorAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuring
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct LimitadorAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct LimitadorAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -799,21 +713,13 @@ pub struct LimitadorPdb {
     /// are unavailable after the eviction, i.e. even in absence of
     /// the evicted pod. For example, one can prevent all voluntary evictions
     /// by specifying 0. This is a mutually exclusive setting with "minAvailable".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
     /// An eviction is allowed if at least "minAvailable" limitador pods will
     /// still be available after the eviction, i.e. even in the absence of
     /// the evicted pod.  So for example you can prevent all voluntary
     /// evictions by specifying "100%".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minAvailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minAvailable")]
     pub min_available: Option<IntOrString>,
 }
 
@@ -831,12 +737,12 @@ pub enum LimitadorRateLimitHeaders {
 pub struct LimitadorResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<LimitadorResourceRequirementsClaims>>,
@@ -868,11 +774,7 @@ pub struct LimitadorStorage {
     pub disk: Option<LimitadorStorageDisk>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub redis: Option<LimitadorStorageRedis>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redis-cached"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redis-cached")]
     pub redis_cached: Option<LimitadorStorageRedisCached>,
 }
 
@@ -881,11 +783,7 @@ pub struct LimitadorStorageDisk {
     /// DiskOptimizeType defines the valid options for "optimize" option of the disk persistence type
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optimize: Option<LimitadorStorageDiskOptimize>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<LimitadorStorageDiskPersistentVolumeClaim>,
 }
 
@@ -903,18 +801,10 @@ pub struct LimitadorStorageDiskPersistentVolumeClaim {
     /// Ignored when VolumeName field is set
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<LimitadorStorageDiskPersistentVolumeClaimResources>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// VolumeName is the binding reference to the PersistentVolume backing this claim.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -932,11 +822,7 @@ pub struct LimitadorStorageDiskPersistentVolumeClaimResources {
 pub struct LimitadorStorageRedis {
     /// LocalObjectReference contains enough information to let you locate the
     /// referenced object inside the same namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configSecretRef")]
     pub config_secret_ref: Option<LimitadorStorageRedisConfigSecretRef>,
 }
 
@@ -955,11 +841,7 @@ pub struct LimitadorStorageRedisConfigSecretRef {
 pub struct LimitadorStorageRedisCached {
     /// LocalObjectReference contains enough information to let you locate the
     /// referenced object inside the same namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configSecretRef")]
     pub config_secret_ref: Option<LimitadorStorageRedisCachedConfigSecretRef>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub options: Option<LimitadorStorageRedisCachedOptions>,
@@ -979,32 +861,16 @@ pub struct LimitadorStorageRedisCachedConfigSecretRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct LimitadorStorageRedisCachedOptions {
     /// BatchSize defines the size of entries to flush in as single flush [default: 100]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batch-size"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batch-size")]
     pub batch_size: Option<i64>,
     /// FlushPeriod for counters in milliseconds [default: 1000]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flush-period"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flush-period")]
     pub flush_period: Option<i64>,
     /// MaxCached refers to the maximum amount of counters cached [default: 10000]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "max-cached"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "max-cached")]
     pub max_cached: Option<i64>,
     /// ResponseTimeout defines the timeout for Redis commands in milliseconds [default: 350]
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "response-timeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "response-timeout")]
     pub response_timeout: Option<i64>,
 }
 
@@ -1030,11 +896,7 @@ pub struct LimitadorStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// ObservedGeneration reflects the generation of the most recently observed spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// Service provides information about the service exposing limitador API
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1057,3 +919,4 @@ pub struct LimitadorStatusServicePorts {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<i32>,
 }
+

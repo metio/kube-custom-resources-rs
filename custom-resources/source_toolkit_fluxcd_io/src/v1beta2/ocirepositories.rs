@@ -4,47 +4,38 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// OCIRepositorySpec defines the desired state of OCIRepository
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "source.toolkit.fluxcd.io",
-    version = "v1beta2",
-    kind = "OCIRepository",
-    plural = "ocirepositories"
-)]
+#[kube(group = "source.toolkit.fluxcd.io", version = "v1beta2", kind = "OCIRepository", plural = "ocirepositories")]
 #[kube(namespaced)]
 #[kube(status = "OCIRepositoryStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct OCIRepositorySpec {
     /// CertSecretRef can be given the name of a Secret containing
     /// either or both of
-    ///
+    /// 
     /// - a PEM-encoded client certificate (`tls.crt`) and private
     /// key (`tls.key`);
     /// - a PEM-encoded CA certificate (`ca.crt`)
-    ///
+    /// 
     /// and whichever are supplied, will be used for connecting to the
     /// registry. The client cert and key are useful if you are
     /// authenticating with a certificate; the CA cert is useful if
     /// you are using a self-signed server certificate. The Secret must
     /// be of type `Opaque` or `kubernetes.io/tls`.
-    ///
+    /// 
     /// Note: Support for the `caFile`, `certFile` and `keyFile` keys have
     /// been deprecated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certSecretRef")]
     pub cert_secret_ref: Option<OCIRepositoryCertSecretRef>,
     /// Ignore overrides the set of excluded patterns in the .sourceignore format
     /// (which is the same as .gitignore). If not provided, a default will be used,
@@ -60,11 +51,7 @@ pub struct OCIRepositorySpec {
     pub interval: String,
     /// LayerSelector specifies which layer should be extracted from the OCI artifact.
     /// When not specified, the first layer found in the artifact is selected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "layerSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "layerSelector")]
     pub layer_selector: Option<OCIRepositoryLayerSelector>,
     /// The provider used for authentication, can be 'aws', 'azure', 'gcp' or 'generic'.
     /// When not specified, defaults to 'generic'.
@@ -72,11 +59,7 @@ pub struct OCIRepositorySpec {
     pub provider: Option<OCIRepositoryProvider>,
     /// ProxySecretRef specifies the Secret containing the proxy configuration
     /// to use while communicating with the container registry.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxySecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxySecretRef")]
     pub proxy_secret_ref: Option<OCIRepositoryProxySecretRef>,
     /// The OCI reference to pull and monitor for changes,
     /// defaults to the latest tag.
@@ -90,11 +73,7 @@ pub struct OCIRepositorySpec {
     /// ServiceAccountName is the name of the Kubernetes ServiceAccount used to authenticate
     /// the image pull if the service account has attached pull secrets. For more information:
     /// https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#add-imagepullsecrets-to-a-service-account
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
     /// This flag tells the controller to suspend the reconciliation of this source.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -114,17 +93,17 @@ pub struct OCIRepositorySpec {
 
 /// CertSecretRef can be given the name of a Secret containing
 /// either or both of
-///
+/// 
 /// - a PEM-encoded client certificate (`tls.crt`) and private
 /// key (`tls.key`);
 /// - a PEM-encoded CA certificate (`ca.crt`)
-///
+/// 
 /// and whichever are supplied, will be used for connecting to the
 /// registry. The client cert and key are useful if you are
 /// authenticating with a certificate; the CA cert is useful if
 /// you are using a self-signed server certificate. The Secret must
 /// be of type `Opaque` or `kubernetes.io/tls`.
-///
+/// 
 /// Note: Support for the `caFile`, `certFile` and `keyFile` keys have
 /// been deprecated.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -194,11 +173,7 @@ pub struct OCIRepositoryRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub semver: Option<String>,
     /// SemverFilter is a regex pattern to filter the tags within the SemVer range.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "semverFilter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "semverFilter")]
     pub semver_filter: Option<String>,
     /// Tag is the image tag to pull, defaults to latest.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -223,11 +198,7 @@ pub struct OCIRepositoryVerify {
     /// while verifying an OCI artifact which was signed using Cosign keyless
     /// signing. The artifact's identity is deemed to be verified if any of the
     /// specified matchers match against the identity.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchOIDCIdentity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchOIDCIdentity")]
     pub match_oidc_identity: Option<Vec<OCIRepositoryVerifyMatchOidcIdentity>>,
     /// Provider specifies the technology used to sign the OCI Artifact.
     pub provider: OCIRepositoryVerifyProvider,
@@ -287,46 +258,26 @@ pub struct OCIRepositoryStatus {
     /// be used to determine if the content configuration has changed and the
     /// artifact needs to be rebuilt.
     /// It has the format of `<algo>:<checksum>`, for example: `sha256:<checksum>`.
-    ///
+    /// 
     /// Deprecated: Replaced with explicit fields for observed artifact content
     /// config in the status.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentConfigChecksum"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentConfigChecksum")]
     pub content_config_checksum: Option<String>,
     /// LastHandledReconcileAt holds the value of the most recent
     /// reconcile request value, so a change of the annotation value
     /// can be detected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastHandledReconcileAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastHandledReconcileAt")]
     pub last_handled_reconcile_at: Option<String>,
     /// ObservedGeneration is the last observed generation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// ObservedIgnore is the observed exclusion patterns used for constructing
     /// the source artifact.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedIgnore"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedIgnore")]
     pub observed_ignore: Option<String>,
     /// ObservedLayerSelector is the observed layer selector used for constructing
     /// the source artifact.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedLayerSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedLayerSelector")]
     pub observed_layer_selector: Option<OCIRepositoryStatusObservedLayerSelector>,
     /// URL is the download link for the artifact output of the last OCI Repository sync.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -388,3 +339,4 @@ pub enum OCIRepositoryStatusObservedLayerSelectorOperation {
     #[serde(rename = "copy")]
     Copy,
 }
+

@@ -4,34 +4,25 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// StorageOSClusterSpec defines the desired state of StorageOSCluster
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "storageos.com",
-    version = "v1",
-    kind = "StorageOSCluster",
-    plural = "storageosclusters"
-)]
+#[kube(group = "storageos.com", version = "v1", kind = "StorageOSCluster", plural = "storageosclusters")]
 #[kube(namespaced)]
 #[kube(status = "StorageOSClusterStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct StorageOSClusterSpec {
     /// ContainerResources is to set the resource requirements of each individual container managed by the operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerResources")]
     pub container_resources: Option<StorageOSClusterContainerResources>,
     /// CSI defines the configurations for CSI.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -40,55 +31,31 @@ pub struct StorageOSClusterSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub debug: Option<bool>,
     /// Disable StorageOS CLI deployment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableCLI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableCLI")]
     pub disable_cli: Option<bool>,
-    /// Disable Pod Fencing.  With StatefulSets, Pods are only re-scheduled if the Pod has been marked as killed.  In practice this means that failover of a StatefulSet pod is a manual operation.
-    ///  By enabling Pod Fencing and setting the `storageos.com/fenced=true` label on a Pod, StorageOS will enable automated Pod failover (by killing the application Pod on the failed node) if the following conditions exist:
-    ///  - Pod fencing has not been explicitly disabled. - StorageOS has determined that the node the Pod is running on is offline.  StorageOS uses Gossip and TCP checks and will retry for 30 seconds.  At this point all volumes on the failed node are marked offline (irrespective of whether fencing is enabled) and volume failover starts. - The Pod has the label `storageos.com/fenced=true` set. - The Pod has at least one StorageOS volume attached. - Each StorageOS volume has at least 1 healthy replica.
+    /// Disable Pod Fencing.  With StatefulSets, Pods are only re-scheduled if the Pod has been marked as killed.  In practice this means that failover of a StatefulSet pod is a manual operation. 
+    ///  By enabling Pod Fencing and setting the `storageos.com/fenced=true` label on a Pod, StorageOS will enable automated Pod failover (by killing the application Pod on the failed node) if the following conditions exist: 
+    ///  - Pod fencing has not been explicitly disabled. - StorageOS has determined that the node the Pod is running on is offline.  StorageOS uses Gossip and TCP checks and will retry for 30 seconds.  At this point all volumes on the failed node are marked offline (irrespective of whether fencing is enabled) and volume failover starts. - The Pod has the label `storageos.com/fenced=true` set. - The Pod has at least one StorageOS volume attached. - Each StorageOS volume has at least 1 healthy replica. 
     ///  When Pod Fencing is disabled, StorageOS will not perform any interaction with Kubernetes when it detects that a node has gone offline. Additionally, the Kubernetes permissions required for Fencing will not be added to the StorageOS role. Deprecated: Not used any more, fencing is enabled/disabled by storageos.com/fenced label on pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableFencing"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableFencing")]
     pub disable_fencing: Option<bool>,
     /// Disable StorageOS scheduler extender.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableScheduler"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableScheduler")]
     pub disable_scheduler: Option<bool>,
-    /// Disable TCMU can be set to true to disable the TCMU storage driver.  This is required when there are multiple storage systems running on the same node and you wish to avoid conflicts.  Only one TCMU-based storage system can run on a node at a time.
+    /// Disable TCMU can be set to true to disable the TCMU storage driver.  This is required when there are multiple storage systems running on the same node and you wish to avoid conflicts.  Only one TCMU-based storage system can run on a node at a time. 
     ///  Disabling TCMU will degrade performance. Deprecated: Not used any more.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableTCMU"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableTCMU")]
     pub disable_tcmu: Option<bool>,
     /// Disable Telemetry.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableTelemetry"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableTelemetry")]
     pub disable_telemetry: Option<bool>,
     /// EnablePortalManager enables Portal Manager.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enablePortalManager"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enablePortalManager")]
     pub enable_portal_manager: Option<bool>,
     /// Environment contains environment variables that are passed to StorageOS.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub environment: Option<BTreeMap<String, String>>,
-    /// Force TCMU can be set to true to ensure that TCMU is enabled or cause StorageOS to abort startup.
+    /// Force TCMU can be set to true to ensure that TCMU is enabled or cause StorageOS to abort startup. 
     ///  At startup, StorageOS will automatically fallback to non-TCMU mode if another TCMU-based storage system is running on the node.  Since non-TCMU will degrade performance, this may not always be desired. Deprecated: Not used any more.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceTCMU")]
     pub force_tcmu: Option<bool>,
@@ -101,7 +68,7 @@ pub struct StorageOSClusterSpec {
     /// Join is the join token used for service discovery. Deprecated: Not used any more.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub join: Option<String>,
-    /// K8sDistro is the name of the Kubernetes distribution where the operator is being deployed.  It should be in the format: `name[-1.0]`, where the version is optional and should only be appended if known.  Suitable names include: `openshift`, `rancher`, `aks`, `gke`, `eks`, or the deployment method if using upstream directly, e.g `minishift` or `kubeadm`.
+    /// K8sDistro is the name of the Kubernetes distribution where the operator is being deployed.  It should be in the format: `name[-1.0]`, where the version is optional and should only be appended if known.  Suitable names include: `openshift`, `rancher`, `aks`, `gke`, `eks`, or the deployment method if using upstream directly, e.g `minishift` or `kubeadm`. 
     ///  Setting k8sDistro is optional, and will be used to simplify cluster configuration by setting appropriate defaults for the distribution.  The distribution information will also be included in the product telemetry (if enabled), to help focus development efforts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "k8sDistro")]
     pub k8s_distro: Option<String>,
@@ -115,18 +82,10 @@ pub struct StorageOSClusterSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// Node manager feature list with optional configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeManagerFeatures"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeManagerFeatures")]
     pub node_manager_features: Option<BTreeMap<String, String>>,
     /// NodeSelectorTerms is to set the placement of storageos pods using node affinity requiredDuringSchedulingIgnoredDuringExecution.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelectorTerms"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelectorTerms")]
     pub node_selector_terms: Option<Vec<StorageOSClusterNodeSelectorTerms>>,
     /// Pause is to pause the operator for the cluster. Deprecated: Not used any more, operator is always running.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -138,11 +97,7 @@ pub struct StorageOSClusterSpec {
     #[serde(rename = "secretRefName")]
     pub secret_ref_name: String,
     /// SecretRefNamespace is the namespace of the secret reference. Deprecated: StorageOS uses namespace of storageosclusters.storageos.com resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretRefNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRefNamespace")]
     pub secret_ref_namespace: Option<String>,
     /// Service is the Service configuration for the cluster nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -154,25 +109,13 @@ pub struct StorageOSClusterSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub snapshots: Option<StorageOSClusterSnapshots>,
     /// StorageClassName is the name of default StorageClass created for StorageOS volumes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// TLSEtcdSecretRefName is the name of the secret object that contains the etcd TLS certs. This secret is shared with etcd, therefore it's not part of the main storageos secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsEtcdSecretRefName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsEtcdSecretRefName")]
     pub tls_etcd_secret_ref_name: Option<String>,
     /// TLSEtcdSecretRefNamespace is the namespace of the etcd TLS secret object. Deprecated: StorageOS uses namespace of storageosclusters.storageos.com resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsEtcdSecretRefNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsEtcdSecretRefNamespace")]
     pub tls_etcd_secret_ref_namespace: Option<String>,
     /// Tolerations is to set the placement of storageos pods using pod toleration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -183,118 +126,50 @@ pub struct StorageOSClusterSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StorageOSClusterContainerResources {
     /// ResourceRequirements describes the compute resource requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiManagerContainer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiManagerContainer")]
     pub api_manager_container: Option<StorageOSClusterContainerResourcesApiManagerContainer>,
     /// ResourceRequirements describes the compute resource requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cliContainer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cliContainer")]
     pub cli_container: Option<StorageOSClusterContainerResourcesCliContainer>,
     /// ResourceRequirements describes the compute resource requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "csiExternalAttacherContainer"
-    )]
-    pub csi_external_attacher_container:
-        Option<StorageOSClusterContainerResourcesCsiExternalAttacherContainer>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "csiExternalAttacherContainer")]
+    pub csi_external_attacher_container: Option<StorageOSClusterContainerResourcesCsiExternalAttacherContainer>,
     /// ResourceRequirements describes the compute resource requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "csiExternalProvisionerContainer"
-    )]
-    pub csi_external_provisioner_container:
-        Option<StorageOSClusterContainerResourcesCsiExternalProvisionerContainer>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "csiExternalProvisionerContainer")]
+    pub csi_external_provisioner_container: Option<StorageOSClusterContainerResourcesCsiExternalProvisionerContainer>,
     /// ResourceRequirements describes the compute resource requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "csiExternalResizerContainer"
-    )]
-    pub csi_external_resizer_container:
-        Option<StorageOSClusterContainerResourcesCsiExternalResizerContainer>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "csiExternalResizerContainer")]
+    pub csi_external_resizer_container: Option<StorageOSClusterContainerResourcesCsiExternalResizerContainer>,
     /// ResourceRequirements describes the compute resource requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "csiExternalSnapshotterContainer"
-    )]
-    pub csi_external_snapshotter_container:
-        Option<StorageOSClusterContainerResourcesCsiExternalSnapshotterContainer>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "csiExternalSnapshotterContainer")]
+    pub csi_external_snapshotter_container: Option<StorageOSClusterContainerResourcesCsiExternalSnapshotterContainer>,
     /// ResourceRequirements describes the compute resource requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "csiLivenessProbeContainer"
-    )]
-    pub csi_liveness_probe_container:
-        Option<StorageOSClusterContainerResourcesCsiLivenessProbeContainer>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "csiLivenessProbeContainer")]
+    pub csi_liveness_probe_container: Option<StorageOSClusterContainerResourcesCsiLivenessProbeContainer>,
     /// ResourceRequirements describes the compute resource requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "csiNodeDriverRegistrarContainer"
-    )]
-    pub csi_node_driver_registrar_container:
-        Option<StorageOSClusterContainerResourcesCsiNodeDriverRegistrarContainer>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "csiNodeDriverRegistrarContainer")]
+    pub csi_node_driver_registrar_container: Option<StorageOSClusterContainerResourcesCsiNodeDriverRegistrarContainer>,
     /// ResourceRequirements describes the compute resource requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainer")]
     pub init_container: Option<StorageOSClusterContainerResourcesInitContainer>,
     /// ResourceRequirements describes the compute resource requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubeSchedulerContainer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeSchedulerContainer")]
     pub kube_scheduler_container: Option<StorageOSClusterContainerResourcesKubeSchedulerContainer>,
     /// ResourceRequirements describes the compute resource requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricsExporterContainer"
-    )]
-    pub metrics_exporter_container:
-        Option<StorageOSClusterContainerResourcesMetricsExporterContainer>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsExporterContainer")]
+    pub metrics_exporter_container: Option<StorageOSClusterContainerResourcesMetricsExporterContainer>,
     /// ResourceRequirements describes the compute resource requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeContainer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeContainer")]
     pub node_container: Option<StorageOSClusterContainerResourcesNodeContainer>,
     /// ResourceRequirements describes the compute resource requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeManagerContainer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeManagerContainer")]
     pub node_manager_container: Option<StorageOSClusterContainerResourcesNodeManagerContainer>,
     /// ResourceRequirements describes the compute resource requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portalManagerContainer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portalManagerContainer")]
     pub portal_manager_container: Option<StorageOSClusterContainerResourcesPortalManagerContainer>,
     /// ResourceRequirements describes the compute resource requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotControllerContainer"
-    )]
-    pub snapshot_controller_container:
-        Option<StorageOSClusterContainerResourcesSnapshotControllerContainer>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotControllerContainer")]
+    pub snapshot_controller_container: Option<StorageOSClusterContainerResourcesSnapshotControllerContainer>,
 }
 
 /// ResourceRequirements describes the compute resource requirements.
@@ -465,109 +340,45 @@ pub struct StorageOSClusterContainerResourcesSnapshotControllerContainer {
 /// CSI defines the configurations for CSI.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StorageOSClusterCsi {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "attacherTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "attacherTimeout")]
     pub attacher_timeout: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deploymentStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deploymentStrategy")]
     pub deployment_strategy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceDir")]
     pub device_dir: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "driverRegisterationMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "driverRegisterationMode")]
     pub driver_registeration_mode: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "driverRequiresAttachment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "driverRequiresAttachment")]
     pub driver_requires_attachment: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enable: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableControllerExpandCreds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableControllerExpandCreds")]
     pub enable_controller_expand_creds: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableControllerPublishCreds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableControllerPublishCreds")]
     pub enable_controller_publish_creds: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableNodePublishCreds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableNodePublishCreds")]
     pub enable_node_publish_creds: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableProvisionCreds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableProvisionCreds")]
     pub enable_provision_creds: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubeletDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeletDir")]
     pub kubelet_dir: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubeletRegistrationPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeletRegistrationPath")]
     pub kubelet_registration_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pluginDir")]
     pub plugin_dir: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "provisionerTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "provisionerTimeout")]
     pub provisioner_timeout: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "provisionerWorkerCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "provisionerWorkerCount")]
     pub provisioner_worker_count: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "registrarSocketDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "registrarSocketDir")]
     pub registrar_socket_dir: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "registrationDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "registrationDir")]
     pub registration_dir: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resizerTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizerTimeout")]
     pub resizer_timeout: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotterTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotterTimeout")]
     pub snapshotter_timeout: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
@@ -576,119 +387,43 @@ pub struct StorageOSClusterCsi {
 /// Images defines the various container images used in the cluster.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StorageOSClusterImages {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiManagerContainer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiManagerContainer")]
     pub api_manager_container: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cliContainer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cliContainer")]
     pub cli_container: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "csiClusterDriverRegistrarContainer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "csiClusterDriverRegistrarContainer")]
     pub csi_cluster_driver_registrar_container: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "csiExternalAttacherContainer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "csiExternalAttacherContainer")]
     pub csi_external_attacher_container: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "csiExternalProvisionerContainer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "csiExternalProvisionerContainer")]
     pub csi_external_provisioner_container: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "csiExternalResizerContainer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "csiExternalResizerContainer")]
     pub csi_external_resizer_container: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "csiExternalSnapshotterContainer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "csiExternalSnapshotterContainer")]
     pub csi_external_snapshotter_container: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "csiLivenessProbeContainer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "csiLivenessProbeContainer")]
     pub csi_liveness_probe_container: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "csiNodeDriverRegistrarContainer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "csiNodeDriverRegistrarContainer")]
     pub csi_node_driver_registrar_container: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hyperkubeContainer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hyperkubeContainer")]
     pub hyperkube_container: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainer")]
     pub init_container: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubeSchedulerContainer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeSchedulerContainer")]
     pub kube_scheduler_container: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricsExporterContainer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsExporterContainer")]
     pub metrics_exporter_container: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nfsContainer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nfsContainer")]
     pub nfs_container: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeContainer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeContainer")]
     pub node_container: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeGuardContainer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeGuardContainer")]
     pub node_guard_container: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeManagerContainer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeManagerContainer")]
     pub node_manager_container: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portalManagerContainer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portalManagerContainer")]
     pub portal_manager_container: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotControllerContainer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotControllerContainer")]
     pub snapshot_controller_container: Option<String>,
 }
 
@@ -717,11 +452,7 @@ pub struct StorageOSClusterKvBackend {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StorageOSClusterMetrics {
     /// DisabledCollectors is a list of collectors that shall be disabled. By default, all are enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disabledCollectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disabledCollectors")]
     pub disabled_collectors: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
@@ -756,18 +487,10 @@ pub enum StorageOSClusterMetricsLogLevel {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StorageOSClusterNodeSelectorTerms {
     /// A list of node selector requirements by node's labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<StorageOSClusterNodeSelectorTermsMatchExpressions>>,
     /// A list of node selector requirements by node's fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchFields"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
     pub match_fields: Option<Vec<StorageOSClusterNodeSelectorTermsMatchFields>>,
 }
 
@@ -811,17 +534,9 @@ pub struct StorageOSClusterResources {
 pub struct StorageOSClusterService {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalPort")]
     pub external_port: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "internalPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "internalPort")]
     pub internal_port: Option<i64>,
     pub name: String,
     #[serde(rename = "type")]
@@ -832,11 +547,7 @@ pub struct StorageOSClusterService {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StorageOSClusterSnapshots {
     /// VolumeSnapshotClassName is the name of default VolumeSnapshotClass created for StorageOS volumes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSnapshotClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSnapshotClassName")]
     pub volume_snapshot_class_name: Option<String>,
 }
 
@@ -853,11 +564,7 @@ pub struct StorageOSClusterTolerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operator: Option<String>,
     /// TolerationSeconds represents the period of time the toleration (which must be of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default, it is not set, which means tolerate the taint forever (do not evict). Zero and negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to. If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -873,11 +580,7 @@ pub struct StorageOSClusterStatus {
     /// Members is the list of StorageOS nodes in the cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub members: Option<StorageOSClusterStatusMembers>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeHealthStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeHealthStatus")]
     pub node_health_status: Option<BTreeMap<String, StorageOSClusterStatusNodeHealthStatus>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<Vec<String>>,
@@ -902,11 +605,7 @@ pub struct StorageOSClusterStatusMembers {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StorageOSClusterStatusNodeHealthStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "directfsInitiator"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "directfsInitiator")]
     pub directfs_initiator: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub director: Option<String>,
@@ -921,3 +620,4 @@ pub struct StorageOSClusterStatusNodeHealthStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rdb: Option<String>,
 }
+

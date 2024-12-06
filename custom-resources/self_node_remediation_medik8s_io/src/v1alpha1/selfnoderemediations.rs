@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// SelfNodeRemediationSpec defines the desired state of SelfNodeRemediation
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "self-node-remediation.medik8s.io",
-    version = "v1alpha1",
-    kind = "SelfNodeRemediation",
-    plural = "selfnoderemediations"
-)]
+#[kube(group = "self-node-remediation.medik8s.io", version = "v1alpha1", kind = "SelfNodeRemediation", plural = "selfnoderemediations")]
 #[kube(namespaced)]
 #[kube(status = "SelfNodeRemediationStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SelfNodeRemediationSpec {
     /// RemediationStrategy is the remediation method for unhealthy nodes.
     /// Currently, it could be either "Automatic", "OutOfServiceTaint" or "ResourceDeletion".
@@ -30,11 +25,7 @@ pub struct SelfNodeRemediationSpec {
     /// OutOfServiceTaint will add the out-of-service taint which is a new well-known taint "node.kubernetes.io/out-of-service"
     /// that enables automatic deletion of pv-attached pods on failed nodes, "out-of-service" taint is only supported on clusters with k8s version 1.26+ or OCP/OKD version 4.13+.
     /// Automatic will choose the most appropriate strategy during runtime.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remediationStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remediationStrategy")]
     pub remediation_strategy: Option<SelfNodeRemediationRemediationStrategy>,
 }
 
@@ -62,10 +53,7 @@ pub struct SelfNodeRemediationStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
     /// TimeAssumedRebooted is the time by then the unhealthy node assumed to be rebooted
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeAssumedRebooted"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeAssumedRebooted")]
     pub time_assumed_rebooted: Option<String>,
 }
+

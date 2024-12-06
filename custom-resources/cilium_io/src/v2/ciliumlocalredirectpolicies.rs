@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// Spec is the desired behavior of the local redirect policy.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "cilium.io",
-    version = "v2",
-    kind = "CiliumLocalRedirectPolicy",
-    plural = "ciliumlocalredirectpolicies"
-)]
+#[kube(group = "cilium.io", version = "v2", kind = "CiliumLocalRedirectPolicy", plural = "ciliumlocalredirectpolicies")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CiliumLocalRedirectPolicySpec {
     /// Description can be used by the creator of the policy to describe the
     /// purpose of this policy.
@@ -38,21 +33,17 @@ pub struct CiliumLocalRedirectPolicySpec {
     /// SkipRedirectFromBackend indicates whether traffic matching RedirectFrontend
     /// from RedirectBackend should skip redirection, and hence the traffic will
     /// be forwarded as-is.
-    ///
+    /// 
     /// The default is false which means traffic matching RedirectFrontend will
     /// get redirected from all pods, including the RedirectBackend(s).
-    ///
+    /// 
     /// Example: If RedirectFrontend is configured to "169.254.169.254:80" as the traffic
     /// that needs to be redirected to backends selected by RedirectBackend, if
     /// SkipRedirectFromBackend is set to true, traffic going to "169.254.169.254:80"
     /// from such backends will not be redirected back to the backends. Instead,
     /// the matched traffic from the backends will be forwarded to the original
     /// destination "169.254.169.254:80".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "skipRedirectFromBackend"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipRedirectFromBackend")]
     pub skip_redirect_from_backend: Option<bool>,
 }
 
@@ -74,21 +65,12 @@ pub struct CiliumLocalRedirectPolicyRedirectBackend {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumLocalRedirectPolicyRedirectBackendLocalEndpointSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CiliumLocalRedirectPolicyRedirectBackendLocalEndpointSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumLocalRedirectPolicyRedirectBackendLocalEndpointSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -100,8 +82,7 @@ pub struct CiliumLocalRedirectPolicyRedirectBackendLocalEndpointSelectorMatchExp
     pub key: String,
     /// operator represents a key's relationship to a set of values.
     /// Valid operators are In, NotIn, Exists and DoesNotExist.
-    pub operator:
-        CiliumLocalRedirectPolicyRedirectBackendLocalEndpointSelectorMatchExpressionsOperator,
+    pub operator: CiliumLocalRedirectPolicyRedirectBackendLocalEndpointSelectorMatchExpressionsOperator,
     /// values is an array of string values. If the operator is In or NotIn,
     /// the values array must be non-empty. If the operator is Exists or DoesNotExist,
     /// the values array must be empty. This array is replaced during a strategic
@@ -150,19 +131,11 @@ pub enum CiliumLocalRedirectPolicyRedirectBackendToPortsProtocol {
 pub struct CiliumLocalRedirectPolicyRedirectFrontend {
     /// AddressMatcher is a tuple {IP, port, protocol} that matches traffic to be
     /// redirected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "addressMatcher"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "addressMatcher")]
     pub address_matcher: Option<CiliumLocalRedirectPolicyRedirectFrontendAddressMatcher>,
     /// ServiceMatcher specifies Kubernetes service and port that matches
     /// traffic to be redirected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceMatcher"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceMatcher")]
     pub service_matcher: Option<CiliumLocalRedirectPolicyRedirectFrontendServiceMatcher>,
 }
 
@@ -171,7 +144,7 @@ pub struct CiliumLocalRedirectPolicyRedirectFrontend {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumLocalRedirectPolicyRedirectFrontendAddressMatcher {
     /// IP is a destination ip address for traffic to be redirected.
-    ///
+    /// 
     /// Example:
     /// When it is set to "169.254.169.254", traffic destined to
     /// "169.254.169.254" is redirected.
@@ -179,7 +152,7 @@ pub struct CiliumLocalRedirectPolicyRedirectFrontendAddressMatcher {
     /// ToPorts is a list of destination L4 ports with protocol for traffic
     /// to be redirected.
     /// When multiple ports are specified, the ports must be named.
-    ///
+    /// 
     /// Example:
     /// When set to Port: "53" and Protocol: UDP, traffic destined to port '53'
     /// with UDP protocol is redirected.
@@ -223,7 +196,7 @@ pub struct CiliumLocalRedirectPolicyRedirectFrontendServiceMatcher {
     /// Name is the name of a destination Kubernetes service that identifies traffic
     /// to be redirected.
     /// The service type needs to be ClusterIP.
-    ///
+    /// 
     /// Example:
     /// When this field is populated with 'serviceName:myService', all the traffic
     /// destined to the cluster IP of this service at the (specified)
@@ -269,3 +242,4 @@ pub struct CiliumLocalRedirectPolicyStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ok: Option<bool>,
 }
+

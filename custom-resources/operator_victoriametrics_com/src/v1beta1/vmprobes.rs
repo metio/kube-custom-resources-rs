@@ -5,24 +5,19 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// VMProbeSpec contains specification parameters for a Probe.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "operator.victoriametrics.com",
-    version = "v1beta1",
-    kind = "VMProbe",
-    plural = "vmprobes"
-)]
+#[kube(group = "operator.victoriametrics.com", version = "v1beta1", kind = "VMProbe", plural = "vmprobes")]
 #[kube(namespaced)]
 #[kube(status = "VMProbeStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct VMProbeSpec {
     /// Authorization with http header Authorization
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -31,37 +26,21 @@ pub struct VMProbeSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<VMProbeBasicAuth>,
     /// File to read bearer token for scraping targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bearerTokenFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenFile")]
     pub bearer_token_file: Option<String>,
     /// Secret to mount to read bearer token for scraping targets. The secret
     /// needs to be in the same namespace as the scrape object and accessible by
     /// the victoria-metrics operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bearerTokenSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<VMProbeBearerTokenSecret>,
     /// FollowRedirects controls redirects for scraping.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub follow_redirects: Option<bool>,
     /// HonorLabels chooses the metric's labels on collisions with target labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "honorLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "honorLabels")]
     pub honor_labels: Option<bool>,
     /// HonorTimestamps controls whether vmagent respects the timestamps present in scraped data.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "honorTimestamps"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "honorTimestamps")]
     pub honor_timestamps: Option<bool>,
     /// Interval at which metrics should be scraped
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -73,11 +52,7 @@ pub struct VMProbeSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max_scrape_size: Option<String>,
     /// MetricRelabelConfigs to apply to samples after scrapping.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricRelabelConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricRelabelConfigs")]
     pub metric_relabel_configs: Option<Vec<VMProbeMetricRelabelConfigs>>,
     /// The module to use for probing specifying how to probe the target.
     /// Example module configuring in the blackbox exporter:
@@ -97,21 +72,13 @@ pub struct VMProbeSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyURL")]
     pub proxy_url: Option<String>,
     /// SampleLimit defines per-scrape limit on number of scraped samples that will be accepted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sampleLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sampleLimit")]
     pub sample_limit: Option<i64>,
     /// HTTP scheme to use for scraping.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<VMProbeScheme>,
     /// Timeout after which the scrape is ended
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scrapeTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeTimeout")]
     pub scrape_timeout: Option<String>,
     /// ScrapeInterval is the same as Interval and has priority over it.
     /// one of scrape_interval or interval can be used
@@ -119,11 +86,7 @@ pub struct VMProbeSpec {
     pub scrape_interval: Option<String>,
     /// SeriesLimit defines per-scrape limit on number of unique time series
     /// a single target can expose during all the scrapes on the time window of 24h.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seriesLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seriesLimit")]
     pub series_limit: Option<i64>,
     /// Targets defines a set of static and/or dynamically discovered targets to be probed using the prober.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -147,11 +110,7 @@ pub struct VMProbeAuthorization {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<VMProbeAuthorizationCredentials>,
     /// File with value for authorization
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialsFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsFile")]
     pub credentials_file: Option<String>,
     /// Type of authorization, default to bearer
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -281,39 +240,23 @@ pub struct VMProbeMetricRelabelConfigs {
     /// The source labels select values from existing labels. Their content is concatenated
     /// using the configured separator and matched against the configured regular expression
     /// for the replace, keep, and drop actions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
     pub source_labels: Option<Vec<String>>,
     /// UnderScoreSourceLabels - additional form of source labels source_labels
     /// for compatibility with original relabel config.
     /// if set  both sourceLabels and source_labels, sourceLabels has priority.
     /// for details https://github.com/VictoriaMetrics/operator/issues/131
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "source_labels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "source_labels")]
     pub source_labels_x: Option<Vec<String>>,
     /// Label to which the resulting value is written in a replace action.
     /// It is mandatory for replace actions. Regex capture groups are available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetLabel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
     pub target_label: Option<String>,
     /// UnderScoreTargetLabel - additional form of target label - target_label
     /// for compatibility with original relabel config.
     /// if set  both targetLabel and target_label, targetLabel has priority.
     /// for details https://github.com/VictoriaMetrics/operator/issues/131
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "target_label"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "target_label")]
     pub target_label_x: Option<String>,
 }
 
@@ -416,11 +359,7 @@ pub struct VMProbeTargets {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ingress: Option<VMProbeTargetsIngress>,
     /// StaticConfig defines static targets which are considers for probing.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "staticConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "staticConfig")]
     pub static_config: Option<VMProbeTargetsStaticConfig>,
 }
 
@@ -428,18 +367,10 @@ pub struct VMProbeTargets {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMProbeTargetsIngress {
     /// Select Ingress objects by namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<VMProbeTargetsIngressNamespaceSelector>,
     /// RelabelConfigs to apply to samples during service discovery.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "relabelingConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "relabelingConfigs")]
     pub relabeling_configs: Option<Vec<VMProbeTargetsIngressRelabelingConfigs>>,
     /// Select Ingress objects by labels.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -454,11 +385,7 @@ pub struct VMProbeTargetsIngressNamespaceSelector {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub any: Option<bool>,
     /// List of namespace names.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchNames")]
     pub match_names: Option<Vec<String>>,
 }
 
@@ -496,39 +423,23 @@ pub struct VMProbeTargetsIngressRelabelingConfigs {
     /// The source labels select values from existing labels. Their content is concatenated
     /// using the configured separator and matched against the configured regular expression
     /// for the replace, keep, and drop actions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
     pub source_labels: Option<Vec<String>>,
     /// UnderScoreSourceLabels - additional form of source labels source_labels
     /// for compatibility with original relabel config.
     /// if set  both sourceLabels and source_labels, sourceLabels has priority.
     /// for details https://github.com/VictoriaMetrics/operator/issues/131
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "source_labels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "source_labels")]
     pub source_labels_x: Option<Vec<String>>,
     /// Label to which the resulting value is written in a replace action.
     /// It is mandatory for replace actions. Regex capture groups are available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetLabel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
     pub target_label: Option<String>,
     /// UnderScoreTargetLabel - additional form of target label - target_label
     /// for compatibility with original relabel config.
     /// if set  both targetLabel and target_label, targetLabel has priority.
     /// for details https://github.com/VictoriaMetrics/operator/issues/131
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "target_label"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "target_label")]
     pub target_label_x: Option<String>,
 }
 
@@ -536,20 +447,12 @@ pub struct VMProbeTargetsIngressRelabelingConfigs {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMProbeTargetsIngressSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<VMProbeTargetsIngressSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -577,11 +480,7 @@ pub struct VMProbeTargetsStaticConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// RelabelConfigs to apply to samples during service discovery.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "relabelingConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "relabelingConfigs")]
     pub relabeling_configs: Option<Vec<VMProbeTargetsStaticConfigRelabelingConfigs>>,
     /// Targets is a list of URLs to probe using the configured prober.
     pub targets: Vec<String>,
@@ -621,39 +520,23 @@ pub struct VMProbeTargetsStaticConfigRelabelingConfigs {
     /// The source labels select values from existing labels. Their content is concatenated
     /// using the configured separator and matched against the configured regular expression
     /// for the replace, keep, and drop actions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
     pub source_labels: Option<Vec<String>>,
     /// UnderScoreSourceLabels - additional form of source labels source_labels
     /// for compatibility with original relabel config.
     /// if set  both sourceLabels and source_labels, sourceLabels has priority.
     /// for details https://github.com/VictoriaMetrics/operator/issues/131
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "source_labels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "source_labels")]
     pub source_labels_x: Option<Vec<String>>,
     /// Label to which the resulting value is written in a replace action.
     /// It is mandatory for replace actions. Regex capture groups are available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetLabel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
     pub target_label: Option<String>,
     /// UnderScoreTargetLabel - additional form of target label - target_label
     /// for compatibility with original relabel config.
     /// if set  both targetLabel and target_label, targetLabel has priority.
     /// for details https://github.com/VictoriaMetrics/operator/issues/131
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "target_label"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "target_label")]
     pub target_label_x: Option<String>,
 }
 
@@ -673,11 +556,7 @@ pub struct VMProbeTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
@@ -686,11 +565,7 @@ pub struct VMProbeTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VMProbeTlsConfigKeySecret>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -963,11 +838,7 @@ pub struct VMProbeVmScrapeParamsProxyClientConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
@@ -976,11 +847,7 @@ pub struct VMProbeVmScrapeParamsProxyClientConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VMProbeVmScrapeParamsProxyClientConfigTlsConfigKeySecret>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -1095,13 +962,10 @@ pub struct VMProbeVmScrapeParamsProxyClientConfigTlsConfigKeySecret {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMProbeStatus {
     /// LastSyncError contains error message for unsuccessful config generation
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastSyncError"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSyncError")]
     pub last_sync_error: Option<String>,
     /// Status defines update status of resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }
+

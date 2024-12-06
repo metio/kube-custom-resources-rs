@@ -5,42 +5,29 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// VMStaticScrapeSpec defines the desired state of VMStaticScrape.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "operator.victoriametrics.com",
-    version = "v1beta1",
-    kind = "VMStaticScrape",
-    plural = "vmstaticscrapes"
-)]
+#[kube(group = "operator.victoriametrics.com", version = "v1beta1", kind = "VMStaticScrape", plural = "vmstaticscrapes")]
 #[kube(namespaced)]
 #[kube(status = "VMStaticScrapeStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct VMStaticScrapeSpec {
     /// JobName name of job.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobName")]
     pub job_name: Option<String>,
     /// SampleLimit defines per-scrape limit on number of scraped samples that will be accepted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sampleLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sampleLimit")]
     pub sample_limit: Option<i64>,
     /// SeriesLimit defines per-scrape limit on number of unique time series
     /// a single target can expose during all the scrapes on the time window of 24h.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seriesLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seriesLimit")]
     pub series_limit: Option<i64>,
     /// A list of target endpoints to scrape metrics from.
     #[serde(rename = "targetEndpoints")]
@@ -57,37 +44,21 @@ pub struct VMStaticScrapeTargetEndpoints {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<VMStaticScrapeTargetEndpointsBasicAuth>,
     /// File to read bearer token for scraping targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bearerTokenFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenFile")]
     pub bearer_token_file: Option<String>,
     /// Secret to mount to read bearer token for scraping targets. The secret
     /// needs to be in the same namespace as the scrape object and accessible by
     /// the victoria-metrics operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bearerTokenSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bearerTokenSecret")]
     pub bearer_token_secret: Option<VMStaticScrapeTargetEndpointsBearerTokenSecret>,
     /// FollowRedirects controls redirects for scraping.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub follow_redirects: Option<bool>,
     /// HonorLabels chooses the metric's labels on collisions with target labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "honorLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "honorLabels")]
     pub honor_labels: Option<bool>,
     /// HonorTimestamps controls whether vmagent respects the timestamps present in scraped data.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "honorTimestamps"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "honorTimestamps")]
     pub honor_timestamps: Option<bool>,
     /// Interval at which metrics should be scraped
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -99,11 +70,7 @@ pub struct VMStaticScrapeTargetEndpoints {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max_scrape_size: Option<String>,
     /// MetricRelabelConfigs to apply to samples after scrapping.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricRelabelConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricRelabelConfigs")]
     pub metric_relabel_configs: Option<Vec<VMStaticScrapeTargetEndpointsMetricRelabelConfigs>>,
     /// OAuth2 defines auth configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -118,28 +85,16 @@ pub struct VMStaticScrapeTargetEndpoints {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyURL")]
     pub proxy_url: Option<String>,
     /// RelabelConfigs to apply to samples during service discovery.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "relabelConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "relabelConfigs")]
     pub relabel_configs: Option<Vec<VMStaticScrapeTargetEndpointsRelabelConfigs>>,
     /// SampleLimit defines per-scrape limit on number of scraped samples that will be accepted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sampleLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sampleLimit")]
     pub sample_limit: Option<i64>,
     /// HTTP scheme to use for scraping.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<VMStaticScrapeTargetEndpointsScheme>,
     /// Timeout after which the scrape is ended
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scrapeTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeTimeout")]
     pub scrape_timeout: Option<String>,
     /// ScrapeInterval is the same as Interval and has priority over it.
     /// one of scrape_interval or interval can be used
@@ -147,11 +102,7 @@ pub struct VMStaticScrapeTargetEndpoints {
     pub scrape_interval: Option<String>,
     /// SeriesLimit defines per-scrape limit on number of unique time series
     /// a single target can expose during all the scrapes on the time window of 24h.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seriesLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seriesLimit")]
     pub series_limit: Option<i64>,
     /// Targets static targets addresses in form of ["192.122.55.55:9100","some-name:9100"].
     pub targets: Vec<String>,
@@ -170,11 +121,7 @@ pub struct VMStaticScrapeTargetEndpointsAuthorization {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<VMStaticScrapeTargetEndpointsAuthorizationCredentials>,
     /// File with value for authorization
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialsFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsFile")]
     pub credentials_file: Option<String>,
     /// Type of authorization, default to bearer
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -304,39 +251,23 @@ pub struct VMStaticScrapeTargetEndpointsMetricRelabelConfigs {
     /// The source labels select values from existing labels. Their content is concatenated
     /// using the configured separator and matched against the configured regular expression
     /// for the replace, keep, and drop actions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
     pub source_labels: Option<Vec<String>>,
     /// UnderScoreSourceLabels - additional form of source labels source_labels
     /// for compatibility with original relabel config.
     /// if set  both sourceLabels and source_labels, sourceLabels has priority.
     /// for details https://github.com/VictoriaMetrics/operator/issues/131
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "source_labels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "source_labels")]
     pub source_labels_x: Option<Vec<String>>,
     /// Label to which the resulting value is written in a replace action.
     /// It is mandatory for replace actions. Regex capture groups are available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetLabel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
     pub target_label: Option<String>,
     /// UnderScoreTargetLabel - additional form of target label - target_label
     /// for compatibility with original relabel config.
     /// if set  both targetLabel and target_label, targetLabel has priority.
     /// for details https://github.com/VictoriaMetrics/operator/issues/131
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "target_label"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "target_label")]
     pub target_label_x: Option<String>,
 }
 
@@ -457,39 +388,23 @@ pub struct VMStaticScrapeTargetEndpointsRelabelConfigs {
     /// The source labels select values from existing labels. Their content is concatenated
     /// using the configured separator and matched against the configured regular expression
     /// for the replace, keep, and drop actions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
     pub source_labels: Option<Vec<String>>,
     /// UnderScoreSourceLabels - additional form of source labels source_labels
     /// for compatibility with original relabel config.
     /// if set  both sourceLabels and source_labels, sourceLabels has priority.
     /// for details https://github.com/VictoriaMetrics/operator/issues/131
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "source_labels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "source_labels")]
     pub source_labels_x: Option<Vec<String>>,
     /// Label to which the resulting value is written in a replace action.
     /// It is mandatory for replace actions. Regex capture groups are available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetLabel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
     pub target_label: Option<String>,
     /// UnderScoreTargetLabel - additional form of target label - target_label
     /// for compatibility with original relabel config.
     /// if set  both targetLabel and target_label, targetLabel has priority.
     /// for details https://github.com/VictoriaMetrics/operator/issues/131
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "target_label"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "target_label")]
     pub target_label_x: Option<String>,
 }
 
@@ -518,11 +433,7 @@ pub struct VMStaticScrapeTargetEndpointsTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
@@ -531,11 +442,7 @@ pub struct VMStaticScrapeTargetEndpointsTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VMStaticScrapeTargetEndpointsTlsConfigKeySecret>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -688,8 +595,7 @@ pub struct VMStaticScrapeTargetEndpointsVmScrapeParamsProxyClientConfig {
     pub basic_auth: Option<VMStaticScrapeTargetEndpointsVmScrapeParamsProxyClientConfigBasicAuth>,
     /// SecretKeySelector selects a key of a Secret.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub bearer_token:
-        Option<VMStaticScrapeTargetEndpointsVmScrapeParamsProxyClientConfigBearerToken>,
+    pub bearer_token: Option<VMStaticScrapeTargetEndpointsVmScrapeParamsProxyClientConfigBearerToken>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bearer_token_file: Option<String>,
     /// TLSConfig specifies TLSConfig configuration parameters.
@@ -703,8 +609,7 @@ pub struct VMStaticScrapeTargetEndpointsVmScrapeParamsProxyClientConfigBasicAuth
     /// Password defines reference for secret with password value
     /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub password:
-        Option<VMStaticScrapeTargetEndpointsVmScrapeParamsProxyClientConfigBasicAuthPassword>,
+    pub password: Option<VMStaticScrapeTargetEndpointsVmScrapeParamsProxyClientConfigBasicAuthPassword>,
     /// PasswordFile defines path to password file at disk
     /// must be pre-mounted
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -712,8 +617,7 @@ pub struct VMStaticScrapeTargetEndpointsVmScrapeParamsProxyClientConfigBasicAuth
     /// Username defines reference for secret with username value
     /// The secret needs to be in the same namespace as scrape object
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub username:
-        Option<VMStaticScrapeTargetEndpointsVmScrapeParamsProxyClientConfigBasicAuthUsername>,
+    pub username: Option<VMStaticScrapeTargetEndpointsVmScrapeParamsProxyClientConfigBasicAuthUsername>,
 }
 
 /// Password defines reference for secret with password value
@@ -785,25 +689,16 @@ pub struct VMStaticScrapeTargetEndpointsVmScrapeParamsProxyClientConfigTlsConfig
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
     pub key_file: Option<String>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
-    pub key_secret:
-        Option<VMStaticScrapeTargetEndpointsVmScrapeParamsProxyClientConfigTlsConfigKeySecret>,
+    pub key_secret: Option<VMStaticScrapeTargetEndpointsVmScrapeParamsProxyClientConfigTlsConfigKeySecret>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -812,12 +707,10 @@ pub struct VMStaticScrapeTargetEndpointsVmScrapeParamsProxyClientConfigTlsConfig
 pub struct VMStaticScrapeTargetEndpointsVmScrapeParamsProxyClientConfigTlsConfigCa {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<VMStaticScrapeTargetEndpointsVmScrapeParamsProxyClientConfigTlsConfigCaConfigMap>,
+    pub config_map: Option<VMStaticScrapeTargetEndpointsVmScrapeParamsProxyClientConfigTlsConfigCaConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret:
-        Option<VMStaticScrapeTargetEndpointsVmScrapeParamsProxyClientConfigTlsConfigCaSecret>,
+    pub secret: Option<VMStaticScrapeTargetEndpointsVmScrapeParamsProxyClientConfigTlsConfigCaSecret>,
 }
 
 /// ConfigMap containing data to use for the targets.
@@ -859,12 +752,10 @@ pub struct VMStaticScrapeTargetEndpointsVmScrapeParamsProxyClientConfigTlsConfig
 pub struct VMStaticScrapeTargetEndpointsVmScrapeParamsProxyClientConfigTlsConfigCert {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<VMStaticScrapeTargetEndpointsVmScrapeParamsProxyClientConfigTlsConfigCertConfigMap>,
+    pub config_map: Option<VMStaticScrapeTargetEndpointsVmScrapeParamsProxyClientConfigTlsConfigCertConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub secret:
-        Option<VMStaticScrapeTargetEndpointsVmScrapeParamsProxyClientConfigTlsConfigCertSecret>,
+    pub secret: Option<VMStaticScrapeTargetEndpointsVmScrapeParamsProxyClientConfigTlsConfigCertSecret>,
 }
 
 /// ConfigMap containing data to use for the targets.
@@ -922,13 +813,10 @@ pub struct VMStaticScrapeTargetEndpointsVmScrapeParamsProxyClientConfigTlsConfig
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMStaticScrapeStatus {
     /// LastSyncError contains error message for unsuccessful config generation
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastSyncError"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSyncError")]
     pub last_sync_error: Option<String>,
     /// Status defines update status of resource
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }
+

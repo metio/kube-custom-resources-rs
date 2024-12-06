@@ -4,36 +4,27 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// NodeClaimSpec describes the desired state of the NodeClaim
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "karpenter.sh",
-    version = "v1",
-    kind = "NodeClaim",
-    plural = "nodeclaims"
-)]
+#[kube(group = "karpenter.sh", version = "v1", kind = "NodeClaim", plural = "nodeclaims")]
 #[kube(status = "NodeClaimStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct NodeClaimSpec {
     /// ExpireAfter is the duration the controller will wait
     /// before terminating a node, measured from when the node is created. This
     /// is useful to implement features like eventually consistent node upgrade,
     /// memory leak protection, and disruption testing.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expireAfter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expireAfter")]
     pub expire_after: Option<String>,
     /// NodeClassRef is a reference to an object that defines provider specific configuration
     #[serde(rename = "nodeClassRef")]
@@ -47,33 +38,25 @@ pub struct NodeClaimSpec {
     /// within a short period of time, typically by a DaemonSet that tolerates the taint. These are commonly used by
     /// daemonsets to allow initialization and enforce startup ordering.  StartupTaints are ignored for provisioning
     /// purposes in that pods are not required to tolerate a StartupTaint in order to have nodes provisioned for them.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupTaints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupTaints")]
     pub startup_taints: Option<Vec<NodeClaimStartupTaints>>,
     /// Taints will be applied to the NodeClaim's node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub taints: Option<Vec<NodeClaimTaints>>,
     /// TerminationGracePeriod is the maximum duration the controller will wait before forcefully deleting the pods on a node, measured from when deletion is first initiated.
-    ///
+    /// 
     /// Warning: this feature takes precedence over a Pod's terminationGracePeriodSeconds value, and bypasses any blocked PDBs or the karpenter.sh/do-not-disrupt annotation.
-    ///
+    /// 
     /// This field is intended to be used by cluster administrators to enforce that nodes can be cycled within a given time period.
     /// When set, drifted nodes will begin draining even if there are pods blocking eviction. Draining will respect PDBs and the do-not-disrupt annotation until the TGP is reached.
-    ///
+    /// 
     /// Karpenter will preemptively delete pods so their terminationGracePeriodSeconds align with the node's terminationGracePeriod.
     /// If a pod would be terminated without being granted its full terminationGracePeriodSeconds prior to the node timeout,
     /// that pod will be deleted at T = node timeout - pod terminationGracePeriodSeconds.
-    ///
+    /// 
     /// The feature can also be used to allow maximum time limits for long-running jobs which can delay node termination with preStop hooks.
     /// If left undefined, the controller will wait indefinitely for pods to be drained.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriod")]
     pub termination_grace_period: Option<String>,
 }
 
@@ -204,20 +187,13 @@ pub struct NodeClaimStatus {
     /// LastPodEventTime is updated with the last time a pod was scheduled
     /// or removed from the node. A pod going terminal or terminating
     /// is also considered as removed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastPodEventTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastPodEventTime")]
     pub last_pod_event_time: Option<String>,
     /// NodeName is the name of the corresponding node object
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeName")]
     pub node_name: Option<String>,
     /// ProviderID of the corresponding node object
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "providerID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerID")]
     pub provider_id: Option<String>,
 }
+

@@ -4,30 +4,25 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// CohortSpec defines the desired state of Cohort
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kueue.x-k8s.io",
-    version = "v1alpha1",
-    kind = "Cohort",
-    plural = "cohorts"
-)]
+#[kube(group = "kueue.x-k8s.io", version = "v1alpha1", kind = "Cohort", plural = "cohorts")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CohortSpec {
     /// Parent references the name of the Cohort's parent, if
     /// any. It satisfies one of three cases:
     /// 1) Unset. This Cohort is the root of its Cohort tree.
     /// 2) References a non-existent Cohort. We use default Cohort (no borrowing/lending limits).
     /// 3) References an existent Cohort.
-    ///
+    /// 
     /// If a cycle is created, we disable all members of the
     /// Cohort, including ClusterQueues, until the cycle is
     /// removed.  We prevent further admission while the cycle
@@ -40,21 +35,17 @@ pub struct CohortSpec {
     /// Resources. Each Resource and each Flavor may only form part
     /// of one ResourceGroup.  There may be up to 16 ResourceGroups
     /// within a Cohort.
-    ///
+    /// 
     /// BorrowingLimit limits how much members of this Cohort
     /// subtree can borrow from the parent subtree.
-    ///
+    /// 
     /// LendingLimit limits how much members of this Cohort subtree
     /// can lend to the parent subtree.
-    ///
+    /// 
     /// Borrowing and Lending limits must only be set when the
     /// Cohort has a parent.  Otherwise, the Cohort create/update
     /// will be rejected by the webhook.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceGroups")]
     pub resource_groups: Option<Vec<CohortResourceGroups>>,
 }
 
@@ -98,11 +89,7 @@ pub struct CohortResourceGroupsFlavorsResources {
     /// If null, it means that there is no borrowing limit.
     /// If not null, it must be non-negative.
     /// borrowingLimit must be null if spec.cohort is empty.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "borrowingLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "borrowingLimit")]
     pub borrowing_limit: Option<IntOrString>,
     /// lendingLimit is the maximum amount of unused quota for the [flavor, resource]
     /// combination that this ClusterQueue can lend to other ClusterQueues in the same cohort.
@@ -113,11 +100,7 @@ pub struct CohortResourceGroupsFlavorsResources {
     /// If not null, it must be non-negative.
     /// lendingLimit must be null if spec.cohort is empty.
     /// This field is in beta stage and is enabled by default.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lendingLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lendingLimit")]
     pub lending_limit: Option<IntOrString>,
     /// name of this resource.
     pub name: String,
@@ -129,10 +112,11 @@ pub struct CohortResourceGroupsFlavorsResources {
     /// and pods not managed by kueue). In an autoscaled cluster, nominalQuota
     /// should account for resources that can be provided by a component such as
     /// Kubernetes cluster-autoscaler.
-    ///
+    /// 
     /// If the ClusterQueue belongs to a cohort, the sum of the quotas for each
     /// (flavor, resource) combination defines the maximum quantity that can be
     /// allocated by a ClusterQueue in the cohort.
     #[serde(rename = "nominalQuota")]
     pub nominal_quota: IntOrString,
 }
+

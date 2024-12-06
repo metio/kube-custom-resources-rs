@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// Spec defines the behavior of a workflow
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "chaos-mesh.org",
-    version = "v1alpha1",
-    kind = "Workflow",
-    plural = "workflows"
-)]
+#[kube(group = "chaos-mesh.org", version = "v1alpha1", kind = "Workflow", plural = "workflows")]
 #[kube(namespaced)]
 #[kube(status = "WorkflowStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct WorkflowSpec {
     pub entry: String,
     pub templates: Vec<WorkflowTemplates>,
@@ -32,38 +27,22 @@ pub struct WorkflowSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplates {
     /// AbortWithStatusCheck describe whether to abort the workflow when the failure threshold of StatusCheck is exceeded. Only used when Type is TypeStatusCheck.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "abortWithStatusCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "abortWithStatusCheck")]
     pub abort_with_status_check: Option<bool>,
     /// AWSChaosSpec is the content of the specification for an AWSChaos
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsChaos")]
     pub aws_chaos: Option<WorkflowTemplatesAwsChaos>,
     /// AzureChaosSpec is the content of the specification for an AzureChaos
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "azureChaos"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureChaos")]
     pub azure_chaos: Option<WorkflowTemplatesAzureChaos>,
     /// BlockChaosSpec is the content of the specification for a BlockChaos
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "blockChaos"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockChaos")]
     pub block_chaos: Option<WorkflowTemplatesBlockChaos>,
     /// Children describes the children steps of serial or parallel node. Only used when Type is TypeSerial or TypeParallel.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub children: Option<Vec<String>>,
     /// ConditionalBranches describes the conditional branches of custom tasks. Only used when Type is TypeTask.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "conditionalBranches"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "conditionalBranches")]
     pub conditional_branches: Option<Vec<WorkflowTemplatesConditionalBranches>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deadline: Option<String>,
@@ -82,26 +61,14 @@ pub struct WorkflowTemplates {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmChaos")]
     pub jvm_chaos: Option<WorkflowTemplatesJvmChaos>,
     /// KernelChaosSpec defines the desired state of KernelChaos
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kernelChaos"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kernelChaos")]
     pub kernel_chaos: Option<WorkflowTemplatesKernelChaos>,
     pub name: String,
     /// NetworkChaosSpec defines the desired state of NetworkChaos
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkChaos"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkChaos")]
     pub network_chaos: Option<WorkflowTemplatesNetworkChaos>,
     /// PhysicalMachineChaosSpec defines the desired state of PhysicalMachineChaos
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "physicalmachineChaos"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "physicalmachineChaos")]
     pub physicalmachine_chaos: Option<WorkflowTemplatesPhysicalmachineChaos>,
     /// PodChaosSpec defines the attributes that a user creates on a chaos experiment about pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podChaos")]
@@ -110,18 +77,10 @@ pub struct WorkflowTemplates {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub schedule: Option<WorkflowTemplatesSchedule>,
     /// StatusCheck describe the behavior of StatusCheck. Only used when Type is TypeStatusCheck.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusCheck")]
     pub status_check: Option<WorkflowTemplatesStatusCheck>,
     /// StressChaosSpec defines the desired state of StressChaos
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stressChaos"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stressChaos")]
     pub stress_chaos: Option<WorkflowTemplatesStressChaos>,
     /// Task describes the behavior of the custom task. Only used when Type is TypeTask.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -142,11 +101,7 @@ pub struct WorkflowTemplatesAwsChaos {
     #[serde(rename = "awsRegion")]
     pub aws_region: String,
     /// DeviceName indicates the name of the device. Needed in detach-volume.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deviceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceName")]
     pub device_name: Option<String>,
     /// Duration represents the duration of the chaos action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -158,18 +113,10 @@ pub struct WorkflowTemplatesAwsChaos {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// SecretName defines the name of kubernetes secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
     /// EbsVolume indicates the ID of the EBS volume. Needed in detach-volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeID")]
@@ -202,21 +149,13 @@ pub struct WorkflowTemplatesAzureChaos {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lun: Option<i64>,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// ResourceGroupName defines the name of ResourceGroup
     #[serde(rename = "resourceGroupName")]
     pub resource_group_name: String,
     /// SecretName defines the name of kubernetes secret. It is used for Azure credentials.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
     /// SubscriptionID defines the id of Azure subscription.
     #[serde(rename = "subscriptionID")]
@@ -243,11 +182,7 @@ pub struct WorkflowTemplatesBlockChaos {
     /// Action defines the specific block chaos action. Supported action: delay
     pub action: WorkflowTemplatesBlockChaosAction,
     /// ContainerNames indicates list of the name of affected container. If not set, the first container will be injected
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerNames")]
     pub container_names: Option<Vec<String>>,
     /// Delay defines the delay distribution.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -258,11 +193,7 @@ pub struct WorkflowTemplatesBlockChaos {
     /// Mode defines the mode to run chaos action. Supported mode: one / all / fixed / fixed-percent / random-max-percent
     pub mode: WorkflowTemplatesBlockChaosMode,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// Selector is used to select pods that are used to inject chaos action.
     pub selector: WorkflowTemplatesBlockChaosSelector,
@@ -311,52 +242,28 @@ pub enum WorkflowTemplatesBlockChaosMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesBlockChaosSelector {
     /// Map of string keys and values that can be used to select objects. A selector based on annotations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "annotationSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelectors")]
     pub annotation_selectors: Option<BTreeMap<String, String>>,
     /// a slice of label selector expressions that can be used to select objects. A list of selectors based on set-based label expressions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expressionSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expressionSelectors")]
     pub expression_selectors: Option<Vec<WorkflowTemplatesBlockChaosSelectorExpressionSelectors>>,
     /// Map of string keys and values that can be used to select objects. A selector based on fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelectors")]
     pub field_selectors: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to select objects. A selector based on labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelectors")]
     pub label_selectors: Option<BTreeMap<String, String>>,
     /// Namespaces is a set of namespace to which objects belong.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Map of string keys and values that can be used to select nodes. Selector which must match a node's labels, and objects must belong to these selected nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelectors")]
     pub node_selectors: Option<BTreeMap<String, String>>,
     /// Nodes is a set of node name and objects must belong to these nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<Vec<String>>,
     /// PodPhaseSelectors is a set of condition of a pod at the current time. supported value: Pending / Running / Succeeded / Failed / Unknown
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podPhaseSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podPhaseSelectors")]
     pub pod_phase_selectors: Option<Vec<String>>,
     /// Pods is a map of string keys and a set values that used to select pods. The key defines the namespace which pods belong, and the each values is a set of pod names.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -390,11 +297,7 @@ pub struct WorkflowTemplatesDnsChaos {
     /// Action defines the specific DNS chaos action. Supported action: error, random Default action: error
     pub action: WorkflowTemplatesDnsChaosAction,
     /// ContainerNames indicates list of the name of affected container. If not set, the first container will be injected
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerNames")]
     pub container_names: Option<Vec<String>>,
     /// Duration represents the duration of the chaos action
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -405,11 +308,7 @@ pub struct WorkflowTemplatesDnsChaos {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub patterns: Option<Vec<String>>,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// Selector is used to select pods that are used to inject chaos action.
     pub selector: WorkflowTemplatesDnsChaosSelector,
@@ -446,52 +345,28 @@ pub enum WorkflowTemplatesDnsChaosMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesDnsChaosSelector {
     /// Map of string keys and values that can be used to select objects. A selector based on annotations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "annotationSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelectors")]
     pub annotation_selectors: Option<BTreeMap<String, String>>,
     /// a slice of label selector expressions that can be used to select objects. A list of selectors based on set-based label expressions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expressionSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expressionSelectors")]
     pub expression_selectors: Option<Vec<WorkflowTemplatesDnsChaosSelectorExpressionSelectors>>,
     /// Map of string keys and values that can be used to select objects. A selector based on fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelectors")]
     pub field_selectors: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to select objects. A selector based on labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelectors")]
     pub label_selectors: Option<BTreeMap<String, String>>,
     /// Namespaces is a set of namespace to which objects belong.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Map of string keys and values that can be used to select nodes. Selector which must match a node's labels, and objects must belong to these selected nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelectors")]
     pub node_selectors: Option<BTreeMap<String, String>>,
     /// Nodes is a set of node name and objects must belong to these nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<Vec<String>>,
     /// PodPhaseSelectors is a set of condition of a pod at the current time. supported value: Pending / Running / Succeeded / Failed / Unknown
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podPhaseSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podPhaseSelectors")]
     pub pod_phase_selectors: Option<Vec<String>>,
     /// Pods is a map of string keys and a set values that used to select pods. The key defines the namespace which pods belong, and the each values is a set of pod names.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -516,11 +391,7 @@ pub struct WorkflowTemplatesGcpChaos {
     /// Action defines the specific gcp chaos action. Supported action: node-stop / node-reset / disk-loss Default action: node-stop
     pub action: WorkflowTemplatesGcpChaosAction,
     /// The device name of disks to detach. Needed in disk-loss.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deviceNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceNames")]
     pub device_names: Option<Vec<String>>,
     /// Duration represents the duration of the chaos action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -530,18 +401,10 @@ pub struct WorkflowTemplatesGcpChaos {
     /// Project defines the ID of gcp project.
     pub project: String,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// SecretName defines the name of kubernetes secret. It is used for GCP credentials.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
     /// Zone defines the zone of gcp project.
     pub zone: String,
@@ -587,11 +450,7 @@ pub struct WorkflowTemplatesHttpChaos {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// Replace is a rule to replace some contents in target.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -679,52 +538,28 @@ pub struct WorkflowTemplatesHttpChaosReplace {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesHttpChaosSelector {
     /// Map of string keys and values that can be used to select objects. A selector based on annotations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "annotationSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelectors")]
     pub annotation_selectors: Option<BTreeMap<String, String>>,
     /// a slice of label selector expressions that can be used to select objects. A list of selectors based on set-based label expressions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expressionSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expressionSelectors")]
     pub expression_selectors: Option<Vec<WorkflowTemplatesHttpChaosSelectorExpressionSelectors>>,
     /// Map of string keys and values that can be used to select objects. A selector based on fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelectors")]
     pub field_selectors: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to select objects. A selector based on labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelectors")]
     pub label_selectors: Option<BTreeMap<String, String>>,
     /// Namespaces is a set of namespace to which objects belong.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Map of string keys and values that can be used to select nodes. Selector which must match a node's labels, and objects must belong to these selected nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelectors")]
     pub node_selectors: Option<BTreeMap<String, String>>,
     /// Nodes is a set of node name and objects must belong to these nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<Vec<String>>,
     /// PodPhaseSelectors is a set of condition of a pod at the current time. supported value: Pending / Running / Succeeded / Failed / Unknown
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podPhaseSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podPhaseSelectors")]
     pub pod_phase_selectors: Option<Vec<String>>,
     /// Pods is a map of string keys and a set values that used to select pods. The key defines the namespace which pods belong, and the each values is a set of pod names.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -778,11 +613,7 @@ pub struct WorkflowTemplatesIoChaos {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attr: Option<WorkflowTemplatesIoChaosAttr>,
     /// ContainerNames indicates list of the name of affected container. If not set, the first container will be injected
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerNames")]
     pub container_names: Option<Vec<String>>,
     /// Delay defines the value of I/O chaos action delay. A delay string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as "300ms". Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -808,11 +639,7 @@ pub struct WorkflowTemplatesIoChaos {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub percent: Option<i64>,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// Selector is used to select pods that are used to inject chaos action.
     pub selector: WorkflowTemplatesIoChaosSelector,
@@ -901,11 +728,7 @@ pub struct WorkflowTemplatesIoChaosMistake {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLength")]
     pub max_length: Option<i64>,
     /// There will be [1, MaxOccurrences] segments of wrong data.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxOccurrences"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxOccurrences")]
     pub max_occurrences: Option<i64>,
 }
 
@@ -937,52 +760,28 @@ pub enum WorkflowTemplatesIoChaosMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesIoChaosSelector {
     /// Map of string keys and values that can be used to select objects. A selector based on annotations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "annotationSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelectors")]
     pub annotation_selectors: Option<BTreeMap<String, String>>,
     /// a slice of label selector expressions that can be used to select objects. A list of selectors based on set-based label expressions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expressionSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expressionSelectors")]
     pub expression_selectors: Option<Vec<WorkflowTemplatesIoChaosSelectorExpressionSelectors>>,
     /// Map of string keys and values that can be used to select objects. A selector based on fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelectors")]
     pub field_selectors: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to select objects. A selector based on labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelectors")]
     pub label_selectors: Option<BTreeMap<String, String>>,
     /// Namespaces is a set of namespace to which objects belong.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Map of string keys and values that can be used to select nodes. Selector which must match a node's labels, and objects must belong to these selected nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelectors")]
     pub node_selectors: Option<BTreeMap<String, String>>,
     /// Nodes is a set of node name and objects must belong to these nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<Vec<String>>,
     /// PodPhaseSelectors is a set of condition of a pod at the current time. supported value: Pending / Running / Succeeded / Failed / Unknown
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podPhaseSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podPhaseSelectors")]
     pub pod_phase_selectors: Option<Vec<String>>,
     /// Pods is a map of string keys and a set values that used to select pods. The key defines the namespace which pods belong, and the each values is a set of pod names.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1010,11 +809,7 @@ pub struct WorkflowTemplatesJvmChaos {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub class: Option<String>,
     /// ContainerNames indicates list of the name of affected container. If not set, the first container will be injected
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerNames")]
     pub container_names: Option<Vec<String>>,
     /// the CPU core number needs to use, only set it when action is stress
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuCount")]
@@ -1040,11 +835,7 @@ pub struct WorkflowTemplatesJvmChaos {
     /// Mode defines the mode to run chaos action. Supported mode: one / all / fixed / fixed-percent / random-max-percent
     pub mode: WorkflowTemplatesJvmChaosMode,
     /// the version of mysql-connector-java, only support 5.X.X(set to "5") and 8.X.X(set to "8") now
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mysqlConnectorVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mysqlConnectorVersion")]
     pub mysql_connector_version: Option<String>,
     /// byteman rule name, should be unique, and will generate one if not set
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1056,11 +847,7 @@ pub struct WorkflowTemplatesJvmChaos {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// the byteman rule's data for action 'ruleData'
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleData")]
@@ -1116,52 +903,28 @@ pub enum WorkflowTemplatesJvmChaosMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesJvmChaosSelector {
     /// Map of string keys and values that can be used to select objects. A selector based on annotations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "annotationSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelectors")]
     pub annotation_selectors: Option<BTreeMap<String, String>>,
     /// a slice of label selector expressions that can be used to select objects. A list of selectors based on set-based label expressions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expressionSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expressionSelectors")]
     pub expression_selectors: Option<Vec<WorkflowTemplatesJvmChaosSelectorExpressionSelectors>>,
     /// Map of string keys and values that can be used to select objects. A selector based on fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelectors")]
     pub field_selectors: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to select objects. A selector based on labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelectors")]
     pub label_selectors: Option<BTreeMap<String, String>>,
     /// Namespaces is a set of namespace to which objects belong.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Map of string keys and values that can be used to select nodes. Selector which must match a node's labels, and objects must belong to these selected nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelectors")]
     pub node_selectors: Option<BTreeMap<String, String>>,
     /// Nodes is a set of node name and objects must belong to these nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<Vec<String>>,
     /// PodPhaseSelectors is a set of condition of a pod at the current time. supported value: Pending / Running / Succeeded / Failed / Unknown
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podPhaseSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podPhaseSelectors")]
     pub pod_phase_selectors: Option<Vec<String>>,
     /// Pods is a map of string keys and a set values that used to select pods. The key defines the namespace which pods belong, and the each values is a set of pod names.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1184,11 +947,7 @@ pub struct WorkflowTemplatesJvmChaosSelectorExpressionSelectors {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct WorkflowTemplatesKernelChaos {
     /// ContainerNames indicates list of the name of affected container. If not set, the first container will be injected
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerNames")]
     pub container_names: Option<Vec<String>>,
     /// Duration represents the duration of the chaos action
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1199,11 +958,7 @@ pub struct WorkflowTemplatesKernelChaos {
     /// Mode defines the mode to run chaos action. Supported mode: one / all / fixed / fixed-percent / random-max-percent
     pub mode: WorkflowTemplatesKernelChaosMode,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// Selector is used to select pods that are used to inject chaos action.
     pub selector: WorkflowTemplatesKernelChaosSelector,
@@ -1264,52 +1019,28 @@ pub enum WorkflowTemplatesKernelChaosMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesKernelChaosSelector {
     /// Map of string keys and values that can be used to select objects. A selector based on annotations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "annotationSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelectors")]
     pub annotation_selectors: Option<BTreeMap<String, String>>,
     /// a slice of label selector expressions that can be used to select objects. A list of selectors based on set-based label expressions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expressionSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expressionSelectors")]
     pub expression_selectors: Option<Vec<WorkflowTemplatesKernelChaosSelectorExpressionSelectors>>,
     /// Map of string keys and values that can be used to select objects. A selector based on fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelectors")]
     pub field_selectors: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to select objects. A selector based on labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelectors")]
     pub label_selectors: Option<BTreeMap<String, String>>,
     /// Namespaces is a set of namespace to which objects belong.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Map of string keys and values that can be used to select nodes. Selector which must match a node's labels, and objects must belong to these selected nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelectors")]
     pub node_selectors: Option<BTreeMap<String, String>>,
     /// Nodes is a set of node name and objects must belong to these nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<Vec<String>>,
     /// PodPhaseSelectors is a set of condition of a pod at the current time. supported value: Pending / Running / Succeeded / Failed / Unknown
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podPhaseSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podPhaseSelectors")]
     pub pod_phase_selectors: Option<Vec<String>>,
     /// Pods is a map of string keys and a set values that used to select pods. The key defines the namespace which pods belong, and the each values is a set of pod names.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1355,11 +1086,7 @@ pub struct WorkflowTemplatesNetworkChaos {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub duration: Option<String>,
     /// ExternalTargets represents network targets outside k8s
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalTargets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTargets")]
     pub external_targets: Option<Vec<String>>,
     /// Loss represents the detail about loss action
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1370,11 +1097,7 @@ pub struct WorkflowTemplatesNetworkChaos {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rate: Option<WorkflowTemplatesNetworkChaosRate>,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// Selector is used to select pods that are used to inject chaos action.
     pub selector: WorkflowTemplatesNetworkChaosSelector,
@@ -1382,11 +1105,7 @@ pub struct WorkflowTemplatesNetworkChaos {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub target: Option<WorkflowTemplatesNetworkChaosTarget>,
     /// TargetDevice represents the network device to be affected in target scope.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetDevice"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetDevice")]
     pub target_device: Option<String>,
     /// Value is required when the mode is set to `FixedMode` / `FixedPercentMode` / `RandomMaxPercentMode`. If `FixedMode`, provide an integer of pods to do chaos action. If `FixedPercentMode`, provide a number from 0-100 to specify the percent of pods the server can do chaos action. IF `RandomMaxPercentMode`,  provide a number from 0-100 to specify the max percent of pods to do chaos action
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1512,52 +1231,28 @@ pub struct WorkflowTemplatesNetworkChaosRate {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesNetworkChaosSelector {
     /// Map of string keys and values that can be used to select objects. A selector based on annotations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "annotationSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelectors")]
     pub annotation_selectors: Option<BTreeMap<String, String>>,
     /// a slice of label selector expressions that can be used to select objects. A list of selectors based on set-based label expressions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expressionSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expressionSelectors")]
     pub expression_selectors: Option<Vec<WorkflowTemplatesNetworkChaosSelectorExpressionSelectors>>,
     /// Map of string keys and values that can be used to select objects. A selector based on fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelectors")]
     pub field_selectors: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to select objects. A selector based on labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelectors")]
     pub label_selectors: Option<BTreeMap<String, String>>,
     /// Namespaces is a set of namespace to which objects belong.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Map of string keys and values that can be used to select nodes. Selector which must match a node's labels, and objects must belong to these selected nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelectors")]
     pub node_selectors: Option<BTreeMap<String, String>>,
     /// Nodes is a set of node name and objects must belong to these nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<Vec<String>>,
     /// PodPhaseSelectors is a set of condition of a pod at the current time. supported value: Pending / Running / Succeeded / Failed / Unknown
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podPhaseSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podPhaseSelectors")]
     pub pod_phase_selectors: Option<Vec<String>>,
     /// Pods is a map of string keys and a set values that used to select pods. The key defines the namespace which pods belong, and the each values is a set of pod names.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1607,53 +1302,28 @@ pub enum WorkflowTemplatesNetworkChaosTargetMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesNetworkChaosTargetSelector {
     /// Map of string keys and values that can be used to select objects. A selector based on annotations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "annotationSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelectors")]
     pub annotation_selectors: Option<BTreeMap<String, String>>,
     /// a slice of label selector expressions that can be used to select objects. A list of selectors based on set-based label expressions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expressionSelectors"
-    )]
-    pub expression_selectors:
-        Option<Vec<WorkflowTemplatesNetworkChaosTargetSelectorExpressionSelectors>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expressionSelectors")]
+    pub expression_selectors: Option<Vec<WorkflowTemplatesNetworkChaosTargetSelectorExpressionSelectors>>,
     /// Map of string keys and values that can be used to select objects. A selector based on fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelectors")]
     pub field_selectors: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to select objects. A selector based on labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelectors")]
     pub label_selectors: Option<BTreeMap<String, String>>,
     /// Namespaces is a set of namespace to which objects belong.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Map of string keys and values that can be used to select nodes. Selector which must match a node's labels, and objects must belong to these selected nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelectors")]
     pub node_selectors: Option<BTreeMap<String, String>>,
     /// Nodes is a set of node name and objects must belong to these nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<Vec<String>>,
     /// PodPhaseSelectors is a set of condition of a pod at the current time. supported value: Pending / Running / Succeeded / Failed / Unknown
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podPhaseSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podPhaseSelectors")]
     pub pod_phase_selectors: Option<Vec<String>>,
     /// Pods is a map of string keys and a set values that used to select pods. The key defines the namespace which pods belong, and the each values is a set of pod names.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1684,239 +1354,95 @@ pub struct WorkflowTemplatesPhysicalmachineChaos {
     pub clock: Option<WorkflowTemplatesPhysicalmachineChaosClock>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disk-fill")]
     pub disk_fill: Option<WorkflowTemplatesPhysicalmachineChaosDiskFill>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disk-read-payload"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disk-read-payload")]
     pub disk_read_payload: Option<WorkflowTemplatesPhysicalmachineChaosDiskReadPayload>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disk-write-payload"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disk-write-payload")]
     pub disk_write_payload: Option<WorkflowTemplatesPhysicalmachineChaosDiskWritePayload>,
     /// Duration represents the duration of the chaos action
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub duration: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "file-append"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "file-append")]
     pub file_append: Option<WorkflowTemplatesPhysicalmachineChaosFileAppend>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "file-create"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "file-create")]
     pub file_create: Option<WorkflowTemplatesPhysicalmachineChaosFileCreate>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "file-delete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "file-delete")]
     pub file_delete: Option<WorkflowTemplatesPhysicalmachineChaosFileDelete>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "file-modify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "file-modify")]
     pub file_modify: Option<WorkflowTemplatesPhysicalmachineChaosFileModify>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "file-rename"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "file-rename")]
     pub file_rename: Option<WorkflowTemplatesPhysicalmachineChaosFileRename>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "file-replace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "file-replace")]
     pub file_replace: Option<WorkflowTemplatesPhysicalmachineChaosFileReplace>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "http-abort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "http-abort")]
     pub http_abort: Option<WorkflowTemplatesPhysicalmachineChaosHttpAbort>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "http-config"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "http-config")]
     pub http_config: Option<WorkflowTemplatesPhysicalmachineChaosHttpConfig>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "http-delay"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "http-delay")]
     pub http_delay: Option<WorkflowTemplatesPhysicalmachineChaosHttpDelay>,
     /// used for HTTP request, now only support GET
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "http-request"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "http-request")]
     pub http_request: Option<WorkflowTemplatesPhysicalmachineChaosHttpRequest>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jvm-exception"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvm-exception")]
     pub jvm_exception: Option<WorkflowTemplatesPhysicalmachineChaosJvmException>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvm-gc")]
     pub jvm_gc: Option<WorkflowTemplatesPhysicalmachineChaosJvmGc>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jvm-latency"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvm-latency")]
     pub jvm_latency: Option<WorkflowTemplatesPhysicalmachineChaosJvmLatency>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvm-mysql")]
     pub jvm_mysql: Option<WorkflowTemplatesPhysicalmachineChaosJvmMysql>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jvm-return"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvm-return")]
     pub jvm_return: Option<WorkflowTemplatesPhysicalmachineChaosJvmReturn>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jvm-rule-data"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvm-rule-data")]
     pub jvm_rule_data: Option<WorkflowTemplatesPhysicalmachineChaosJvmRuleData>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jvm-stress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvm-stress")]
     pub jvm_stress: Option<WorkflowTemplatesPhysicalmachineChaosJvmStress>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kafka-fill"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafka-fill")]
     pub kafka_fill: Option<WorkflowTemplatesPhysicalmachineChaosKafkaFill>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kafka-flood"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafka-flood")]
     pub kafka_flood: Option<WorkflowTemplatesPhysicalmachineChaosKafkaFlood>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafka-io")]
     pub kafka_io: Option<WorkflowTemplatesPhysicalmachineChaosKafkaIo>,
     /// Mode defines the mode to run chaos action. Supported mode: one / all / fixed / fixed-percent / random-max-percent
     pub mode: WorkflowTemplatesPhysicalmachineChaosMode,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "network-bandwidth"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "network-bandwidth")]
     pub network_bandwidth: Option<WorkflowTemplatesPhysicalmachineChaosNetworkBandwidth>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "network-corrupt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "network-corrupt")]
     pub network_corrupt: Option<WorkflowTemplatesPhysicalmachineChaosNetworkCorrupt>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "network-delay"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "network-delay")]
     pub network_delay: Option<WorkflowTemplatesPhysicalmachineChaosNetworkDelay>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "network-dns"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "network-dns")]
     pub network_dns: Option<WorkflowTemplatesPhysicalmachineChaosNetworkDns>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "network-down"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "network-down")]
     pub network_down: Option<WorkflowTemplatesPhysicalmachineChaosNetworkDown>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "network-duplicate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "network-duplicate")]
     pub network_duplicate: Option<WorkflowTemplatesPhysicalmachineChaosNetworkDuplicate>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "network-flood"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "network-flood")]
     pub network_flood: Option<WorkflowTemplatesPhysicalmachineChaosNetworkFlood>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "network-loss"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "network-loss")]
     pub network_loss: Option<WorkflowTemplatesPhysicalmachineChaosNetworkLoss>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "network-partition"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "network-partition")]
     pub network_partition: Option<WorkflowTemplatesPhysicalmachineChaosNetworkPartition>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub process: Option<WorkflowTemplatesPhysicalmachineChaosProcess>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redis-cacheLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redis-cacheLimit")]
     pub redis_cache_limit: Option<WorkflowTemplatesPhysicalmachineChaosRedisCacheLimit>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redis-expiration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redis-expiration")]
     pub redis_expiration: Option<WorkflowTemplatesPhysicalmachineChaosRedisExpiration>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redis-penetration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redis-penetration")]
     pub redis_penetration: Option<WorkflowTemplatesPhysicalmachineChaosRedisPenetration>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redis-restart"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redis-restart")]
     pub redis_restart: Option<WorkflowTemplatesPhysicalmachineChaosRedisRestart>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redis-stop"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redis-stop")]
     pub redis_stop: Option<WorkflowTemplatesPhysicalmachineChaosRedisStop>,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// Selector is used to select physical machines that are used to inject chaos action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<WorkflowTemplatesPhysicalmachineChaosSelector>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stress-cpu"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stress-cpu")]
     pub stress_cpu: Option<WorkflowTemplatesPhysicalmachineChaosStressCpu>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stress-mem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stress-mem")]
     pub stress_mem: Option<WorkflowTemplatesPhysicalmachineChaosStressMem>,
     /// the experiment ID
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2016,32 +1542,20 @@ pub enum WorkflowTemplatesPhysicalmachineChaosAction {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesPhysicalmachineChaosClock {
     /// the identifier of the particular clock on which to act. More clock description in linux kernel can be found in man page of clock_getres, clock_gettime, clock_settime. Muti clock ids should be split with ","
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clock-ids-slice"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clock-ids-slice")]
     pub clock_ids_slice: Option<String>,
     /// the pid of target program.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pid: Option<i64>,
     /// specifies the length of time offset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "time-offset"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "time-offset")]
     pub time_offset: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesPhysicalmachineChaosDiskFill {
     /// fill disk by fallocate
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fill-by-fallocate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fill-by-fallocate")]
     pub fill_by_fallocate: Option<bool>,
     /// specifies the location to fill data in. if path not provided, payload will read/write from/into a temp file, temp file will be deleted after writing
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2057,11 +1571,7 @@ pub struct WorkflowTemplatesPhysicalmachineChaosDiskReadPayload {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// specifies the number of process work on writing, default 1, only 1-255 is valid value
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "payload-process-num"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "payload-process-num")]
     pub payload_process_num: Option<i64>,
     /// specifies how many units of data will write into the file path. support unit: c=1, w=2, b=512, kB=1000, K=1024, MB=1000*1000, M=1024*1024, GB=1000*1000*1000, G=1024*1024*1024 BYTES. example : 1M | 512kB
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2074,11 +1584,7 @@ pub struct WorkflowTemplatesPhysicalmachineChaosDiskWritePayload {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// specifies the number of process work on writing, default 1, only 1-255 is valid value
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "payload-process-num"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "payload-process-num")]
     pub payload_process_num: Option<i64>,
     /// specifies how many units of data will write into the file path. support unit: c=1, w=2, b=512, kB=1000, K=1024, MB=1000*1000, M=1024*1024, GB=1000*1000*1000, G=1024*1024*1024 BYTES. example : 1M | 512kB
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2134,22 +1640,14 @@ pub struct WorkflowTemplatesPhysicalmachineChaosFileRename {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dest-file")]
     pub dest_file: Option<String>,
     /// SourceFile is the name need to be renamed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "source-file"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "source-file")]
     pub source_file: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesPhysicalmachineChaosFileReplace {
     /// DestStr is the destination string of the file.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dest-string"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dest-string")]
     pub dest_string: Option<String>,
     /// FileName is the name of the file to be created, modified, deleted, renamed, or appended.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "file-name")]
@@ -2158,11 +1656,7 @@ pub struct WorkflowTemplatesPhysicalmachineChaosFileReplace {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub line: Option<i64>,
     /// OriginStr is the origin string of the file.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "origin-string"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "origin-string")]
     pub origin_string: Option<String>,
 }
 
@@ -2222,11 +1716,7 @@ pub struct WorkflowTemplatesPhysicalmachineChaosHttpRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub count: Option<i64>,
     /// Enable connection pool
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enable-conn-pool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enable-conn-pool")]
     pub enable_conn_pool: Option<bool>,
     /// Request to send"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2293,11 +1783,7 @@ pub struct WorkflowTemplatesPhysicalmachineChaosJvmMysql {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub latency: Option<i64>,
     /// the version of mysql-connector-java, only support 5.X.X(set to "5") and 8.X.X(set to "8") now
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mysqlConnectorVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mysqlConnectorVersion")]
     pub mysql_connector_version: Option<String>,
     /// the pid of Java process which needs to attach
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2370,11 +1856,7 @@ pub struct WorkflowTemplatesPhysicalmachineChaosKafkaFill {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBytes")]
     pub max_bytes: Option<i64>,
     /// The size of each message
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "messageSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "messageSize")]
     pub message_size: Option<i64>,
     /// The password of kafka client
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2383,11 +1865,7 @@ pub struct WorkflowTemplatesPhysicalmachineChaosKafkaFill {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
     /// The command to reload kafka config
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reloadCommand"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reloadCommand")]
     pub reload_command: Option<String>,
     /// The topic to attack
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2403,11 +1881,7 @@ pub struct WorkflowTemplatesPhysicalmachineChaosKafkaFlood {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// The size of each message
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "messageSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "messageSize")]
     pub message_size: Option<i64>,
     /// The password of kafka client
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2429,25 +1903,13 @@ pub struct WorkflowTemplatesPhysicalmachineChaosKafkaFlood {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesPhysicalmachineChaosKafkaIo {
     /// The path of server config
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configFile")]
     pub config_file: Option<String>,
     /// Make kafka cluster non-readable
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nonReadable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nonReadable")]
     pub non_readable: Option<bool>,
     /// Make kafka cluster non-writable
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nonWritable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nonWritable")]
     pub non_writable: Option<bool>,
     /// The topic to attack
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2476,11 +1938,7 @@ pub struct WorkflowTemplatesPhysicalmachineChaosNetworkBandwidth {
     pub device: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-address"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-address")]
     pub ip_address: Option<String>,
     pub limit: i32,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2499,49 +1957,29 @@ pub struct WorkflowTemplatesPhysicalmachineChaosNetworkCorrupt {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub device: Option<String>,
     /// only impact egress traffic to these destination ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010. it can only be used in conjunction with -p tcp or -p udp
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "egress-port"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egress-port")]
     pub egress_port: Option<String>,
     /// only impact traffic to these hostnames
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
     /// only impact egress traffic to these IP addresses
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-address"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-address")]
     pub ip_address: Option<String>,
     /// only impact traffic using this IP protocol, supported: tcp, udp, icmp, all
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-protocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-protocol")]
     pub ip_protocol: Option<String>,
     /// percentage of packets to corrupt (10 is 10%)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub percent: Option<String>,
     /// only impact egress traffic from these source ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010. it can only be used in conjunction with -p tcp or -p udp
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "source-port"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "source-port")]
     pub source_port: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesPhysicalmachineChaosNetworkDelay {
     /// only the packet which match the tcp flag can be accepted, others will be dropped. only set when the IPProtocol is tcp, used for partition.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accept-tcp-flags"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accept-tcp-flags")]
     pub accept_tcp_flags: Option<String>,
     /// correlation is percentage (10 is 10%)
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2550,28 +1988,16 @@ pub struct WorkflowTemplatesPhysicalmachineChaosNetworkDelay {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub device: Option<String>,
     /// only impact egress traffic to these destination ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010. it can only be used in conjunction with -p tcp or -p udp
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "egress-port"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egress-port")]
     pub egress_port: Option<String>,
     /// only impact traffic to these hostnames
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
     /// only impact egress traffic to these IP addresses
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-address"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-address")]
     pub ip_address: Option<String>,
     /// only impact traffic using this IP protocol, supported: tcp, udp, icmp, all
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-protocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-protocol")]
     pub ip_protocol: Option<String>,
     /// jitter time, time units: ns, us (or µs), ms, s, m, h.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2580,32 +2006,20 @@ pub struct WorkflowTemplatesPhysicalmachineChaosNetworkDelay {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub latency: Option<String>,
     /// only impact egress traffic from these source ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010. it can only be used in conjunction with -p tcp or -p udp
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "source-port"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "source-port")]
     pub source_port: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesPhysicalmachineChaosNetworkDns {
     /// map this host to specified IP
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dns-domain-name"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dns-domain-name")]
     pub dns_domain_name: Option<String>,
     /// map specified host to this IP address
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dns-ip")]
     pub dns_ip: Option<String>,
     /// update the DNS server in /etc/resolv.conf with this value
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dns-server"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dns-server")]
     pub dns_server: Option<String>,
 }
 
@@ -2628,38 +2042,22 @@ pub struct WorkflowTemplatesPhysicalmachineChaosNetworkDuplicate {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub device: Option<String>,
     /// only impact egress traffic to these destination ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010. it can only be used in conjunction with -p tcp or -p udp
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "egress-port"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egress-port")]
     pub egress_port: Option<String>,
     /// only impact traffic to these hostnames
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
     /// only impact egress traffic to these IP addresses
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-address"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-address")]
     pub ip_address: Option<String>,
     /// only impact traffic using this IP protocol, supported: tcp, udp, icmp, all
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-protocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-protocol")]
     pub ip_protocol: Option<String>,
     /// percentage of packets to duplicate (10 is 10%)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub percent: Option<String>,
     /// only impact egress traffic from these source ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010. it can only be used in conjunction with -p tcp or -p udp
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "source-port"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "source-port")]
     pub source_port: Option<String>,
 }
 
@@ -2668,11 +2066,7 @@ pub struct WorkflowTemplatesPhysicalmachineChaosNetworkFlood {
     /// The number of seconds to run the iperf test
     pub duration: String,
     /// Generate traffic to this IP address
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-address"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-address")]
     pub ip_address: Option<String>,
     /// The number of iperf parallel client threads to run
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2693,49 +2087,29 @@ pub struct WorkflowTemplatesPhysicalmachineChaosNetworkLoss {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub device: Option<String>,
     /// only impact egress traffic to these destination ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010. it can only be used in conjunction with -p tcp or -p udp
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "egress-port"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egress-port")]
     pub egress_port: Option<String>,
     /// only impact traffic to these hostnames
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
     /// only impact egress traffic to these IP addresses
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-address"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-address")]
     pub ip_address: Option<String>,
     /// only impact traffic using this IP protocol, supported: tcp, udp, icmp, all
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-protocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-protocol")]
     pub ip_protocol: Option<String>,
     /// percentage of packets to loss (10 is 10%)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub percent: Option<String>,
     /// only impact egress traffic from these source ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010. it can only be used in conjunction with -p tcp or -p udp
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "source-port"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "source-port")]
     pub source_port: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesPhysicalmachineChaosNetworkPartition {
     /// only the packet which match the tcp flag can be accepted, others will be dropped. only set when the IPProtocol is tcp, used for partition.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accept-tcp-flags"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accept-tcp-flags")]
     pub accept_tcp_flags: Option<String>,
     /// the network interface to impact
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2747,18 +2121,10 @@ pub struct WorkflowTemplatesPhysicalmachineChaosNetworkPartition {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
     /// only impact egress traffic to these IP addresses
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-address"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-address")]
     pub ip_address: Option<String>,
     /// only impact egress traffic to these IP addresses
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-protocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-protocol")]
     pub ip_protocol: Option<String>,
 }
 
@@ -2768,11 +2134,7 @@ pub struct WorkflowTemplatesPhysicalmachineChaosProcess {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub process: Option<String>,
     /// the command to be run when recovering experiment
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recoverCmd"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recoverCmd")]
     pub recover_cmd: Option<String>,
     /// the signal number to send
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2823,11 +2185,7 @@ pub struct WorkflowTemplatesPhysicalmachineChaosRedisPenetration {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<String>,
     /// The number of requests to be sent
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestNum"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestNum")]
     pub request_num: Option<i64>,
 }
 
@@ -2840,11 +2198,7 @@ pub struct WorkflowTemplatesPhysicalmachineChaosRedisRestart {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conf: Option<String>,
     /// The control flag determines whether to flush config
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flushConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flushConfig")]
     pub flush_config: Option<bool>,
     /// The password of Redis server
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2863,11 +2217,7 @@ pub struct WorkflowTemplatesPhysicalmachineChaosRedisStop {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conf: Option<String>,
     /// The control flag determines whether to flush config
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flushConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flushConfig")]
     pub flush_config: Option<bool>,
     /// The password of Redis server
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2881,43 +2231,22 @@ pub struct WorkflowTemplatesPhysicalmachineChaosRedisStop {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesPhysicalmachineChaosSelector {
     /// Map of string keys and values that can be used to select objects. A selector based on annotations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "annotationSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelectors")]
     pub annotation_selectors: Option<BTreeMap<String, String>>,
     /// a slice of label selector expressions that can be used to select objects. A list of selectors based on set-based label expressions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expressionSelectors"
-    )]
-    pub expression_selectors:
-        Option<Vec<WorkflowTemplatesPhysicalmachineChaosSelectorExpressionSelectors>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expressionSelectors")]
+    pub expression_selectors: Option<Vec<WorkflowTemplatesPhysicalmachineChaosSelectorExpressionSelectors>>,
     /// Map of string keys and values that can be used to select objects. A selector based on fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelectors")]
     pub field_selectors: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to select objects. A selector based on labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelectors")]
     pub label_selectors: Option<BTreeMap<String, String>>,
     /// Namespaces is a set of namespace to which objects belong.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// PhysicalMachines is a map of string keys and a set values that used to select physical machines. The key defines the namespace which physical machine belong, and each value is a set of physical machine names.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "physicalMachines"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "physicalMachines")]
     pub physical_machines: Option<BTreeMap<String, String>>,
 }
 
@@ -2962,11 +2291,7 @@ pub struct WorkflowTemplatesPhysicalmachineChaosUserDefined {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "attackCmd")]
     pub attack_cmd: Option<String>,
     /// The command to be executed when recover
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recoverCmd"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recoverCmd")]
     pub recover_cmd: Option<String>,
 }
 
@@ -2983,30 +2308,18 @@ pub struct WorkflowTemplatesPodChaos {
     /// Action defines the specific pod chaos action. Supported action: pod-kill / pod-failure / container-kill Default action: pod-kill
     pub action: WorkflowTemplatesPodChaosAction,
     /// ContainerNames indicates list of the name of affected container. If not set, the first container will be injected
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerNames")]
     pub container_names: Option<Vec<String>>,
     /// Duration represents the duration of the chaos action. It is required when the action is `PodFailureAction`. A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as "300ms", "-1.5h" or "2h45m". Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub duration: Option<String>,
     /// GracePeriod is used in pod-kill action. It represents the duration in seconds before the pod should be deleted. Value must be non-negative integer. The default value is zero that indicates delete immediately.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gracePeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracePeriod")]
     pub grace_period: Option<i64>,
     /// Mode defines the mode to run chaos action. Supported mode: one / all / fixed / fixed-percent / random-max-percent
     pub mode: WorkflowTemplatesPodChaosMode,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// Selector is used to select pods that are used to inject chaos action.
     pub selector: WorkflowTemplatesPodChaosSelector,
@@ -3045,52 +2358,28 @@ pub enum WorkflowTemplatesPodChaosMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesPodChaosSelector {
     /// Map of string keys and values that can be used to select objects. A selector based on annotations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "annotationSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelectors")]
     pub annotation_selectors: Option<BTreeMap<String, String>>,
     /// a slice of label selector expressions that can be used to select objects. A list of selectors based on set-based label expressions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expressionSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expressionSelectors")]
     pub expression_selectors: Option<Vec<WorkflowTemplatesPodChaosSelectorExpressionSelectors>>,
     /// Map of string keys and values that can be used to select objects. A selector based on fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelectors")]
     pub field_selectors: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to select objects. A selector based on labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelectors")]
     pub label_selectors: Option<BTreeMap<String, String>>,
     /// Namespaces is a set of namespace to which objects belong.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Map of string keys and values that can be used to select nodes. Selector which must match a node's labels, and objects must belong to these selected nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelectors")]
     pub node_selectors: Option<BTreeMap<String, String>>,
     /// Nodes is a set of node name and objects must belong to these nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<Vec<String>>,
     /// PodPhaseSelectors is a set of condition of a pod at the current time. supported value: Pending / Running / Succeeded / Failed / Unknown
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podPhaseSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podPhaseSelectors")]
     pub pod_phase_selectors: Option<Vec<String>>,
     /// Pods is a map of string keys and a set values that used to select pods. The key defines the namespace which pods belong, and the each values is a set of pod names.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3116,24 +2405,12 @@ pub struct WorkflowTemplatesSchedule {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsChaos")]
     pub aws_chaos: Option<WorkflowTemplatesScheduleAwsChaos>,
     /// AzureChaosSpec is the content of the specification for an AzureChaos
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "azureChaos"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureChaos")]
     pub azure_chaos: Option<WorkflowTemplatesScheduleAzureChaos>,
     /// BlockChaosSpec is the content of the specification for a BlockChaos
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "blockChaos"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockChaos")]
     pub block_chaos: Option<WorkflowTemplatesScheduleBlockChaos>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "concurrencyPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "concurrencyPolicy")]
     pub concurrency_policy: Option<WorkflowTemplatesScheduleConcurrencyPolicy>,
     /// DNSChaosSpec defines the desired state of DNSChaos
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsChaos")]
@@ -3141,11 +2418,7 @@ pub struct WorkflowTemplatesSchedule {
     /// GCPChaosSpec is the content of the specification for a GCPChaos
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcpChaos")]
     pub gcp_chaos: Option<WorkflowTemplatesScheduleGcpChaos>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "historyLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "historyLimit")]
     pub history_limit: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpChaos")]
     pub http_chaos: Option<WorkflowTemplatesScheduleHttpChaos>,
@@ -3156,42 +2429,22 @@ pub struct WorkflowTemplatesSchedule {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvmChaos")]
     pub jvm_chaos: Option<WorkflowTemplatesScheduleJvmChaos>,
     /// KernelChaosSpec defines the desired state of KernelChaos
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kernelChaos"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kernelChaos")]
     pub kernel_chaos: Option<WorkflowTemplatesScheduleKernelChaos>,
     /// NetworkChaosSpec defines the desired state of NetworkChaos
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkChaos"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkChaos")]
     pub network_chaos: Option<WorkflowTemplatesScheduleNetworkChaos>,
     /// PhysicalMachineChaosSpec defines the desired state of PhysicalMachineChaos
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "physicalmachineChaos"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "physicalmachineChaos")]
     pub physicalmachine_chaos: Option<WorkflowTemplatesSchedulePhysicalmachineChaos>,
     /// PodChaosSpec defines the attributes that a user creates on a chaos experiment about pods.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podChaos")]
     pub pod_chaos: Option<WorkflowTemplatesSchedulePodChaos>,
     pub schedule: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startingDeadlineSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startingDeadlineSeconds")]
     pub starting_deadline_seconds: Option<i64>,
     /// StressChaosSpec defines the desired state of StressChaos
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stressChaos"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stressChaos")]
     pub stress_chaos: Option<WorkflowTemplatesScheduleStressChaos>,
     /// TimeChaosSpec defines the desired state of TimeChaos
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeChaos")]
@@ -3209,11 +2462,7 @@ pub struct WorkflowTemplatesScheduleAwsChaos {
     #[serde(rename = "awsRegion")]
     pub aws_region: String,
     /// DeviceName indicates the name of the device. Needed in detach-volume.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deviceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceName")]
     pub device_name: Option<String>,
     /// Duration represents the duration of the chaos action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3225,18 +2474,10 @@ pub struct WorkflowTemplatesScheduleAwsChaos {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// SecretName defines the name of kubernetes secret.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
     /// EbsVolume indicates the ID of the EBS volume. Needed in detach-volume.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeID")]
@@ -3269,21 +2510,13 @@ pub struct WorkflowTemplatesScheduleAzureChaos {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lun: Option<i64>,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// ResourceGroupName defines the name of ResourceGroup
     #[serde(rename = "resourceGroupName")]
     pub resource_group_name: String,
     /// SecretName defines the name of kubernetes secret. It is used for Azure credentials.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
     /// SubscriptionID defines the id of Azure subscription.
     #[serde(rename = "subscriptionID")]
@@ -3310,11 +2543,7 @@ pub struct WorkflowTemplatesScheduleBlockChaos {
     /// Action defines the specific block chaos action. Supported action: delay
     pub action: WorkflowTemplatesScheduleBlockChaosAction,
     /// ContainerNames indicates list of the name of affected container. If not set, the first container will be injected
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerNames")]
     pub container_names: Option<Vec<String>>,
     /// Delay defines the delay distribution.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3325,11 +2554,7 @@ pub struct WorkflowTemplatesScheduleBlockChaos {
     /// Mode defines the mode to run chaos action. Supported mode: one / all / fixed / fixed-percent / random-max-percent
     pub mode: WorkflowTemplatesScheduleBlockChaosMode,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// Selector is used to select pods that are used to inject chaos action.
     pub selector: WorkflowTemplatesScheduleBlockChaosSelector,
@@ -3378,53 +2603,28 @@ pub enum WorkflowTemplatesScheduleBlockChaosMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesScheduleBlockChaosSelector {
     /// Map of string keys and values that can be used to select objects. A selector based on annotations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "annotationSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelectors")]
     pub annotation_selectors: Option<BTreeMap<String, String>>,
     /// a slice of label selector expressions that can be used to select objects. A list of selectors based on set-based label expressions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expressionSelectors"
-    )]
-    pub expression_selectors:
-        Option<Vec<WorkflowTemplatesScheduleBlockChaosSelectorExpressionSelectors>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expressionSelectors")]
+    pub expression_selectors: Option<Vec<WorkflowTemplatesScheduleBlockChaosSelectorExpressionSelectors>>,
     /// Map of string keys and values that can be used to select objects. A selector based on fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelectors")]
     pub field_selectors: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to select objects. A selector based on labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelectors")]
     pub label_selectors: Option<BTreeMap<String, String>>,
     /// Namespaces is a set of namespace to which objects belong.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Map of string keys and values that can be used to select nodes. Selector which must match a node's labels, and objects must belong to these selected nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelectors")]
     pub node_selectors: Option<BTreeMap<String, String>>,
     /// Nodes is a set of node name and objects must belong to these nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<Vec<String>>,
     /// PodPhaseSelectors is a set of condition of a pod at the current time. supported value: Pending / Running / Succeeded / Failed / Unknown
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podPhaseSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podPhaseSelectors")]
     pub pod_phase_selectors: Option<Vec<String>>,
     /// Pods is a map of string keys and a set values that used to select pods. The key defines the namespace which pods belong, and the each values is a set of pod names.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3456,11 +2656,7 @@ pub struct WorkflowTemplatesScheduleDnsChaos {
     /// Action defines the specific DNS chaos action. Supported action: error, random Default action: error
     pub action: WorkflowTemplatesScheduleDnsChaosAction,
     /// ContainerNames indicates list of the name of affected container. If not set, the first container will be injected
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerNames")]
     pub container_names: Option<Vec<String>>,
     /// Duration represents the duration of the chaos action
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3471,11 +2667,7 @@ pub struct WorkflowTemplatesScheduleDnsChaos {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub patterns: Option<Vec<String>>,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// Selector is used to select pods that are used to inject chaos action.
     pub selector: WorkflowTemplatesScheduleDnsChaosSelector,
@@ -3512,53 +2704,28 @@ pub enum WorkflowTemplatesScheduleDnsChaosMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesScheduleDnsChaosSelector {
     /// Map of string keys and values that can be used to select objects. A selector based on annotations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "annotationSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelectors")]
     pub annotation_selectors: Option<BTreeMap<String, String>>,
     /// a slice of label selector expressions that can be used to select objects. A list of selectors based on set-based label expressions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expressionSelectors"
-    )]
-    pub expression_selectors:
-        Option<Vec<WorkflowTemplatesScheduleDnsChaosSelectorExpressionSelectors>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expressionSelectors")]
+    pub expression_selectors: Option<Vec<WorkflowTemplatesScheduleDnsChaosSelectorExpressionSelectors>>,
     /// Map of string keys and values that can be used to select objects. A selector based on fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelectors")]
     pub field_selectors: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to select objects. A selector based on labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelectors")]
     pub label_selectors: Option<BTreeMap<String, String>>,
     /// Namespaces is a set of namespace to which objects belong.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Map of string keys and values that can be used to select nodes. Selector which must match a node's labels, and objects must belong to these selected nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelectors")]
     pub node_selectors: Option<BTreeMap<String, String>>,
     /// Nodes is a set of node name and objects must belong to these nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<Vec<String>>,
     /// PodPhaseSelectors is a set of condition of a pod at the current time. supported value: Pending / Running / Succeeded / Failed / Unknown
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podPhaseSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podPhaseSelectors")]
     pub pod_phase_selectors: Option<Vec<String>>,
     /// Pods is a map of string keys and a set values that used to select pods. The key defines the namespace which pods belong, and the each values is a set of pod names.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3583,11 +2750,7 @@ pub struct WorkflowTemplatesScheduleGcpChaos {
     /// Action defines the specific gcp chaos action. Supported action: node-stop / node-reset / disk-loss Default action: node-stop
     pub action: WorkflowTemplatesScheduleGcpChaosAction,
     /// The device name of disks to detach. Needed in disk-loss.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deviceNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deviceNames")]
     pub device_names: Option<Vec<String>>,
     /// Duration represents the duration of the chaos action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3597,18 +2760,10 @@ pub struct WorkflowTemplatesScheduleGcpChaos {
     /// Project defines the ID of gcp project.
     pub project: String,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// SecretName defines the name of kubernetes secret. It is used for GCP credentials.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
     /// Zone defines the zone of gcp project.
     pub zone: String,
@@ -3654,11 +2809,7 @@ pub struct WorkflowTemplatesScheduleHttpChaos {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// Replace is a rule to replace some contents in target.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3746,53 +2897,28 @@ pub struct WorkflowTemplatesScheduleHttpChaosReplace {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesScheduleHttpChaosSelector {
     /// Map of string keys and values that can be used to select objects. A selector based on annotations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "annotationSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelectors")]
     pub annotation_selectors: Option<BTreeMap<String, String>>,
     /// a slice of label selector expressions that can be used to select objects. A list of selectors based on set-based label expressions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expressionSelectors"
-    )]
-    pub expression_selectors:
-        Option<Vec<WorkflowTemplatesScheduleHttpChaosSelectorExpressionSelectors>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expressionSelectors")]
+    pub expression_selectors: Option<Vec<WorkflowTemplatesScheduleHttpChaosSelectorExpressionSelectors>>,
     /// Map of string keys and values that can be used to select objects. A selector based on fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelectors")]
     pub field_selectors: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to select objects. A selector based on labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelectors")]
     pub label_selectors: Option<BTreeMap<String, String>>,
     /// Namespaces is a set of namespace to which objects belong.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Map of string keys and values that can be used to select nodes. Selector which must match a node's labels, and objects must belong to these selected nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelectors")]
     pub node_selectors: Option<BTreeMap<String, String>>,
     /// Nodes is a set of node name and objects must belong to these nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<Vec<String>>,
     /// PodPhaseSelectors is a set of condition of a pod at the current time. supported value: Pending / Running / Succeeded / Failed / Unknown
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podPhaseSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podPhaseSelectors")]
     pub pod_phase_selectors: Option<Vec<String>>,
     /// Pods is a map of string keys and a set values that used to select pods. The key defines the namespace which pods belong, and the each values is a set of pod names.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3846,11 +2972,7 @@ pub struct WorkflowTemplatesScheduleIoChaos {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attr: Option<WorkflowTemplatesScheduleIoChaosAttr>,
     /// ContainerNames indicates list of the name of affected container. If not set, the first container will be injected
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerNames")]
     pub container_names: Option<Vec<String>>,
     /// Delay defines the value of I/O chaos action delay. A delay string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as "300ms". Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3876,11 +2998,7 @@ pub struct WorkflowTemplatesScheduleIoChaos {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub percent: Option<i64>,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// Selector is used to select pods that are used to inject chaos action.
     pub selector: WorkflowTemplatesScheduleIoChaosSelector,
@@ -3969,11 +3087,7 @@ pub struct WorkflowTemplatesScheduleIoChaosMistake {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxLength")]
     pub max_length: Option<i64>,
     /// There will be [1, MaxOccurrences] segments of wrong data.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxOccurrences"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxOccurrences")]
     pub max_occurrences: Option<i64>,
 }
 
@@ -4005,53 +3119,28 @@ pub enum WorkflowTemplatesScheduleIoChaosMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesScheduleIoChaosSelector {
     /// Map of string keys and values that can be used to select objects. A selector based on annotations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "annotationSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelectors")]
     pub annotation_selectors: Option<BTreeMap<String, String>>,
     /// a slice of label selector expressions that can be used to select objects. A list of selectors based on set-based label expressions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expressionSelectors"
-    )]
-    pub expression_selectors:
-        Option<Vec<WorkflowTemplatesScheduleIoChaosSelectorExpressionSelectors>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expressionSelectors")]
+    pub expression_selectors: Option<Vec<WorkflowTemplatesScheduleIoChaosSelectorExpressionSelectors>>,
     /// Map of string keys and values that can be used to select objects. A selector based on fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelectors")]
     pub field_selectors: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to select objects. A selector based on labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelectors")]
     pub label_selectors: Option<BTreeMap<String, String>>,
     /// Namespaces is a set of namespace to which objects belong.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Map of string keys and values that can be used to select nodes. Selector which must match a node's labels, and objects must belong to these selected nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelectors")]
     pub node_selectors: Option<BTreeMap<String, String>>,
     /// Nodes is a set of node name and objects must belong to these nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<Vec<String>>,
     /// PodPhaseSelectors is a set of condition of a pod at the current time. supported value: Pending / Running / Succeeded / Failed / Unknown
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podPhaseSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podPhaseSelectors")]
     pub pod_phase_selectors: Option<Vec<String>>,
     /// Pods is a map of string keys and a set values that used to select pods. The key defines the namespace which pods belong, and the each values is a set of pod names.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4079,11 +3168,7 @@ pub struct WorkflowTemplatesScheduleJvmChaos {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub class: Option<String>,
     /// ContainerNames indicates list of the name of affected container. If not set, the first container will be injected
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerNames")]
     pub container_names: Option<Vec<String>>,
     /// the CPU core number needs to use, only set it when action is stress
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cpuCount")]
@@ -4109,11 +3194,7 @@ pub struct WorkflowTemplatesScheduleJvmChaos {
     /// Mode defines the mode to run chaos action. Supported mode: one / all / fixed / fixed-percent / random-max-percent
     pub mode: WorkflowTemplatesScheduleJvmChaosMode,
     /// the version of mysql-connector-java, only support 5.X.X(set to "5") and 8.X.X(set to "8") now
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mysqlConnectorVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mysqlConnectorVersion")]
     pub mysql_connector_version: Option<String>,
     /// byteman rule name, should be unique, and will generate one if not set
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4125,11 +3206,7 @@ pub struct WorkflowTemplatesScheduleJvmChaos {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// the byteman rule's data for action 'ruleData'
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ruleData")]
@@ -4185,53 +3262,28 @@ pub enum WorkflowTemplatesScheduleJvmChaosMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesScheduleJvmChaosSelector {
     /// Map of string keys and values that can be used to select objects. A selector based on annotations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "annotationSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelectors")]
     pub annotation_selectors: Option<BTreeMap<String, String>>,
     /// a slice of label selector expressions that can be used to select objects. A list of selectors based on set-based label expressions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expressionSelectors"
-    )]
-    pub expression_selectors:
-        Option<Vec<WorkflowTemplatesScheduleJvmChaosSelectorExpressionSelectors>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expressionSelectors")]
+    pub expression_selectors: Option<Vec<WorkflowTemplatesScheduleJvmChaosSelectorExpressionSelectors>>,
     /// Map of string keys and values that can be used to select objects. A selector based on fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelectors")]
     pub field_selectors: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to select objects. A selector based on labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelectors")]
     pub label_selectors: Option<BTreeMap<String, String>>,
     /// Namespaces is a set of namespace to which objects belong.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Map of string keys and values that can be used to select nodes. Selector which must match a node's labels, and objects must belong to these selected nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelectors")]
     pub node_selectors: Option<BTreeMap<String, String>>,
     /// Nodes is a set of node name and objects must belong to these nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<Vec<String>>,
     /// PodPhaseSelectors is a set of condition of a pod at the current time. supported value: Pending / Running / Succeeded / Failed / Unknown
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podPhaseSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podPhaseSelectors")]
     pub pod_phase_selectors: Option<Vec<String>>,
     /// Pods is a map of string keys and a set values that used to select pods. The key defines the namespace which pods belong, and the each values is a set of pod names.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4254,11 +3306,7 @@ pub struct WorkflowTemplatesScheduleJvmChaosSelectorExpressionSelectors {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct WorkflowTemplatesScheduleKernelChaos {
     /// ContainerNames indicates list of the name of affected container. If not set, the first container will be injected
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerNames")]
     pub container_names: Option<Vec<String>>,
     /// Duration represents the duration of the chaos action
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4269,11 +3317,7 @@ pub struct WorkflowTemplatesScheduleKernelChaos {
     /// Mode defines the mode to run chaos action. Supported mode: one / all / fixed / fixed-percent / random-max-percent
     pub mode: WorkflowTemplatesScheduleKernelChaosMode,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// Selector is used to select pods that are used to inject chaos action.
     pub selector: WorkflowTemplatesScheduleKernelChaosSelector,
@@ -4334,53 +3378,28 @@ pub enum WorkflowTemplatesScheduleKernelChaosMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesScheduleKernelChaosSelector {
     /// Map of string keys and values that can be used to select objects. A selector based on annotations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "annotationSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelectors")]
     pub annotation_selectors: Option<BTreeMap<String, String>>,
     /// a slice of label selector expressions that can be used to select objects. A list of selectors based on set-based label expressions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expressionSelectors"
-    )]
-    pub expression_selectors:
-        Option<Vec<WorkflowTemplatesScheduleKernelChaosSelectorExpressionSelectors>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expressionSelectors")]
+    pub expression_selectors: Option<Vec<WorkflowTemplatesScheduleKernelChaosSelectorExpressionSelectors>>,
     /// Map of string keys and values that can be used to select objects. A selector based on fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelectors")]
     pub field_selectors: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to select objects. A selector based on labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelectors")]
     pub label_selectors: Option<BTreeMap<String, String>>,
     /// Namespaces is a set of namespace to which objects belong.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Map of string keys and values that can be used to select nodes. Selector which must match a node's labels, and objects must belong to these selected nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelectors")]
     pub node_selectors: Option<BTreeMap<String, String>>,
     /// Nodes is a set of node name and objects must belong to these nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<Vec<String>>,
     /// PodPhaseSelectors is a set of condition of a pod at the current time. supported value: Pending / Running / Succeeded / Failed / Unknown
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podPhaseSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podPhaseSelectors")]
     pub pod_phase_selectors: Option<Vec<String>>,
     /// Pods is a map of string keys and a set values that used to select pods. The key defines the namespace which pods belong, and the each values is a set of pod names.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4426,11 +3445,7 @@ pub struct WorkflowTemplatesScheduleNetworkChaos {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub duration: Option<String>,
     /// ExternalTargets represents network targets outside k8s
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalTargets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTargets")]
     pub external_targets: Option<Vec<String>>,
     /// Loss represents the detail about loss action
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4441,11 +3456,7 @@ pub struct WorkflowTemplatesScheduleNetworkChaos {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rate: Option<WorkflowTemplatesScheduleNetworkChaosRate>,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// Selector is used to select pods that are used to inject chaos action.
     pub selector: WorkflowTemplatesScheduleNetworkChaosSelector,
@@ -4453,11 +3464,7 @@ pub struct WorkflowTemplatesScheduleNetworkChaos {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub target: Option<WorkflowTemplatesScheduleNetworkChaosTarget>,
     /// TargetDevice represents the network device to be affected in target scope.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetDevice"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetDevice")]
     pub target_device: Option<String>,
     /// Value is required when the mode is set to `FixedMode` / `FixedPercentMode` / `RandomMaxPercentMode`. If `FixedMode`, provide an integer of pods to do chaos action. If `FixedPercentMode`, provide a number from 0-100 to specify the percent of pods the server can do chaos action. IF `RandomMaxPercentMode`,  provide a number from 0-100 to specify the max percent of pods to do chaos action
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4583,53 +3590,28 @@ pub struct WorkflowTemplatesScheduleNetworkChaosRate {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesScheduleNetworkChaosSelector {
     /// Map of string keys and values that can be used to select objects. A selector based on annotations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "annotationSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelectors")]
     pub annotation_selectors: Option<BTreeMap<String, String>>,
     /// a slice of label selector expressions that can be used to select objects. A list of selectors based on set-based label expressions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expressionSelectors"
-    )]
-    pub expression_selectors:
-        Option<Vec<WorkflowTemplatesScheduleNetworkChaosSelectorExpressionSelectors>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expressionSelectors")]
+    pub expression_selectors: Option<Vec<WorkflowTemplatesScheduleNetworkChaosSelectorExpressionSelectors>>,
     /// Map of string keys and values that can be used to select objects. A selector based on fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelectors")]
     pub field_selectors: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to select objects. A selector based on labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelectors")]
     pub label_selectors: Option<BTreeMap<String, String>>,
     /// Namespaces is a set of namespace to which objects belong.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Map of string keys and values that can be used to select nodes. Selector which must match a node's labels, and objects must belong to these selected nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelectors")]
     pub node_selectors: Option<BTreeMap<String, String>>,
     /// Nodes is a set of node name and objects must belong to these nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<Vec<String>>,
     /// PodPhaseSelectors is a set of condition of a pod at the current time. supported value: Pending / Running / Succeeded / Failed / Unknown
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podPhaseSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podPhaseSelectors")]
     pub pod_phase_selectors: Option<Vec<String>>,
     /// Pods is a map of string keys and a set values that used to select pods. The key defines the namespace which pods belong, and the each values is a set of pod names.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4679,53 +3661,28 @@ pub enum WorkflowTemplatesScheduleNetworkChaosTargetMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesScheduleNetworkChaosTargetSelector {
     /// Map of string keys and values that can be used to select objects. A selector based on annotations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "annotationSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelectors")]
     pub annotation_selectors: Option<BTreeMap<String, String>>,
     /// a slice of label selector expressions that can be used to select objects. A list of selectors based on set-based label expressions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expressionSelectors"
-    )]
-    pub expression_selectors:
-        Option<Vec<WorkflowTemplatesScheduleNetworkChaosTargetSelectorExpressionSelectors>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expressionSelectors")]
+    pub expression_selectors: Option<Vec<WorkflowTemplatesScheduleNetworkChaosTargetSelectorExpressionSelectors>>,
     /// Map of string keys and values that can be used to select objects. A selector based on fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelectors")]
     pub field_selectors: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to select objects. A selector based on labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelectors")]
     pub label_selectors: Option<BTreeMap<String, String>>,
     /// Namespaces is a set of namespace to which objects belong.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Map of string keys and values that can be used to select nodes. Selector which must match a node's labels, and objects must belong to these selected nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelectors")]
     pub node_selectors: Option<BTreeMap<String, String>>,
     /// Nodes is a set of node name and objects must belong to these nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<Vec<String>>,
     /// PodPhaseSelectors is a set of condition of a pod at the current time. supported value: Pending / Running / Succeeded / Failed / Unknown
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podPhaseSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podPhaseSelectors")]
     pub pod_phase_selectors: Option<Vec<String>>,
     /// Pods is a map of string keys and a set values that used to select pods. The key defines the namespace which pods belong, and the each values is a set of pod names.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4756,239 +3713,95 @@ pub struct WorkflowTemplatesSchedulePhysicalmachineChaos {
     pub clock: Option<WorkflowTemplatesSchedulePhysicalmachineChaosClock>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "disk-fill")]
     pub disk_fill: Option<WorkflowTemplatesSchedulePhysicalmachineChaosDiskFill>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disk-read-payload"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disk-read-payload")]
     pub disk_read_payload: Option<WorkflowTemplatesSchedulePhysicalmachineChaosDiskReadPayload>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disk-write-payload"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disk-write-payload")]
     pub disk_write_payload: Option<WorkflowTemplatesSchedulePhysicalmachineChaosDiskWritePayload>,
     /// Duration represents the duration of the chaos action
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub duration: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "file-append"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "file-append")]
     pub file_append: Option<WorkflowTemplatesSchedulePhysicalmachineChaosFileAppend>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "file-create"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "file-create")]
     pub file_create: Option<WorkflowTemplatesSchedulePhysicalmachineChaosFileCreate>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "file-delete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "file-delete")]
     pub file_delete: Option<WorkflowTemplatesSchedulePhysicalmachineChaosFileDelete>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "file-modify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "file-modify")]
     pub file_modify: Option<WorkflowTemplatesSchedulePhysicalmachineChaosFileModify>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "file-rename"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "file-rename")]
     pub file_rename: Option<WorkflowTemplatesSchedulePhysicalmachineChaosFileRename>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "file-replace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "file-replace")]
     pub file_replace: Option<WorkflowTemplatesSchedulePhysicalmachineChaosFileReplace>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "http-abort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "http-abort")]
     pub http_abort: Option<WorkflowTemplatesSchedulePhysicalmachineChaosHttpAbort>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "http-config"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "http-config")]
     pub http_config: Option<WorkflowTemplatesSchedulePhysicalmachineChaosHttpConfig>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "http-delay"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "http-delay")]
     pub http_delay: Option<WorkflowTemplatesSchedulePhysicalmachineChaosHttpDelay>,
     /// used for HTTP request, now only support GET
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "http-request"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "http-request")]
     pub http_request: Option<WorkflowTemplatesSchedulePhysicalmachineChaosHttpRequest>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jvm-exception"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvm-exception")]
     pub jvm_exception: Option<WorkflowTemplatesSchedulePhysicalmachineChaosJvmException>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvm-gc")]
     pub jvm_gc: Option<WorkflowTemplatesSchedulePhysicalmachineChaosJvmGc>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jvm-latency"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvm-latency")]
     pub jvm_latency: Option<WorkflowTemplatesSchedulePhysicalmachineChaosJvmLatency>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvm-mysql")]
     pub jvm_mysql: Option<WorkflowTemplatesSchedulePhysicalmachineChaosJvmMysql>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jvm-return"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvm-return")]
     pub jvm_return: Option<WorkflowTemplatesSchedulePhysicalmachineChaosJvmReturn>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jvm-rule-data"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvm-rule-data")]
     pub jvm_rule_data: Option<WorkflowTemplatesSchedulePhysicalmachineChaosJvmRuleData>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jvm-stress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jvm-stress")]
     pub jvm_stress: Option<WorkflowTemplatesSchedulePhysicalmachineChaosJvmStress>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kafka-fill"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafka-fill")]
     pub kafka_fill: Option<WorkflowTemplatesSchedulePhysicalmachineChaosKafkaFill>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kafka-flood"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafka-flood")]
     pub kafka_flood: Option<WorkflowTemplatesSchedulePhysicalmachineChaosKafkaFlood>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kafka-io")]
     pub kafka_io: Option<WorkflowTemplatesSchedulePhysicalmachineChaosKafkaIo>,
     /// Mode defines the mode to run chaos action. Supported mode: one / all / fixed / fixed-percent / random-max-percent
     pub mode: WorkflowTemplatesSchedulePhysicalmachineChaosMode,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "network-bandwidth"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "network-bandwidth")]
     pub network_bandwidth: Option<WorkflowTemplatesSchedulePhysicalmachineChaosNetworkBandwidth>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "network-corrupt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "network-corrupt")]
     pub network_corrupt: Option<WorkflowTemplatesSchedulePhysicalmachineChaosNetworkCorrupt>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "network-delay"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "network-delay")]
     pub network_delay: Option<WorkflowTemplatesSchedulePhysicalmachineChaosNetworkDelay>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "network-dns"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "network-dns")]
     pub network_dns: Option<WorkflowTemplatesSchedulePhysicalmachineChaosNetworkDns>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "network-down"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "network-down")]
     pub network_down: Option<WorkflowTemplatesSchedulePhysicalmachineChaosNetworkDown>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "network-duplicate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "network-duplicate")]
     pub network_duplicate: Option<WorkflowTemplatesSchedulePhysicalmachineChaosNetworkDuplicate>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "network-flood"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "network-flood")]
     pub network_flood: Option<WorkflowTemplatesSchedulePhysicalmachineChaosNetworkFlood>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "network-loss"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "network-loss")]
     pub network_loss: Option<WorkflowTemplatesSchedulePhysicalmachineChaosNetworkLoss>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "network-partition"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "network-partition")]
     pub network_partition: Option<WorkflowTemplatesSchedulePhysicalmachineChaosNetworkPartition>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub process: Option<WorkflowTemplatesSchedulePhysicalmachineChaosProcess>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redis-cacheLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redis-cacheLimit")]
     pub redis_cache_limit: Option<WorkflowTemplatesSchedulePhysicalmachineChaosRedisCacheLimit>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redis-expiration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redis-expiration")]
     pub redis_expiration: Option<WorkflowTemplatesSchedulePhysicalmachineChaosRedisExpiration>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redis-penetration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redis-penetration")]
     pub redis_penetration: Option<WorkflowTemplatesSchedulePhysicalmachineChaosRedisPenetration>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redis-restart"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redis-restart")]
     pub redis_restart: Option<WorkflowTemplatesSchedulePhysicalmachineChaosRedisRestart>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redis-stop"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redis-stop")]
     pub redis_stop: Option<WorkflowTemplatesSchedulePhysicalmachineChaosRedisStop>,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// Selector is used to select physical machines that are used to inject chaos action.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<WorkflowTemplatesSchedulePhysicalmachineChaosSelector>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stress-cpu"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stress-cpu")]
     pub stress_cpu: Option<WorkflowTemplatesSchedulePhysicalmachineChaosStressCpu>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stress-mem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stress-mem")]
     pub stress_mem: Option<WorkflowTemplatesSchedulePhysicalmachineChaosStressMem>,
     /// the experiment ID
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5088,32 +3901,20 @@ pub enum WorkflowTemplatesSchedulePhysicalmachineChaosAction {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesSchedulePhysicalmachineChaosClock {
     /// the identifier of the particular clock on which to act. More clock description in linux kernel can be found in man page of clock_getres, clock_gettime, clock_settime. Muti clock ids should be split with ","
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clock-ids-slice"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clock-ids-slice")]
     pub clock_ids_slice: Option<String>,
     /// the pid of target program.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pid: Option<i64>,
     /// specifies the length of time offset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "time-offset"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "time-offset")]
     pub time_offset: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesSchedulePhysicalmachineChaosDiskFill {
     /// fill disk by fallocate
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fill-by-fallocate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fill-by-fallocate")]
     pub fill_by_fallocate: Option<bool>,
     /// specifies the location to fill data in. if path not provided, payload will read/write from/into a temp file, temp file will be deleted after writing
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5129,11 +3930,7 @@ pub struct WorkflowTemplatesSchedulePhysicalmachineChaosDiskReadPayload {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// specifies the number of process work on writing, default 1, only 1-255 is valid value
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "payload-process-num"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "payload-process-num")]
     pub payload_process_num: Option<i64>,
     /// specifies how many units of data will write into the file path. support unit: c=1, w=2, b=512, kB=1000, K=1024, MB=1000*1000, M=1024*1024, GB=1000*1000*1000, G=1024*1024*1024 BYTES. example : 1M | 512kB
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5146,11 +3943,7 @@ pub struct WorkflowTemplatesSchedulePhysicalmachineChaosDiskWritePayload {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
     /// specifies the number of process work on writing, default 1, only 1-255 is valid value
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "payload-process-num"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "payload-process-num")]
     pub payload_process_num: Option<i64>,
     /// specifies how many units of data will write into the file path. support unit: c=1, w=2, b=512, kB=1000, K=1024, MB=1000*1000, M=1024*1024, GB=1000*1000*1000, G=1024*1024*1024 BYTES. example : 1M | 512kB
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5206,22 +3999,14 @@ pub struct WorkflowTemplatesSchedulePhysicalmachineChaosFileRename {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dest-file")]
     pub dest_file: Option<String>,
     /// SourceFile is the name need to be renamed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "source-file"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "source-file")]
     pub source_file: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesSchedulePhysicalmachineChaosFileReplace {
     /// DestStr is the destination string of the file.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dest-string"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dest-string")]
     pub dest_string: Option<String>,
     /// FileName is the name of the file to be created, modified, deleted, renamed, or appended.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "file-name")]
@@ -5230,11 +4015,7 @@ pub struct WorkflowTemplatesSchedulePhysicalmachineChaosFileReplace {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub line: Option<i64>,
     /// OriginStr is the origin string of the file.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "origin-string"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "origin-string")]
     pub origin_string: Option<String>,
 }
 
@@ -5294,11 +4075,7 @@ pub struct WorkflowTemplatesSchedulePhysicalmachineChaosHttpRequest {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub count: Option<i64>,
     /// Enable connection pool
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enable-conn-pool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enable-conn-pool")]
     pub enable_conn_pool: Option<bool>,
     /// Request to send"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5365,11 +4142,7 @@ pub struct WorkflowTemplatesSchedulePhysicalmachineChaosJvmMysql {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub latency: Option<i64>,
     /// the version of mysql-connector-java, only support 5.X.X(set to "5") and 8.X.X(set to "8") now
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mysqlConnectorVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mysqlConnectorVersion")]
     pub mysql_connector_version: Option<String>,
     /// the pid of Java process which needs to attach
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5442,11 +4215,7 @@ pub struct WorkflowTemplatesSchedulePhysicalmachineChaosKafkaFill {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxBytes")]
     pub max_bytes: Option<i64>,
     /// The size of each message
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "messageSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "messageSize")]
     pub message_size: Option<i64>,
     /// The password of kafka client
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5455,11 +4224,7 @@ pub struct WorkflowTemplatesSchedulePhysicalmachineChaosKafkaFill {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
     /// The command to reload kafka config
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reloadCommand"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reloadCommand")]
     pub reload_command: Option<String>,
     /// The topic to attack
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5475,11 +4240,7 @@ pub struct WorkflowTemplatesSchedulePhysicalmachineChaosKafkaFlood {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// The size of each message
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "messageSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "messageSize")]
     pub message_size: Option<i64>,
     /// The password of kafka client
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5501,25 +4262,13 @@ pub struct WorkflowTemplatesSchedulePhysicalmachineChaosKafkaFlood {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesSchedulePhysicalmachineChaosKafkaIo {
     /// The path of server config
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configFile")]
     pub config_file: Option<String>,
     /// Make kafka cluster non-readable
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nonReadable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nonReadable")]
     pub non_readable: Option<bool>,
     /// Make kafka cluster non-writable
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nonWritable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nonWritable")]
     pub non_writable: Option<bool>,
     /// The topic to attack
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5548,11 +4297,7 @@ pub struct WorkflowTemplatesSchedulePhysicalmachineChaosNetworkBandwidth {
     pub device: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-address"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-address")]
     pub ip_address: Option<String>,
     pub limit: i32,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5571,49 +4316,29 @@ pub struct WorkflowTemplatesSchedulePhysicalmachineChaosNetworkCorrupt {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub device: Option<String>,
     /// only impact egress traffic to these destination ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010. it can only be used in conjunction with -p tcp or -p udp
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "egress-port"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egress-port")]
     pub egress_port: Option<String>,
     /// only impact traffic to these hostnames
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
     /// only impact egress traffic to these IP addresses
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-address"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-address")]
     pub ip_address: Option<String>,
     /// only impact traffic using this IP protocol, supported: tcp, udp, icmp, all
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-protocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-protocol")]
     pub ip_protocol: Option<String>,
     /// percentage of packets to corrupt (10 is 10%)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub percent: Option<String>,
     /// only impact egress traffic from these source ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010. it can only be used in conjunction with -p tcp or -p udp
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "source-port"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "source-port")]
     pub source_port: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesSchedulePhysicalmachineChaosNetworkDelay {
     /// only the packet which match the tcp flag can be accepted, others will be dropped. only set when the IPProtocol is tcp, used for partition.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accept-tcp-flags"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accept-tcp-flags")]
     pub accept_tcp_flags: Option<String>,
     /// correlation is percentage (10 is 10%)
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5622,28 +4347,16 @@ pub struct WorkflowTemplatesSchedulePhysicalmachineChaosNetworkDelay {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub device: Option<String>,
     /// only impact egress traffic to these destination ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010. it can only be used in conjunction with -p tcp or -p udp
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "egress-port"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egress-port")]
     pub egress_port: Option<String>,
     /// only impact traffic to these hostnames
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
     /// only impact egress traffic to these IP addresses
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-address"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-address")]
     pub ip_address: Option<String>,
     /// only impact traffic using this IP protocol, supported: tcp, udp, icmp, all
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-protocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-protocol")]
     pub ip_protocol: Option<String>,
     /// jitter time, time units: ns, us (or µs), ms, s, m, h.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5652,32 +4365,20 @@ pub struct WorkflowTemplatesSchedulePhysicalmachineChaosNetworkDelay {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub latency: Option<String>,
     /// only impact egress traffic from these source ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010. it can only be used in conjunction with -p tcp or -p udp
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "source-port"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "source-port")]
     pub source_port: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesSchedulePhysicalmachineChaosNetworkDns {
     /// map this host to specified IP
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dns-domain-name"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dns-domain-name")]
     pub dns_domain_name: Option<String>,
     /// map specified host to this IP address
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dns-ip")]
     pub dns_ip: Option<String>,
     /// update the DNS server in /etc/resolv.conf with this value
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dns-server"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dns-server")]
     pub dns_server: Option<String>,
 }
 
@@ -5700,38 +4401,22 @@ pub struct WorkflowTemplatesSchedulePhysicalmachineChaosNetworkDuplicate {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub device: Option<String>,
     /// only impact egress traffic to these destination ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010. it can only be used in conjunction with -p tcp or -p udp
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "egress-port"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egress-port")]
     pub egress_port: Option<String>,
     /// only impact traffic to these hostnames
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
     /// only impact egress traffic to these IP addresses
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-address"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-address")]
     pub ip_address: Option<String>,
     /// only impact traffic using this IP protocol, supported: tcp, udp, icmp, all
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-protocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-protocol")]
     pub ip_protocol: Option<String>,
     /// percentage of packets to duplicate (10 is 10%)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub percent: Option<String>,
     /// only impact egress traffic from these source ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010. it can only be used in conjunction with -p tcp or -p udp
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "source-port"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "source-port")]
     pub source_port: Option<String>,
 }
 
@@ -5740,11 +4425,7 @@ pub struct WorkflowTemplatesSchedulePhysicalmachineChaosNetworkFlood {
     /// The number of seconds to run the iperf test
     pub duration: String,
     /// Generate traffic to this IP address
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-address"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-address")]
     pub ip_address: Option<String>,
     /// The number of iperf parallel client threads to run
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5765,49 +4446,29 @@ pub struct WorkflowTemplatesSchedulePhysicalmachineChaosNetworkLoss {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub device: Option<String>,
     /// only impact egress traffic to these destination ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010. it can only be used in conjunction with -p tcp or -p udp
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "egress-port"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egress-port")]
     pub egress_port: Option<String>,
     /// only impact traffic to these hostnames
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
     /// only impact egress traffic to these IP addresses
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-address"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-address")]
     pub ip_address: Option<String>,
     /// only impact traffic using this IP protocol, supported: tcp, udp, icmp, all
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-protocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-protocol")]
     pub ip_protocol: Option<String>,
     /// percentage of packets to loss (10 is 10%)
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub percent: Option<String>,
     /// only impact egress traffic from these source ports, use a ',' to separate or to indicate the range, such as 80, 8001:8010. it can only be used in conjunction with -p tcp or -p udp
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "source-port"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "source-port")]
     pub source_port: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesSchedulePhysicalmachineChaosNetworkPartition {
     /// only the packet which match the tcp flag can be accepted, others will be dropped. only set when the IPProtocol is tcp, used for partition.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accept-tcp-flags"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accept-tcp-flags")]
     pub accept_tcp_flags: Option<String>,
     /// the network interface to impact
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5819,18 +4480,10 @@ pub struct WorkflowTemplatesSchedulePhysicalmachineChaosNetworkPartition {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hostname: Option<String>,
     /// only impact egress traffic to these IP addresses
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-address"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-address")]
     pub ip_address: Option<String>,
     /// only impact egress traffic to these IP addresses
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ip-protocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ip-protocol")]
     pub ip_protocol: Option<String>,
 }
 
@@ -5840,11 +4493,7 @@ pub struct WorkflowTemplatesSchedulePhysicalmachineChaosProcess {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub process: Option<String>,
     /// the command to be run when recovering experiment
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recoverCmd"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recoverCmd")]
     pub recover_cmd: Option<String>,
     /// the signal number to send
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5895,11 +4544,7 @@ pub struct WorkflowTemplatesSchedulePhysicalmachineChaosRedisPenetration {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<String>,
     /// The number of requests to be sent
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestNum"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestNum")]
     pub request_num: Option<i64>,
 }
 
@@ -5912,11 +4557,7 @@ pub struct WorkflowTemplatesSchedulePhysicalmachineChaosRedisRestart {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conf: Option<String>,
     /// The control flag determines whether to flush config
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flushConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flushConfig")]
     pub flush_config: Option<bool>,
     /// The password of Redis server
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5935,11 +4576,7 @@ pub struct WorkflowTemplatesSchedulePhysicalmachineChaosRedisStop {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conf: Option<String>,
     /// The control flag determines whether to flush config
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flushConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flushConfig")]
     pub flush_config: Option<bool>,
     /// The password of Redis server
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5953,43 +4590,22 @@ pub struct WorkflowTemplatesSchedulePhysicalmachineChaosRedisStop {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesSchedulePhysicalmachineChaosSelector {
     /// Map of string keys and values that can be used to select objects. A selector based on annotations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "annotationSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelectors")]
     pub annotation_selectors: Option<BTreeMap<String, String>>,
     /// a slice of label selector expressions that can be used to select objects. A list of selectors based on set-based label expressions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expressionSelectors"
-    )]
-    pub expression_selectors:
-        Option<Vec<WorkflowTemplatesSchedulePhysicalmachineChaosSelectorExpressionSelectors>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expressionSelectors")]
+    pub expression_selectors: Option<Vec<WorkflowTemplatesSchedulePhysicalmachineChaosSelectorExpressionSelectors>>,
     /// Map of string keys and values that can be used to select objects. A selector based on fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelectors")]
     pub field_selectors: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to select objects. A selector based on labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelectors")]
     pub label_selectors: Option<BTreeMap<String, String>>,
     /// Namespaces is a set of namespace to which objects belong.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// PhysicalMachines is a map of string keys and a set values that used to select physical machines. The key defines the namespace which physical machine belong, and each value is a set of physical machine names.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "physicalMachines"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "physicalMachines")]
     pub physical_machines: Option<BTreeMap<String, String>>,
 }
 
@@ -6034,11 +4650,7 @@ pub struct WorkflowTemplatesSchedulePhysicalmachineChaosUserDefined {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "attackCmd")]
     pub attack_cmd: Option<String>,
     /// The command to be executed when recover
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recoverCmd"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recoverCmd")]
     pub recover_cmd: Option<String>,
 }
 
@@ -6055,30 +4667,18 @@ pub struct WorkflowTemplatesSchedulePodChaos {
     /// Action defines the specific pod chaos action. Supported action: pod-kill / pod-failure / container-kill Default action: pod-kill
     pub action: WorkflowTemplatesSchedulePodChaosAction,
     /// ContainerNames indicates list of the name of affected container. If not set, the first container will be injected
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerNames")]
     pub container_names: Option<Vec<String>>,
     /// Duration represents the duration of the chaos action. It is required when the action is `PodFailureAction`. A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as "300ms", "-1.5h" or "2h45m". Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub duration: Option<String>,
     /// GracePeriod is used in pod-kill action. It represents the duration in seconds before the pod should be deleted. Value must be non-negative integer. The default value is zero that indicates delete immediately.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gracePeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracePeriod")]
     pub grace_period: Option<i64>,
     /// Mode defines the mode to run chaos action. Supported mode: one / all / fixed / fixed-percent / random-max-percent
     pub mode: WorkflowTemplatesSchedulePodChaosMode,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// Selector is used to select pods that are used to inject chaos action.
     pub selector: WorkflowTemplatesSchedulePodChaosSelector,
@@ -6117,53 +4717,28 @@ pub enum WorkflowTemplatesSchedulePodChaosMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesSchedulePodChaosSelector {
     /// Map of string keys and values that can be used to select objects. A selector based on annotations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "annotationSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelectors")]
     pub annotation_selectors: Option<BTreeMap<String, String>>,
     /// a slice of label selector expressions that can be used to select objects. A list of selectors based on set-based label expressions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expressionSelectors"
-    )]
-    pub expression_selectors:
-        Option<Vec<WorkflowTemplatesSchedulePodChaosSelectorExpressionSelectors>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expressionSelectors")]
+    pub expression_selectors: Option<Vec<WorkflowTemplatesSchedulePodChaosSelectorExpressionSelectors>>,
     /// Map of string keys and values that can be used to select objects. A selector based on fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelectors")]
     pub field_selectors: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to select objects. A selector based on labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelectors")]
     pub label_selectors: Option<BTreeMap<String, String>>,
     /// Namespaces is a set of namespace to which objects belong.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Map of string keys and values that can be used to select nodes. Selector which must match a node's labels, and objects must belong to these selected nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelectors")]
     pub node_selectors: Option<BTreeMap<String, String>>,
     /// Nodes is a set of node name and objects must belong to these nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<Vec<String>>,
     /// PodPhaseSelectors is a set of condition of a pod at the current time. supported value: Pending / Running / Succeeded / Failed / Unknown
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podPhaseSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podPhaseSelectors")]
     pub pod_phase_selectors: Option<Vec<String>>,
     /// Pods is a map of string keys and a set values that used to select pods. The key defines the namespace which pods belong, and the each values is a set of pod names.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6186,11 +4761,7 @@ pub struct WorkflowTemplatesSchedulePodChaosSelectorExpressionSelectors {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct WorkflowTemplatesScheduleStressChaos {
     /// ContainerNames indicates list of the name of affected container. If not set, the first container will be injected
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerNames")]
     pub container_names: Option<Vec<String>>,
     /// Duration represents the duration of the chaos action
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6198,20 +4769,12 @@ pub struct WorkflowTemplatesScheduleStressChaos {
     /// Mode defines the mode to run chaos action. Supported mode: one / all / fixed / fixed-percent / random-max-percent
     pub mode: WorkflowTemplatesScheduleStressChaosMode,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// Selector is used to select pods that are used to inject chaos action.
     pub selector: WorkflowTemplatesScheduleStressChaosSelector,
     /// StressngStressors defines plenty of stressors just like `Stressors` except that it's an experimental feature and more powerful. You can define stressors in `stress-ng` (see also `man stress-ng`) dialect, however not all of the supported stressors are well tested. It maybe retired in later releases. You should always use `Stressors` to define the stressors and use this only when you want more stressors unsupported by `Stressors`. When both `StressngStressors` and `Stressors` are defined, `StressngStressors` wins.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stressngStressors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stressngStressors")]
     pub stressng_stressors: Option<String>,
     /// Stressors defines plenty of stressors supported to stress system components out. You can use one or more of them to make up various kinds of stresses. At least one of the stressors should be specified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6240,53 +4803,28 @@ pub enum WorkflowTemplatesScheduleStressChaosMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesScheduleStressChaosSelector {
     /// Map of string keys and values that can be used to select objects. A selector based on annotations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "annotationSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelectors")]
     pub annotation_selectors: Option<BTreeMap<String, String>>,
     /// a slice of label selector expressions that can be used to select objects. A list of selectors based on set-based label expressions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expressionSelectors"
-    )]
-    pub expression_selectors:
-        Option<Vec<WorkflowTemplatesScheduleStressChaosSelectorExpressionSelectors>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expressionSelectors")]
+    pub expression_selectors: Option<Vec<WorkflowTemplatesScheduleStressChaosSelectorExpressionSelectors>>,
     /// Map of string keys and values that can be used to select objects. A selector based on fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelectors")]
     pub field_selectors: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to select objects. A selector based on labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelectors")]
     pub label_selectors: Option<BTreeMap<String, String>>,
     /// Namespaces is a set of namespace to which objects belong.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Map of string keys and values that can be used to select nodes. Selector which must match a node's labels, and objects must belong to these selected nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelectors")]
     pub node_selectors: Option<BTreeMap<String, String>>,
     /// Nodes is a set of node name and objects must belong to these nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<Vec<String>>,
     /// PodPhaseSelectors is a set of condition of a pod at the current time. supported value: Pending / Running / Succeeded / Failed / Unknown
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podPhaseSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podPhaseSelectors")]
     pub pod_phase_selectors: Option<Vec<String>>,
     /// Pods is a map of string keys and a set values that used to select pods. The key defines the namespace which pods belong, and the each values is a set of pod names.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6333,11 +4871,7 @@ pub struct WorkflowTemplatesScheduleStressChaosStressorsCpu {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesScheduleStressChaosStressorsMemory {
     /// OOMScoreAdj sets the oom_score_adj of the stress process. See `man 5 proc` to know more about this option.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "oomScoreAdj"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "oomScoreAdj")]
     pub oom_score_adj: Option<i64>,
     /// extend stress-ng options
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6356,11 +4890,7 @@ pub struct WorkflowTemplatesScheduleTimeChaos {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clockIds")]
     pub clock_ids: Option<Vec<String>>,
     /// ContainerNames indicates list of the name of affected container. If not set, the first container will be injected
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerNames")]
     pub container_names: Option<Vec<String>>,
     /// Duration represents the duration of the chaos action
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6368,11 +4898,7 @@ pub struct WorkflowTemplatesScheduleTimeChaos {
     /// Mode defines the mode to run chaos action. Supported mode: one / all / fixed / fixed-percent / random-max-percent
     pub mode: WorkflowTemplatesScheduleTimeChaosMode,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// Selector is used to select pods that are used to inject chaos action.
     pub selector: WorkflowTemplatesScheduleTimeChaosSelector,
@@ -6403,53 +4929,28 @@ pub enum WorkflowTemplatesScheduleTimeChaosMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesScheduleTimeChaosSelector {
     /// Map of string keys and values that can be used to select objects. A selector based on annotations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "annotationSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelectors")]
     pub annotation_selectors: Option<BTreeMap<String, String>>,
     /// a slice of label selector expressions that can be used to select objects. A list of selectors based on set-based label expressions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expressionSelectors"
-    )]
-    pub expression_selectors:
-        Option<Vec<WorkflowTemplatesScheduleTimeChaosSelectorExpressionSelectors>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expressionSelectors")]
+    pub expression_selectors: Option<Vec<WorkflowTemplatesScheduleTimeChaosSelectorExpressionSelectors>>,
     /// Map of string keys and values that can be used to select objects. A selector based on fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelectors")]
     pub field_selectors: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to select objects. A selector based on labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelectors")]
     pub label_selectors: Option<BTreeMap<String, String>>,
     /// Namespaces is a set of namespace to which objects belong.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Map of string keys and values that can be used to select nodes. Selector which must match a node's labels, and objects must belong to these selected nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelectors")]
     pub node_selectors: Option<BTreeMap<String, String>>,
     /// Nodes is a set of node name and objects must belong to these nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<Vec<String>>,
     /// PodPhaseSelectors is a set of condition of a pod at the current time. supported value: Pending / Running / Succeeded / Failed / Unknown
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podPhaseSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podPhaseSelectors")]
     pub pod_phase_selectors: Option<Vec<String>>,
     /// Pods is a map of string keys and a set values that used to select pods. The key defines the namespace which pods belong, and the each values is a set of pod names.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6475,44 +4976,24 @@ pub struct WorkflowTemplatesStatusCheck {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub duration: Option<String>,
     /// FailureThreshold defines the minimum consecutive failure for the status check to be considered failed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<WorkflowTemplatesStatusCheckHttp>,
     /// IntervalSeconds defines how often (in seconds) to perform an execution of status check.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "intervalSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "intervalSeconds")]
     pub interval_seconds: Option<i64>,
     /// Mode defines the execution mode of the status check. Support type: Synchronous / Continuous
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<WorkflowTemplatesStatusCheckMode>,
     /// RecordsHistoryLimit defines the number of record to retain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recordsHistoryLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recordsHistoryLimit")]
     pub records_history_limit: Option<i64>,
     /// SuccessThreshold defines the minimum consecutive successes for the status check to be considered successful. SuccessThreshold only works for `Synchronous` mode.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i64>,
     /// TimeoutSeconds defines the number of seconds after which an execution of status check times out.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i64>,
     /// Type defines the specific status check type. Support type: HTTP
     #[serde(rename = "type")]
@@ -6525,7 +5006,7 @@ pub struct WorkflowTemplatesStatusCheckHttp {
     pub body: Option<String>,
     /// Criteria defines how to determine the result of the status check.
     pub criteria: WorkflowTemplatesStatusCheckHttpCriteria,
-    /// A Header represents the key-value pairs in an HTTP header.
+    /// A Header represents the key-value pairs in an HTTP header. 
     ///  The keys should be in canonical form, as returned by CanonicalHeaderKey.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<BTreeMap<String, String>>,
@@ -6568,11 +5049,7 @@ pub enum WorkflowTemplatesStatusCheckType {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct WorkflowTemplatesStressChaos {
     /// ContainerNames indicates list of the name of affected container. If not set, the first container will be injected
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerNames")]
     pub container_names: Option<Vec<String>>,
     /// Duration represents the duration of the chaos action
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6580,20 +5057,12 @@ pub struct WorkflowTemplatesStressChaos {
     /// Mode defines the mode to run chaos action. Supported mode: one / all / fixed / fixed-percent / random-max-percent
     pub mode: WorkflowTemplatesStressChaosMode,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// Selector is used to select pods that are used to inject chaos action.
     pub selector: WorkflowTemplatesStressChaosSelector,
     /// StressngStressors defines plenty of stressors just like `Stressors` except that it's an experimental feature and more powerful. You can define stressors in `stress-ng` (see also `man stress-ng`) dialect, however not all of the supported stressors are well tested. It maybe retired in later releases. You should always use `Stressors` to define the stressors and use this only when you want more stressors unsupported by `Stressors`. When both `StressngStressors` and `Stressors` are defined, `StressngStressors` wins.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stressngStressors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stressngStressors")]
     pub stressng_stressors: Option<String>,
     /// Stressors defines plenty of stressors supported to stress system components out. You can use one or more of them to make up various kinds of stresses. At least one of the stressors should be specified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6622,52 +5091,28 @@ pub enum WorkflowTemplatesStressChaosMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesStressChaosSelector {
     /// Map of string keys and values that can be used to select objects. A selector based on annotations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "annotationSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelectors")]
     pub annotation_selectors: Option<BTreeMap<String, String>>,
     /// a slice of label selector expressions that can be used to select objects. A list of selectors based on set-based label expressions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expressionSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expressionSelectors")]
     pub expression_selectors: Option<Vec<WorkflowTemplatesStressChaosSelectorExpressionSelectors>>,
     /// Map of string keys and values that can be used to select objects. A selector based on fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelectors")]
     pub field_selectors: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to select objects. A selector based on labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelectors")]
     pub label_selectors: Option<BTreeMap<String, String>>,
     /// Namespaces is a set of namespace to which objects belong.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Map of string keys and values that can be used to select nodes. Selector which must match a node's labels, and objects must belong to these selected nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelectors")]
     pub node_selectors: Option<BTreeMap<String, String>>,
     /// Nodes is a set of node name and objects must belong to these nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<Vec<String>>,
     /// PodPhaseSelectors is a set of condition of a pod at the current time. supported value: Pending / Running / Succeeded / Failed / Unknown
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podPhaseSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podPhaseSelectors")]
     pub pod_phase_selectors: Option<Vec<String>>,
     /// Pods is a map of string keys and a set values that used to select pods. The key defines the namespace which pods belong, and the each values is a set of pod names.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6714,11 +5159,7 @@ pub struct WorkflowTemplatesStressChaosStressorsCpu {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesStressChaosStressorsMemory {
     /// OOMScoreAdj sets the oom_score_adj of the stress process. See `man 5 proc` to know more about this option.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "oomScoreAdj"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "oomScoreAdj")]
     pub oom_score_adj: Option<i64>,
     /// extend stress-ng options
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6760,21 +5201,13 @@ pub struct WorkflowTemplatesTaskContainer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Image pull policy. One of Always, Never, IfNotPresent. Defaults to Always if :latest tag is specified, or IfNotPresent otherwise. Cannot be updated. More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Actions that the management system should take in response to container lifecycle events. Cannot be updated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub lifecycle: Option<WorkflowTemplatesTaskContainerLifecycle>,
     /// Periodic probe of container liveness. Container will be restarted if the probe fails. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<WorkflowTemplatesTaskContainerLivenessProbe>,
     /// Name of the container specified as a DNS_LABEL. Each container in a pod must have a unique name (DNS_LABEL). Cannot be updated.
     pub name: String,
@@ -6782,42 +5215,22 @@ pub struct WorkflowTemplatesTaskContainer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ports: Option<Vec<WorkflowTemplatesTaskContainerPorts>>,
     /// Periodic probe of container service readiness. Container will be removed from service endpoints if the probe fails. Cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<WorkflowTemplatesTaskContainerReadinessProbe>,
     /// Resources resize policy for the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resizePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
     pub resize_policy: Option<Vec<WorkflowTemplatesTaskContainerResizePolicy>>,
     /// Compute Resources required by this container. Cannot be updated. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<WorkflowTemplatesTaskContainerResources>,
     /// RestartPolicy defines the restart behavior of individual containers in a pod. This field may only be set for init containers, and the only allowed value is "Always". For non-init containers or when this field is not specified, the restart behavior is defined by the Pod's restart policy and the container type. Setting the RestartPolicy as "Always" for the init container will have the following effect: this init container will be continually restarted on exit until all regular containers have terminated. Once all regular containers have completed, all init containers with restartPolicy "Always" will be shut down. This lifecycle differs from normal init containers and is often referred to as a "sidecar" container. Although this init container still starts in the init container sequence, it does not wait for the container to complete before proceeding to the next init container. Instead, the next init container starts immediately after this init container is started, or after any startupProbe has successfully completed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     /// SecurityContext defines the security options the container should be run with. If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext. More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<WorkflowTemplatesTaskContainerSecurityContext>,
     /// StartupProbe indicates that the Pod has successfully initialized. If specified, no other probes are executed until this completes successfully. If this probe fails, the Pod will be restarted, just as if the livenessProbe failed. This can be used to provide different probe parameters at the beginning of a Pod's lifecycle, when it might take a long time to load data or warm a cache, than during steady-state operation. This cannot be updated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<WorkflowTemplatesTaskContainerStartupProbe>,
     /// Whether this container should allocate a buffer for stdin in the container runtime. If this is not set, reads from stdin in the container will always result in EOF. Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6826,42 +5239,22 @@ pub struct WorkflowTemplatesTaskContainer {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "stdinOnce")]
     pub stdin_once: Option<bool>,
     /// Optional: Path at which the file to which the container's termination message will be written is mounted into the container's filesystem. Message written is intended to be brief final status, such as an assertion failure message. Will be truncated by the node if greater than 4096 bytes. The total message length across all containers will be limited to 12kb. Defaults to /dev/termination-log. Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
     /// Indicate how the termination message should be populated. File will use the contents of terminationMessagePath to populate the container status message on both success and failure. FallbackToLogsOnError will use the last chunk of container log output if the termination message file is empty and the container exited with an error. The log output is limited to 2048 bytes or 80 lines, whichever is smaller. Defaults to File. Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true. Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
     /// volumeDevices is the list of block devices to be used by the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
     pub volume_devices: Option<Vec<WorkflowTemplatesTaskContainerVolumeDevices>>,
     /// Pod volumes to mount into the container's filesystem. Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<WorkflowTemplatesTaskContainerVolumeMounts>>,
     /// Container's working directory. If not specified, the container runtime's default will be used, which might be configured in the container image. Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -6882,28 +5275,16 @@ pub struct WorkflowTemplatesTaskContainerEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskContainerEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<WorkflowTemplatesTaskContainerEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`, spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<WorkflowTemplatesTaskContainerEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<WorkflowTemplatesTaskContainerEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<WorkflowTemplatesTaskContainerEnvValueFromSecretKeyRef>,
 }
 
@@ -6924,11 +5305,7 @@ pub struct WorkflowTemplatesTaskContainerEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskContainerEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -6939,11 +5316,7 @@ pub struct WorkflowTemplatesTaskContainerEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskContainerEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6969,11 +5342,7 @@ pub struct WorkflowTemplatesTaskContainerEnvValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskContainerEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<WorkflowTemplatesTaskContainerEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7045,13 +5414,8 @@ pub struct WorkflowTemplatesTaskContainerLifecyclePostStartHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<WorkflowTemplatesTaskContainerLifecyclePostStartHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<WorkflowTemplatesTaskContainerLifecyclePostStartHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -7110,11 +5474,7 @@ pub struct WorkflowTemplatesTaskContainerLifecyclePreStopHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<WorkflowTemplatesTaskContainerLifecyclePreStopHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7152,11 +5512,7 @@ pub struct WorkflowTemplatesTaskContainerLivenessProbe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<WorkflowTemplatesTaskContainerLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7165,42 +5521,22 @@ pub struct WorkflowTemplatesTaskContainerLivenessProbe {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<WorkflowTemplatesTaskContainerLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<WorkflowTemplatesTaskContainerLivenessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate. Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -7217,7 +5553,7 @@ pub struct WorkflowTemplatesTaskContainerLivenessProbeExec {
 pub struct WorkflowTemplatesTaskContainerLivenessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
     pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). 
     ///  If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -7230,11 +5566,7 @@ pub struct WorkflowTemplatesTaskContainerLivenessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<WorkflowTemplatesTaskContainerLivenessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7292,11 +5624,7 @@ pub struct WorkflowTemplatesTaskContainerReadinessProbe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<WorkflowTemplatesTaskContainerReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7305,42 +5633,22 @@ pub struct WorkflowTemplatesTaskContainerReadinessProbe {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<WorkflowTemplatesTaskContainerReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<WorkflowTemplatesTaskContainerReadinessProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate. Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -7357,7 +5665,7 @@ pub struct WorkflowTemplatesTaskContainerReadinessProbeExec {
 pub struct WorkflowTemplatesTaskContainerReadinessProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
     pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). 
     ///  If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -7370,11 +5678,7 @@ pub struct WorkflowTemplatesTaskContainerReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<WorkflowTemplatesTaskContainerReadinessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7419,8 +5723,8 @@ pub struct WorkflowTemplatesTaskContainerResizePolicy {
 /// Compute Resources required by this container. Cannot be updated. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskContainerResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container.
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate.
+    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
+    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
     ///  This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<WorkflowTemplatesTaskContainerResourcesClaims>>,
@@ -7443,11 +5747,7 @@ pub struct WorkflowTemplatesTaskContainerResourcesClaims {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskContainerSecurityContext {
     /// AllowPrivilegeEscalation controls whether a process can gain more privileges than its parent process. This bool directly controls if the no_new_privs flag will be set on the container process. AllowPrivilegeEscalation is true always when the container is: 1) run as Privileged 2) has CAP_SYS_ADMIN Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// The capabilities to add/drop when running containers. Defaults to the default set of capabilities granted by the container runtime. Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7459,49 +5759,25 @@ pub struct WorkflowTemplatesTaskContainerSecurityContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "procMount")]
     pub proc_mount: Option<String>,
     /// Whether this container has a read-only root filesystem. Default is false. Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process. Uses runtime default if unset. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user. If true, the Kubelet will validate the image at runtime to ensure that it does not run as UID 0 (root) and fail to start the container if it does. If unset or false, no such validation will be performed. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUser")]
     pub run_as_user: Option<i64>,
     /// The SELinux context to be applied to the container. If unspecified, the container runtime will allocate a random SELinux context for each container.  May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<WorkflowTemplatesTaskContainerSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are provided at both the pod & container level, the container options override the pod options. Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<WorkflowTemplatesTaskContainerSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers. If unspecified, the options from the PodSecurityContext will be used. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<WorkflowTemplatesTaskContainerSecurityContextWindowsOptions>,
 }
 
@@ -7537,13 +5813,9 @@ pub struct WorkflowTemplatesTaskContainerSecurityContextSeLinuxOptions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskContainerSecurityContextSeccompProfile {
     /// localhostProfile indicates a profile defined in a file on the node should be used. The profile must be preconfigured on the node to work. Must be a descending path, relative to the kubelet's configured seccomp profile location. Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
-    /// type indicates which kind of seccomp profile will be applied. Valid options are:
+    /// type indicates which kind of seccomp profile will be applied. Valid options are: 
     ///  Localhost - a profile defined in a file on the node should be used. RuntimeDefault - the container runtime default profile should be used. Unconfined - no profile should be applied.
     #[serde(rename = "type")]
     pub r#type: String,
@@ -7553,32 +5825,16 @@ pub struct WorkflowTemplatesTaskContainerSecurityContextSeccompProfile {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskContainerSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container. All of a Pod's containers must have the same effective HostProcess value (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers). In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process. Defaults to the user specified in image metadata if unspecified. May also be set in PodSecurityContext. If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -7589,11 +5845,7 @@ pub struct WorkflowTemplatesTaskContainerStartupProbe {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exec: Option<WorkflowTemplatesTaskContainerStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7602,42 +5854,22 @@ pub struct WorkflowTemplatesTaskContainerStartupProbe {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpGet")]
     pub http_get: Option<WorkflowTemplatesTaskContainerStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe. Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
     pub tcp_socket: Option<WorkflowTemplatesTaskContainerStartupProbeTcpSocket>,
     /// Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod's terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate. Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out. Defaults to 1 second. Minimum value is 1. More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -7654,7 +5886,7 @@ pub struct WorkflowTemplatesTaskContainerStartupProbeExec {
 pub struct WorkflowTemplatesTaskContainerStartupProbeGrpc {
     /// Port number of the gRPC service. Number must be in the range 1 to 65535.
     pub port: i32,
-    /// Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
+    /// Service is the name of the service to place in the gRPC HealthCheckRequest (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md). 
     ///  If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -7667,11 +5899,7 @@ pub struct WorkflowTemplatesTaskContainerStartupProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<WorkflowTemplatesTaskContainerStartupProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7719,11 +5947,7 @@ pub struct WorkflowTemplatesTaskContainerVolumeMounts {
     #[serde(rename = "mountPath")]
     pub mount_path: String,
     /// mountPropagation determines how mounts are propagated from the host to container and the other way around. When not set, MountPropagationNone is used. This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -7734,11 +5958,7 @@ pub struct WorkflowTemplatesTaskContainerVolumeMounts {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPath")]
     pub sub_path: Option<String>,
     /// Expanded path within the volume from which the container's volume should be mounted. Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment. Defaults to "" (volume's root). SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -7746,11 +5966,7 @@ pub struct WorkflowTemplatesTaskContainerVolumeMounts {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumes {
     /// awsElasticBlockStore represents an AWS Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsElasticBlockStore"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
     pub aws_elastic_block_store: Option<WorkflowTemplatesTaskVolumesAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
@@ -7771,19 +5987,15 @@ pub struct WorkflowTemplatesTaskVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<WorkflowTemplatesTaskVolumesCsi>,
     /// downwardAPI represents downward API about the pod that should populate this volume
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<WorkflowTemplatesTaskVolumesDownwardApi>,
     /// emptyDir represents a temporary directory that shares a pod's lifetime. More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<WorkflowTemplatesTaskVolumesEmptyDir>,
-    /// ephemeral represents a volume that is handled by a cluster storage driver. The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts, and deleted when the pod is removed.
-    ///  Use this if: a) the volume is only needed while the pod runs, b) features of normal volumes like restoring from snapshot or capacity tracking are needed, c) the storage driver is specified through a storage class, and d) the storage driver supports dynamic volume provisioning through a PersistentVolumeClaim (see EphemeralVolumeSource for more information on the connection between this volume type and PersistentVolumeClaim).
-    ///  Use PersistentVolumeClaim or one of the vendor-specific APIs for volumes that persist for longer than the lifecycle of an individual pod.
-    ///  Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to be used that way - see the documentation of the driver for more information.
+    /// ephemeral represents a volume that is handled by a cluster storage driver. The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts, and deleted when the pod is removed. 
+    ///  Use this if: a) the volume is only needed while the pod runs, b) features of normal volumes like restoring from snapshot or capacity tracking are needed, c) the storage driver is specified through a storage class, and d) the storage driver supports dynamic volume provisioning through a PersistentVolumeClaim (see EphemeralVolumeSource for more information on the connection between this volume type and PersistentVolumeClaim). 
+    ///  Use PersistentVolumeClaim or one of the vendor-specific APIs for volumes that persist for longer than the lifecycle of an individual pod. 
+    ///  Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to be used that way - see the documentation of the driver for more information. 
     ///  A pod can use both types of ephemeral volumes and persistent volumes at the same time.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ephemeral: Option<WorkflowTemplatesTaskVolumesEphemeral>,
@@ -7791,21 +6003,13 @@ pub struct WorkflowTemplatesTaskVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub fc: Option<WorkflowTemplatesTaskVolumesFc>,
     /// flexVolume represents a generic volume resource that is provisioned/attached using an exec based plugin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flexVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<WorkflowTemplatesTaskVolumesFlexVolume>,
     /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flocker: Option<WorkflowTemplatesTaskVolumesFlocker>,
     /// gcePersistentDisk represents a GCE Disk resource that is attached to a kubelet's host machine and then exposed to the pod. More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gcePersistentDisk"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
     pub gce_persistent_disk: Option<WorkflowTemplatesTaskVolumesGcePersistentDisk>,
     /// gitRepo represents a git repository at a particular revision. DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an EmptyDir into an InitContainer that clones the repo using git, then mount the EmptyDir into the Pod's container.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepo")]
@@ -7825,25 +6029,13 @@ pub struct WorkflowTemplatesTaskVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nfs: Option<WorkflowTemplatesTaskVolumesNfs>,
     /// persistentVolumeClaimVolumeSource represents a reference to a PersistentVolumeClaim in the same namespace. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<WorkflowTemplatesTaskVolumesPersistentVolumeClaim>,
     /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "photonPersistentDisk"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
     pub photon_persistent_disk: Option<WorkflowTemplatesTaskVolumesPhotonPersistentDisk>,
     /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portworxVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
     pub portworx_volume: Option<WorkflowTemplatesTaskVolumesPortworxVolume>,
     /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7864,11 +6056,7 @@ pub struct WorkflowTemplatesTaskVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storageos: Option<WorkflowTemplatesTaskVolumesStorageos>,
     /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vsphereVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
     pub vsphere_volume: Option<WorkflowTemplatesTaskVolumesVsphereVolume>,
 }
 
@@ -7893,11 +6081,7 @@ pub struct WorkflowTemplatesTaskVolumesAwsElasticBlockStore {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesAzureDisk {
     /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachingMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
     pub caching_mode: Option<String>,
     /// diskName is the Name of the data disk in the blob storage
     #[serde(rename = "diskName")]
@@ -7942,11 +6126,7 @@ pub struct WorkflowTemplatesTaskVolumesCephfs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
     pub secret_file: Option<String>,
     /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty. More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
@@ -7993,11 +6173,7 @@ pub struct WorkflowTemplatesTaskVolumesCinderSecretRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesConfigMap {
     /// defaultMode is optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items if unspecified, each key-value pair in the Data field of the referenced ConfigMap will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the ConfigMap, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8031,21 +6207,13 @@ pub struct WorkflowTemplatesTaskVolumesCsi {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// nodePublishSecretRef is a reference to the secret object containing sensitive information to pass to the CSI driver to complete the CSI NodePublishVolume and NodeUnpublishVolume calls. This field is optional, and  may be empty if no secret is required. If the secret object contains more than one secret, all secret references are passed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePublishSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
     pub node_publish_secret_ref: Option<WorkflowTemplatesTaskVolumesCsiNodePublishSecretRef>,
     /// readOnly specifies a read-only configuration for the volume. Defaults to false (read/write).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// volumeAttributes stores driver-specific properties that are passed to the CSI driver. Consult your driver's documentation for supported values.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
@@ -8061,11 +6229,7 @@ pub struct WorkflowTemplatesTaskVolumesCsiNodePublishSecretRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesDownwardApi {
     /// Optional: mode bits to use on created files by default. Must be a Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// Items is a list of downward API volume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8084,11 +6248,7 @@ pub struct WorkflowTemplatesTaskVolumesDownwardApiItems {
     /// Required: Path is  the relative path name of the file to be created. Must not be absolute or contain the '..' path. Must be utf-8 encoded. The first item of the relative path must not start with '..'
     pub path: String,
     /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<WorkflowTemplatesTaskVolumesDownwardApiItemsResourceFieldRef>,
 }
 
@@ -8096,11 +6256,7 @@ pub struct WorkflowTemplatesTaskVolumesDownwardApiItems {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -8111,11 +6267,7 @@ pub struct WorkflowTemplatesTaskVolumesDownwardApiItemsFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8135,28 +6287,24 @@ pub struct WorkflowTemplatesTaskVolumesEmptyDir {
     pub size_limit: Option<IntOrString>,
 }
 
-/// ephemeral represents a volume that is handled by a cluster storage driver. The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts, and deleted when the pod is removed.
-///  Use this if: a) the volume is only needed while the pod runs, b) features of normal volumes like restoring from snapshot or capacity tracking are needed, c) the storage driver is specified through a storage class, and d) the storage driver supports dynamic volume provisioning through a PersistentVolumeClaim (see EphemeralVolumeSource for more information on the connection between this volume type and PersistentVolumeClaim).
-///  Use PersistentVolumeClaim or one of the vendor-specific APIs for volumes that persist for longer than the lifecycle of an individual pod.
-///  Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to be used that way - see the documentation of the driver for more information.
+/// ephemeral represents a volume that is handled by a cluster storage driver. The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts, and deleted when the pod is removed. 
+///  Use this if: a) the volume is only needed while the pod runs, b) features of normal volumes like restoring from snapshot or capacity tracking are needed, c) the storage driver is specified through a storage class, and d) the storage driver supports dynamic volume provisioning through a PersistentVolumeClaim (see EphemeralVolumeSource for more information on the connection between this volume type and PersistentVolumeClaim). 
+///  Use PersistentVolumeClaim or one of the vendor-specific APIs for volumes that persist for longer than the lifecycle of an individual pod. 
+///  Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to be used that way - see the documentation of the driver for more information. 
 ///  A pod can use both types of ephemeral volumes and persistent volumes at the same time.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesEphemeral {
-    /// Will be used to create a stand-alone PVC to provision the volume. The pod in which this EphemeralVolumeSource is embedded will be the owner of the PVC, i.e. the PVC will be deleted together with the pod.  The name of the PVC will be `<pod name>-<volume name>` where `<volume name>` is the name from the `PodSpec.Volumes` array entry. Pod validation will reject the pod if the concatenated name is not valid for a PVC (for example, too long).
-    ///  An existing PVC with that name that is not owned by the pod will *not* be used for the pod to avoid using an unrelated volume by mistake. Starting the pod is then blocked until the unrelated PVC is removed. If such a pre-created PVC is meant to be used by the pod, the PVC has to updated with an owner reference to the pod once the pod exists. Normally this should not be necessary, but it may be useful when manually reconstructing a broken cluster.
-    ///  This field is read-only and no changes will be made by Kubernetes to the PVC after it has been created.
+    /// Will be used to create a stand-alone PVC to provision the volume. The pod in which this EphemeralVolumeSource is embedded will be the owner of the PVC, i.e. the PVC will be deleted together with the pod.  The name of the PVC will be `<pod name>-<volume name>` where `<volume name>` is the name from the `PodSpec.Volumes` array entry. Pod validation will reject the pod if the concatenated name is not valid for a PVC (for example, too long). 
+    ///  An existing PVC with that name that is not owned by the pod will *not* be used for the pod to avoid using an unrelated volume by mistake. Starting the pod is then blocked until the unrelated PVC is removed. If such a pre-created PVC is meant to be used by the pod, the PVC has to updated with an owner reference to the pod once the pod exists. Normally this should not be necessary, but it may be useful when manually reconstructing a broken cluster. 
+    ///  This field is read-only and no changes will be made by Kubernetes to the PVC after it has been created. 
     ///  Required, must not be nil.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
     pub volume_claim_template: Option<WorkflowTemplatesTaskVolumesEphemeralVolumeClaimTemplate>,
 }
 
-/// Will be used to create a stand-alone PVC to provision the volume. The pod in which this EphemeralVolumeSource is embedded will be the owner of the PVC, i.e. the PVC will be deleted together with the pod.  The name of the PVC will be `<pod name>-<volume name>` where `<volume name>` is the name from the `PodSpec.Volumes` array entry. Pod validation will reject the pod if the concatenated name is not valid for a PVC (for example, too long).
-///  An existing PVC with that name that is not owned by the pod will *not* be used for the pod to avoid using an unrelated volume by mistake. Starting the pod is then blocked until the unrelated PVC is removed. If such a pre-created PVC is meant to be used by the pod, the PVC has to updated with an owner reference to the pod once the pod exists. Normally this should not be necessary, but it may be useful when manually reconstructing a broken cluster.
-///  This field is read-only and no changes will be made by Kubernetes to the PVC after it has been created.
+/// Will be used to create a stand-alone PVC to provision the volume. The pod in which this EphemeralVolumeSource is embedded will be the owner of the PVC, i.e. the PVC will be deleted together with the pod.  The name of the PVC will be `<pod name>-<volume name>` where `<volume name>` is the name from the `PodSpec.Volumes` array entry. Pod validation will reject the pod if the concatenated name is not valid for a PVC (for example, too long). 
+///  An existing PVC with that name that is not owned by the pod will *not* be used for the pod to avoid using an unrelated volume by mistake. Starting the pod is then blocked until the unrelated PVC is removed. If such a pre-created PVC is meant to be used by the pod, the PVC has to updated with an owner reference to the pod once the pod exists. Normally this should not be necessary, but it may be useful when manually reconstructing a broken cluster. 
+///  This field is read-only and no changes will be made by Kubernetes to the PVC after it has been created. 
 ///  Required, must not be nil.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesEphemeralVolumeClaimTemplate {
@@ -8169,33 +6317,21 @@ pub struct WorkflowTemplatesTaskVolumesEphemeralVolumeClaimTemplate {
 
 /// May contain labels and annotations that will be copied into the PVC when creating it. No other fields are allowed and will be rejected during validation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct WorkflowTemplatesTaskVolumesEphemeralVolumeClaimTemplateMetadata {}
+pub struct WorkflowTemplatesTaskVolumesEphemeralVolumeClaimTemplateMetadata {
+}
 
 /// The specification for the PersistentVolumeClaim. The entire content is copied unchanged into the PVC that gets created from this template. The same fields as in a PersistentVolumeClaim are also valid here.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesEphemeralVolumeClaimTemplateSpec {
     /// accessModes contains the desired access modes the volume should have. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// dataSource field can be used to specify either: * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot) * An existing PVC (PersistentVolumeClaim) If the provisioner or an external controller can support the specified data source, it will create a new volume based on the contents of the specified data source. When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef, and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified. If the namespace is specified, then dataSourceRef will not be copied to dataSource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
     pub data_source: Option<WorkflowTemplatesTaskVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
     /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty volume is desired. This may be any object from a non-empty API group (non core object) or a PersistentVolumeClaim object. When this field is specified, volume binding will only succeed if the type of the specified object matches some installed volume populator or dynamic provisioner. This field will replace the functionality of the dataSource field and as such if both fields are non-empty, they must have the same value. For backwards compatibility, when namespace isn't specified in dataSourceRef, both fields (dataSource and dataSourceRef) will be set to the same value automatically if one of them is empty and the other is non-empty. When namespace is specified in dataSourceRef, dataSource isn't set to the same value and must be empty. There are three important differences between dataSource and dataSourceRef: * While dataSource only allows two specific types of objects, dataSourceRef allows any non-core object, as well as PersistentVolumeClaim objects. * While dataSource ignores disallowed values (dropping them), dataSourceRef preserves all values, and generates an error if a disallowed value is specified. * While dataSource only allows local objects, dataSourceRef allows objects in any namespaces. (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled. (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSourceRef"
-    )]
-    pub data_source_ref:
-        Option<WorkflowTemplatesTaskVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
+    pub data_source_ref: Option<WorkflowTemplatesTaskVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
     /// resources represents the minimum resources the volume should have. If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements that are lower than previous value but must still be higher than capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<WorkflowTemplatesTaskVolumesEphemeralVolumeClaimTemplateSpecResources>,
@@ -8203,25 +6339,13 @@ pub struct WorkflowTemplatesTaskVolumesEphemeralVolumeClaimTemplateSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<WorkflowTemplatesTaskVolumesEphemeralVolumeClaimTemplateSpecSelector>,
     /// storageClassName is the name of the StorageClass required by the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim. Value of Filesystem is implied when not included in claim spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     /// volumeName is the binding reference to the PersistentVolume backing this claim.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -8255,12 +6379,11 @@ pub struct WorkflowTemplatesTaskVolumesEphemeralVolumeClaimTemplateSpecDataSourc
 /// resources represents the minimum resources the volume should have. If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements that are lower than previous value but must still be higher than capacity recorded in the status field of the claim. More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesEphemeralVolumeClaimTemplateSpecResources {
-    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container.
-    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate.
+    /// Claims lists the names of resources, defined in spec.resourceClaims, that are used by this container. 
+    ///  This is an alpha field and requires enabling the DynamicResourceAllocation feature gate. 
     ///  This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims:
-        Option<Vec<WorkflowTemplatesTaskVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims>>,
+    pub claims: Option<Vec<WorkflowTemplatesTaskVolumesEphemeralVolumeClaimTemplateSpecResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limits: Option<BTreeMap<String, IntOrString>>,
@@ -8280,20 +6403,10 @@ pub struct WorkflowTemplatesTaskVolumesEphemeralVolumeClaimTemplateSpecResources
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesEphemeralVolumeClaimTemplateSpecSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions: Option<
-        Vec<WorkflowTemplatesTaskVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<WorkflowTemplatesTaskVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels map is equivalent to an element of matchExpressions, whose key field is "key", the operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -8322,11 +6435,7 @@ pub struct WorkflowTemplatesTaskVolumesFc {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// targetWWNs is Optional: FC target worldwide names (WWNs)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetWWNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
     pub target_ww_ns: Option<Vec<String>>,
     /// wwids Optional: FC volume world wide identifiers (wwids) Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8364,18 +6473,10 @@ pub struct WorkflowTemplatesTaskVolumesFlexVolumeSecretRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesFlocker {
     /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker should be considered as deprecated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
     pub dataset_name: Option<String>,
     /// datasetUUID is the UUID of the dataset. This is unique identifier of a Flocker dataset
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetUUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
     pub dataset_uuid: Option<String>,
 }
 
@@ -8435,37 +6536,21 @@ pub struct WorkflowTemplatesTaskVolumesHostPath {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesIscsi {
     /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthDiscovery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
     /// chapAuthSession defines whether support iSCSI Session CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthSession"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
     pub chap_auth_session: Option<bool>,
     /// fsType is the filesystem type of the volume that you want to mount. Tip: Ensure that the filesystem type is supported by the host operating system. Examples: "ext4", "xfs", "ntfs". Implicitly inferred to be "ext4" if unspecified. More info: https://kubernetes.io/docs/concepts/storage/volumes#iscsi TODO: how do we prevent errors in the filesystem from compromising the machine
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// initiatorName is the custom iSCSI Initiator Name. If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface <target portal>:<volume name> will be created for the connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initiatorName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
     pub initiator_name: Option<String>,
     /// iqn is the target iSCSI Qualified Name.
     pub iqn: String,
     /// iscsiInterface is the interface Name that uses an iSCSI transport. Defaults to 'default' (tcp).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "iscsiInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
     pub iscsi_interface: Option<String>,
     /// lun represents iSCSI Target Lun number.
     pub lun: i32,
@@ -8543,11 +6628,7 @@ pub struct WorkflowTemplatesTaskVolumesPortworxVolume {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesProjected {
     /// defaultMode are the mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// sources is the list of volume projections
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8561,23 +6642,14 @@ pub struct WorkflowTemplatesTaskVolumesProjectedSources {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<WorkflowTemplatesTaskVolumesProjectedSourcesConfigMap>,
     /// downwardAPI information about the downwardAPI data to project
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<WorkflowTemplatesTaskVolumesProjectedSourcesDownwardApi>,
     /// secret information about the secret data to project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<WorkflowTemplatesTaskVolumesProjectedSourcesSecret>,
     /// serviceAccountToken is information about the serviceAccountToken data to project
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountToken"
-    )]
-    pub service_account_token:
-        Option<WorkflowTemplatesTaskVolumesProjectedSourcesServiceAccountToken>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
+    pub service_account_token: Option<WorkflowTemplatesTaskVolumesProjectedSourcesServiceAccountToken>,
 }
 
 /// configMap information about the configMap data to project
@@ -8626,24 +6698,15 @@ pub struct WorkflowTemplatesTaskVolumesProjectedSourcesDownwardApiItems {
     /// Required: Path is  the relative path name of the file to be created. Must not be absolute or contain the '..' path. Must be utf-8 encoded. The first item of the relative path must not start with '..'
     pub path: String,
     /// Selects a resource of the container: only resources limits and requests (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<WorkflowTemplatesTaskVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<WorkflowTemplatesTaskVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
 }
 
 /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesProjectedSourcesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -8654,11 +6717,7 @@ pub struct WorkflowTemplatesTaskVolumesProjectedSourcesDownwardApiItemsFieldRef 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8700,11 +6759,7 @@ pub struct WorkflowTemplatesTaskVolumesProjectedSourcesServiceAccountToken {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub audience: Option<String>,
     /// expirationSeconds is the requested duration of validity of the service account token. As the token approaches expiration, the kubelet volume plugin will proactively rotate the service account token. The kubelet will start trying to rotate the token if the token is older than 80 percent of its time to live or if the token is older than 24 hours.Defaults to 1 hour and must be at least 10 minutes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
     /// path is the path relative to the mount point of the file to project the token into.
     pub path: String,
@@ -8775,11 +6830,7 @@ pub struct WorkflowTemplatesTaskVolumesScaleIo {
     /// gateway is the host address of the ScaleIO API Gateway.
     pub gateway: String,
     /// protectionDomain is the name of the ScaleIO Protection Domain for the configured storage.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protectionDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
     pub protection_domain: Option<String>,
     /// readOnly Defaults to false (read/write). ReadOnly here will force the ReadOnly setting in VolumeMounts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
@@ -8788,34 +6839,18 @@ pub struct WorkflowTemplatesTaskVolumesScaleIo {
     #[serde(rename = "secretRef")]
     pub secret_ref: WorkflowTemplatesTaskVolumesScaleIoSecretRef,
     /// sslEnabled Flag enable/disable SSL communication with Gateway, default false
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
     /// storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned. Default is ThinProvisioned.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
     pub storage_mode: Option<String>,
     /// storagePool is the ScaleIO Storage Pool associated with the protection domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
     pub storage_pool: Option<String>,
     /// system is the name of the storage system as configured in ScaleIO.
     pub system: String,
     /// volumeName is the name of a volume already created in the ScaleIO system that is associated with this volume source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -8831,11 +6866,7 @@ pub struct WorkflowTemplatesTaskVolumesScaleIoSecretRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTaskVolumesSecret {
     /// defaultMode is Optional: mode bits used to set permissions on created files by default. Must be an octal value between 0000 and 0777 or a decimal value between 0 and 511. YAML accepts both octal and decimal values, JSON requires decimal values for mode bits. Defaults to 0644. Directories within the path are not affected by this setting. This might be in conflict with other options that affect the file mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items If unspecified, each key-value pair in the Data field of the referenced Secret will be projected into the volume as a file whose name is the key and content is the value. If specified, the listed keys will be projected into the specified paths, and unlisted keys will not be present. If a key is specified which is not present in the Secret, the volume setup will error unless it is marked optional. Paths must be relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8844,11 +6875,7 @@ pub struct WorkflowTemplatesTaskVolumesSecret {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
     /// secretName is the name of the secret in the pod's namespace to use. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -8877,18 +6904,10 @@ pub struct WorkflowTemplatesTaskVolumesStorageos {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretRef")]
     pub secret_ref: Option<WorkflowTemplatesTaskVolumesStorageosSecretRef>,
     /// volumeName is the human-readable name of the StorageOS volume.  Volume names are only unique within a namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
     /// volumeNamespace specifies the scope of the volume within StorageOS.  If no namespace is specified then the Pod's namespace will be used.  This allows the Kubernetes name scoping to be mirrored within StorageOS for tighter integration. Set VolumeName to any name to override the default behaviour. Set to "default" if you are not using namespaces within StorageOS. Namespaces that do not pre-exist within StorageOS will be created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
     pub volume_namespace: Option<String>,
 }
 
@@ -8907,18 +6926,10 @@ pub struct WorkflowTemplatesTaskVolumesVsphereVolume {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// storagePolicyID is the storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
     pub storage_policy_id: Option<String>,
     /// storagePolicyName is the storage Policy Based Management (SPBM) profile name.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
     pub storage_policy_name: Option<String>,
     /// volumePath is the path that identifies vSphere volume vmdk
     #[serde(rename = "volumePath")]
@@ -8932,11 +6943,7 @@ pub struct WorkflowTemplatesTimeChaos {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clockIds")]
     pub clock_ids: Option<Vec<String>>,
     /// ContainerNames indicates list of the name of affected container. If not set, the first container will be injected
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerNames")]
     pub container_names: Option<Vec<String>>,
     /// Duration represents the duration of the chaos action
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8944,11 +6951,7 @@ pub struct WorkflowTemplatesTimeChaos {
     /// Mode defines the mode to run chaos action. Supported mode: one / all / fixed / fixed-percent / random-max-percent
     pub mode: WorkflowTemplatesTimeChaosMode,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// Selector is used to select pods that are used to inject chaos action.
     pub selector: WorkflowTemplatesTimeChaosSelector,
@@ -8979,52 +6982,28 @@ pub enum WorkflowTemplatesTimeChaosMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowTemplatesTimeChaosSelector {
     /// Map of string keys and values that can be used to select objects. A selector based on annotations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "annotationSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelectors")]
     pub annotation_selectors: Option<BTreeMap<String, String>>,
     /// a slice of label selector expressions that can be used to select objects. A list of selectors based on set-based label expressions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expressionSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expressionSelectors")]
     pub expression_selectors: Option<Vec<WorkflowTemplatesTimeChaosSelectorExpressionSelectors>>,
     /// Map of string keys and values that can be used to select objects. A selector based on fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelectors")]
     pub field_selectors: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to select objects. A selector based on labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelectors")]
     pub label_selectors: Option<BTreeMap<String, String>>,
     /// Namespaces is a set of namespace to which objects belong.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Map of string keys and values that can be used to select nodes. Selector which must match a node's labels, and objects must belong to these selected nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelectors")]
     pub node_selectors: Option<BTreeMap<String, String>>,
     /// Nodes is a set of node name and objects must belong to these nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<Vec<String>>,
     /// PodPhaseSelectors is a set of condition of a pod at the current time. supported value: Pending / Running / Succeeded / Failed / Unknown
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podPhaseSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podPhaseSelectors")]
     pub pod_phase_selectors: Option<Vec<String>>,
     /// Pods is a map of string keys and a set values that used to select pods. The key defines the namespace which pods belong, and the each values is a set of pod names.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9066,3 +7045,4 @@ pub struct WorkflowStatusConditions {
     #[serde(rename = "type")]
     pub r#type: String,
 }
+

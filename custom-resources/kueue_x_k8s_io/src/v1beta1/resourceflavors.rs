@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// ResourceFlavorSpec defines the desired state of the ResourceFlavor
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kueue.x-k8s.io",
-    version = "v1beta1",
-    kind = "ResourceFlavor",
-    plural = "resourceflavors"
-)]
+#[kube(group = "kueue.x-k8s.io", version = "v1beta1", kind = "ResourceFlavor", plural = "resourceflavors")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ResourceFlavorSpec {
     /// nodeLabels are labels that associate the ResourceFlavor with Nodes that
     /// have the same labels.
@@ -30,46 +25,34 @@ pub struct ResourceFlavorSpec {
     /// Once a ResourceFlavor is assigned to a podSet, the ResourceFlavor's
     /// nodeLabels should be injected into the pods of the Workload by the
     /// controller that integrates with the Workload object.
-    ///
+    /// 
     /// nodeLabels can be up to 8 elements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeLabels")]
     pub node_labels: Option<BTreeMap<String, String>>,
     /// nodeTaints are taints that the nodes associated with this ResourceFlavor
     /// have.
     /// Workloads' podsets must have tolerations for these nodeTaints in order to
     /// get assigned this ResourceFlavor during admission.
-    ///
+    /// 
     /// An example of a nodeTaint is
     /// cloud.provider.com/preemptible="true":NoSchedule
-    ///
+    /// 
     /// nodeTaints can be up to 8 elements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeTaints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaints")]
     pub node_taints: Option<Vec<ResourceFlavorNodeTaints>>,
     /// tolerations are extra tolerations that will be added to the pods admitted in
     /// the quota associated with this resource flavor.
-    ///
+    /// 
     /// An example of a toleration is
     /// cloud.provider.com/preemptible="true":NoSchedule
-    ///
+    /// 
     /// tolerations can be up to 8 elements.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tolerations: Option<Vec<ResourceFlavorTolerations>>,
     /// topologyName indicates topology for the TAS ResourceFlavor.
     /// When specified, it enables scraping of the topology information from the
     /// nodes matching to the Resource Flavor node labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologyName")]
     pub topology_name: Option<String>,
 }
 
@@ -114,14 +97,11 @@ pub struct ResourceFlavorTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
 }
+

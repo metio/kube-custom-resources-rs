@@ -4,25 +4,25 @@
 [package]
 name = "kcr_apps_redhat_com"
 version = "9999.99.99"
-edition = "2021"
-authors = ["The kube-custom-resources-rs authors"]
-description = "Kubernetes Custom Resource Bindings"
-homepage = "https://github.com/metio/kube-custom-resources-rs/"
-readme = "../../README.md"
-keywords = ["kubernetes", "custom-resources"]
-categories = ["api-bindings"]
-license = "0BSD"
-repository = "https://github.com/metio/kube-custom-resources-rs"
+edition.workspace = true
+authors.workspace = true
+description.workspace = true
+homepage.workspace = true
+readme.workspace = true
+keywords.workspace = true
+categories.workspace = true
+license.workspace = true
+repository.workspace = true
 
 [dependencies]
-schemars = { version = "~0" }
-serde = { version = "~1" }
-serde_json = { version = "~1" }
-k8s-openapi = { version = "~0" }
-kube = { version = "~0", features = ["derive"] }
+schemars = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+k8s-openapi = { workspace = true }
+kube = { workspace = true }
 
 [dev-dependencies]
-k8s-openapi = { version = "~0", features = ["v1_31"] }
+k8s-openapi = { workspace = true, features = ["v1_31"] }
 
 [package.metadata.docs.rs]
 features = ["k8s-openapi/v1_31"]

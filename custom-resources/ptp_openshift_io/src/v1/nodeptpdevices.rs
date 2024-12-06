@@ -5,24 +5,20 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// NodePtpDeviceSpec defines the desired state of NodePtpDevice
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "ptp.openshift.io",
-    version = "v1",
-    kind = "NodePtpDevice",
-    plural = "nodeptpdevices"
-)]
+#[kube(group = "ptp.openshift.io", version = "v1", kind = "NodePtpDevice", plural = "nodeptpdevices")]
 #[kube(namespaced)]
 #[kube(status = "NodePtpDeviceStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
-pub struct NodePtpDeviceSpec {}
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
+pub struct NodePtpDeviceSpec {
+}
 
 /// NodePtpDeviceStatus defines the observed state of NodePtpDevice
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -70,3 +66,4 @@ pub struct NodePtpDeviceStatusHwconfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vendorID")]
     pub vendor_id: Option<String>,
 }
+

@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// BatchSpec defines the desired state of Batch
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "infinispan.org",
-    version = "v2alpha1",
-    kind = "Batch",
-    plural = "batches"
-)]
+#[kube(group = "infinispan.org", version = "v2alpha1", kind = "Batch", plural = "batches")]
 #[kube(namespaced)]
 #[kube(status = "BatchStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct BatchSpec {
     /// Infinispan cluster name
     pub cluster: String,
@@ -49,11 +44,7 @@ pub struct BatchContainer {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BatchStatus {
     /// The UUID of the Infinispan instance that the Batch is associated with
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterUID")]
     pub cluster_uid: Option<String>,
     /// Current phase of the batch operation
     pub phase: String,
@@ -61,3 +52,4 @@ pub struct BatchStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
 }
+

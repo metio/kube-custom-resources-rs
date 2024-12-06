@@ -5,27 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "objectbucket.io",
-    version = "v1alpha1",
-    kind = "ObjectBucket",
-    plural = "objectbuckets"
-)]
+#[kube(group = "objectbucket.io", version = "v1alpha1", kind = "ObjectBucket", plural = "objectbuckets")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ObjectBucketSpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalState"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalState")]
     pub additional_state: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authentication: Option<ObjectBucketAuthentication>,
@@ -33,51 +24,29 @@ pub struct ObjectBucketSpec {
     pub claim_ref: Option<BTreeMap<String, serde_json::Value>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<ObjectBucketEndpoint>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reclaimPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reclaimPolicy")]
     pub reclaim_policy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ObjectBucketAuthentication {}
+pub struct ObjectBucketAuthentication {
+}
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ObjectBucketEndpoint {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalConfig")]
     pub additional_config: Option<BTreeMap<String, serde_json::Value>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bucketHost"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bucketHost")]
     pub bucket_host: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bucketName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bucketName")]
     pub bucket_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bucketPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bucketPort")]
     pub bucket_port: Option<i32>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subRegion")]
     pub sub_region: Option<String>,
 }
+

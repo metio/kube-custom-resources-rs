@@ -5,28 +5,19 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "egressgateway.spidernet.io",
-    version = "v1beta1",
-    kind = "EgressClusterInfo",
-    plural = "egressclusterinfos"
-)]
+#[kube(group = "egressgateway.spidernet.io", version = "v1beta1", kind = "EgressClusterInfo", plural = "egressclusterinfos")]
 #[kube(status = "EgressClusterInfoStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct EgressClusterInfoSpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoDetect"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoDetect")]
     pub auto_detect: Option<EgressClusterInfoAutoDetect>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraCidr")]
     pub extra_cidr: Option<Vec<String>>,
@@ -38,11 +29,7 @@ pub struct EgressClusterInfoAutoDetect {
     pub cluster_ip: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeIP")]
     pub node_ip: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podCidrMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podCidrMode")]
     pub pod_cidr_mode: Option<String>,
 }
 
@@ -56,11 +43,7 @@ pub struct EgressClusterInfoStatus {
     pub node_ip: Option<BTreeMap<String, EgressClusterInfoStatusNodeIp>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podCIDR")]
     pub pod_cidr: Option<BTreeMap<String, EgressClusterInfoStatusPodCidr>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podCidrMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podCidrMode")]
     pub pod_cidr_mode: Option<String>,
 }
 
@@ -87,3 +70,4 @@ pub struct EgressClusterInfoStatusPodCidr {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ipv6: Option<Vec<String>>,
 }
+

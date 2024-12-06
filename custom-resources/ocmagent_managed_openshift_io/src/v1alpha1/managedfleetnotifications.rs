@@ -5,20 +5,15 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "ocmagent.managed.openshift.io",
-    version = "v1alpha1",
-    kind = "ManagedFleetNotification",
-    plural = "managedfleetnotifications"
-)]
+#[kube(group = "ocmagent.managed.openshift.io", version = "v1alpha1", kind = "ManagedFleetNotification", plural = "managedfleetnotifications")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct ManagedFleetNotificationSpec {
     /// FleetNotification defines the desired spec of ManagedFleetNotification
     #[serde(rename = "fleetNotification")]
@@ -29,11 +24,7 @@ pub struct ManagedFleetNotificationSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ManagedFleetNotificationFleetNotification {
     /// Whether or not limited support should be sent for this notification
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "limitedSupport"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "limitedSupport")]
     pub limited_support: Option<bool>,
     /// LogType is a categorization property that can be used to group service logs for aggregation and managing notification preferences.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logType")]
@@ -64,3 +55,4 @@ pub enum ManagedFleetNotificationFleetNotificationSeverity {
     Error,
     Fatal,
 }
+

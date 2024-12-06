@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// TemporalWorkerProcessSpec defines the desired state of TemporalWorkerProcess.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "temporal.io",
-    version = "v1beta1",
-    kind = "TemporalWorkerProcess",
-    plural = "temporalworkerprocesses"
-)]
+#[kube(group = "temporal.io", version = "v1beta1", kind = "TemporalWorkerProcess", plural = "temporalworkerprocesses")]
 #[kube(namespaced)]
 #[kube(status = "TemporalWorkerProcessStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TemporalWorkerProcessSpec {
     /// Builder is the configuration for building a TemporalWorkerProcess. THIS FEATURE IS HIGHLY EXPERIMENTAL.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -33,25 +28,13 @@ pub struct TemporalWorkerProcessSpec {
     /// Image defines the temporal worker docker image the instance should run.
     pub image: String,
     /// An optional list of references to secrets in the same namespace to use for pulling temporal images from registries.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<TemporalWorkerProcessImagePullSecrets>>,
     /// JobTTLSecondsAfterFinished is amount of time to keep job pods after jobs are completed. Defaults to 300 seconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jobTtlSecondsAfterFinished"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobTtlSecondsAfterFinished")]
     pub job_ttl_seconds_after_finished: Option<i32>,
     /// Image pull policy for determining how to pull worker process images.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
     pub pull_policy: Option<String>,
     /// Number of desired replicas. Default to 1.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -74,20 +57,12 @@ pub struct TemporalWorkerProcessBuilder {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "buildDir")]
     pub build_dir: Option<String>,
     /// BuildRegistry specifies how to connect to container registry.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "buildRegistry"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "buildRegistry")]
     pub build_registry: Option<TemporalWorkerProcessBuilderBuildRegistry>,
     /// Enabled defines if the operator should build the temporal worker process.
     pub enabled: bool,
     /// GitRepository specifies how to connect to Git source control.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gitRepository"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitRepository")]
     pub git_repository: Option<TemporalWorkerProcessBuilderGitRepository>,
     /// Image is the image that will be used to build worker image.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -174,3 +149,4 @@ pub struct TemporalWorkerProcessStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
+

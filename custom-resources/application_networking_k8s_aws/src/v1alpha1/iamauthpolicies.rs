@@ -4,35 +4,30 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// IAMAuthPolicySpec defines the desired state of IAMAuthPolicy. When the controller handles IAMAuthPolicy creation, if the targetRef k8s and VPC Lattice resource exists, the controller will change the auth_type of that VPC Lattice resource to AWS_IAM and attach this policy. When the controller handles IAMAuthPolicy deletion, if the targetRef k8s and VPC Lattice resource exists, the controller will change the auth_type of that VPC Lattice resource to NONE and detach this policy.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "application-networking.k8s.aws",
-    version = "v1alpha1",
-    kind = "IAMAuthPolicy",
-    plural = "iamauthpolicies"
-)]
+#[kube(group = "application-networking.k8s.aws", version = "v1alpha1", kind = "IAMAuthPolicy", plural = "iamauthpolicies")]
 #[kube(namespaced)]
 #[kube(status = "IAMAuthPolicyStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct IAMAuthPolicySpec {
     /// IAM auth policy content. It is a JSON string that uses the same syntax as AWS IAM policies. Please check the VPC Lattice documentation to get [the common elements in an auth policy](https://docs.aws.amazon.com/vpc-lattice/latest/ug/auth-policies.html#auth-policies-common-elements)
     pub policy: String,
-    /// TargetRef points to the Kubernetes Gateway, HTTPRoute, or GRPCRoute resource that will have this policy attached.
+    /// TargetRef points to the Kubernetes Gateway, HTTPRoute, or GRPCRoute resource that will have this policy attached. 
     ///  This field is following the guidelines of Kubernetes Gateway API policy attachment.
     #[serde(rename = "targetRef")]
     pub target_ref: IAMAuthPolicyTargetRef,
 }
 
-/// TargetRef points to the Kubernetes Gateway, HTTPRoute, or GRPCRoute resource that will have this policy attached.
+/// TargetRef points to the Kubernetes Gateway, HTTPRoute, or GRPCRoute resource that will have this policy attached. 
 ///  This field is following the guidelines of Kubernetes Gateway API policy attachment.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IAMAuthPolicyTargetRef {
@@ -50,10 +45,11 @@ pub struct IAMAuthPolicyTargetRef {
 /// Status defines the current state of IAMAuthPolicy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct IAMAuthPolicyStatus {
-    /// Conditions describe the current conditions of the IAMAuthPolicy.
-    ///  Implementations should prefer to express Policy conditions using the `PolicyConditionType` and `PolicyConditionReason` constants so that operators and tools can converge on a common vocabulary to describe IAMAuthPolicy state.
-    ///  Known condition types are:
+    /// Conditions describe the current conditions of the IAMAuthPolicy. 
+    ///  Implementations should prefer to express Policy conditions using the `PolicyConditionType` and `PolicyConditionReason` constants so that operators and tools can converge on a common vocabulary to describe IAMAuthPolicy state. 
+    ///  Known condition types are: 
     ///  * "Accepted" * "Ready"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

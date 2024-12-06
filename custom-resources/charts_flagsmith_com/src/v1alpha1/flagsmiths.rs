@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// Spec defines the desired state of Flagsmith
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "charts.flagsmith.com",
-    version = "v1alpha1",
-    kind = "Flagsmith",
-    plural = "flagsmiths"
-)]
+#[kube(group = "charts.flagsmith.com", version = "v1alpha1", kind = "Flagsmith", plural = "flagsmiths")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct FlagsmithSpec {
     /// Configuration how to setup the flagsmith api service.
     pub api: BTreeMap<String, serde_json::Value>,
@@ -63,3 +58,4 @@ pub struct FlagsmithPostgresql {
     /// Set to true if PostgreSQL will be installed. If the value is false PostgreSQL will not be installed.
     pub enabled: bool,
 }
+

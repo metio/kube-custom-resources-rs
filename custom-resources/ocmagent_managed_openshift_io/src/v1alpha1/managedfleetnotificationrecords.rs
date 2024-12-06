@@ -5,7 +5,7 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
@@ -17,8 +17,7 @@ pub struct ManagedFleetNotificationRecordStatus {
     pub management_cluster: String,
     /// An array structure to record the history for each hosted cluster
     #[serde(rename = "notificationRecordByName")]
-    pub notification_record_by_name:
-        Vec<ManagedFleetNotificationRecordStatusNotificationRecordByName>,
+    pub notification_record_by_name: Vec<ManagedFleetNotificationRecordStatusNotificationRecordByName>,
 }
 
 /// NotificationRecordByName groups the notification record item by notification name
@@ -29,8 +28,7 @@ pub struct ManagedFleetNotificationRecordStatusNotificationRecordByName {
     pub notification_name: String,
     /// Notification record item with the notification name
     #[serde(rename = "notificationRecordItems")]
-    pub notification_record_items:
-        Vec<ManagedFleetNotificationRecordStatusNotificationRecordByNameNotificationRecordItems>,
+    pub notification_record_items: Vec<ManagedFleetNotificationRecordStatusNotificationRecordByNameNotificationRecordItems>,
     /// Resend interval for the notification
     #[serde(rename = "resendWait")]
     pub resend_wait: i32,
@@ -46,13 +44,10 @@ pub struct ManagedFleetNotificationRecordStatusNotificationRecordByNameNotificat
     #[serde(rename = "hostedClusterID")]
     pub hosted_cluster_id: String,
     /// The last notification sent timestamp
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastTransitionTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastTransitionTime")]
     pub last_transition_time: Option<String>,
     /// ResolvedNotificationSentCount records the number of notifications sent for the alert status resolving
     #[serde(rename = "resolvedNotificationSentCount")]
     pub resolved_notification_sent_count: i64,
 }
+

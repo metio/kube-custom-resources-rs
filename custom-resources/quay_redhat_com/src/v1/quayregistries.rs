@@ -4,38 +4,29 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// QuayRegistrySpec defines the desired state of QuayRegistry.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "quay.redhat.com",
-    version = "v1",
-    kind = "QuayRegistry",
-    plural = "quayregistries"
-)]
+#[kube(group = "quay.redhat.com", version = "v1", kind = "QuayRegistry", plural = "quayregistries")]
 #[kube(namespaced)]
 #[kube(status = "QuayRegistryStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct QuayRegistrySpec {
     /// Components declare how the Operator should handle backing Quay services.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub components: Option<Vec<QuayRegistryComponents>>,
     /// ConfigBundleSecret is the name of the Kubernetes `Secret` in the same namespace
     /// which contains the base Quay config and extra certs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configBundleSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configBundleSecret")]
     pub config_bundle_secret: Option<String>,
 }
 
@@ -69,11 +60,7 @@ pub struct QuayRegistryComponentsOverrides {
     /// Resources describes the resource limits and requests for a component.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<QuayRegistryComponentsOverridesResources>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSize")]
     pub volume_size: Option<IntOrString>,
 }
 
@@ -81,25 +68,13 @@ pub struct QuayRegistryComponentsOverrides {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct QuayRegistryComponentsOverridesAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<QuayRegistryComponentsOverridesAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<QuayRegistryComponentsOverridesAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<QuayRegistryComponentsOverridesAffinityPodAntiAffinity>,
 }
 
@@ -150,8 +125,7 @@ pub struct QuayRegistryComponentsOverridesAffinityNodeAffinityPreferredDuringSch
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct QuayRegistryComponentsOverridesAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct QuayRegistryComponentsOverridesAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -169,8 +143,7 @@ pub struct QuayRegistryComponentsOverridesAffinityNodeAffinityPreferredDuringSch
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct QuayRegistryComponentsOverridesAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct QuayRegistryComponentsOverridesAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -213,8 +186,7 @@ pub struct QuayRegistryComponentsOverridesAffinityNodeAffinityRequiredDuringSche
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct QuayRegistryComponentsOverridesAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct QuayRegistryComponentsOverridesAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -232,8 +204,7 @@ pub struct QuayRegistryComponentsOverridesAffinityNodeAffinityRequiredDuringSche
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct QuayRegistryComponentsOverridesAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct QuayRegistryComponentsOverridesAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -328,8 +299,7 @@ pub struct QuayRegistryComponentsOverridesAffinityPodAffinityPreferredDuringSche
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct QuayRegistryComponentsOverridesAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct QuayRegistryComponentsOverridesAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -363,8 +333,7 @@ pub struct QuayRegistryComponentsOverridesAffinityPodAffinityPreferredDuringSche
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct QuayRegistryComponentsOverridesAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct QuayRegistryComponentsOverridesAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -427,8 +396,7 @@ pub struct QuayRegistryComponentsOverridesAffinityPodAffinityRequiredDuringSched
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct QuayRegistryComponentsOverridesAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct QuayRegistryComponentsOverridesAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -462,8 +430,7 @@ pub struct QuayRegistryComponentsOverridesAffinityPodAffinityRequiredDuringSched
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct QuayRegistryComponentsOverridesAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct QuayRegistryComponentsOverridesAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -557,8 +524,7 @@ pub struct QuayRegistryComponentsOverridesAffinityPodAntiAffinityPreferredDuring
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct QuayRegistryComponentsOverridesAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct QuayRegistryComponentsOverridesAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -592,8 +558,7 @@ pub struct QuayRegistryComponentsOverridesAffinityPodAntiAffinityPreferredDuring
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct QuayRegistryComponentsOverridesAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct QuayRegistryComponentsOverridesAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -656,8 +621,7 @@ pub struct QuayRegistryComponentsOverridesAffinityPodAntiAffinityRequiredDuringS
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct QuayRegistryComponentsOverridesAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct QuayRegistryComponentsOverridesAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -691,8 +655,7 @@ pub struct QuayRegistryComponentsOverridesAffinityPodAntiAffinityRequiredDuringS
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct QuayRegistryComponentsOverridesAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct QuayRegistryComponentsOverridesAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -731,11 +694,7 @@ pub struct QuayRegistryComponentsOverridesEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct QuayRegistryComponentsOverridesEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<QuayRegistryComponentsOverridesEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -743,18 +702,10 @@ pub struct QuayRegistryComponentsOverridesEnvValueFrom {
     pub field_ref: Option<QuayRegistryComponentsOverridesEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<QuayRegistryComponentsOverridesEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<QuayRegistryComponentsOverridesEnvValueFromSecretKeyRef>,
 }
 
@@ -777,11 +728,7 @@ pub struct QuayRegistryComponentsOverridesEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct QuayRegistryComponentsOverridesEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -793,11 +740,7 @@ pub struct QuayRegistryComponentsOverridesEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct QuayRegistryComponentsOverridesEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -838,24 +781,13 @@ pub struct QuayRegistryStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// CurrentVersion is the actual version of Quay that is actively deployed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentVersion")]
     pub current_version: Option<String>,
     /// LastUpdate is the timestamp when the Operator last processed this instance.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdated"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdated")]
     pub last_updated: Option<String>,
     /// RegistryEndpoint is the external access point for the Quay registry.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "registryEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "registryEndpoint")]
     pub registry_endpoint: Option<String>,
 }
+

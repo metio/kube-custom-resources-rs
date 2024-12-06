@@ -4,32 +4,23 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// InstrumentationSpec defines the desired state of OpenTelemetry SDK and instrumentation.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "cloudwatch.aws.amazon.com",
-    version = "v1alpha1",
-    kind = "Instrumentation",
-    plural = "instrumentations"
-)]
+#[kube(group = "cloudwatch.aws.amazon.com", version = "v1alpha1", kind = "Instrumentation", plural = "instrumentations")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct InstrumentationSpec {
     /// ApacheHttpd defines configuration for Apache HTTPD auto-instrumentation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apacheHttpd"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apacheHttpd")]
     pub apache_httpd: Option<InstrumentationApacheHttpd>,
     /// DotNet defines configuration for DotNet auto-instrumentation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -83,11 +74,7 @@ pub struct InstrumentationApacheHttpd {
     pub attrs: Option<Vec<InstrumentationApacheHttpdAttrs>>,
     /// Location of Apache HTTPD server configuration.
     /// Needed only if different from default "/usr/local/apache2/conf"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configPath")]
     pub config_path: Option<String>,
     /// Env defines Apache HTTPD specific env vars. There are four layers for env vars' definitions and
     /// the precedence order is: `original container env vars` > `language specific env vars` > `common env vars` > `instrument spec configs' vars`.
@@ -98,22 +85,14 @@ pub struct InstrumentationApacheHttpd {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Resources describes the compute resource requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceRequirements"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceRequirements")]
     pub resource_requirements: Option<InstrumentationApacheHttpdResourceRequirements>,
     /// Apache HTTPD server version. One of 2.4 or 2.2. Default is 2.4
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
     /// VolumeSizeLimit defines size limit for volume used for auto-instrumentation.
     /// The default size is 200Mi.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeLimitSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeLimitSize")]
     pub volume_limit_size: Option<IntOrString>,
 }
 
@@ -142,11 +121,7 @@ pub struct InstrumentationApacheHttpdAttrs {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstrumentationApacheHttpdAttrsValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<InstrumentationApacheHttpdAttrsValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -154,18 +129,10 @@ pub struct InstrumentationApacheHttpdAttrsValueFrom {
     pub field_ref: Option<InstrumentationApacheHttpdAttrsValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<InstrumentationApacheHttpdAttrsValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<InstrumentationApacheHttpdAttrsValueFromSecretKeyRef>,
 }
 
@@ -189,11 +156,7 @@ pub struct InstrumentationApacheHttpdAttrsValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstrumentationApacheHttpdAttrsValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -205,11 +168,7 @@ pub struct InstrumentationApacheHttpdAttrsValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstrumentationApacheHttpdAttrsValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -258,11 +217,7 @@ pub struct InstrumentationApacheHttpdEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstrumentationApacheHttpdEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<InstrumentationApacheHttpdEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -270,18 +225,10 @@ pub struct InstrumentationApacheHttpdEnvValueFrom {
     pub field_ref: Option<InstrumentationApacheHttpdEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<InstrumentationApacheHttpdEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<InstrumentationApacheHttpdEnvValueFromSecretKeyRef>,
 }
 
@@ -305,11 +252,7 @@ pub struct InstrumentationApacheHttpdEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstrumentationApacheHttpdEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -321,11 +264,7 @@ pub struct InstrumentationApacheHttpdEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstrumentationApacheHttpdEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -354,12 +293,12 @@ pub struct InstrumentationApacheHttpdEnvValueFromSecretKeyRef {
 pub struct InstrumentationApacheHttpdResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<InstrumentationApacheHttpdResourceRequirementsClaims>>,
@@ -396,19 +335,11 @@ pub struct InstrumentationDotnet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Resources describes the compute resource requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceRequirements"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceRequirements")]
     pub resource_requirements: Option<InstrumentationDotnetResourceRequirements>,
     /// VolumeSizeLimit defines size limit for volume used for auto-instrumentation.
     /// The default size is 200Mi.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeLimitSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeLimitSize")]
     pub volume_limit_size: Option<IntOrString>,
 }
 
@@ -437,11 +368,7 @@ pub struct InstrumentationDotnetEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstrumentationDotnetEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<InstrumentationDotnetEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -449,18 +376,10 @@ pub struct InstrumentationDotnetEnvValueFrom {
     pub field_ref: Option<InstrumentationDotnetEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<InstrumentationDotnetEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<InstrumentationDotnetEnvValueFromSecretKeyRef>,
 }
 
@@ -484,11 +403,7 @@ pub struct InstrumentationDotnetEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstrumentationDotnetEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -500,11 +415,7 @@ pub struct InstrumentationDotnetEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstrumentationDotnetEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -533,12 +444,12 @@ pub struct InstrumentationDotnetEnvValueFromSecretKeyRef {
 pub struct InstrumentationDotnetResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<InstrumentationDotnetResourceRequirementsClaims>>,
@@ -588,11 +499,7 @@ pub struct InstrumentationEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstrumentationEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<InstrumentationEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -600,18 +507,10 @@ pub struct InstrumentationEnvValueFrom {
     pub field_ref: Option<InstrumentationEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<InstrumentationEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<InstrumentationEnvValueFromSecretKeyRef>,
 }
 
@@ -635,11 +534,7 @@ pub struct InstrumentationEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstrumentationEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -651,11 +546,7 @@ pub struct InstrumentationEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstrumentationEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -702,19 +593,11 @@ pub struct InstrumentationGo {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Resources describes the compute resource requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceRequirements"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceRequirements")]
     pub resource_requirements: Option<InstrumentationGoResourceRequirements>,
     /// VolumeSizeLimit defines size limit for volume used for auto-instrumentation.
     /// The default size is 200Mi.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeLimitSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeLimitSize")]
     pub volume_limit_size: Option<IntOrString>,
 }
 
@@ -743,11 +626,7 @@ pub struct InstrumentationGoEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstrumentationGoEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<InstrumentationGoEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -755,18 +634,10 @@ pub struct InstrumentationGoEnvValueFrom {
     pub field_ref: Option<InstrumentationGoEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<InstrumentationGoEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<InstrumentationGoEnvValueFromSecretKeyRef>,
 }
 
@@ -790,11 +661,7 @@ pub struct InstrumentationGoEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstrumentationGoEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -806,11 +673,7 @@ pub struct InstrumentationGoEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstrumentationGoEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -839,12 +702,12 @@ pub struct InstrumentationGoEnvValueFromSecretKeyRef {
 pub struct InstrumentationGoResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<InstrumentationGoResourceRequirementsClaims>>,
@@ -885,11 +748,7 @@ pub struct InstrumentationJava {
     pub resources: Option<InstrumentationJavaResources>,
     /// VolumeSizeLimit defines size limit for volume used for auto-instrumentation.
     /// The default size is 200Mi.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeLimitSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeLimitSize")]
     pub volume_limit_size: Option<IntOrString>,
 }
 
@@ -918,11 +777,7 @@ pub struct InstrumentationJavaEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstrumentationJavaEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<InstrumentationJavaEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -930,18 +785,10 @@ pub struct InstrumentationJavaEnvValueFrom {
     pub field_ref: Option<InstrumentationJavaEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<InstrumentationJavaEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<InstrumentationJavaEnvValueFromSecretKeyRef>,
 }
 
@@ -965,11 +812,7 @@ pub struct InstrumentationJavaEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstrumentationJavaEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -981,11 +824,7 @@ pub struct InstrumentationJavaEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstrumentationJavaEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1014,12 +853,12 @@ pub struct InstrumentationJavaEnvValueFromSecretKeyRef {
 pub struct InstrumentationJavaResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<InstrumentationJavaResourcesClaims>>,
@@ -1054,11 +893,7 @@ pub struct InstrumentationNginx {
     pub attrs: Option<Vec<InstrumentationNginxAttrs>>,
     /// Location of Nginx configuration file.
     /// Needed only if different from default "/etx/nginx/nginx.conf"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configFile")]
     pub config_file: Option<String>,
     /// Env defines Nginx specific env vars. There are four layers for env vars' definitions and
     /// the precedence order is: `original container env vars` > `language specific env vars` > `common env vars` > `instrument spec configs' vars`.
@@ -1069,19 +904,11 @@ pub struct InstrumentationNginx {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Resources describes the compute resource requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceRequirements"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceRequirements")]
     pub resource_requirements: Option<InstrumentationNginxResourceRequirements>,
     /// VolumeSizeLimit defines size limit for volume used for auto-instrumentation.
     /// The default size is 200Mi.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeLimitSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeLimitSize")]
     pub volume_limit_size: Option<IntOrString>,
 }
 
@@ -1110,11 +937,7 @@ pub struct InstrumentationNginxAttrs {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstrumentationNginxAttrsValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<InstrumentationNginxAttrsValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -1122,18 +945,10 @@ pub struct InstrumentationNginxAttrsValueFrom {
     pub field_ref: Option<InstrumentationNginxAttrsValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<InstrumentationNginxAttrsValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<InstrumentationNginxAttrsValueFromSecretKeyRef>,
 }
 
@@ -1157,11 +972,7 @@ pub struct InstrumentationNginxAttrsValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstrumentationNginxAttrsValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -1173,11 +984,7 @@ pub struct InstrumentationNginxAttrsValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstrumentationNginxAttrsValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1226,11 +1033,7 @@ pub struct InstrumentationNginxEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstrumentationNginxEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<InstrumentationNginxEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -1238,18 +1041,10 @@ pub struct InstrumentationNginxEnvValueFrom {
     pub field_ref: Option<InstrumentationNginxEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<InstrumentationNginxEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<InstrumentationNginxEnvValueFromSecretKeyRef>,
 }
 
@@ -1273,11 +1068,7 @@ pub struct InstrumentationNginxEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstrumentationNginxEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -1289,11 +1080,7 @@ pub struct InstrumentationNginxEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstrumentationNginxEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1322,12 +1109,12 @@ pub struct InstrumentationNginxEnvValueFromSecretKeyRef {
 pub struct InstrumentationNginxResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<InstrumentationNginxResourceRequirementsClaims>>,
@@ -1364,19 +1151,11 @@ pub struct InstrumentationNodejs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Resources describes the compute resource requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceRequirements"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceRequirements")]
     pub resource_requirements: Option<InstrumentationNodejsResourceRequirements>,
     /// VolumeSizeLimit defines size limit for volume used for auto-instrumentation.
     /// The default size is 200Mi.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeLimitSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeLimitSize")]
     pub volume_limit_size: Option<IntOrString>,
 }
 
@@ -1405,11 +1184,7 @@ pub struct InstrumentationNodejsEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstrumentationNodejsEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<InstrumentationNodejsEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -1417,18 +1192,10 @@ pub struct InstrumentationNodejsEnvValueFrom {
     pub field_ref: Option<InstrumentationNodejsEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<InstrumentationNodejsEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<InstrumentationNodejsEnvValueFromSecretKeyRef>,
 }
 
@@ -1452,11 +1219,7 @@ pub struct InstrumentationNodejsEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstrumentationNodejsEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -1468,11 +1231,7 @@ pub struct InstrumentationNodejsEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstrumentationNodejsEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1501,12 +1260,12 @@ pub struct InstrumentationNodejsEnvValueFromSecretKeyRef {
 pub struct InstrumentationNodejsResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<InstrumentationNodejsResourceRequirementsClaims>>,
@@ -1543,19 +1302,11 @@ pub struct InstrumentationPython {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// Resources describes the compute resource requirements.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceRequirements"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceRequirements")]
     pub resource_requirements: Option<InstrumentationPythonResourceRequirements>,
     /// VolumeSizeLimit defines size limit for volume used for auto-instrumentation.
     /// The default size is 200Mi.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeLimitSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeLimitSize")]
     pub volume_limit_size: Option<IntOrString>,
 }
 
@@ -1584,11 +1335,7 @@ pub struct InstrumentationPythonEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstrumentationPythonEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<InstrumentationPythonEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -1596,18 +1343,10 @@ pub struct InstrumentationPythonEnvValueFrom {
     pub field_ref: Option<InstrumentationPythonEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<InstrumentationPythonEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<InstrumentationPythonEnvValueFromSecretKeyRef>,
 }
 
@@ -1631,11 +1370,7 @@ pub struct InstrumentationPythonEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstrumentationPythonEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -1647,11 +1382,7 @@ pub struct InstrumentationPythonEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstrumentationPythonEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1680,12 +1411,12 @@ pub struct InstrumentationPythonEnvValueFromSecretKeyRef {
 pub struct InstrumentationPythonResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<InstrumentationPythonResourceRequirementsClaims>>,
@@ -1714,19 +1445,11 @@ pub struct InstrumentationPythonResourceRequirementsClaims {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstrumentationResource {
     /// AddK8sUIDAttributes defines whether K8s UID attributes should be collected (e.g. k8s.deployment.uid).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "addK8sUIDAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "addK8sUIDAttributes")]
     pub add_k8s_uid_attributes: Option<bool>,
     /// Attributes defines attributes that are added to the resource.
     /// For example environment: dev
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceAttributes")]
     pub resource_attributes: Option<BTreeMap<String, String>>,
 }
 
@@ -1769,4 +1492,6 @@ pub enum InstrumentationSamplerType {
 
 /// InstrumentationStatus defines status of the instrumentation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstrumentationStatus {}
+pub struct InstrumentationStatus {
+}
+

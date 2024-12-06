@@ -4,57 +4,36 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::api::core::v1::ObjectReference;
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
+    pub use k8s_openapi::api::core::v1::ObjectReference;
 }
 use self::prelude::*;
 
 /// ClusterSpec defines the desired state of Cluster.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "cluster.x-k8s.io",
-    version = "v1alpha4",
-    kind = "Cluster",
-    plural = "clusters"
-)]
+#[kube(group = "cluster.x-k8s.io", version = "v1alpha4", kind = "Cluster", plural = "clusters")]
 #[kube(namespaced)]
 #[kube(status = "ClusterStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterSpec {
     /// Cluster network configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterNetwork"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterNetwork")]
     pub cluster_network: Option<ClusterClusterNetwork>,
     /// controlPlaneEndpoint represents the endpoint used to communicate with the control plane.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneEndpoint")]
     pub control_plane_endpoint: Option<ClusterControlPlaneEndpoint>,
     /// controlPlaneRef is an optional reference to a provider-specific resource that holds
     /// the details for provisioning the Control Plane for a Cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneRef")]
     pub control_plane_ref: Option<ObjectReference>,
     /// infrastructureRef is a reference to a provider-specific resource that holds the details
     /// for provisioning infrastructure for a cluster in said provider.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "infrastructureRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "infrastructureRef")]
     pub infrastructure_ref: Option<ObjectReference>,
     /// paused can be used to prevent controllers from processing the Cluster and all its associated objects.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -72,21 +51,13 @@ pub struct ClusterSpec {
 pub struct ClusterClusterNetwork {
     /// apiServerPort specifies the port the API Server should bind to.
     /// Defaults to 6443.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiServerPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiServerPort")]
     pub api_server_port: Option<i32>,
     /// The network ranges from which Pod networks are allocated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pods: Option<ClusterClusterNetworkPods>,
     /// Domain name for services.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceDomain")]
     pub service_domain: Option<String>,
     /// The network ranges from which service VIPs are allocated.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -121,11 +92,7 @@ pub struct ClusterControlPlaneEndpoint {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterControlPlaneRef {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -150,11 +117,7 @@ pub struct ClusterControlPlaneRef {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -167,11 +130,7 @@ pub struct ClusterControlPlaneRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterInfrastructureRef {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -196,11 +155,7 @@ pub struct ClusterInfrastructureRef {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -217,19 +172,11 @@ pub struct ClusterTopology {
     /// The name of the ClusterClass object to create the topology.
     pub class: String,
     /// controlPlane describes the cluster control plane.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlane"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
     pub control_plane: Option<ClusterTopologyControlPlane>,
     /// rolloutAfter performs a rollout of the entire cluster one component at a time,
     /// control plane first and then machine deployments.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rolloutAfter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rolloutAfter")]
     pub rollout_after: Option<String>,
     /// The Kubernetes version of the cluster.
     pub version: String,
@@ -244,7 +191,7 @@ pub struct ClusterTopology {
 pub struct ClusterTopologyControlPlane {
     /// metadata is the metadata applied to the machines of the ControlPlane.
     /// At runtime this metadata is merged with the corresponding metadata from the ClusterClass.
-    ///
+    /// 
     /// This field is supported if and only if the control plane provider template
     /// referenced in the ClusterClass is Machine based.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -259,7 +206,7 @@ pub struct ClusterTopologyControlPlane {
 
 /// metadata is the metadata applied to the machines of the ControlPlane.
 /// At runtime this metadata is merged with the corresponding metadata from the ClusterClass.
-///
+/// 
 /// This field is supported if and only if the control plane provider template
 /// referenced in the ClusterClass is Machine based.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -283,11 +230,7 @@ pub struct ClusterTopologyControlPlaneMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterTopologyWorkers {
     /// machineDeployments is a list of machine deployments in the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "machineDeployments"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineDeployments")]
     pub machine_deployments: Option<Vec<ClusterTopologyWorkersMachineDeployments>>,
 }
 
@@ -341,49 +284,25 @@ pub struct ClusterStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// controlPlaneReady defines if the control plane is ready.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneReady"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneReady")]
     pub control_plane_ready: Option<bool>,
     /// failureDomains is a slice of failure domain objects synced from the infrastructure provider.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomains")]
     pub failure_domains: Option<BTreeMap<String, ClusterStatusFailureDomains>>,
     /// failureMessage indicates that there is a fatal problem reconciling the
     /// state, and will be set to a descriptive error message.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
     pub failure_message: Option<String>,
     /// failureReason indicates that there is a fatal problem reconciling the
     /// state, and will be set to a token value suitable for
     /// programmatic interpretation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureReason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
     /// infrastructureReady is the state of the infrastructure provider.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "infrastructureReady"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "infrastructureReady")]
     pub infrastructure_ready: Option<bool>,
     /// observedGeneration is the latest generation observed by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// phase represents the current phase of cluster actuation.
     /// E.g. Pending, Running, Terminating, Failed etc.
@@ -398,10 +317,7 @@ pub struct ClusterStatusFailureDomains {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<BTreeMap<String, String>>,
     /// controlPlane determines if this failure domain is suitable for use by control plane machines.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlane"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
     pub control_plane: Option<bool>,
 }
+

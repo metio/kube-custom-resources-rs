@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "tinkerbell.org",
-    version = "v1alpha2",
-    kind = "Template",
-    plural = "templates"
-)]
+#[kube(group = "tinkerbell.org", version = "v1alpha2", kind = "Template", plural = "templates")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TemplateSpec {
     /// Actions defines the set of actions to be run on a target machine. Actions are run sequentially
     /// in the order they are specified. At least 1 action must be specified. Names of actions
@@ -73,3 +68,4 @@ pub struct TemplateActionsNamespaces {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pid: Option<i64>,
 }
+

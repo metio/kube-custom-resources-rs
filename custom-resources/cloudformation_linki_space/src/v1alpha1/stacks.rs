@@ -5,24 +5,19 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// Defines the desired state of Stack
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "cloudformation.linki.space",
-    version = "v1alpha1",
-    kind = "Stack",
-    plural = "stacks"
-)]
+#[kube(group = "cloudformation.linki.space", version = "v1alpha1", kind = "Stack", plural = "stacks")]
 #[kube(namespaced)]
 #[kube(status = "StackStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct StackSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub parameters: Option<BTreeMap<String, String>>,
@@ -34,11 +29,7 @@ pub struct StackSpec {
 /// Defines the observed state of Stack
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StackStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "createdTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "createdTime")]
     pub created_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub outputs: Option<BTreeMap<String, String>>,
@@ -46,17 +37,9 @@ pub struct StackStatus {
     pub resources: Option<Vec<StackStatusResources>>,
     #[serde(rename = "stackID")]
     pub stack_id: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stackStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stackStatus")]
     pub stack_status: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updatedTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updatedTime")]
     pub updated_time: Option<String>,
 }
 
@@ -68,12 +51,9 @@ pub struct StackStatusResources {
     #[serde(rename = "physicalID")]
     pub physical_id: String,
     pub status: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusReason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusReason")]
     pub status_reason: Option<String>,
     #[serde(rename = "type")]
     pub r#type: String,
 }
+

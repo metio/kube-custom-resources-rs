@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "clustertemplate.openshift.io",
-    version = "v1alpha1",
-    kind = "ClusterTemplateQuota",
-    plural = "clustertemplatequotas"
-)]
+#[kube(group = "clustertemplate.openshift.io", version = "v1alpha1", kind = "ClusterTemplateQuota", plural = "clustertemplatequotas")]
 #[kube(namespaced)]
 #[kube(status = "ClusterTemplateQuotaStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterTemplateQuotaSpec {
     /// Represents all ClusterTemplates which can be used in given namespace
     #[serde(rename = "allowedTemplates")]
@@ -36,11 +31,7 @@ pub struct ClusterTemplateQuotaAllowedTemplates {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub count: Option<i64>,
     /// Template instance will be removed after specified time This is a Duration value; see https://pkg.go.dev/time#ParseDuration for accepted formats. Note: due to discrepancies in validation vs parsing, we use a Pattern instead of `Format=duration`. See https://bugzilla.redhat.com/show_bug.cgi?id=2050332 https://github.com/kubernetes/apimachinery/issues/131 https://github.com/kubernetes/apiextensions-apiserver/issues/56
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deleteAfter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deleteAfter")]
     pub delete_after: Option<String>,
     /// Name of the ClusterTemplate
     pub name: String,
@@ -64,3 +55,4 @@ pub struct ClusterTemplateQuotaStatusTemplateInstances {
     /// Name of the ClusterTemplate
     pub name: String,
 }
+

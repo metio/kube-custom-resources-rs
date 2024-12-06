@@ -5,7 +5,7 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
@@ -14,23 +14,14 @@ use self::prelude::*;
 /// configured.  This includes the backup and repository to restore data from, and
 /// the time range of data to be restored.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "couchbase.com",
-    version = "v2",
-    kind = "CouchbaseBackupRestore",
-    plural = "couchbasebackuprestores"
-)]
+#[kube(group = "couchbase.com", version = "v2", kind = "CouchbaseBackupRestore", plural = "couchbasebackuprestores")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CouchbaseBackupRestoreSpec {
     /// Number of times the restore job should try to execute.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backoffLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backoffLimit")]
     pub backoff_limit: Option<i32>,
     /// The backup resource name associated with this restore, or the backup PVC
     /// name to restore from.
@@ -59,37 +50,21 @@ pub struct CouchbaseBackupRestoreSpec {
     /// However, if `couchbasebackuprestores.spec.forceUpdates` is true,
     /// then the backup record will _always_ overwrite the cluster record,
     /// regardless of Couchbase's conflict resolution.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "forceUpdates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forceUpdates")]
     pub force_updates: Option<bool>,
     /// Number of hours to hold restore script logs for, everything older will be deleted.
     /// More info:
     /// https://golang.org/pkg/time/#ParseDuration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logRetention"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logRetention")]
     pub log_retention: Option<String>,
     /// The remote destination for backup.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "objectStore"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectStore")]
     pub object_store: Option<CouchbaseBackupRestoreObjectStore>,
     /// Overwrites the already existing users in the cluster when  user restoration is enabled (spec.services.users).
     /// The default behavior of backup/restore of users is to skip already existing users.
     /// This is only available for Couchbase Server 7.6 and later.
     /// This field defaults to `false`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "overwriteUsers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "overwriteUsers")]
     pub overwrite_users: Option<bool>,
     /// Repo is the backup folder to restore from.  If no repository is specified,
     /// the backup container will choose the latest.
@@ -104,11 +79,7 @@ pub struct CouchbaseBackupRestoreSpec {
     pub services: Option<CouchbaseBackupRestoreServices>,
     /// StagingVolume contains configuration related to the
     /// ephemeral volume used as staging when restoring from a cloud backup.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stagingVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stagingVolume")]
     pub staging_volume: Option<CouchbaseBackupRestoreStagingVolume>,
     /// Start denotes the first backup to restore from.  This may be specified as
     /// an integer index (starting from 1), a string specifying a short date
@@ -119,11 +90,7 @@ pub struct CouchbaseBackupRestoreSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub threads: Option<i64>,
     /// Number of seconds to elapse before a completed job is deleted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ttlSecondsAfterFinished"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ttlSecondsAfterFinished")]
     pub ttl_seconds_after_finished: Option<i32>,
 }
 
@@ -142,18 +109,10 @@ pub struct CouchbaseBackupRestoreData {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub exclude: Option<Vec<String>>,
     /// FilterKeys only restores documents whose names match the provided regular expression.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "filterKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterKeys")]
     pub filter_keys: Option<String>,
     /// FilterValues only restores documents whose values match the provided regular expression.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "filterValues"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterValues")]
     pub filter_values: Option<String>,
     /// Include defines the buckets, scopes or collections that are included in the restore.
     /// When this field is set, it implies that by default nothing will be restored,
@@ -239,11 +198,7 @@ pub struct CouchbaseBackupRestoreObjectStoreEndpoint {
     pub url: Option<String>,
     /// UseVirtualPath will force the AWS SDK to use the new virtual style paths
     /// which are often required by S3 compatible object stores.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useVirtualPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useVirtualPath")]
     pub use_virtual_path: Option<bool>,
 }
 
@@ -261,35 +216,19 @@ pub struct CouchbaseBackupRestoreServices {
     /// with unmanaged buckets.  Note that bucket durability settings are
     /// not restored in versions less than and equal to 1.1.0, and will
     /// need to be manually applied.  This field defaults to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bucketConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bucketConfig")]
     pub bucket_config: Option<bool>,
     /// BucketQuery enables the backup of query metadata for all buckets.
     /// This field defaults to `true`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bucketQuery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bucketQuery")]
     pub bucket_query: Option<bool>,
     /// ClusterAnalytics enables the backup of cluster-wide analytics data, for example synonyms.
     /// This field defaults to `true`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterAnalytics"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterAnalytics")]
     pub cluster_analytics: Option<bool>,
     /// ClusterQuery enables the backup of cluster level query metadata.
     /// This field defaults to `true`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterQuery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterQuery")]
     pub cluster_query: Option<bool>,
     /// Data restores document data from the backup.  This field defaults
     /// to true.
@@ -332,11 +271,7 @@ pub struct CouchbaseBackupRestoreStagingVolume {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<String>,
     /// Name of StorageClass to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
 }
 
@@ -376,21 +311,13 @@ pub struct CouchbaseBackupRestoreStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub job: Option<String>,
     /// LastFailure tells us the time the last failed restore failed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastFailure"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastFailure")]
     pub last_failure: Option<String>,
     /// LastRun tells us the time the last restore job started.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastRun")]
     pub last_run: Option<String>,
     /// LastSuccess gives us the time the last successful restore finished.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastSuccess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSuccess")]
     pub last_success: Option<String>,
     /// DEPRECATED - field may no longer be populated.
     /// Output reports useful information from the backup process.
@@ -418,3 +345,4 @@ pub struct CouchbaseBackupRestoreStatusBackups {
     /// Name of the repository.
     pub name: String,
 }
+

@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// Spec is the specification of the Kuma MeshLoadBalancingStrategy resource.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kuma.io",
-    version = "v1alpha1",
-    kind = "MeshLoadBalancingStrategy",
-    plural = "meshloadbalancingstrategies"
-)]
+#[kube(group = "kuma.io", version = "v1alpha1", kind = "MeshLoadBalancingStrategy", plural = "meshloadbalancingstrategies")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct MeshLoadBalancingStrategySpec {
     /// TargetRef is a reference to the resource the policy takes an effect on.
     /// The resource could be either a real store object or virtual resource
@@ -59,19 +54,11 @@ pub struct MeshLoadBalancingStrategyTargetRef {
     pub namespace: Option<String>,
     /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
     /// all data plane types are targeted by the policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
     pub proxy_types: Option<Vec<String>>,
     /// SectionName is used to target specific section of resource.
     /// For example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sectionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]
     pub section_name: Option<String>,
     /// Tags used to select a subset of proxies by tags. Can only be used with kinds
     /// `MeshSubset` and `MeshServiceSubset`
@@ -112,18 +99,10 @@ pub struct MeshLoadBalancingStrategyTo {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshLoadBalancingStrategyToDefault {
     /// LoadBalancer allows to specify load balancing algorithm.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancer")]
     pub load_balancer: Option<MeshLoadBalancingStrategyToDefaultLoadBalancer>,
     /// LocalityAwareness contains configuration for locality aware load balancing.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localityAwareness"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localityAwareness")]
     pub locality_awareness: Option<MeshLoadBalancingStrategyToDefaultLocalityAwareness>,
 }
 
@@ -132,11 +111,7 @@ pub struct MeshLoadBalancingStrategyToDefault {
 pub struct MeshLoadBalancingStrategyToDefaultLoadBalancer {
     /// LeastRequest selects N random available hosts as specified in 'choiceCount' (2 by default)
     /// and picks the host which has the fewest active requests
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "leastRequest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "leastRequest")]
     pub least_request: Option<MeshLoadBalancingStrategyToDefaultLoadBalancerLeastRequest>,
     /// Maglev implements consistent hashing to upstream hosts. Maglev can be used as
     /// a drop in replacement for the ring hash load balancer any place in which
@@ -156,11 +131,7 @@ pub struct MeshLoadBalancingStrategyToDefaultLoadBalancer {
     pub ring_hash: Option<MeshLoadBalancingStrategyToDefaultLoadBalancerRingHash>,
     /// RoundRobin is a load balancing algorithm that distributes requests
     /// across available upstream hosts in round-robin order.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "roundRobin"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roundRobin")]
     pub round_robin: Option<MeshLoadBalancingStrategyToDefaultLoadBalancerRoundRobin>,
     #[serde(rename = "type")]
     pub r#type: MeshLoadBalancingStrategyToDefaultLoadBalancerType,
@@ -175,20 +146,12 @@ pub struct MeshLoadBalancingStrategyToDefaultLoadBalancerLeastRequest {
     /// that are currently handling active requests. In essence, the higher the ActiveRequestBias
     /// value, the more forcefully it reduces the load balancing weight of endpoints that are
     /// actively serving requests.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "activeRequestBias"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeRequestBias")]
     pub active_request_bias: Option<IntOrString>,
     /// ChoiceCount is the number of random healthy hosts from which the host with
     /// the fewest active requests will be chosen. Defaults to 2 so that Envoy performs
     /// two-choice selection if the field is not set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "choiceCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "choiceCount")]
     pub choice_count: Option<i32>,
 }
 
@@ -201,13 +164,8 @@ pub struct MeshLoadBalancingStrategyToDefaultLoadBalancerMaglev {
     /// These hash policies are executed in the specified order. If a hash policy has the “terminal” attribute
     /// set to true, and there is already a hash generated, the hash is returned immediately,
     /// ignoring the rest of the hash policy list.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hashPolicies"
-    )]
-    pub hash_policies:
-        Option<Vec<MeshLoadBalancingStrategyToDefaultLoadBalancerMaglevHashPolicies>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hashPolicies")]
+    pub hash_policies: Option<Vec<MeshLoadBalancingStrategyToDefaultLoadBalancerMaglevHashPolicies>>,
     /// The table size for Maglev hashing. Maglev aims for “minimal disruption”
     /// rather than an absolute guarantee. Minimal disruption means that when
     /// the set of upstream hosts change, a connection will likely be sent
@@ -221,26 +179,15 @@ pub struct MeshLoadBalancingStrategyToDefaultLoadBalancerMaglev {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshLoadBalancingStrategyToDefaultLoadBalancerMaglevHashPolicies {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub connection:
-        Option<MeshLoadBalancingStrategyToDefaultLoadBalancerMaglevHashPoliciesConnection>,
+    pub connection: Option<MeshLoadBalancingStrategyToDefaultLoadBalancerMaglevHashPoliciesConnection>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cookie: Option<MeshLoadBalancingStrategyToDefaultLoadBalancerMaglevHashPoliciesCookie>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "filterState"
-    )]
-    pub filter_state:
-        Option<MeshLoadBalancingStrategyToDefaultLoadBalancerMaglevHashPoliciesFilterState>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterState")]
+    pub filter_state: Option<MeshLoadBalancingStrategyToDefaultLoadBalancerMaglevHashPoliciesFilterState>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub header: Option<MeshLoadBalancingStrategyToDefaultLoadBalancerMaglevHashPoliciesHeader>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryParameter"
-    )]
-    pub query_parameter:
-        Option<MeshLoadBalancingStrategyToDefaultLoadBalancerMaglevHashPoliciesQueryParameter>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryParameter")]
+    pub query_parameter: Option<MeshLoadBalancingStrategyToDefaultLoadBalancerMaglevHashPoliciesQueryParameter>,
     /// Terminal is a flag that short-circuits the hash computing. This field provides
     /// a ‘fallback’ style of configuration: “if a terminal policy doesn’t work, fallback
     /// to rest of the policy list”, it saves time when the terminal policy works.
@@ -306,7 +253,8 @@ pub enum MeshLoadBalancingStrategyToDefaultLoadBalancerMaglevHashPoliciesType {
 /// performs better than round-robin if no health checking policy is configured.
 /// Random selection avoids bias towards the host in the set that comes after a failed host.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MeshLoadBalancingStrategyToDefaultLoadBalancerRandom {}
+pub struct MeshLoadBalancingStrategyToDefaultLoadBalancerRandom {
+}
 
 /// RingHash  implements consistent hashing to upstream hosts. Each host is mapped
 /// onto a circle (the “ring”) by hashing its address; each request is then routed
@@ -316,39 +264,22 @@ pub struct MeshLoadBalancingStrategyToDefaultLoadBalancerRandom {}
 pub struct MeshLoadBalancingStrategyToDefaultLoadBalancerRingHash {
     /// HashFunction is a function used to hash hosts onto the ketama ring.
     /// The value defaults to XX_HASH. Available values – XX_HASH, MURMUR_HASH_2.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hashFunction"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hashFunction")]
     pub hash_function: Option<MeshLoadBalancingStrategyToDefaultLoadBalancerRingHashHashFunction>,
     /// HashPolicies specify a list of request/connection properties that are used to calculate a hash.
     /// These hash policies are executed in the specified order. If a hash policy has the “terminal” attribute
     /// set to true, and there is already a hash generated, the hash is returned immediately,
     /// ignoring the rest of the hash policy list.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hashPolicies"
-    )]
-    pub hash_policies:
-        Option<Vec<MeshLoadBalancingStrategyToDefaultLoadBalancerRingHashHashPolicies>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hashPolicies")]
+    pub hash_policies: Option<Vec<MeshLoadBalancingStrategyToDefaultLoadBalancerRingHashHashPolicies>>,
     /// Maximum hash ring size. Defaults to 8M entries, and limited to 8M entries,
     /// but can be lowered to further constrain resource use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRingSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRingSize")]
     pub max_ring_size: Option<i32>,
     /// Minimum hash ring size. The larger the ring is (that is,
     /// the more hashes there are for each provided host) the better the request distribution
     /// will reflect the desired weights. Defaults to 1024 entries, and limited to 8M entries.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minRingSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minRingSize")]
     pub min_ring_size: Option<i32>,
 }
 
@@ -366,26 +297,15 @@ pub enum MeshLoadBalancingStrategyToDefaultLoadBalancerRingHashHashFunction {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct MeshLoadBalancingStrategyToDefaultLoadBalancerRingHashHashPolicies {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub connection:
-        Option<MeshLoadBalancingStrategyToDefaultLoadBalancerRingHashHashPoliciesConnection>,
+    pub connection: Option<MeshLoadBalancingStrategyToDefaultLoadBalancerRingHashHashPoliciesConnection>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cookie: Option<MeshLoadBalancingStrategyToDefaultLoadBalancerRingHashHashPoliciesCookie>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "filterState"
-    )]
-    pub filter_state:
-        Option<MeshLoadBalancingStrategyToDefaultLoadBalancerRingHashHashPoliciesFilterState>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterState")]
+    pub filter_state: Option<MeshLoadBalancingStrategyToDefaultLoadBalancerRingHashHashPoliciesFilterState>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub header: Option<MeshLoadBalancingStrategyToDefaultLoadBalancerRingHashHashPoliciesHeader>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queryParameter"
-    )]
-    pub query_parameter:
-        Option<MeshLoadBalancingStrategyToDefaultLoadBalancerRingHashHashPoliciesQueryParameter>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queryParameter")]
+    pub query_parameter: Option<MeshLoadBalancingStrategyToDefaultLoadBalancerRingHashHashPoliciesQueryParameter>,
     /// Terminal is a flag that short-circuits the hash computing. This field provides
     /// a ‘fallback’ style of configuration: “if a terminal policy doesn’t work, fallback
     /// to rest of the policy list”, it saves time when the terminal policy works.
@@ -450,7 +370,8 @@ pub enum MeshLoadBalancingStrategyToDefaultLoadBalancerRingHashHashPoliciesType 
 /// RoundRobin is a load balancing algorithm that distributes requests
 /// across available upstream hosts in round-robin order.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct MeshLoadBalancingStrategyToDefaultLoadBalancerRoundRobin {}
+pub struct MeshLoadBalancingStrategyToDefaultLoadBalancerRoundRobin {
+}
 
 /// LoadBalancer allows to specify load balancing algorithm.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -490,13 +411,8 @@ pub struct MeshLoadBalancingStrategyToDefaultLocalityAwarenessCrossZone {
     /// Example: If you configure failoverThreshold to 70, and you have deployed 10 destination dataplane proxies.
     /// Load balancing to next priority will start when number of live destination dataplane proxies drops below 7.
     /// Default 50
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failoverThreshold"
-    )]
-    pub failover_threshold:
-        Option<MeshLoadBalancingStrategyToDefaultLocalityAwarenessCrossZoneFailoverThreshold>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failoverThreshold")]
+    pub failover_threshold: Option<MeshLoadBalancingStrategyToDefaultLocalityAwarenessCrossZoneFailoverThreshold>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -547,13 +463,8 @@ pub struct MeshLoadBalancingStrategyToDefaultLocalityAwarenessCrossZoneFailoverT
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MeshLoadBalancingStrategyToDefaultLocalityAwarenessLocalZone {
     /// AffinityTags list of tags for local zone load balancing.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "affinityTags"
-    )]
-    pub affinity_tags:
-        Option<Vec<MeshLoadBalancingStrategyToDefaultLocalityAwarenessLocalZoneAffinityTags>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "affinityTags")]
+    pub affinity_tags: Option<Vec<MeshLoadBalancingStrategyToDefaultLocalityAwarenessLocalZoneAffinityTags>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -594,19 +505,11 @@ pub struct MeshLoadBalancingStrategyToTargetRef {
     pub namespace: Option<String>,
     /// ProxyTypes specifies the data plane types that are subject to the policy. When not specified,
     /// all data plane types are targeted by the policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyTypes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyTypes")]
     pub proxy_types: Option<Vec<String>>,
     /// SectionName is used to target specific section of resource.
     /// For example, you can target port from MeshService.ports[] by its name. Only traffic to this port will be affected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sectionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sectionName")]
     pub section_name: Option<String>,
     /// Tags used to select a subset of proxies by tags. Can only be used with kinds
     /// `MeshSubset` and `MeshServiceSubset`
@@ -628,3 +531,4 @@ pub enum MeshLoadBalancingStrategyToTargetRefKind {
     #[serde(rename = "MeshHTTPRoute")]
     MeshHttpRoute,
 }
+

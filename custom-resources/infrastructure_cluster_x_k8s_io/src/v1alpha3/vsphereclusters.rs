@@ -4,55 +4,38 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::api::core::v1::ObjectReference;
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
+    pub use k8s_openapi::api::core::v1::ObjectReference;
 }
 use self::prelude::*;
 
 /// VSphereClusterSpec defines the desired state of VSphereCluster.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "infrastructure.cluster.x-k8s.io",
-    version = "v1alpha3",
-    kind = "VSphereCluster",
-    plural = "vsphereclusters"
-)]
+#[kube(group = "infrastructure.cluster.x-k8s.io", version = "v1alpha3", kind = "VSphereCluster", plural = "vsphereclusters")]
 #[kube(namespaced)]
 #[kube(status = "VSphereClusterStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct VSphereClusterSpec {
     /// CloudProviderConfiguration holds the cluster-wide configuration for the vSphere cloud provider.
-    ///
+    /// 
     /// Deprecated: will be removed in v1alpha4.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cloudProviderConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloudProviderConfiguration")]
     pub cloud_provider_configuration: Option<VSphereClusterCloudProviderConfiguration>,
     /// ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneEndpoint")]
     pub control_plane_endpoint: Option<VSphereClusterControlPlaneEndpoint>,
     /// IdentityRef is a reference to either a Secret or VSphereClusterIdentity that contains
     /// the identity to use when reconciling the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identityRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityRef")]
     pub identity_ref: Option<VSphereClusterIdentityRef>,
     /// Insecure is a flag that controls whether to validate the
     /// vSphere server's certificate.
-    ///
+    /// 
     /// Deprecated: will be removed in v1alpha4.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub insecure: Option<bool>,
@@ -61,13 +44,9 @@ pub struct VSphereClusterSpec {
     /// When a LoadBalancerRef is provided, the VSphereCluster.Status.Ready field
     /// will not be true until the referenced resource is Status.Ready and has a
     /// non-empty Status.Address value.
-    ///
+    /// 
     /// Deprecated: will be removed in v1alpha4.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerRef")]
     pub load_balancer_ref: Option<ObjectReference>,
     /// Server is the address of the vSphere endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -79,7 +58,7 @@ pub struct VSphereClusterSpec {
 }
 
 /// CloudProviderConfiguration holds the cluster-wide configuration for the vSphere cloud provider.
-///
+/// 
 /// Deprecated: will be removed in v1alpha4.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereClusterCloudProviderConfiguration {
@@ -97,20 +76,11 @@ pub struct VSphereClusterCloudProviderConfiguration {
     pub network: Option<VSphereClusterCloudProviderConfigurationNetwork>,
     /// CPIProviderConfig contains extra information used to configure the
     /// vSphere cloud provider.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "providerConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerConfig")]
     pub provider_config: Option<VSphereClusterCloudProviderConfigurationProviderConfig>,
     /// VCenter is a list of vCenter configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "virtualCenter"
-    )]
-    pub virtual_center:
-        Option<BTreeMap<String, VSphereClusterCloudProviderConfigurationVirtualCenter>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "virtualCenter")]
+    pub virtual_center: Option<BTreeMap<String, VSphereClusterCloudProviderConfigurationVirtualCenter>>,
     /// Workspace is the vSphere cloud provider's workspace configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub workspace: Option<VSphereClusterCloudProviderConfigurationWorkspace>,
@@ -120,11 +90,7 @@ pub struct VSphereClusterCloudProviderConfiguration {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereClusterCloudProviderConfigurationDisk {
     /// SCSIControllerType defines SCSI controller to be used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scsiControllerType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scsiControllerType")]
     pub scsi_controller_type: Option<String>,
 }
 
@@ -133,19 +99,11 @@ pub struct VSphereClusterCloudProviderConfigurationDisk {
 pub struct VSphereClusterCloudProviderConfigurationGlobal {
     /// APIBindPort configures the vSphere cloud controller manager API port.
     /// Defaults to 43001.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiBindPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiBindPort")]
     pub api_bind_port: Option<String>,
     /// APIDisable disables the vSphere cloud controller manager API.
     /// Defaults to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiDisable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiDisable")]
     pub api_disable: Option<bool>,
     /// CAFile Specifies the path to a CA certificate in PEM format.
     /// If not configured, the system's CA certificates will be used.
@@ -166,26 +124,14 @@ pub struct VSphereClusterCloudProviderConfigurationGlobal {
     pub port: Option<String>,
     /// RoundTripperCount specifies the SOAP round tripper count
     /// (retries = RoundTripper - 1)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "roundTripperCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roundTripperCount")]
     pub round_tripper_count: Option<i32>,
     /// SecretName is the name of the Kubernetes secret in which the vSphere
     /// credentials are located.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
     /// SecretNamespace is the namespace for SecretName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretNamespace")]
     pub secret_namespace: Option<String>,
     /// SecretsDirectory is a directory in which secrets may be found. This
     /// may used in the event that:
@@ -194,20 +140,12 @@ pub struct VSphereClusterCloudProviderConfigurationGlobal {
     ///    such as DC/OS. For example, the container storage interface (CSI) is
     ///    container orcehstrator (CO) agnostic, and should support non-K8s COs.
     /// Defaults to /etc/cloud/credentials.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretsDirectory"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretsDirectory")]
     pub secrets_directory: Option<String>,
     /// ServiceAccount is the Kubernetes service account used to launch the cloud
     /// controller manager.
     /// Defaults to cloud-controller-manager.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccount")]
     pub service_account: Option<String>,
     /// Thumbprint is the cryptographic thumbprint of the vSphere endpoint's
     /// certificate.
@@ -249,11 +187,7 @@ pub struct VSphereClusterCloudProviderConfigurationProviderConfig {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereClusterCloudProviderConfigurationProviderConfigCloud {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controllerImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerImage")]
     pub controller_image: Option<String>,
     /// ExtraArgs passes through extra arguments to the cloud provider.
     /// The arguments here are passed to the cloud provider daemonset specification
@@ -263,47 +197,19 @@ pub struct VSphereClusterCloudProviderConfigurationProviderConfigCloud {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereClusterCloudProviderConfigurationProviderConfigStorage {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "attacherImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "attacherImage")]
     pub attacher_image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controllerImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controllerImage")]
     pub controller_image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbeImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbeImage")]
     pub liveness_probe_image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metadataSyncerImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataSyncerImage")]
     pub metadata_syncer_image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeDriverImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDriverImage")]
     pub node_driver_image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "provisionerImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "provisionerImage")]
     pub provisioner_image: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "registrarImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "registrarImage")]
     pub registrar_image: Option<String>,
 }
 
@@ -322,11 +228,7 @@ pub struct VSphereClusterCloudProviderConfigurationVirtualCenter {
     pub port: Option<String>,
     /// RoundTripperCount specifies the SOAP round tripper count
     /// (retries = RoundTripper - 1)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "roundTripperCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "roundTripperCount")]
     pub round_tripper_count: Option<i32>,
     /// Thumbprint is the cryptographic thumbprint of the vSphere endpoint's
     /// certificate.
@@ -350,11 +252,7 @@ pub struct VSphereClusterCloudProviderConfigurationWorkspace {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub folder: Option<String>,
     /// ResourcePool is the resource pool in which VMs are created/located.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourcePool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourcePool")]
     pub resource_pool: Option<String>,
     /// Server is the IP address or FQDN of the vSphere endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -393,16 +291,12 @@ pub enum VSphereClusterIdentityRefKind {
 /// When a LoadBalancerRef is provided, the VSphereCluster.Status.Ready field
 /// will not be true until the referenced resource is Status.Ready and has a
 /// non-empty Status.Address value.
-///
+/// 
 /// Deprecated: will be removed in v1alpha4.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VSphereClusterLoadBalancerRef {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -427,11 +321,7 @@ pub struct VSphereClusterLoadBalancerRef {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -446,11 +336,7 @@ pub struct VSphereClusterStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// FailureDomains is a list of failure domain objects synced from the infrastructure provider.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomains")]
     pub failure_domains: Option<BTreeMap<String, VSphereClusterStatusFailureDomains>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ready: Option<bool>,
@@ -463,10 +349,7 @@ pub struct VSphereClusterStatusFailureDomains {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attributes: Option<BTreeMap<String, String>>,
     /// ControlPlane determines if this failure domain is suitable for use by control plane machines.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlane"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlane")]
     pub control_plane: Option<bool>,
 }
+

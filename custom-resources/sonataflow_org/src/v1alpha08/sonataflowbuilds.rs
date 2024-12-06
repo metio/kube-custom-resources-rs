@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// SonataFlowBuildSpec define the desired state of th SonataFlowBuild.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "sonataflow.org",
-    version = "v1alpha08",
-    kind = "SonataFlowBuild",
-    plural = "sonataflowbuilds"
-)]
+#[kube(group = "sonataflow.org", version = "v1alpha08", kind = "SonataFlowBuild", plural = "sonataflowbuilds")]
 #[kube(namespaced)]
 #[kube(status = "SonataFlowBuildStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SonataFlowBuildSpec {
     /// Arguments lists the command line arguments to send to the internal builder command.
     /// Depending on the build method you might set this attribute instead of BuildArgs.
@@ -73,11 +68,7 @@ pub struct SonataFlowBuildBuildArgs {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowBuildBuildArgsValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<SonataFlowBuildBuildArgsValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -85,18 +76,10 @@ pub struct SonataFlowBuildBuildArgsValueFrom {
     pub field_ref: Option<SonataFlowBuildBuildArgsValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<SonataFlowBuildBuildArgsValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SonataFlowBuildBuildArgsValueFromSecretKeyRef>,
 }
 
@@ -122,11 +105,7 @@ pub struct SonataFlowBuildBuildArgsValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowBuildBuildArgsValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -138,11 +117,7 @@ pub struct SonataFlowBuildBuildArgsValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowBuildBuildArgsValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -193,11 +168,7 @@ pub struct SonataFlowBuildEnvs {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowBuildEnvsValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<SonataFlowBuildEnvsValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -205,18 +176,10 @@ pub struct SonataFlowBuildEnvsValueFrom {
     pub field_ref: Option<SonataFlowBuildEnvsValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<SonataFlowBuildEnvsValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SonataFlowBuildEnvsValueFromSecretKeyRef>,
 }
 
@@ -242,11 +205,7 @@ pub struct SonataFlowBuildEnvsValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowBuildEnvsValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -258,11 +217,7 @@ pub struct SonataFlowBuildEnvsValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowBuildEnvsValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -293,10 +248,10 @@ pub struct SonataFlowBuildEnvsValueFromSecretKeyRef {
 pub struct SonataFlowBuildResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<SonataFlowBuildResourcesClaims>>,
@@ -330,11 +285,7 @@ pub struct SonataFlowBuildResourcesClaims {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SonataFlowBuildStatus {
     /// BuildPhase Current phase of the build
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "buildPhase"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "buildPhase")]
     pub build_phase: Option<String>,
     /// Error Last error found during build
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -343,10 +294,7 @@ pub struct SonataFlowBuildStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageTag")]
     pub image_tag: Option<String>,
     /// InnerBuild is a reference to an internal build object, which can be anything known only to internal builders.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "innerBuild"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "innerBuild")]
     pub inner_build: Option<BTreeMap<String, serde_json::Value>>,
 }
+

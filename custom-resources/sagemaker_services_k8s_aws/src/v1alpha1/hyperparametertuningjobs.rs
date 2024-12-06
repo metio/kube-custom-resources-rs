@@ -4,57 +4,52 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// HyperParameterTuningJobSpec defines the desired state of HyperParameterTuningJob.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "sagemaker.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "HyperParameterTuningJob",
-    plural = "hyperparametertuningjobs"
-)]
+#[kube(group = "sagemaker.services.k8s.aws", version = "v1alpha1", kind = "HyperParameterTuningJob", plural = "hyperparametertuningjobs")]
 #[kube(namespaced)]
 #[kube(status = "HyperParameterTuningJobStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct HyperParameterTuningJobSpec {
     /// Configures SageMaker Automatic model tuning (AMT) to automatically find optimal
     /// parameters for the following fields:
-    ///
-    ///
+    /// 
+    /// 
     ///    * ParameterRanges (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html#sagemaker-Type-HyperParameterTuningJobConfig-ParameterRanges):
     ///    The names and ranges of parameters that a hyperparameter tuning job can
     ///    optimize.
-    ///
-    ///
+    /// 
+    /// 
     ///    * ResourceLimits (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ResourceLimits.html):
     ///    The maximum resources that can be used for a training job. These resources
     ///    include the maximum number of training jobs, the maximum runtime of a
     ///    tuning job, and the maximum number of training jobs to run at the same
     ///    time.
-    ///
-    ///
+    /// 
+    /// 
     ///    * TrainingJobEarlyStoppingType (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html#sagemaker-Type-HyperParameterTuningJobConfig-TrainingJobEarlyStoppingType):
     ///    A flag that specifies whether or not to use early stopping for training
     ///    jobs launched by a hyperparameter tuning job.
-    ///
-    ///
+    /// 
+    /// 
     ///    * RetryStrategy (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTrainingJobDefinition.html#sagemaker-Type-HyperParameterTrainingJobDefinition-RetryStrategy):
     ///    The number of times to retry a training job.
-    ///
-    ///
+    /// 
+    /// 
     ///    * Strategy (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html):
     ///    Specifies how hyperparameter tuning chooses the combinations of hyperparameter
     ///    values to use for the training jobs that it launches.
-    ///
-    ///
+    /// 
+    /// 
     ///    * ConvergenceDetected (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ConvergenceDetected.html):
     ///    A flag to indicate that Automatic model tuning (AMT) has detected model
     ///    convergence.
@@ -78,8 +73,8 @@ pub struct HyperParameterTuningJobSpec {
     /// Services resources in different ways, for example, by purpose, owner, or
     /// environment. For more information, see Tagging Amazon Web Services Resources
     /// (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).
-    ///
-    ///
+    /// 
+    /// 
     /// Tags that you specify for the tuning job are also added to all training jobs
     /// that the tuning job launches.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -88,26 +83,18 @@ pub struct HyperParameterTuningJobSpec {
     /// object that describes the training jobs that this tuning job launches, including
     /// static hyperparameters, input data configuration, output data configuration,
     /// resource configuration, and stopping condition.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trainingJobDefinition"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trainingJobDefinition")]
     pub training_job_definition: Option<HyperParameterTuningJobTrainingJobDefinition>,
     /// A list of the HyperParameterTrainingJobDefinition (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTrainingJobDefinition.html)
     /// objects launched for this tuning job.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trainingJobDefinitions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trainingJobDefinitions")]
     pub training_job_definitions: Option<Vec<HyperParameterTuningJobTrainingJobDefinitions>>,
     /// Specifies the configuration for starting the hyperparameter tuning job using
     /// one or more previous tuning jobs as a starting point. The results of previous
     /// tuning jobs are used to inform which combinations of hyperparameters to search
     /// over in the new tuning job.
-    ///
-    ///
+    /// 
+    /// 
     /// All training jobs launched by the new hyperparameter tuning job are evaluated
     /// by using the objective metric. If you specify IDENTICAL_DATA_AND_ALGORITHM
     /// as the WarmStartType value for the warm start configuration, the training
@@ -115,49 +102,45 @@ pub struct HyperParameterTuningJobSpec {
     /// training jobs from the parent tuning jobs. From these, the training job that
     /// performs the best as measured by the objective metric is returned as the
     /// overall best training job.
-    ///
-    ///
+    /// 
+    /// 
     /// All training jobs launched by parent hyperparameter tuning jobs and the new
     /// hyperparameter tuning jobs count against the limit of training jobs for the
     /// tuning job.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "warmStartConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "warmStartConfig")]
     pub warm_start_config: Option<HyperParameterTuningJobWarmStartConfig>,
 }
 
 /// Configures SageMaker Automatic model tuning (AMT) to automatically find optimal
 /// parameters for the following fields:
-///
-///
+/// 
+/// 
 ///    * ParameterRanges (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html#sagemaker-Type-HyperParameterTuningJobConfig-ParameterRanges):
 ///    The names and ranges of parameters that a hyperparameter tuning job can
 ///    optimize.
-///
-///
+/// 
+/// 
 ///    * ResourceLimits (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ResourceLimits.html):
 ///    The maximum resources that can be used for a training job. These resources
 ///    include the maximum number of training jobs, the maximum runtime of a
 ///    tuning job, and the maximum number of training jobs to run at the same
 ///    time.
-///
-///
+/// 
+/// 
 ///    * TrainingJobEarlyStoppingType (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html#sagemaker-Type-HyperParameterTuningJobConfig-TrainingJobEarlyStoppingType):
 ///    A flag that specifies whether or not to use early stopping for training
 ///    jobs launched by a hyperparameter tuning job.
-///
-///
+/// 
+/// 
 ///    * RetryStrategy (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTrainingJobDefinition.html#sagemaker-Type-HyperParameterTrainingJobDefinition-RetryStrategy):
 ///    The number of times to retry a training job.
-///
-///
+/// 
+/// 
 ///    * Strategy (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html):
 ///    Specifies how hyperparameter tuning chooses the combinations of hyperparameter
 ///    values to use for the training jobs that it launches.
-///
-///
+/// 
+/// 
 ///    * ConvergenceDetected (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ConvergenceDetected.html):
 ///    A flag to indicate that Automatic model tuning (AMT) has detected model
 ///    convergence.
@@ -180,59 +163,35 @@ pub struct HyperParameterTuningJobHyperParameterTuningJobConfig {
     /// value for this metric, depending on the value you specify for the Type parameter.
     /// If you want to define a custom objective metric, see Define metrics and environment
     /// variables (https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-define-metrics-variables.html).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hyperParameterTuningJobObjective"
-    )]
-    pub hyper_parameter_tuning_job_objective: Option<
-        HyperParameterTuningJobHyperParameterTuningJobConfigHyperParameterTuningJobObjective,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hyperParameterTuningJobObjective")]
+    pub hyper_parameter_tuning_job_objective: Option<HyperParameterTuningJobHyperParameterTuningJobConfigHyperParameterTuningJobObjective>,
     /// Specifies ranges of integer, continuous, and categorical hyperparameters
     /// that a hyperparameter tuning job searches. The hyperparameter tuning job
     /// launches training jobs with hyperparameter values within these ranges to
     /// find the combination of values that result in the training job with the best
     /// performance as measured by the objective metric of the hyperparameter tuning
     /// job.
-    ///
-    ///
+    /// 
+    /// 
     /// The maximum number of items specified for Array Members refers to the maximum
     /// number of hyperparameters for each range and also the maximum for the hyperparameter
     /// tuning job itself. That is, the sum of the number of hyperparameters for
     /// all the ranges can't exceed the maximum number specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "parameterRanges"
-    )]
-    pub parameter_ranges:
-        Option<HyperParameterTuningJobHyperParameterTuningJobConfigParameterRanges>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parameterRanges")]
+    pub parameter_ranges: Option<HyperParameterTuningJobHyperParameterTuningJobConfigParameterRanges>,
     /// Specifies the maximum number of training jobs and parallel training jobs
     /// that a hyperparameter tuning job can launch.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceLimits"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceLimits")]
     pub resource_limits: Option<HyperParameterTuningJobHyperParameterTuningJobConfigResourceLimits>,
     /// The strategy hyperparameter tuning uses to find the best combination of hyperparameters
     /// for your model.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub strategy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trainingJobEarlyStoppingType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trainingJobEarlyStoppingType")]
     pub training_job_early_stopping_type: Option<String>,
     /// The job completion criteria.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tuningJobCompletionCriteria"
-    )]
-    pub tuning_job_completion_criteria:
-        Option<HyperParameterTuningJobHyperParameterTuningJobConfigTuningJobCompletionCriteria>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tuningJobCompletionCriteria")]
+    pub tuning_job_completion_criteria: Option<HyperParameterTuningJobHyperParameterTuningJobConfigTuningJobCompletionCriteria>,
 }
 
 /// Defines the objective metric for a hyperparameter tuning job. Hyperparameter
@@ -243,11 +202,7 @@ pub struct HyperParameterTuningJobHyperParameterTuningJobConfig {
 /// variables (https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-define-metrics-variables.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobHyperParameterTuningJobConfigHyperParameterTuningJobObjective {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricName")]
     pub metric_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type_")]
     pub r#type: Option<String>,
@@ -259,8 +214,8 @@ pub struct HyperParameterTuningJobHyperParameterTuningJobConfigHyperParameterTun
 /// find the combination of values that result in the training job with the best
 /// performance as measured by the objective metric of the hyperparameter tuning
 /// job.
-///
-///
+/// 
+/// 
 /// The maximum number of items specified for Array Members refers to the maximum
 /// number of hyperparameters for each range and also the maximum for the hyperparameter
 /// tuning job itself. That is, the sum of the number of hyperparameters for
@@ -291,8 +246,7 @@ pub struct HyperParameterTuningJobHyperParameterTuningJobConfigParameterRangesAu
 
 /// A list of categorical hyperparameters to tune.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct HyperParameterTuningJobHyperParameterTuningJobConfigParameterRangesCategoricalParameterRanges
-{
+pub struct HyperParameterTuningJobHyperParameterTuningJobConfigParameterRangesCategoricalParameterRanges {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -301,38 +255,28 @@ pub struct HyperParameterTuningJobHyperParameterTuningJobConfigParameterRangesCa
 
 /// A list of continuous hyperparameters to tune.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct HyperParameterTuningJobHyperParameterTuningJobConfigParameterRangesContinuousParameterRanges
-{
+pub struct HyperParameterTuningJobHyperParameterTuningJobConfigParameterRangesContinuousParameterRanges {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxValue")]
     pub max_value: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minValue")]
     pub min_value: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scalingType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scalingType")]
     pub scaling_type: Option<String>,
 }
 
 /// For a hyperparameter of the integer type, specifies the range that a hyperparameter
 /// tuning job searches.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct HyperParameterTuningJobHyperParameterTuningJobConfigParameterRangesIntegerParameterRanges
-{
+pub struct HyperParameterTuningJobHyperParameterTuningJobConfigParameterRangesIntegerParameterRanges {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxValue")]
     pub max_value: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minValue")]
     pub min_value: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scalingType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scalingType")]
     pub scaling_type: Option<String>,
 }
 
@@ -340,41 +284,29 @@ pub struct HyperParameterTuningJobHyperParameterTuningJobConfigParameterRangesIn
 /// that a hyperparameter tuning job can launch.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobHyperParameterTuningJobConfigResourceLimits {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxNumberOfTrainingJobs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxNumberOfTrainingJobs")]
     pub max_number_of_training_jobs: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxParallelTrainingJobs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxParallelTrainingJobs")]
     pub max_parallel_training_jobs: Option<i64>,
 }
 
 /// The job completion criteria.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobHyperParameterTuningJobConfigTuningJobCompletionCriteria {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetObjectiveMetricValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetObjectiveMetricValue")]
     pub target_objective_metric_value: Option<f64>,
 }
 
 /// A tag object that consists of a key and an optional value, used to manage
 /// metadata for SageMaker Amazon Web Services resources.
-///
-///
+/// 
+/// 
 /// You can add tags to notebook instances, training jobs, hyperparameter tuning
 /// jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,
 /// and endpoints. For more information on adding tags to SageMaker resources,
 /// see AddTags (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html).
-///
-///
+/// 
+/// 
 /// For more information on adding metadata to your Amazon Web Services resources
 /// with tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).
 /// For advice on best practices for managing Amazon Web Services resources with
@@ -396,44 +328,19 @@ pub struct HyperParameterTuningJobTags {
 pub struct HyperParameterTuningJobTrainingJobDefinition {
     /// Specifies which training algorithm to use for training jobs that a hyperparameter
     /// tuning job launches and the metrics to monitor.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "algorithmSpecification"
-    )]
-    pub algorithm_specification:
-        Option<HyperParameterTuningJobTrainingJobDefinitionAlgorithmSpecification>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "algorithmSpecification")]
+    pub algorithm_specification: Option<HyperParameterTuningJobTrainingJobDefinitionAlgorithmSpecification>,
     /// Contains information about the output location for managed spot training
     /// checkpoint data.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "checkpointConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "checkpointConfig")]
     pub checkpoint_config: Option<HyperParameterTuningJobTrainingJobDefinitionCheckpointConfig>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "definitionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "definitionName")]
     pub definition_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableInterContainerTrafficEncryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableInterContainerTrafficEncryption")]
     pub enable_inter_container_traffic_encryption: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableManagedSpotTraining"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableManagedSpotTraining")]
     pub enable_managed_spot_training: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableNetworkIsolation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableNetworkIsolation")]
     pub enable_network_isolation: Option<bool>,
     /// Specifies ranges of integer, continuous, and categorical hyperparameters
     /// that a hyperparameter tuning job searches. The hyperparameter tuning job
@@ -441,85 +348,56 @@ pub struct HyperParameterTuningJobTrainingJobDefinition {
     /// find the combination of values that result in the training job with the best
     /// performance as measured by the objective metric of the hyperparameter tuning
     /// job.
-    ///
-    ///
+    /// 
+    /// 
     /// The maximum number of items specified for Array Members refers to the maximum
     /// number of hyperparameters for each range and also the maximum for the hyperparameter
     /// tuning job itself. That is, the sum of the number of hyperparameters for
     /// all the ranges can't exceed the maximum number specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hyperParameterRanges"
-    )]
-    pub hyper_parameter_ranges:
-        Option<HyperParameterTuningJobTrainingJobDefinitionHyperParameterRanges>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inputDataConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hyperParameterRanges")]
+    pub hyper_parameter_ranges: Option<HyperParameterTuningJobTrainingJobDefinitionHyperParameterRanges>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inputDataConfig")]
     pub input_data_config: Option<Vec<HyperParameterTuningJobTrainingJobDefinitionInputDataConfig>>,
     /// Provides information about how to store model training results (model artifacts).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "outputDataConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "outputDataConfig")]
     pub output_data_config: Option<HyperParameterTuningJobTrainingJobDefinitionOutputDataConfig>,
     /// Describes the resources, including machine learning (ML) compute instances
     /// and ML storage volumes, to use for model training.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceConfig")]
     pub resource_config: Option<HyperParameterTuningJobTrainingJobDefinitionResourceConfig>,
     /// The retry strategy to use when a training job fails due to an InternalServerError.
     /// RetryStrategy is specified as part of the CreateTrainingJob and CreateHyperParameterTuningJob
     /// requests. You can add the StoppingCondition parameter to the request to limit
     /// the training time for the complete job.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryStrategy")]
     pub retry_strategy: Option<HyperParameterTuningJobTrainingJobDefinitionRetryStrategy>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleARN")]
     pub role_arn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "staticHyperParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "staticHyperParameters")]
     pub static_hyper_parameters: Option<BTreeMap<String, String>>,
     /// Specifies a limit to how long a model training job or model compilation job
     /// can run. It also specifies how long a managed spot training job has to complete.
     /// When the job reaches the time limit, SageMaker ends the training or compilation
     /// job. Use this API to cap model training costs.
-    ///
-    ///
+    /// 
+    /// 
     /// To stop a training job, SageMaker sends the algorithm the SIGTERM signal,
     /// which delays job termination for 120 seconds. Algorithms can use this 120-second
     /// window to save the model artifacts, so the results of training are not lost.
-    ///
-    ///
+    /// 
+    /// 
     /// The training algorithms provided by SageMaker automatically save the intermediate
     /// results of a model training job when possible. This attempt to save artifacts
     /// is only a best effort case as model might not be in a state from which it
     /// can be saved. For example, if training has just started, the model might
     /// not be ready to save. When saved, this intermediate data is a valid model
     /// artifact. You can use it to create a model with CreateModel.
-    ///
-    ///
+    /// 
+    /// 
     /// The Neural Topic Model (NTM) currently does not support saving intermediate
     /// model artifacts. When training NTMs, make sure that the maximum runtime is
     /// sufficient for the training job to complete.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stoppingCondition"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stoppingCondition")]
     pub stopping_condition: Option<HyperParameterTuningJobTrainingJobDefinitionStoppingCondition>,
     /// Defines the objective metric for a hyperparameter tuning job. Hyperparameter
     /// tuning uses the value of this metric to evaluate the training jobs it launches,
@@ -527,11 +405,7 @@ pub struct HyperParameterTuningJobTrainingJobDefinition {
     /// value for this metric, depending on the value you specify for the Type parameter.
     /// If you want to define a custom objective metric, see Define metrics and environment
     /// variables (https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-define-metrics-variables.html).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tuningObjective"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tuningObjective")]
     pub tuning_objective: Option<HyperParameterTuningJobTrainingJobDefinitionTuningObjective>,
     /// Specifies an Amazon Virtual Private Cloud (VPC) that your SageMaker jobs,
     /// hosted models, and compute resources have access to. You can control access
@@ -545,76 +419,58 @@ pub struct HyperParameterTuningJobTrainingJobDefinition {
 /// tuning job launches and the metrics to monitor.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionAlgorithmSpecification {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "algorithmName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "algorithmName")]
     pub algorithm_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricDefinitions"
-    )]
-    pub metric_definitions: Option<
-        Vec<HyperParameterTuningJobTrainingJobDefinitionAlgorithmSpecificationMetricDefinitions>,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trainingImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricDefinitions")]
+    pub metric_definitions: Option<Vec<HyperParameterTuningJobTrainingJobDefinitionAlgorithmSpecificationMetricDefinitions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trainingImage")]
     pub training_image: Option<String>,
     /// The training input mode that the algorithm supports. For more information
     /// about input modes, see Algorithms (https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html).
-    ///
-    ///
+    /// 
+    /// 
     /// Pipe mode
-    ///
-    ///
+    /// 
+    /// 
     /// If an algorithm supports Pipe mode, Amazon SageMaker streams data directly
     /// from Amazon S3 to the container.
-    ///
-    ///
+    /// 
+    /// 
     /// File mode
-    ///
-    ///
+    /// 
+    /// 
     /// If an algorithm supports File mode, SageMaker downloads the training data
     /// from S3 to the provisioned ML storage volume, and mounts the directory to
     /// the Docker volume for the training container.
-    ///
-    ///
+    /// 
+    /// 
     /// You must provision the ML storage volume with sufficient capacity to accommodate
     /// the data downloaded from S3. In addition to the training data, the ML storage
     /// volume also stores the output model. The algorithm container uses the ML
     /// storage volume to also store intermediate information, if any.
-    ///
-    ///
+    /// 
+    /// 
     /// For distributed algorithms, training data is distributed uniformly. Your
     /// training duration is predictable if the input data objects sizes are approximately
     /// the same. SageMaker does not split the files any further for model training.
     /// If the object sizes are skewed, training won't be optimal as the data distribution
     /// is also skewed when one host in a training cluster is overloaded, thus becoming
     /// a bottleneck in training.
-    ///
-    ///
+    /// 
+    /// 
     /// FastFile mode
-    ///
-    ///
+    /// 
+    /// 
     /// If an algorithm supports FastFile mode, SageMaker streams data directly from
     /// S3 to the container with no code changes, and provides file system access
     /// to the data. Users can author their training script to interact with these
     /// files as if they were stored on disk.
-    ///
-    ///
+    /// 
+    /// 
     /// FastFile mode works best when the data is read sequentially. Augmented manifest
     /// files aren't supported. The startup time is lower when there are fewer files
     /// in the S3 bucket provided.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trainingInputMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trainingInputMode")]
     pub training_input_mode: Option<String>,
 }
 
@@ -649,8 +505,8 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionCheckpointConfig {
 /// find the combination of values that result in the training job with the best
 /// performance as measured by the objective metric of the hyperparameter tuning
 /// job.
-///
-///
+/// 
+/// 
 /// The maximum number of items specified for Array Members refers to the maximum
 /// number of hyperparameters for each range and also the maximum for the hyperparameter
 /// tuning job itself. That is, the sum of the number of hyperparameters for
@@ -681,8 +537,7 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionHyperParameterRangesAutoP
 
 /// A list of categorical hyperparameters to tune.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct HyperParameterTuningJobTrainingJobDefinitionHyperParameterRangesCategoricalParameterRanges
-{
+pub struct HyperParameterTuningJobTrainingJobDefinitionHyperParameterRangesCategoricalParameterRanges {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -691,19 +546,14 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionHyperParameterRangesCateg
 
 /// A list of continuous hyperparameters to tune.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct HyperParameterTuningJobTrainingJobDefinitionHyperParameterRangesContinuousParameterRanges
-{
+pub struct HyperParameterTuningJobTrainingJobDefinitionHyperParameterRangesContinuousParameterRanges {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxValue")]
     pub max_value: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minValue")]
     pub min_value: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scalingType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scalingType")]
     pub scaling_type: Option<String>,
 }
 
@@ -717,94 +567,70 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionHyperParameterRangesInteg
     pub min_value: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scalingType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scalingType")]
     pub scaling_type: Option<String>,
 }
 
 /// A channel is a named input source that training algorithms can consume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionInputDataConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "channelName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "channelName")]
     pub channel_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "compressionType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionType")]
     pub compression_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentType")]
     pub content_type: Option<String>,
     /// Describes the location of the channel data.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
     pub data_source: Option<HyperParameterTuningJobTrainingJobDefinitionInputDataConfigDataSource>,
     /// The training input mode that the algorithm supports. For more information
     /// about input modes, see Algorithms (https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html).
-    ///
-    ///
+    /// 
+    /// 
     /// Pipe mode
-    ///
-    ///
+    /// 
+    /// 
     /// If an algorithm supports Pipe mode, Amazon SageMaker streams data directly
     /// from Amazon S3 to the container.
-    ///
-    ///
+    /// 
+    /// 
     /// File mode
-    ///
-    ///
+    /// 
+    /// 
     /// If an algorithm supports File mode, SageMaker downloads the training data
     /// from S3 to the provisioned ML storage volume, and mounts the directory to
     /// the Docker volume for the training container.
-    ///
-    ///
+    /// 
+    /// 
     /// You must provision the ML storage volume with sufficient capacity to accommodate
     /// the data downloaded from S3. In addition to the training data, the ML storage
     /// volume also stores the output model. The algorithm container uses the ML
     /// storage volume to also store intermediate information, if any.
-    ///
-    ///
+    /// 
+    /// 
     /// For distributed algorithms, training data is distributed uniformly. Your
     /// training duration is predictable if the input data objects sizes are approximately
     /// the same. SageMaker does not split the files any further for model training.
     /// If the object sizes are skewed, training won't be optimal as the data distribution
     /// is also skewed when one host in a training cluster is overloaded, thus becoming
     /// a bottleneck in training.
-    ///
-    ///
+    /// 
+    /// 
     /// FastFile mode
-    ///
-    ///
+    /// 
+    /// 
     /// If an algorithm supports FastFile mode, SageMaker streams data directly from
     /// S3 to the container with no code changes, and provides file system access
     /// to the data. Users can author their training script to interact with these
     /// files as if they were stored on disk.
-    ///
-    ///
+    /// 
+    /// 
     /// FastFile mode works best when the data is read sequentially. Augmented manifest
     /// files aren't supported. The startup time is lower when there are fewer files
     /// in the S3 bucket provided.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "inputMode")]
     pub input_mode: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recordWrapperType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recordWrapperType")]
     pub record_wrapper_type: Option<String>,
     /// A configuration for a shuffle option for input data in a channel. If you
     /// use S3Prefix for S3DataType, the results of the S3 key prefix matches are
@@ -812,8 +638,8 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionInputDataConfig {
     /// in the ManifestFile is shuffled. If you use AugmentedManifestFile, the order
     /// of the JSON lines in the AugmentedManifestFile is shuffled. The shuffling
     /// order is determined using the Seed value.
-    ///
-    ///
+    /// 
+    /// 
     /// For Pipe input mode, when ShuffleConfig is specified shuffling is done at
     /// the start of every epoch. With large datasets, this ensures that the order
     /// of the training data is different for each epoch, and it helps reduce bias
@@ -821,101 +647,52 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionInputDataConfig {
     /// is combined with S3DataDistributionType of ShardedByS3Key, the data is shuffled
     /// across nodes so that the content sent to a particular node on the first epoch
     /// might be sent to a different node on the second epoch.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "shuffleConfig"
-    )]
-    pub shuffle_config:
-        Option<HyperParameterTuningJobTrainingJobDefinitionInputDataConfigShuffleConfig>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shuffleConfig")]
+    pub shuffle_config: Option<HyperParameterTuningJobTrainingJobDefinitionInputDataConfigShuffleConfig>,
 }
 
 /// Describes the location of the channel data.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionInputDataConfigDataSource {
     /// Specifies a file system data source for a channel.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fileSystemDataSource"
-    )]
-    pub file_system_data_source: Option<
-        HyperParameterTuningJobTrainingJobDefinitionInputDataConfigDataSourceFileSystemDataSource,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemDataSource")]
+    pub file_system_data_source: Option<HyperParameterTuningJobTrainingJobDefinitionInputDataConfigDataSourceFileSystemDataSource>,
     /// Describes the S3 data source.
-    ///
-    ///
+    /// 
+    /// 
     /// Your input bucket must be in the same Amazon Web Services region as your
     /// training job.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3DataSource"
-    )]
-    pub s3_data_source:
-        Option<HyperParameterTuningJobTrainingJobDefinitionInputDataConfigDataSourceS3DataSource>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3DataSource")]
+    pub s3_data_source: Option<HyperParameterTuningJobTrainingJobDefinitionInputDataConfigDataSourceS3DataSource>,
 }
 
 /// Specifies a file system data source for a channel.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct HyperParameterTuningJobTrainingJobDefinitionInputDataConfigDataSourceFileSystemDataSource
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "directoryPath"
-    )]
+pub struct HyperParameterTuningJobTrainingJobDefinitionInputDataConfigDataSourceFileSystemDataSource {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "directoryPath")]
     pub directory_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fileSystemAccessMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemAccessMode")]
     pub file_system_access_mode: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fileSystemID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemID")]
     pub file_system_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fileSystemType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemType")]
     pub file_system_type: Option<String>,
 }
 
 /// Describes the S3 data source.
-///
-///
+/// 
+/// 
 /// Your input bucket must be in the same Amazon Web Services region as your
 /// training job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionInputDataConfigDataSourceS3DataSource {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "attributeNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "attributeNames")]
     pub attribute_names: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceGroupNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceGroupNames")]
     pub instance_group_names: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3DataDistributionType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3DataDistributionType")]
     pub s3_data_distribution_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3DataType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3DataType")]
     pub s3_data_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3URI")]
     pub s3_uri: Option<String>,
@@ -927,8 +704,8 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionInputDataConfigDataSource
 /// in the ManifestFile is shuffled. If you use AugmentedManifestFile, the order
 /// of the JSON lines in the AugmentedManifestFile is shuffled. The shuffling
 /// order is determined using the Seed value.
-///
-///
+/// 
+/// 
 /// For Pipe input mode, when ShuffleConfig is specified shuffling is done at
 /// the start of every epoch. With large datasets, this ensures that the order
 /// of the training data is different for each epoch, and it helps reduce bias
@@ -945,19 +722,11 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionInputDataConfigShuffleCon
 /// Provides information about how to store model training results (model artifacts).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionOutputDataConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "compressionType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionType")]
     pub compression_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyID")]
     pub kms_key_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3OutputPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3OutputPath")]
     pub s3_output_path: Option<String>,
 }
 
@@ -965,44 +734,19 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionOutputDataConfig {
 /// and ML storage volumes, to use for model training.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionResourceConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceCount")]
     pub instance_count: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceGroups"
-    )]
-    pub instance_groups:
-        Option<Vec<HyperParameterTuningJobTrainingJobDefinitionResourceConfigInstanceGroups>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceGroups")]
+    pub instance_groups: Option<Vec<HyperParameterTuningJobTrainingJobDefinitionResourceConfigInstanceGroups>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
     pub instance_type: Option<String>,
     /// Optional. Customer requested period in seconds for which the Training cluster
     /// is kept alive after the job is finished.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keepAlivePeriodInSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepAlivePeriodInSeconds")]
     pub keep_alive_period_in_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeKMSKeyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeKMSKeyID")]
     pub volume_kms_key_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSizeInGB"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSizeInGB")]
     pub volume_size_in_gb: Option<i64>,
 }
 
@@ -1011,23 +755,11 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionResourceConfig {
 /// API, you can configure multiple instance groups .
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionResourceConfigInstanceGroups {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceCount")]
     pub instance_count: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceGroupName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceGroupName")]
     pub instance_group_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
     pub instance_type: Option<String>,
 }
 
@@ -1037,11 +769,7 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionResourceConfigInstanceGro
 /// the training time for the complete job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionRetryStrategy {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maximumRetryAttempts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumRetryAttempts")]
     pub maximum_retry_attempts: Option<i64>,
 }
 
@@ -1049,44 +777,32 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionRetryStrategy {
 /// can run. It also specifies how long a managed spot training job has to complete.
 /// When the job reaches the time limit, SageMaker ends the training or compilation
 /// job. Use this API to cap model training costs.
-///
-///
+/// 
+/// 
 /// To stop a training job, SageMaker sends the algorithm the SIGTERM signal,
 /// which delays job termination for 120 seconds. Algorithms can use this 120-second
 /// window to save the model artifacts, so the results of training are not lost.
-///
-///
+/// 
+/// 
 /// The training algorithms provided by SageMaker automatically save the intermediate
 /// results of a model training job when possible. This attempt to save artifacts
 /// is only a best effort case as model might not be in a state from which it
 /// can be saved. For example, if training has just started, the model might
 /// not be ready to save. When saved, this intermediate data is a valid model
 /// artifact. You can use it to create a model with CreateModel.
-///
-///
+/// 
+/// 
 /// The Neural Topic Model (NTM) currently does not support saving intermediate
 /// model artifacts. When training NTMs, make sure that the maximum runtime is
 /// sufficient for the training job to complete.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionStoppingCondition {
     /// Maximum job scheduler pending time in seconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxPendingTimeInSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxPendingTimeInSeconds")]
     pub max_pending_time_in_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRuntimeInSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRuntimeInSeconds")]
     pub max_runtime_in_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxWaitTimeInSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxWaitTimeInSeconds")]
     pub max_wait_time_in_seconds: Option<i64>,
 }
 
@@ -1098,11 +814,7 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionStoppingCondition {
 /// variables (https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-define-metrics-variables.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionTuningObjective {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricName")]
     pub metric_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type_")]
     pub r#type: Option<String>,
@@ -1114,11 +826,7 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionTuningObjective {
 /// Give SageMaker Access to Resources in your Amazon VPC (https://docs.aws.amazon.com/sagemaker/latest/dg/infrastructure-give-access.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionVpcConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupIDs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupIDs")]
     pub security_group_i_ds: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subnets: Option<Vec<String>>,
@@ -1129,44 +837,19 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionVpcConfig {
 pub struct HyperParameterTuningJobTrainingJobDefinitions {
     /// Specifies which training algorithm to use for training jobs that a hyperparameter
     /// tuning job launches and the metrics to monitor.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "algorithmSpecification"
-    )]
-    pub algorithm_specification:
-        Option<HyperParameterTuningJobTrainingJobDefinitionsAlgorithmSpecification>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "algorithmSpecification")]
+    pub algorithm_specification: Option<HyperParameterTuningJobTrainingJobDefinitionsAlgorithmSpecification>,
     /// Contains information about the output location for managed spot training
     /// checkpoint data.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "checkpointConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "checkpointConfig")]
     pub checkpoint_config: Option<HyperParameterTuningJobTrainingJobDefinitionsCheckpointConfig>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "definitionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "definitionName")]
     pub definition_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableInterContainerTrafficEncryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableInterContainerTrafficEncryption")]
     pub enable_inter_container_traffic_encryption: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableManagedSpotTraining"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableManagedSpotTraining")]
     pub enable_managed_spot_training: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableNetworkIsolation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableNetworkIsolation")]
     pub enable_network_isolation: Option<bool>,
     /// Specifies ranges of integer, continuous, and categorical hyperparameters
     /// that a hyperparameter tuning job searches. The hyperparameter tuning job
@@ -1174,86 +857,56 @@ pub struct HyperParameterTuningJobTrainingJobDefinitions {
     /// find the combination of values that result in the training job with the best
     /// performance as measured by the objective metric of the hyperparameter tuning
     /// job.
-    ///
-    ///
+    /// 
+    /// 
     /// The maximum number of items specified for Array Members refers to the maximum
     /// number of hyperparameters for each range and also the maximum for the hyperparameter
     /// tuning job itself. That is, the sum of the number of hyperparameters for
     /// all the ranges can't exceed the maximum number specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hyperParameterRanges"
-    )]
-    pub hyper_parameter_ranges:
-        Option<HyperParameterTuningJobTrainingJobDefinitionsHyperParameterRanges>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "inputDataConfig"
-    )]
-    pub input_data_config:
-        Option<Vec<HyperParameterTuningJobTrainingJobDefinitionsInputDataConfig>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hyperParameterRanges")]
+    pub hyper_parameter_ranges: Option<HyperParameterTuningJobTrainingJobDefinitionsHyperParameterRanges>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "inputDataConfig")]
+    pub input_data_config: Option<Vec<HyperParameterTuningJobTrainingJobDefinitionsInputDataConfig>>,
     /// Provides information about how to store model training results (model artifacts).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "outputDataConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "outputDataConfig")]
     pub output_data_config: Option<HyperParameterTuningJobTrainingJobDefinitionsOutputDataConfig>,
     /// Describes the resources, including machine learning (ML) compute instances
     /// and ML storage volumes, to use for model training.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceConfig")]
     pub resource_config: Option<HyperParameterTuningJobTrainingJobDefinitionsResourceConfig>,
     /// The retry strategy to use when a training job fails due to an InternalServerError.
     /// RetryStrategy is specified as part of the CreateTrainingJob and CreateHyperParameterTuningJob
     /// requests. You can add the StoppingCondition parameter to the request to limit
     /// the training time for the complete job.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryStrategy")]
     pub retry_strategy: Option<HyperParameterTuningJobTrainingJobDefinitionsRetryStrategy>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleARN")]
     pub role_arn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "staticHyperParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "staticHyperParameters")]
     pub static_hyper_parameters: Option<BTreeMap<String, String>>,
     /// Specifies a limit to how long a model training job or model compilation job
     /// can run. It also specifies how long a managed spot training job has to complete.
     /// When the job reaches the time limit, SageMaker ends the training or compilation
     /// job. Use this API to cap model training costs.
-    ///
-    ///
+    /// 
+    /// 
     /// To stop a training job, SageMaker sends the algorithm the SIGTERM signal,
     /// which delays job termination for 120 seconds. Algorithms can use this 120-second
     /// window to save the model artifacts, so the results of training are not lost.
-    ///
-    ///
+    /// 
+    /// 
     /// The training algorithms provided by SageMaker automatically save the intermediate
     /// results of a model training job when possible. This attempt to save artifacts
     /// is only a best effort case as model might not be in a state from which it
     /// can be saved. For example, if training has just started, the model might
     /// not be ready to save. When saved, this intermediate data is a valid model
     /// artifact. You can use it to create a model with CreateModel.
-    ///
-    ///
+    /// 
+    /// 
     /// The Neural Topic Model (NTM) currently does not support saving intermediate
     /// model artifacts. When training NTMs, make sure that the maximum runtime is
     /// sufficient for the training job to complete.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stoppingCondition"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stoppingCondition")]
     pub stopping_condition: Option<HyperParameterTuningJobTrainingJobDefinitionsStoppingCondition>,
     /// Defines the objective metric for a hyperparameter tuning job. Hyperparameter
     /// tuning uses the value of this metric to evaluate the training jobs it launches,
@@ -1261,11 +914,7 @@ pub struct HyperParameterTuningJobTrainingJobDefinitions {
     /// value for this metric, depending on the value you specify for the Type parameter.
     /// If you want to define a custom objective metric, see Define metrics and environment
     /// variables (https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-define-metrics-variables.html).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tuningObjective"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tuningObjective")]
     pub tuning_objective: Option<HyperParameterTuningJobTrainingJobDefinitionsTuningObjective>,
     /// Specifies an Amazon Virtual Private Cloud (VPC) that your SageMaker jobs,
     /// hosted models, and compute resources have access to. You can control access
@@ -1279,76 +928,58 @@ pub struct HyperParameterTuningJobTrainingJobDefinitions {
 /// tuning job launches and the metrics to monitor.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionsAlgorithmSpecification {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "algorithmName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "algorithmName")]
     pub algorithm_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricDefinitions"
-    )]
-    pub metric_definitions: Option<
-        Vec<HyperParameterTuningJobTrainingJobDefinitionsAlgorithmSpecificationMetricDefinitions>,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trainingImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricDefinitions")]
+    pub metric_definitions: Option<Vec<HyperParameterTuningJobTrainingJobDefinitionsAlgorithmSpecificationMetricDefinitions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trainingImage")]
     pub training_image: Option<String>,
     /// The training input mode that the algorithm supports. For more information
     /// about input modes, see Algorithms (https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html).
-    ///
-    ///
+    /// 
+    /// 
     /// Pipe mode
-    ///
-    ///
+    /// 
+    /// 
     /// If an algorithm supports Pipe mode, Amazon SageMaker streams data directly
     /// from Amazon S3 to the container.
-    ///
-    ///
+    /// 
+    /// 
     /// File mode
-    ///
-    ///
+    /// 
+    /// 
     /// If an algorithm supports File mode, SageMaker downloads the training data
     /// from S3 to the provisioned ML storage volume, and mounts the directory to
     /// the Docker volume for the training container.
-    ///
-    ///
+    /// 
+    /// 
     /// You must provision the ML storage volume with sufficient capacity to accommodate
     /// the data downloaded from S3. In addition to the training data, the ML storage
     /// volume also stores the output model. The algorithm container uses the ML
     /// storage volume to also store intermediate information, if any.
-    ///
-    ///
+    /// 
+    /// 
     /// For distributed algorithms, training data is distributed uniformly. Your
     /// training duration is predictable if the input data objects sizes are approximately
     /// the same. SageMaker does not split the files any further for model training.
     /// If the object sizes are skewed, training won't be optimal as the data distribution
     /// is also skewed when one host in a training cluster is overloaded, thus becoming
     /// a bottleneck in training.
-    ///
-    ///
+    /// 
+    /// 
     /// FastFile mode
-    ///
-    ///
+    /// 
+    /// 
     /// If an algorithm supports FastFile mode, SageMaker streams data directly from
     /// S3 to the container with no code changes, and provides file system access
     /// to the data. Users can author their training script to interact with these
     /// files as if they were stored on disk.
-    ///
-    ///
+    /// 
+    /// 
     /// FastFile mode works best when the data is read sequentially. Augmented manifest
     /// files aren't supported. The startup time is lower when there are fewer files
     /// in the S3 bucket provided.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trainingInputMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trainingInputMode")]
     pub training_input_mode: Option<String>,
 }
 
@@ -1383,8 +1014,8 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsCheckpointConfig {
 /// find the combination of values that result in the training job with the best
 /// performance as measured by the objective metric of the hyperparameter tuning
 /// job.
-///
-///
+/// 
+/// 
 /// The maximum number of items specified for Array Members refers to the maximum
 /// number of hyperparameters for each range and also the maximum for the hyperparameter
 /// tuning job itself. That is, the sum of the number of hyperparameters for
@@ -1415,8 +1046,7 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsHyperParameterRangesAuto
 
 /// A list of categorical hyperparameters to tune.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct HyperParameterTuningJobTrainingJobDefinitionsHyperParameterRangesCategoricalParameterRanges
-{
+pub struct HyperParameterTuningJobTrainingJobDefinitionsHyperParameterRangesCategoricalParameterRanges {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1425,19 +1055,14 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsHyperParameterRangesCate
 
 /// A list of continuous hyperparameters to tune.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct HyperParameterTuningJobTrainingJobDefinitionsHyperParameterRangesContinuousParameterRanges
-{
+pub struct HyperParameterTuningJobTrainingJobDefinitionsHyperParameterRangesContinuousParameterRanges {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxValue")]
     pub max_value: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "minValue")]
     pub min_value: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scalingType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scalingType")]
     pub scaling_type: Option<String>,
 }
 
@@ -1451,94 +1076,70 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsHyperParameterRangesInte
     pub min_value: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scalingType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scalingType")]
     pub scaling_type: Option<String>,
 }
 
 /// A channel is a named input source that training algorithms can consume.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionsInputDataConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "channelName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "channelName")]
     pub channel_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "compressionType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionType")]
     pub compression_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "contentType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "contentType")]
     pub content_type: Option<String>,
     /// Describes the location of the channel data.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
     pub data_source: Option<HyperParameterTuningJobTrainingJobDefinitionsInputDataConfigDataSource>,
     /// The training input mode that the algorithm supports. For more information
     /// about input modes, see Algorithms (https://docs.aws.amazon.com/sagemaker/latest/dg/algos.html).
-    ///
-    ///
+    /// 
+    /// 
     /// Pipe mode
-    ///
-    ///
+    /// 
+    /// 
     /// If an algorithm supports Pipe mode, Amazon SageMaker streams data directly
     /// from Amazon S3 to the container.
-    ///
-    ///
+    /// 
+    /// 
     /// File mode
-    ///
-    ///
+    /// 
+    /// 
     /// If an algorithm supports File mode, SageMaker downloads the training data
     /// from S3 to the provisioned ML storage volume, and mounts the directory to
     /// the Docker volume for the training container.
-    ///
-    ///
+    /// 
+    /// 
     /// You must provision the ML storage volume with sufficient capacity to accommodate
     /// the data downloaded from S3. In addition to the training data, the ML storage
     /// volume also stores the output model. The algorithm container uses the ML
     /// storage volume to also store intermediate information, if any.
-    ///
-    ///
+    /// 
+    /// 
     /// For distributed algorithms, training data is distributed uniformly. Your
     /// training duration is predictable if the input data objects sizes are approximately
     /// the same. SageMaker does not split the files any further for model training.
     /// If the object sizes are skewed, training won't be optimal as the data distribution
     /// is also skewed when one host in a training cluster is overloaded, thus becoming
     /// a bottleneck in training.
-    ///
-    ///
+    /// 
+    /// 
     /// FastFile mode
-    ///
-    ///
+    /// 
+    /// 
     /// If an algorithm supports FastFile mode, SageMaker streams data directly from
     /// S3 to the container with no code changes, and provides file system access
     /// to the data. Users can author their training script to interact with these
     /// files as if they were stored on disk.
-    ///
-    ///
+    /// 
+    /// 
     /// FastFile mode works best when the data is read sequentially. Augmented manifest
     /// files aren't supported. The startup time is lower when there are fewer files
     /// in the S3 bucket provided.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "inputMode")]
     pub input_mode: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recordWrapperType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recordWrapperType")]
     pub record_wrapper_type: Option<String>,
     /// A configuration for a shuffle option for input data in a channel. If you
     /// use S3Prefix for S3DataType, the results of the S3 key prefix matches are
@@ -1546,8 +1147,8 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsInputDataConfig {
     /// in the ManifestFile is shuffled. If you use AugmentedManifestFile, the order
     /// of the JSON lines in the AugmentedManifestFile is shuffled. The shuffling
     /// order is determined using the Seed value.
-    ///
-    ///
+    /// 
+    /// 
     /// For Pipe input mode, when ShuffleConfig is specified shuffling is done at
     /// the start of every epoch. With large datasets, this ensures that the order
     /// of the training data is different for each epoch, and it helps reduce bias
@@ -1555,101 +1156,52 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsInputDataConfig {
     /// is combined with S3DataDistributionType of ShardedByS3Key, the data is shuffled
     /// across nodes so that the content sent to a particular node on the first epoch
     /// might be sent to a different node on the second epoch.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "shuffleConfig"
-    )]
-    pub shuffle_config:
-        Option<HyperParameterTuningJobTrainingJobDefinitionsInputDataConfigShuffleConfig>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shuffleConfig")]
+    pub shuffle_config: Option<HyperParameterTuningJobTrainingJobDefinitionsInputDataConfigShuffleConfig>,
 }
 
 /// Describes the location of the channel data.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionsInputDataConfigDataSource {
     /// Specifies a file system data source for a channel.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fileSystemDataSource"
-    )]
-    pub file_system_data_source: Option<
-        HyperParameterTuningJobTrainingJobDefinitionsInputDataConfigDataSourceFileSystemDataSource,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemDataSource")]
+    pub file_system_data_source: Option<HyperParameterTuningJobTrainingJobDefinitionsInputDataConfigDataSourceFileSystemDataSource>,
     /// Describes the S3 data source.
-    ///
-    ///
+    /// 
+    /// 
     /// Your input bucket must be in the same Amazon Web Services region as your
     /// training job.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3DataSource"
-    )]
-    pub s3_data_source:
-        Option<HyperParameterTuningJobTrainingJobDefinitionsInputDataConfigDataSourceS3DataSource>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3DataSource")]
+    pub s3_data_source: Option<HyperParameterTuningJobTrainingJobDefinitionsInputDataConfigDataSourceS3DataSource>,
 }
 
 /// Specifies a file system data source for a channel.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct HyperParameterTuningJobTrainingJobDefinitionsInputDataConfigDataSourceFileSystemDataSource
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "directoryPath"
-    )]
+pub struct HyperParameterTuningJobTrainingJobDefinitionsInputDataConfigDataSourceFileSystemDataSource {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "directoryPath")]
     pub directory_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fileSystemAccessMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemAccessMode")]
     pub file_system_access_mode: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fileSystemID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemID")]
     pub file_system_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fileSystemType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemType")]
     pub file_system_type: Option<String>,
 }
 
 /// Describes the S3 data source.
-///
-///
+/// 
+/// 
 /// Your input bucket must be in the same Amazon Web Services region as your
 /// training job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionsInputDataConfigDataSourceS3DataSource {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "attributeNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "attributeNames")]
     pub attribute_names: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceGroupNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceGroupNames")]
     pub instance_group_names: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3DataDistributionType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3DataDistributionType")]
     pub s3_data_distribution_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3DataType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3DataType")]
     pub s3_data_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3URI")]
     pub s3_uri: Option<String>,
@@ -1661,8 +1213,8 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsInputDataConfigDataSourc
 /// in the ManifestFile is shuffled. If you use AugmentedManifestFile, the order
 /// of the JSON lines in the AugmentedManifestFile is shuffled. The shuffling
 /// order is determined using the Seed value.
-///
-///
+/// 
+/// 
 /// For Pipe input mode, when ShuffleConfig is specified shuffling is done at
 /// the start of every epoch. With large datasets, this ensures that the order
 /// of the training data is different for each epoch, and it helps reduce bias
@@ -1679,19 +1231,11 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsInputDataConfigShuffleCo
 /// Provides information about how to store model training results (model artifacts).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionsOutputDataConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "compressionType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionType")]
     pub compression_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyID")]
     pub kms_key_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3OutputPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3OutputPath")]
     pub s3_output_path: Option<String>,
 }
 
@@ -1699,44 +1243,19 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsOutputDataConfig {
 /// and ML storage volumes, to use for model training.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionsResourceConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceCount")]
     pub instance_count: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceGroups"
-    )]
-    pub instance_groups:
-        Option<Vec<HyperParameterTuningJobTrainingJobDefinitionsResourceConfigInstanceGroups>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceGroups")]
+    pub instance_groups: Option<Vec<HyperParameterTuningJobTrainingJobDefinitionsResourceConfigInstanceGroups>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
     pub instance_type: Option<String>,
     /// Optional. Customer requested period in seconds for which the Training cluster
     /// is kept alive after the job is finished.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keepAlivePeriodInSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepAlivePeriodInSeconds")]
     pub keep_alive_period_in_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeKMSKeyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeKMSKeyID")]
     pub volume_kms_key_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSizeInGB"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSizeInGB")]
     pub volume_size_in_gb: Option<i64>,
 }
 
@@ -1745,23 +1264,11 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsResourceConfig {
 /// API, you can configure multiple instance groups .
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionsResourceConfigInstanceGroups {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceCount")]
     pub instance_count: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceGroupName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceGroupName")]
     pub instance_group_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
     pub instance_type: Option<String>,
 }
 
@@ -1771,11 +1278,7 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsResourceConfigInstanceGr
 /// the training time for the complete job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionsRetryStrategy {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maximumRetryAttempts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumRetryAttempts")]
     pub maximum_retry_attempts: Option<i64>,
 }
 
@@ -1783,44 +1286,32 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsRetryStrategy {
 /// can run. It also specifies how long a managed spot training job has to complete.
 /// When the job reaches the time limit, SageMaker ends the training or compilation
 /// job. Use this API to cap model training costs.
-///
-///
+/// 
+/// 
 /// To stop a training job, SageMaker sends the algorithm the SIGTERM signal,
 /// which delays job termination for 120 seconds. Algorithms can use this 120-second
 /// window to save the model artifacts, so the results of training are not lost.
-///
-///
+/// 
+/// 
 /// The training algorithms provided by SageMaker automatically save the intermediate
 /// results of a model training job when possible. This attempt to save artifacts
 /// is only a best effort case as model might not be in a state from which it
 /// can be saved. For example, if training has just started, the model might
 /// not be ready to save. When saved, this intermediate data is a valid model
 /// artifact. You can use it to create a model with CreateModel.
-///
-///
+/// 
+/// 
 /// The Neural Topic Model (NTM) currently does not support saving intermediate
 /// model artifacts. When training NTMs, make sure that the maximum runtime is
 /// sufficient for the training job to complete.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionsStoppingCondition {
     /// Maximum job scheduler pending time in seconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxPendingTimeInSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxPendingTimeInSeconds")]
     pub max_pending_time_in_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRuntimeInSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRuntimeInSeconds")]
     pub max_runtime_in_seconds: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxWaitTimeInSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxWaitTimeInSeconds")]
     pub max_wait_time_in_seconds: Option<i64>,
 }
 
@@ -1832,11 +1323,7 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsStoppingCondition {
 /// variables (https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-define-metrics-variables.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionsTuningObjective {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricName")]
     pub metric_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type_")]
     pub r#type: Option<String>,
@@ -1848,11 +1335,7 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsTuningObjective {
 /// Give SageMaker Access to Resources in your Amazon VPC (https://docs.aws.amazon.com/sagemaker/latest/dg/infrastructure-give-access.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobTrainingJobDefinitionsVpcConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupIDs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupIDs")]
     pub security_group_i_ds: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subnets: Option<Vec<String>>,
@@ -1862,8 +1345,8 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsVpcConfig {
 /// one or more previous tuning jobs as a starting point. The results of previous
 /// tuning jobs are used to inform which combinations of hyperparameters to search
 /// over in the new tuning job.
-///
-///
+/// 
+/// 
 /// All training jobs launched by the new hyperparameter tuning job are evaluated
 /// by using the objective metric. If you specify IDENTICAL_DATA_AND_ALGORITHM
 /// as the WarmStartType value for the warm start configuration, the training
@@ -1871,25 +1354,16 @@ pub struct HyperParameterTuningJobTrainingJobDefinitionsVpcConfig {
 /// training jobs from the parent tuning jobs. From these, the training job that
 /// performs the best as measured by the objective metric is returned as the
 /// overall best training job.
-///
-///
+/// 
+/// 
 /// All training jobs launched by parent hyperparameter tuning jobs and the new
 /// hyperparameter tuning jobs count against the limit of training jobs for the
 /// tuning job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobWarmStartConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "parentHyperParameterTuningJobs"
-    )]
-    pub parent_hyper_parameter_tuning_jobs:
-        Option<Vec<HyperParameterTuningJobWarmStartConfigParentHyperParameterTuningJobs>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "warmStartType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "parentHyperParameterTuningJobs")]
+    pub parent_hyper_parameter_tuning_jobs: Option<Vec<HyperParameterTuningJobWarmStartConfigParentHyperParameterTuningJobs>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "warmStartType")]
     pub warm_start_type: Option<String>,
 }
 
@@ -1897,11 +1371,7 @@ pub struct HyperParameterTuningJobWarmStartConfig {
 /// a starting point for a new hyperparameter tuning job.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobWarmStartConfigParentHyperParameterTuningJobs {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hyperParameterTuningJobName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hyperParameterTuningJobName")]
     pub hyper_parameter_tuning_job_name: Option<String>,
 }
 
@@ -1911,20 +1381,12 @@ pub struct HyperParameterTuningJobStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<HyperParameterTuningJobStatusAckResourceMetadata>,
     /// A TrainingJobSummary (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_TrainingJobSummary.html)
     /// object that describes the training job that completed with the best current
     /// HyperParameterTuningJobObjective (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobObjective.html).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bestTrainingJob"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bestTrainingJob")]
     pub best_training_job: Option<HyperParameterTuningJobStatusBestTrainingJob>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -1933,29 +1395,17 @@ pub struct HyperParameterTuningJobStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// If the tuning job failed, the reason it failed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureReason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
     /// The status of the tuning job.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hyperParameterTuningJobStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hyperParameterTuningJobStatus")]
     pub hyper_parameter_tuning_job_status: Option<String>,
     /// If the hyperparameter tuning job is an warm start tuning job with a WarmStartType
     /// of IDENTICAL_DATA_AND_ALGORITHM, this is the TrainingJobSummary (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_TrainingJobSummary.html)
     /// for the training job with the best objective metric value of all training
     /// jobs launched by this tuning job and all parent jobs specified for the warm
     /// start tuning job.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "overallBestTrainingJob"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "overallBestTrainingJob")]
     pub overall_best_training_job: Option<HyperParameterTuningJobStatusOverallBestTrainingJob>,
 }
 
@@ -1987,82 +1437,32 @@ pub struct HyperParameterTuningJobStatusAckResourceMetadata {
 /// HyperParameterTuningJobObjective (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobObjective.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobStatusBestTrainingJob {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "creationTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "creationTime")]
     pub creation_time: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureReason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
     /// Shows the latest objective metric emitted by a training job that was launched
     /// by a hyperparameter tuning job. You define the objective metric in the HyperParameterTuningJobObjective
     /// parameter of HyperParameterTuningJobConfig (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "finalHyperParameterTuningJobObjectiveMetric"
-    )]
-    pub final_hyper_parameter_tuning_job_objective_metric: Option<
-        HyperParameterTuningJobStatusBestTrainingJobFinalHyperParameterTuningJobObjectiveMetric,
-    >,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "objectiveStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "finalHyperParameterTuningJobObjectiveMetric")]
+    pub final_hyper_parameter_tuning_job_objective_metric: Option<HyperParameterTuningJobStatusBestTrainingJobFinalHyperParameterTuningJobObjectiveMetric>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectiveStatus")]
     pub objective_status: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trainingEndTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trainingEndTime")]
     pub training_end_time: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trainingJobARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trainingJobARN")]
     pub training_job_arn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trainingJobDefinitionName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trainingJobDefinitionName")]
     pub training_job_definition_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trainingJobName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trainingJobName")]
     pub training_job_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trainingJobStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trainingJobStatus")]
     pub training_job_status: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trainingStartTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trainingStartTime")]
     pub training_start_time: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tunedHyperParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tunedHyperParameters")]
     pub tuned_hyper_parameters: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tuningJobName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tuningJobName")]
     pub tuning_job_name: Option<String>,
 }
 
@@ -2071,11 +1471,7 @@ pub struct HyperParameterTuningJobStatusBestTrainingJob {
 /// parameter of HyperParameterTuningJobConfig (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HyperParameterTuningJobStatusBestTrainingJobFinalHyperParameterTuningJobObjectiveMetric {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricName")]
     pub metric_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type_")]
     pub r#type: Option<String>,
@@ -2123,16 +1519,12 @@ pub struct HyperParameterTuningJobStatusOverallBestTrainingJob {
 /// by a hyperparameter tuning job. You define the objective metric in the HyperParameterTuningJobObjective
 /// parameter of HyperParameterTuningJobConfig (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct HyperParameterTuningJobStatusOverallBestTrainingJobFinalHyperParameterTuningJobObjectiveMetric
-{
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricName"
-    )]
+pub struct HyperParameterTuningJobStatusOverallBestTrainingJobFinalHyperParameterTuningJobObjectiveMetric {
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricName")]
     pub metric_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type_")]
     pub r#type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<f64>,
 }
+

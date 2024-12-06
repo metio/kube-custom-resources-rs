@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// AWSIamConfigSpec defines the desired state of AWSIamConfig.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "anywhere.eks.amazonaws.com",
-    version = "v1alpha1",
-    kind = "AWSIamConfig",
-    plural = "awsiamconfigs"
-)]
+#[kube(group = "anywhere.eks.amazonaws.com", version = "v1alpha1", kind = "AWSIamConfig", plural = "awsiamconfigs")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct AWSIamConfigSpec {
     /// AWSRegion defines a region in an AWS partition
     #[serde(rename = "awsRegion")]
@@ -59,4 +54,6 @@ pub struct AWSIamConfigMapUsers {
 
 /// AWSIamConfigStatus defines the observed state of AWSIamConfig.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWSIamConfigStatus {}
+pub struct AWSIamConfigStatus {
+}
+

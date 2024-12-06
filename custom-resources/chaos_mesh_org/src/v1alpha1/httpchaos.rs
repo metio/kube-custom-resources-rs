@@ -5,21 +5,16 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "chaos-mesh.org",
-    version = "v1alpha1",
-    kind = "HTTPChaos",
-    plural = "httpchaos"
-)]
+#[kube(group = "chaos-mesh.org", version = "v1alpha1", kind = "HTTPChaos", plural = "httpchaos")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct HTTPChaosSpec {
     /// Abort is a rule to abort a http session.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -48,11 +43,7 @@ pub struct HTTPChaosSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i32>,
     /// RemoteCluster represents the remote cluster where the chaos will be deployed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteCluster")]
     pub remote_cluster: Option<String>,
     /// Replace is a rule to replace some contents in target.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -140,52 +131,28 @@ pub struct HTTPChaosReplace {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HTTPChaosSelector {
     /// Map of string keys and values that can be used to select objects. A selector based on annotations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "annotationSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "annotationSelectors")]
     pub annotation_selectors: Option<BTreeMap<String, String>>,
     /// a slice of label selector expressions that can be used to select objects. A list of selectors based on set-based label expressions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expressionSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expressionSelectors")]
     pub expression_selectors: Option<Vec<HTTPChaosSelectorExpressionSelectors>>,
     /// Map of string keys and values that can be used to select objects. A selector based on fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fieldSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldSelectors")]
     pub field_selectors: Option<BTreeMap<String, String>>,
     /// Map of string keys and values that can be used to select objects. A selector based on labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelectors")]
     pub label_selectors: Option<BTreeMap<String, String>>,
     /// Namespaces is a set of namespace to which objects belong.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// Map of string keys and values that can be used to select nodes. Selector which must match a node's labels, and objects must belong to these selected nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelectors")]
     pub node_selectors: Option<BTreeMap<String, String>>,
     /// Nodes is a set of node name and objects must belong to these nodes.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub nodes: Option<Vec<String>>,
     /// PodPhaseSelectors is a set of condition of a pod at the current time. supported value: Pending / Running / Succeeded / Failed / Unknown
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podPhaseSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podPhaseSelectors")]
     pub pod_phase_selectors: Option<Vec<String>>,
     /// Pods is a map of string keys and a set values that used to select pods. The key defines the namespace which pods belong, and the each values is a set of pod names.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -255,17 +222,9 @@ pub struct HTTPChaosStatusConditions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HTTPChaosStatusExperiment {
     /// Records are used to track the running status
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerRecords"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerRecords")]
     pub container_records: Option<Vec<HTTPChaosStatusExperimentContainerRecords>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "desiredPhase"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "desiredPhase")]
     pub desired_phase: Option<HTTPChaosStatusExperimentDesiredPhase>,
 }
 
@@ -306,3 +265,4 @@ pub enum HTTPChaosStatusExperimentDesiredPhase {
     Run,
     Stop,
 }
+

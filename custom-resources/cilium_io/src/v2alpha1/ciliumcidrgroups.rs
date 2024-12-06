@@ -5,22 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "cilium.io",
-    version = "v2alpha1",
-    kind = "CiliumCIDRGroup",
-    plural = "ciliumcidrgroups"
-)]
+#[kube(group = "cilium.io", version = "v2alpha1", kind = "CiliumCIDRGroup", plural = "ciliumcidrgroups")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CiliumCIDRGroupSpec {
     /// ExternalCIDRs is a list of CIDRs selecting peers outside the clusters.
     #[serde(rename = "externalCIDRs")]
     pub external_cid_rs: Vec<String>,
 }
+

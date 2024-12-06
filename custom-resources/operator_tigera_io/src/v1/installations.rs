@@ -4,73 +4,44 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Specification of the desired state for the Calico or Calico Enterprise installation.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "operator.tigera.io",
-    version = "v1",
-    kind = "Installation",
-    plural = "installations"
-)]
+#[kube(group = "operator.tigera.io", version = "v1", kind = "Installation", plural = "installations")]
 #[kube(status = "InstallationStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct InstallationSpec {
     /// CalicoKubeControllersDeployment configures the calico-kube-controllers Deployment. If used in
     /// conjunction with the deprecated ComponentResources, then these overrides take precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "calicoKubeControllersDeployment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "calicoKubeControllersDeployment")]
     pub calico_kube_controllers_deployment: Option<InstallationCalicoKubeControllersDeployment>,
     /// CalicoNetwork specifies networking configuration options for Calico.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "calicoNetwork"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "calicoNetwork")]
     pub calico_network: Option<InstallationCalicoNetwork>,
     /// CalicoNodeDaemonSet configures the calico-node DaemonSet. If used in
     /// conjunction with the deprecated ComponentResources, then these overrides take precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "calicoNodeDaemonSet"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "calicoNodeDaemonSet")]
     pub calico_node_daemon_set: Option<InstallationCalicoNodeDaemonSet>,
     /// CalicoNodeWindowsDaemonSet configures the calico-node-windows DaemonSet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "calicoNodeWindowsDaemonSet"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "calicoNodeWindowsDaemonSet")]
     pub calico_node_windows_daemon_set: Option<InstallationCalicoNodeWindowsDaemonSet>,
     /// Deprecated. The CalicoWindowsUpgradeDaemonSet is deprecated and will be removed from the API in the future.
     /// CalicoWindowsUpgradeDaemonSet configures the calico-windows-upgrade DaemonSet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "calicoWindowsUpgradeDaemonSet"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "calicoWindowsUpgradeDaemonSet")]
     pub calico_windows_upgrade_daemon_set: Option<InstallationCalicoWindowsUpgradeDaemonSet>,
     /// CertificateManagement configures pods to submit a CertificateSigningRequest to the certificates.k8s.io/v1beta1 API in order
     /// to obtain TLS certificates. This feature requires that you bring your own CSR signing and approval process, otherwise
     /// pods will be stuck during initialization.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certificateManagement"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateManagement")]
     pub certificate_management: Option<InstallationCertificateManagement>,
     /// CNI specifies the CNI that will be used by this installation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -78,42 +49,22 @@ pub struct InstallationSpec {
     /// Deprecated. Please use CalicoNodeDaemonSet, TyphaDeployment, and KubeControllersDeployment.
     /// ComponentResources can be used to customize the resource requirements for each component.
     /// Node, Typha, and KubeControllers are supported for installations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "componentResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentResources")]
     pub component_resources: Option<Vec<InstallationComponentResources>>,
     /// ControlPlaneNodeSelector is used to select control plane nodes on which to run Calico
     /// components. This is globally applied to all resources created by the operator excluding daemonsets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneNodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneNodeSelector")]
     pub control_plane_node_selector: Option<BTreeMap<String, String>>,
     /// ControlPlaneReplicas defines how many replicas of the control plane core components will be deployed.
     /// This field applies to all control plane components that support High Availability. Defaults to 2.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneReplicas")]
     pub control_plane_replicas: Option<i32>,
     /// ControlPlaneTolerations specify tolerations which are then globally applied to all resources
     /// created by the operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneTolerations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneTolerations")]
     pub control_plane_tolerations: Option<Vec<InstallationControlPlaneTolerations>>,
     /// CSINodeDriverDaemonSet configures the csi-node-driver DaemonSet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "csiNodeDriverDaemonSet"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "csiNodeDriverDaemonSet")]
     pub csi_node_driver_daemon_set: Option<InstallationCsiNodeDriverDaemonSet>,
     /// FIPSMode uses images and features only that are using FIPS 140-2 validated cryptographic modules and standards.
     /// Only supported for Variant=Calico.
@@ -123,11 +74,7 @@ pub struct InstallationSpec {
     /// FlexVolumePath optionally specifies a custom path for FlexVolume. If not specified, FlexVolume will be
     /// enabled by default. If set to 'None', FlexVolume will be disabled. The default is based on the
     /// kubernetesProvider.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flexVolumePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolumePath")]
     pub flex_volume_path: Option<String>,
     /// ImagePath allows for the path part of an image to be specified. If specified
     /// then the specified value will be used as the image path for each image. If not specified
@@ -147,38 +94,22 @@ pub struct InstallationSpec {
     /// Image format:
     ///    `<registry><imagePath>/<imagePrefix><imageName>:<image-tag>`
     /// This option allows configuring the `<imagePrefix>` portion of the above format.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePrefix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePrefix")]
     pub image_prefix: Option<String>,
     /// ImagePullSecrets is an array of references to container registry pull secrets to use. These are
     /// applied to all images to be pulled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<InstallationImagePullSecrets>>,
     /// KubeletVolumePluginPath optionally specifies enablement of Calico CSI plugin. If not specified,
     /// CSI will be enabled by default. If set to 'None', CSI will be disabled.
     /// Default: /var/lib/kubelet
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubeletVolumePluginPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeletVolumePluginPath")]
     pub kubelet_volume_plugin_path: Option<String>,
     /// KubernetesProvider specifies a particular provider of the Kubernetes platform and enables provider-specific configuration.
     /// If the specified value is empty, the Operator will attempt to automatically determine the current provider.
     /// If the specified value is not empty, the Operator will still attempt auto-detection, but
     /// will additionally compare the auto-detected value to the specified value to confirm they match.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesProvider"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesProvider")]
     pub kubernetes_provider: Option<InstallationKubernetesProvider>,
     /// Logging Configuration for Components
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -186,26 +117,14 @@ pub struct InstallationSpec {
     /// NodeMetricsPort specifies which port calico/node serves prometheus metrics on. By default, metrics are not enabled.
     /// If specified, this overrides any FelixConfiguration resources which may exist. If omitted, then
     /// prometheus metrics may still be configured through FelixConfiguration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeMetricsPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeMetricsPort")]
     pub node_metrics_port: Option<i32>,
     /// NodeUpdateStrategy can be used to customize the desired update strategy, such as the MaxUnavailable
     /// field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeUpdateStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeUpdateStrategy")]
     pub node_update_strategy: Option<InstallationNodeUpdateStrategy>,
     /// NonPrivileged configures Calico to be run in non-privileged containers as non-root users where possible.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nonPrivileged"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nonPrivileged")]
     pub non_privileged: Option<String>,
     /// Registry is the default Docker registry used for component Docker images.
     /// If specified then the given value must end with a slash character (`/`) and all images will be pulled from this registry.
@@ -217,45 +136,25 @@ pub struct InstallationSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub registry: Option<String>,
     /// Kubernetes Service CIDRs. Specifying this is required when using Calico for Windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceCIDRs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceCIDRs")]
     pub service_cid_rs: Option<Vec<String>>,
     /// Deprecated. Please use Installation.Spec.TyphaDeployment instead.
     /// TyphaAffinity allows configuration of node affinity characteristics for Typha pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "typhaAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "typhaAffinity")]
     pub typha_affinity: Option<InstallationTyphaAffinity>,
     /// TyphaDeployment configures the typha Deployment. If used in conjunction with the deprecated
     /// ComponentResources or TyphaAffinity, then these overrides take precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "typhaDeployment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "typhaDeployment")]
     pub typha_deployment: Option<InstallationTyphaDeployment>,
     /// TyphaMetricsPort specifies which port calico/typha serves prometheus metrics on. By default, metrics are not enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "typhaMetricsPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "typhaMetricsPort")]
     pub typha_metrics_port: Option<i32>,
     /// Variant is the product to install - one of Calico or TigeraSecureEnterprise
     /// Default: Calico
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub variant: Option<InstallationVariant>,
     /// Windows Configuration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsNodes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsNodes")]
     pub windows_nodes: Option<InstallationWindowsNodes>,
 }
 
@@ -293,11 +192,7 @@ pub struct InstallationCalicoKubeControllersDeploymentSpec {
     /// be ready without any of its container crashing, for it to be considered available.
     /// If specified, this overrides any minReadySeconds value that may be set on the calico-kube-controllers Deployment.
     /// If omitted, the calico-kube-controllers Deployment will use its default value for minReadySeconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minReadySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
     /// Template describes the calico-kube-controllers Deployment pod that will be created.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -345,8 +240,7 @@ pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpec {
     /// If specified, this overrides the specified calico-kube-controllers Deployment containers.
     /// If omitted, the calico-kube-controllers Deployment will use its default values for its containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub containers:
-        Option<Vec<InstallationCalicoKubeControllersDeploymentSpecTemplateSpecContainers>>,
+    pub containers: Option<Vec<InstallationCalicoKubeControllersDeploymentSpecTemplateSpecContainers>>,
     /// NodeSelector is the calico-kube-controllers pod's scheduling constraints.
     /// If specified, each of the key/value pairs are added to the calico-kube-controllers Deployment nodeSelector provided
     /// the key does not already exist in the object's nodeSelector.
@@ -355,19 +249,14 @@ pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpec {
     /// the key does not already exist in the object's nodeSelector.
     /// If omitted, the calico-kube-controllers Deployment will use its default value for nodeSelector.
     /// WARNING: Please note that this field will modify the default calico-kube-controllers Deployment nodeSelector.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Tolerations is the calico-kube-controllers pod's tolerations.
     /// If specified, this overrides any tolerations that may be set on the calico-kube-controllers Deployment.
     /// If omitted, the calico-kube-controllers Deployment will use its default value for tolerations.
     /// WARNING: Please note that this field will override the default calico-kube-controllers Deployment tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tolerations:
-        Option<Vec<InstallationCalicoKubeControllersDeploymentSpecTemplateSpecTolerations>>,
+    pub tolerations: Option<Vec<InstallationCalicoKubeControllersDeploymentSpecTemplateSpecTolerations>>,
 }
 
 /// Affinity is a group of affinity scheduling rules for the calico-kube-controllers pods.
@@ -377,29 +266,14 @@ pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
-    pub node_affinity:
-        Option<InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityNodeAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
+    pub node_affinity: Option<InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
-    pub pod_affinity:
-        Option<InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
+    pub pod_affinity: Option<InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
-    pub pod_anti_affinity:
-        Option<InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAntiAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAntiAffinity>,
 }
 
 /// Describes node affinity scheduling rules for the pod.
@@ -449,8 +323,7 @@ pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityNo
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -468,8 +341,7 @@ pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityNo
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -512,8 +384,7 @@ pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityNo
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -531,8 +402,7 @@ pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityNo
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -651,8 +521,7 @@ pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPo
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -686,8 +555,7 @@ pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPo
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -774,8 +642,7 @@ pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPo
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -809,8 +676,7 @@ pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPo
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -928,8 +794,7 @@ pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPo
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -963,8 +828,7 @@ pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPo
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1051,8 +915,7 @@ pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPo
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1086,8 +949,7 @@ pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPo
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1112,8 +974,7 @@ pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecContainers
     /// If omitted, the calico-kube-controllers Deployment will use its default value for this container's resources.
     /// If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources:
-        Option<InstallationCalicoKubeControllersDeploymentSpecTemplateSpecContainersResources>,
+    pub resources: Option<InstallationCalicoKubeControllersDeploymentSpecTemplateSpecContainersResources>,
 }
 
 /// CalicoKubeControllersDeploymentContainer is a calico-kube-controllers Deployment container.
@@ -1137,9 +998,7 @@ pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecContainers
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<
-        Vec<InstallationCalicoKubeControllersDeploymentSpecTemplateSpecContainersResourcesClaims>,
-    >,
+    pub claims: Option<Vec<InstallationCalicoKubeControllersDeploymentSpecTemplateSpecContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1183,11 +1042,7 @@ pub struct InstallationCalicoKubeControllersDeploymentSpecTemplateSpecToleration
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -1203,11 +1058,7 @@ pub struct InstallationCalicoNetwork {
     pub bgp: Option<InstallationCalicoNetworkBgp>,
     /// ContainerIPForwarding configures whether ip forwarding will be enabled for containers in the CNI configuration.
     /// Default: Disabled
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerIPForwarding"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerIPForwarding")]
     pub container_ip_forwarding: Option<InstallationCalicoNetworkContainerIpForwarding>,
     /// HostPorts configures whether or not Calico will support Kubernetes HostPorts. Valid only when using the Calico CNI plugin.
     /// Default: Enabled
@@ -1223,11 +1074,7 @@ pub struct InstallationCalicoNetwork {
     /// causes the operator to add required mounts and environment variables for the particular dataplane.
     /// If not specified, iptables mode is used.
     /// Default: Iptables
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "linuxDataplane"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "linuxDataplane")]
     pub linux_dataplane: Option<InstallationCalicoNetworkLinuxDataplane>,
     /// LinuxPolicySetupTimeoutSeconds delays new pods from running containers
     /// until their policy has been programmed in the dataplane.
@@ -1236,11 +1083,7 @@ pub struct InstallationCalicoNetwork {
     /// Only applies to pods created on Linux nodes.
     /// * A value of 0 disables pod startup delays.
     /// Default: 0
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "linuxPolicySetupTimeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "linuxPolicySetupTimeoutSeconds")]
     pub linux_policy_setup_timeout_seconds: Option<i32>,
     /// MTU specifies the maximum transmission unit to use on the pod network.
     /// If not specified, Calico will perform MTU auto-detection based on the cluster network.
@@ -1249,27 +1092,15 @@ pub struct InstallationCalicoNetwork {
     /// MultiInterfaceMode configures what will configure multiple interface per pod. Only valid for Calico Enterprise installations
     /// using the Calico CNI plugin.
     /// Default: None
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "multiInterfaceMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multiInterfaceMode")]
     pub multi_interface_mode: Option<InstallationCalicoNetworkMultiInterfaceMode>,
     /// NodeAddressAutodetectionV4 specifies an approach to automatically detect node IPv4 addresses. If not specified,
     /// will use default auto-detection settings to acquire an IPv4 address for each node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAddressAutodetectionV4"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAddressAutodetectionV4")]
     pub node_address_autodetection_v4: Option<InstallationCalicoNetworkNodeAddressAutodetectionV4>,
     /// NodeAddressAutodetectionV6 specifies an approach to automatically detect node IPv6 addresses. If not specified,
     /// IPv6 addresses will not be auto-detected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAddressAutodetectionV6"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAddressAutodetectionV6")]
     pub node_address_autodetection_v6: Option<InstallationCalicoNetworkNodeAddressAutodetectionV6>,
     /// Sysctl configures sysctl parameters for tuning plugin
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1278,11 +1109,7 @@ pub struct InstallationCalicoNetwork {
     /// causes the operator to add required mounts and environment variables for the particular dataplane.
     /// If not specified, it is disabled and the operator will not render the Calico Windows nodes daemonset.
     /// Default: Disabled
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsDataplane"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsDataplane")]
     pub windows_dataplane: Option<InstallationCalicoNetworkWindowsDataplane>,
 }
 
@@ -1311,11 +1138,7 @@ pub enum InstallationCalicoNetworkHostPorts {
 pub struct InstallationCalicoNetworkIpPools {
     /// AllowedUse controls what the IP pool will be used for.  If not specified or empty, defaults to
     /// ["Tunnel", "Workload"] for back-compatibility
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowedUses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedUses")]
     pub allowed_uses: Option<Vec<String>>,
     /// BlockSize specifies the CIDR prefex length to use when allocating per-node IP blocks from
     /// the main IP pool CIDR.
@@ -1326,20 +1149,12 @@ pub struct InstallationCalicoNetworkIpPools {
     pub cidr: String,
     /// DisableBGPExport specifies whether routes from this IP pool's CIDR are exported over BGP.
     /// Default: false
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableBGPExport"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableBGPExport")]
     pub disable_bgp_export: Option<bool>,
     /// DisableNewAllocations specifies whether or not new IP allocations are allowed from this pool.
     /// This is useful when you want to prevent new pods from receiving IP addresses from this pool, without
     /// impacting any existing pods that have already been assigned addresses from this pool.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableNewAllocations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableNewAllocations")]
     pub disable_new_allocations: Option<bool>,
     /// Encapsulation specifies the encapsulation type that will be used with
     /// the IP Pool.
@@ -1351,19 +1166,11 @@ pub struct InstallationCalicoNetworkIpPools {
     pub name: Option<String>,
     /// NATOutgoing specifies if NAT will be enabled or disabled for outgoing traffic.
     /// Default: Enabled
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "natOutgoing"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "natOutgoing")]
     pub nat_outgoing: Option<InstallationCalicoNetworkIpPoolsNatOutgoing>,
     /// NodeSelector specifies the node selector that will be set for the IP Pool.
     /// Default: 'all()'
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<String>,
 }
 
@@ -1418,11 +1225,7 @@ pub struct InstallationCalicoNetworkNodeAddressAutodetectionV4 {
     pub cidrs: Option<Vec<String>>,
     /// FirstFound uses default interface matching parameters to select an interface, performing best-effort
     /// filtering based on well-known interface names.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "firstFound"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "firstFound")]
     pub first_found: Option<bool>,
     /// Interface enables IP auto-detection based on interfaces that match the given regex.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1432,11 +1235,7 @@ pub struct InstallationCalicoNetworkNodeAddressAutodetectionV4 {
     pub kubernetes: Option<InstallationCalicoNetworkNodeAddressAutodetectionV4Kubernetes>,
     /// SkipInterface enables IP auto-detection based on interfaces that do not match
     /// the given regex.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "skipInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipInterface")]
     pub skip_interface: Option<String>,
 }
 
@@ -1462,11 +1261,7 @@ pub struct InstallationCalicoNetworkNodeAddressAutodetectionV6 {
     pub cidrs: Option<Vec<String>>,
     /// FirstFound uses default interface matching parameters to select an interface, performing best-effort
     /// filtering based on well-known interface names.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "firstFound"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "firstFound")]
     pub first_found: Option<bool>,
     /// Interface enables IP auto-detection based on interfaces that match the given regex.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1476,11 +1271,7 @@ pub struct InstallationCalicoNetworkNodeAddressAutodetectionV6 {
     pub kubernetes: Option<InstallationCalicoNetworkNodeAddressAutodetectionV6Kubernetes>,
     /// SkipInterface enables IP auto-detection based on interfaces that do not match
     /// the given regex.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "skipInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipInterface")]
     pub skip_interface: Option<String>,
 }
 
@@ -1550,11 +1341,7 @@ pub struct InstallationCalicoNodeDaemonSetSpec {
     /// be ready without any of its container crashing, for it to be considered available.
     /// If specified, this overrides any minReadySeconds value that may be set on the calico-node DaemonSet.
     /// If omitted, the calico-node DaemonSet will use its default value for minReadySeconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minReadySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
     /// Template describes the calico-node DaemonSet pod that will be created.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1606,22 +1393,14 @@ pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpec {
     /// InitContainers is a list of calico-node init containers.
     /// If specified, this overrides the specified calico-node DaemonSet init containers.
     /// If omitted, the calico-node DaemonSet will use its default values for its init containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<InstallationCalicoNodeDaemonSetSpecTemplateSpecInitContainers>>,
     /// NodeSelector is the calico-node pod's scheduling constraints.
     /// If specified, each of the key/value pairs are added to the calico-node DaemonSet nodeSelector provided
     /// the key does not already exist in the object's nodeSelector.
     /// If omitted, the calico-node DaemonSet will use its default value for nodeSelector.
     /// WARNING: Please note that this field will modify the default calico-node DaemonSet nodeSelector.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Tolerations is the calico-node pod's tolerations.
     /// If specified, this overrides any tolerations that may be set on the calico-node DaemonSet.
@@ -1638,27 +1417,14 @@ pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
-    pub pod_anti_affinity:
-        Option<InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinity>,
 }
 
 /// Describes node affinity scheduling rules for the pod.
@@ -1708,8 +1474,7 @@ pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityNodeAffinityPr
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1727,8 +1492,7 @@ pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityNodeAffinityPr
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1771,8 +1535,7 @@ pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityNodeAffinityRe
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1790,8 +1553,7 @@ pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityNodeAffinityRe
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1910,8 +1672,7 @@ pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityPre
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1945,8 +1706,7 @@ pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityPre
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2033,8 +1793,7 @@ pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityReq
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2068,8 +1827,7 @@ pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityReq
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2187,8 +1945,7 @@ pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinit
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2222,8 +1979,7 @@ pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinit
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2310,8 +2066,7 @@ pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinit
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2345,8 +2100,7 @@ pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinit
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2393,8 +2147,7 @@ pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecContainersResources {
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims:
-        Option<Vec<InstallationCalicoNodeDaemonSetSpecTemplateSpecContainersResourcesClaims>>,
+    pub claims: Option<Vec<InstallationCalicoNodeDaemonSetSpecTemplateSpecContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2459,8 +2212,7 @@ pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecInitContainersResource
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims:
-        Option<Vec<InstallationCalicoNodeDaemonSetSpecTemplateSpecInitContainersResourcesClaims>>,
+    pub claims: Option<Vec<InstallationCalicoNodeDaemonSetSpecTemplateSpecInitContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2504,11 +2256,7 @@ pub struct InstallationCalicoNodeDaemonSetSpecTemplateSpecTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -2549,11 +2297,7 @@ pub struct InstallationCalicoNodeWindowsDaemonSetSpec {
     /// be ready without any of its container crashing, for it to be considered available.
     /// If specified, this overrides any minReadySeconds value that may be set on the calico-node-windows DaemonSet.
     /// If omitted, the calico-node-windows DaemonSet will use its default value for minReadySeconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minReadySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
     /// Template describes the calico-node-windows DaemonSet pod that will be created.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2605,23 +2349,14 @@ pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpec {
     /// InitContainers is a list of calico-node-windows init containers.
     /// If specified, this overrides the specified calico-node-windows DaemonSet init containers.
     /// If omitted, the calico-node-windows DaemonSet will use its default values for its init containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
-    pub init_containers:
-        Option<Vec<InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecInitContainers>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
+    pub init_containers: Option<Vec<InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecInitContainers>>,
     /// NodeSelector is the calico-node-windows pod's scheduling constraints.
     /// If specified, each of the key/value pairs are added to the calico-node-windows DaemonSet nodeSelector provided
     /// the key does not already exist in the object's nodeSelector.
     /// If omitted, the calico-node-windows DaemonSet will use its default value for nodeSelector.
     /// WARNING: Please note that this field will modify the default calico-node-windows DaemonSet nodeSelector.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Tolerations is the calico-node-windows pod's tolerations.
     /// If specified, this overrides any tolerations that may be set on the calico-node-windows DaemonSet.
@@ -2638,29 +2373,14 @@ pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
-    pub node_affinity:
-        Option<InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityNodeAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
+    pub node_affinity: Option<InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
-    pub pod_affinity:
-        Option<InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
+    pub pod_affinity: Option<InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
-    pub pod_anti_affinity:
-        Option<InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAntiAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAntiAffinity>,
 }
 
 /// Describes node affinity scheduling rules for the pod.
@@ -2710,8 +2430,7 @@ pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityNodeAff
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -2729,8 +2448,7 @@ pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityNodeAff
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -2773,8 +2491,7 @@ pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityNodeAff
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -2792,8 +2509,7 @@ pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityNodeAff
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -2912,8 +2628,7 @@ pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffi
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2947,8 +2662,7 @@ pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffi
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -3035,8 +2749,7 @@ pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffi
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -3070,8 +2783,7 @@ pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffi
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -3189,8 +2901,7 @@ pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAnti
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -3224,8 +2935,7 @@ pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAnti
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -3312,8 +3022,7 @@ pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAnti
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -3347,8 +3056,7 @@ pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAnti
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -3373,8 +3081,7 @@ pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecContainers {
     /// If omitted, the calico-node-windows DaemonSet will use its default value for this container's resources.
     /// If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources:
-        Option<InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecContainersResources>,
+    pub resources: Option<InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecContainersResources>,
 }
 
 /// CalicoNodeWindowsDaemonSetContainer is a calico-node-windows DaemonSet container.
@@ -3396,9 +3103,7 @@ pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecContainersResou
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<
-        Vec<InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecContainersResourcesClaims>,
-    >,
+    pub claims: Option<Vec<InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3431,8 +3136,7 @@ pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecInitContainers 
     /// If omitted, the calico-node-windows DaemonSet will use its default value for this container's resources.
     /// If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources:
-        Option<InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecInitContainersResources>,
+    pub resources: Option<InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecInitContainersResources>,
 }
 
 /// CalicoNodeWindowsDaemonSetInitContainer is a calico-node-windows DaemonSet init container.
@@ -3464,9 +3168,7 @@ pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecInitContainersR
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<
-        Vec<InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecInitContainersResourcesClaims>,
-    >,
+    pub claims: Option<Vec<InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecInitContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3510,11 +3212,7 @@ pub struct InstallationCalicoNodeWindowsDaemonSetSpecTemplateSpecTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -3556,11 +3254,7 @@ pub struct InstallationCalicoWindowsUpgradeDaemonSetSpec {
     /// be ready without any of its container crashing, for it to be considered available.
     /// If specified, this overrides any minReadySeconds value that may be set on the calico-windows-upgrade DaemonSet.
     /// If omitted, the calico-windows-upgrade DaemonSet will use its default value for minReadySeconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minReadySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
     /// Template describes the calico-windows-upgrade DaemonSet pod that will be created.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3608,26 +3302,20 @@ pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpec {
     /// If specified, this overrides the specified calico-windows-upgrade DaemonSet containers.
     /// If omitted, the calico-windows-upgrade DaemonSet will use its default values for its containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub containers:
-        Option<Vec<InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecContainers>>,
+    pub containers: Option<Vec<InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecContainers>>,
     /// NodeSelector is the calico-windows-upgrade pod's scheduling constraints.
     /// If specified, each of the key/value pairs are added to the calico-windows-upgrade DaemonSet nodeSelector provided
     /// the key does not already exist in the object's nodeSelector.
     /// If omitted, the calico-windows-upgrade DaemonSet will use its default value for nodeSelector.
     /// WARNING: Please note that this field will modify the default calico-windows-upgrade DaemonSet nodeSelector.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Tolerations is the calico-windows-upgrade pod's tolerations.
     /// If specified, this overrides any tolerations that may be set on the calico-windows-upgrade DaemonSet.
     /// If omitted, the calico-windows-upgrade DaemonSet will use its default value for tolerations.
     /// WARNING: Please note that this field will override the default calico-windows-upgrade DaemonSet tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tolerations:
-        Option<Vec<InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecTolerations>>,
+    pub tolerations: Option<Vec<InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecTolerations>>,
 }
 
 /// Affinity is a group of affinity scheduling rules for the calico-windows-upgrade pods.
@@ -3637,29 +3325,14 @@ pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
-    pub node_affinity:
-        Option<InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityNodeAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
+    pub node_affinity: Option<InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
-    pub pod_affinity:
-        Option<InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
+    pub pod_affinity: Option<InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
-    pub pod_anti_affinity:
-        Option<InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAntiAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAntiAffinity>,
 }
 
 /// Describes node affinity scheduling rules for the pod.
@@ -3709,8 +3382,7 @@ pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityNode
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -3728,8 +3400,7 @@ pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityNode
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -3772,8 +3443,7 @@ pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityNode
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -3791,8 +3461,7 @@ pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityNode
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -3911,8 +3580,7 @@ pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -3946,8 +3614,7 @@ pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4034,8 +3701,7 @@ pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4069,8 +3735,7 @@ pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4188,8 +3853,7 @@ pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4223,8 +3887,7 @@ pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4311,8 +3974,7 @@ pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4346,8 +4008,7 @@ pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -4370,8 +4031,7 @@ pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecContainers {
     /// If specified, this overrides the named calico-windows-upgrade DaemonSet container's resources.
     /// If omitted, the calico-windows-upgrade DaemonSet will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources:
-        Option<InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecContainersResources>,
+    pub resources: Option<InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecContainersResources>,
 }
 
 /// CalicoWindowsUpgradeDaemonSetContainer is a calico-windows-upgrade DaemonSet container.
@@ -4392,9 +4052,7 @@ pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecContainersRe
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<
-        Vec<InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecContainersResourcesClaims>,
-    >,
+    pub claims: Option<Vec<InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4438,11 +4096,7 @@ pub struct InstallationCalicoWindowsUpgradeDaemonSetSpecTemplateSpecTolerations 
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -4460,19 +4114,11 @@ pub struct InstallationCertificateManagement {
     pub ca_cert: String,
     /// Specify the algorithm used by pods to generate a key pair that is associated with the X.509 certificate request.
     /// Default: RSAWithSize2048
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keyAlgorithm"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyAlgorithm")]
     pub key_algorithm: Option<InstallationCertificateManagementKeyAlgorithm>,
     /// Specify the algorithm used for the signature of the X.509 certificate request.
     /// Default: SHA256WithRSA
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "signatureAlgorithm"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signatureAlgorithm")]
     pub signature_algorithm: Option<InstallationCertificateManagementSignatureAlgorithm>,
     /// When a CSR is issued to the certificates.k8s.io API, the signerName is added to the request in order to accommodate for clusters
     /// with multiple signers.
@@ -4659,11 +4305,7 @@ pub struct InstallationControlPlaneTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -4704,11 +4346,7 @@ pub struct InstallationCsiNodeDriverDaemonSetSpec {
     /// be ready without any of its container crashing, for it to be considered available.
     /// If specified, this overrides any minReadySeconds value that may be set on the csi-node-driver DaemonSet.
     /// If omitted, the csi-node-driver DaemonSet will use its default value for minReadySeconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minReadySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
     /// Template describes the csi-node-driver DaemonSet pod that will be created.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4762,11 +4400,7 @@ pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpec {
     /// the key does not already exist in the object's nodeSelector.
     /// If omitted, the csi-node-driver DaemonSet will use its default value for nodeSelector.
     /// WARNING: Please note that this field will modify the default csi-node-driver DaemonSet nodeSelector.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Tolerations is the csi-node-driver pod's tolerations.
     /// If specified, this overrides any tolerations that may be set on the csi-node-driver DaemonSet.
@@ -4783,28 +4417,14 @@ pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
-    pub node_affinity:
-        Option<InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityNodeAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
+    pub node_affinity: Option<InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
-    pub pod_anti_affinity:
-        Option<InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffinity>,
 }
 
 /// Describes node affinity scheduling rules for the pod.
@@ -4854,8 +4474,7 @@ pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityNodeAffinit
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -4873,8 +4492,7 @@ pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityNodeAffinit
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -4917,8 +4535,7 @@ pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityNodeAffinit
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -4936,8 +4553,7 @@ pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityNodeAffinit
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -5056,8 +4672,7 @@ pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinity
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5091,8 +4706,7 @@ pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinity
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5179,8 +4793,7 @@ pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinity
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5214,8 +4827,7 @@ pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinity
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5333,8 +4945,7 @@ pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffi
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5368,8 +4979,7 @@ pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffi
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5456,8 +5066,7 @@ pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffi
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5491,8 +5100,7 @@ pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffi
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5541,8 +5149,7 @@ pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecContainersResources
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims:
-        Option<Vec<InstallationCsiNodeDriverDaemonSetSpecTemplateSpecContainersResourcesClaims>>,
+    pub claims: Option<Vec<InstallationCsiNodeDriverDaemonSetSpecTemplateSpecContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5586,11 +5193,7 @@ pub struct InstallationCsiNodeDriverDaemonSetSpecTemplateSpecTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -5651,32 +5254,16 @@ pub struct InstallationLogging {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationLoggingCni {
     /// Default: 30 (days)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logFileMaxAgeDays"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logFileMaxAgeDays")]
     pub log_file_max_age_days: Option<i32>,
     /// Default: 10
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logFileMaxCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logFileMaxCount")]
     pub log_file_max_count: Option<i32>,
     /// Default: 100Mi
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logFileMaxSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logFileMaxSize")]
     pub log_file_max_size: Option<IntOrString>,
     /// Default: Info
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logSeverity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logSeverity")]
     pub log_severity: Option<InstallationLoggingCniLogSeverity>,
 }
 
@@ -5698,11 +5285,7 @@ pub struct InstallationNodeUpdateStrategy {
     /// TODO: Update this to follow our convention for oneOf, whatever we decide it
     /// to be. Same as Deployment `strategy.rollingUpdate`.
     /// See https://github.com/kubernetes/kubernetes/issues/35345
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollingUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<InstallationNodeUpdateStrategyRollingUpdate>,
     /// Type of daemon set update. Can be "RollingUpdate" or "OnDelete". Default is RollingUpdate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -5750,11 +5333,7 @@ pub struct InstallationNodeUpdateStrategyRollingUpdate {
     /// it then proceeds onto other DaemonSet pods, thus ensuring that at least
     /// 70% of original number of DaemonSet pods are available at all times during
     /// the update.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
 }
 
@@ -5763,11 +5342,7 @@ pub struct InstallationNodeUpdateStrategyRollingUpdate {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationTyphaAffinity {
     /// NodeAffinity describes node affinity scheduling rules for typha.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<InstallationTyphaAffinityNodeAffinity>,
 }
 
@@ -5777,14 +5352,8 @@ pub struct InstallationTyphaAffinityNodeAffinity {
     /// The scheduler will prefer to schedule pods to nodes that satisfy
     /// the affinity expressions specified by this field, but it may choose
     /// a node that violates one or more of the expressions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<InstallationTyphaAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<InstallationTyphaAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// WARNING: Please note that if the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will NOT be scheduled onto the node.
     /// There is no fallback to another affinity rules with this setting.
@@ -5797,13 +5366,8 @@ pub struct InstallationTyphaAffinityNodeAffinity {
     /// If the affinity requirements specified by this field cease to be met
     /// at some point during pod execution (e.g. due to an update), the system
     /// may or may not try to eventually evict the pod from its node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<InstallationTyphaAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<InstallationTyphaAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
 /// An empty preferred scheduling term matches all objects with implicit weight 0
@@ -5830,8 +5394,7 @@ pub struct InstallationTyphaAffinityNodeAffinityPreferredDuringSchedulingIgnored
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationTyphaAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct InstallationTyphaAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -5849,8 +5412,7 @@ pub struct InstallationTyphaAffinityNodeAffinityPreferredDuringSchedulingIgnored
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationTyphaAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct InstallationTyphaAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -5900,8 +5462,7 @@ pub struct InstallationTyphaAffinityNodeAffinityRequiredDuringSchedulingIgnoredD
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationTyphaAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct InstallationTyphaAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -5919,8 +5480,7 @@ pub struct InstallationTyphaAffinityNodeAffinityRequiredDuringSchedulingIgnoredD
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationTyphaAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct InstallationTyphaAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -5969,11 +5529,7 @@ pub struct InstallationTyphaDeploymentSpec {
     /// be ready without any of its container crashing, for it to be considered available.
     /// If specified, this overrides any minReadySeconds value that may be set on the typha Deployment.
     /// If omitted, the typha Deployment will use its default value for minReadySeconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minReadySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
     /// The deployment strategy to use to replace existing pods with new ones.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5989,11 +5545,7 @@ pub struct InstallationTyphaDeploymentSpecStrategy {
     /// Rolling update config params. Present only if DeploymentStrategyType =
     /// RollingUpdate.
     /// to be.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollingUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<InstallationTyphaDeploymentSpecStrategyRollingUpdate>,
 }
 
@@ -6025,11 +5577,7 @@ pub struct InstallationTyphaDeploymentSpecStrategyRollingUpdate {
     /// can be scaled down further, followed by scaling up the new ReplicaSet, ensuring
     /// that the total number of pods available at all times during the update is at
     /// least 70% of desired pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
 }
 
@@ -6079,22 +5627,14 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpec {
     /// InitContainers is a list of typha init containers.
     /// If specified, this overrides the specified typha Deployment init containers.
     /// If omitted, the typha Deployment will use its default values for its init containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<InstallationTyphaDeploymentSpecTemplateSpecInitContainers>>,
     /// NodeSelector is the calico-typha pod's scheduling constraints.
     /// If specified, each of the key/value pairs are added to the calico-typha Deployment nodeSelector provided
     /// the key does not already exist in the object's nodeSelector.
     /// If omitted, the calico-typha Deployment will use its default value for nodeSelector.
     /// WARNING: Please note that this field will modify the default calico-typha Deployment nodeSelector.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Optional duration in seconds the pod needs to terminate gracefully. May be decreased in delete request.
     /// Value must be non-negative integer. The value zero indicates stop immediately via
@@ -6104,11 +5644,7 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpec {
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
     /// Set this value longer than the expected cleanup time for your process.
     /// Defaults to 30 seconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Tolerations is the typha pod's tolerations.
     /// If specified, this overrides any tolerations that may be set on the typha Deployment.
@@ -6119,13 +5655,8 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpec {
     /// TopologySpreadConstraints describes how a group of pods ought to spread across topology
     /// domains. Scheduler will schedule pods in a way which abides by the constraints.
     /// All topologySpreadConstraints are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologySpreadConstraints"
-    )]
-    pub topology_spread_constraints:
-        Option<Vec<InstallationTyphaDeploymentSpecTemplateSpecTopologySpreadConstraints>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
+    pub topology_spread_constraints: Option<Vec<InstallationTyphaDeploymentSpecTemplateSpecTopologySpreadConstraints>>,
 }
 
 /// Affinity is a group of affinity scheduling rules for the typha pods.
@@ -6136,27 +5667,14 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<InstallationTyphaDeploymentSpecTemplateSpecAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
-    pub pod_anti_affinity:
-        Option<InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinity>,
 }
 
 /// Describes node affinity scheduling rules for the pod.
@@ -6206,8 +5724,7 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityNodeAffinityPrefer
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -6225,8 +5742,7 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityNodeAffinityPrefer
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -6269,8 +5785,7 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityNodeAffinityRequir
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -6288,8 +5803,7 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityNodeAffinityRequir
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -6408,8 +5922,7 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAffinityPreferr
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -6443,8 +5956,7 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAffinityPreferr
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -6531,8 +6043,7 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAffinityRequire
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -6566,8 +6077,7 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAffinityRequire
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -6685,8 +6195,7 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityPre
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -6720,8 +6229,7 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityPre
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -6808,8 +6316,7 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityReq
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -6843,8 +6350,7 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityReq
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct InstallationTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -6946,8 +6452,7 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpecInitContainersResources {
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims:
-        Option<Vec<InstallationTyphaDeploymentSpecTemplateSpecInitContainersResourcesClaims>>,
+    pub claims: Option<Vec<InstallationTyphaDeploymentSpecTemplateSpecInitContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6991,11 +6496,7 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpecTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -7009,13 +6510,8 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpecTopologySpreadConstraints 
     /// LabelSelector is used to find matching pods.
     /// Pods that match this label selector are counted to determine the number of pods
     /// in their corresponding topology domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector:
-        Option<InstallationTyphaDeploymentSpecTemplateSpecTopologySpreadConstraintsLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<InstallationTyphaDeploymentSpecTemplateSpecTopologySpreadConstraintsLabelSelector>,
     /// MatchLabelKeys is a set of pod label keys to select the pods over which
     /// spreading will be calculated. The keys are used to lookup values from the
     /// incoming pod labels, those key-value labels are ANDed with labelSelector
@@ -7025,11 +6521,7 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpecTopologySpreadConstraints 
     /// Keys that don't exist in the incoming pod labels will
     /// be ignored. A null or empty list means only match against labelSelector.
     /// This is a beta field and requires the MatchLabelKeysInPodTopologySpread feature gate to be enabled (enabled by default).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabelKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabelKeys")]
     pub match_label_keys: Option<Vec<String>>,
     /// MaxSkew describes the degree to which pods may be unevenly distributed.
     /// When `whenUnsatisfiable=DoNotSchedule`, it is the maximum permitted difference
@@ -7068,11 +6560,7 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpecTopologySpreadConstraints 
     /// In this situation, new pod with the same labelSelector cannot be scheduled,
     /// because computed skew will be 3(3 - 0) if new Pod is scheduled to any of the three zones,
     /// it will violate MaxSkew.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minDomains"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minDomains")]
     pub min_domains: Option<i32>,
     /// NodeAffinityPolicy indicates how we will treat Pod's nodeAffinity/nodeSelector
     /// when calculating pod topology spread skew. Options are:
@@ -7080,11 +6568,7 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpecTopologySpreadConstraints 
     /// - Ignore: nodeAffinity/nodeSelector are ignored. All nodes are included in the calculations.
     /// If this value is nil, the behavior is equivalent to the Honor policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinityPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinityPolicy")]
     pub node_affinity_policy: Option<String>,
     /// NodeTaintsPolicy indicates how we will treat node taints when calculating
     /// pod topology spread skew. Options are:
@@ -7093,11 +6577,7 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpecTopologySpreadConstraints 
     /// - Ignore: node taints are ignored. All nodes are included.
     /// If this value is nil, the behavior is equivalent to the Ignore policy.
     /// This is a beta-level feature default enabled by the NodeInclusionPolicyInPodTopologySpread feature flag.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeTaintsPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeTaintsPolicy")]
     pub node_taints_policy: Option<String>,
     /// TopologyKey is the key of node labels. Nodes that have a label with this key
     /// and identical values are considered to be in the same topology.
@@ -7151,8 +6631,7 @@ pub struct InstallationTyphaDeploymentSpecTemplateSpecTopologySpreadConstraintsL
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationTyphaDeploymentSpecTemplateSpecTopologySpreadConstraintsLabelSelectorMatchExpressions
-{
+pub struct InstallationTyphaDeploymentSpecTemplateSpecTopologySpreadConstraintsLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -7188,28 +6667,16 @@ pub struct InstallationWindowsNodes {
     ///   [plugins."io.containerd.grpc.v1.cri"]
     ///     [plugins."io.containerd.grpc.v1.cri".cni]
     /// on the containerd 'config.toml' file on the Windows nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cniConfigDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cniConfigDir")]
     pub cni_config_dir: Option<String>,
     /// CNILogDir is the path to the Calico CNI logs directory on Windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cniLogDir")]
     pub cni_log_dir: Option<String>,
     /// VXLANAdapter is the Network Adapter used for VXLAN, leave blank for primary NIC
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vxlanAdapter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vxlanAdapter")]
     pub vxlan_adapter: Option<String>,
     /// VXLANMACPrefix is the prefix used when generating MAC addresses for virtual NICs
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vxlanMACPrefix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vxlanMACPrefix")]
     pub vxlan_mac_prefix: Option<String>,
 }
 
@@ -7219,11 +6686,7 @@ pub struct InstallationStatus {
     /// CalicoVersion shows the current running version of calico.
     /// CalicoVersion along with Variant is needed to know the exact
     /// version deployed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "calicoVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "calicoVersion")]
     pub calico_version: Option<String>,
     /// Computed is the final installation including overlaid resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7250,53 +6713,26 @@ pub struct InstallationStatus {
 pub struct InstallationStatusComputed {
     /// CalicoKubeControllersDeployment configures the calico-kube-controllers Deployment. If used in
     /// conjunction with the deprecated ComponentResources, then these overrides take precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "calicoKubeControllersDeployment"
-    )]
-    pub calico_kube_controllers_deployment:
-        Option<InstallationStatusComputedCalicoKubeControllersDeployment>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "calicoKubeControllersDeployment")]
+    pub calico_kube_controllers_deployment: Option<InstallationStatusComputedCalicoKubeControllersDeployment>,
     /// CalicoNetwork specifies networking configuration options for Calico.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "calicoNetwork"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "calicoNetwork")]
     pub calico_network: Option<InstallationStatusComputedCalicoNetwork>,
     /// CalicoNodeDaemonSet configures the calico-node DaemonSet. If used in
     /// conjunction with the deprecated ComponentResources, then these overrides take precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "calicoNodeDaemonSet"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "calicoNodeDaemonSet")]
     pub calico_node_daemon_set: Option<InstallationStatusComputedCalicoNodeDaemonSet>,
     /// CalicoNodeWindowsDaemonSet configures the calico-node-windows DaemonSet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "calicoNodeWindowsDaemonSet"
-    )]
-    pub calico_node_windows_daemon_set:
-        Option<InstallationStatusComputedCalicoNodeWindowsDaemonSet>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "calicoNodeWindowsDaemonSet")]
+    pub calico_node_windows_daemon_set: Option<InstallationStatusComputedCalicoNodeWindowsDaemonSet>,
     /// Deprecated. The CalicoWindowsUpgradeDaemonSet is deprecated and will be removed from the API in the future.
     /// CalicoWindowsUpgradeDaemonSet configures the calico-windows-upgrade DaemonSet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "calicoWindowsUpgradeDaemonSet"
-    )]
-    pub calico_windows_upgrade_daemon_set:
-        Option<InstallationStatusComputedCalicoWindowsUpgradeDaemonSet>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "calicoWindowsUpgradeDaemonSet")]
+    pub calico_windows_upgrade_daemon_set: Option<InstallationStatusComputedCalicoWindowsUpgradeDaemonSet>,
     /// CertificateManagement configures pods to submit a CertificateSigningRequest to the certificates.k8s.io/v1beta1 API in order
     /// to obtain TLS certificates. This feature requires that you bring your own CSR signing and approval process, otherwise
     /// pods will be stuck during initialization.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certificateManagement"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certificateManagement")]
     pub certificate_management: Option<InstallationStatusComputedCertificateManagement>,
     /// CNI specifies the CNI that will be used by this installation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7304,42 +6740,22 @@ pub struct InstallationStatusComputed {
     /// Deprecated. Please use CalicoNodeDaemonSet, TyphaDeployment, and KubeControllersDeployment.
     /// ComponentResources can be used to customize the resource requirements for each component.
     /// Node, Typha, and KubeControllers are supported for installations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "componentResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "componentResources")]
     pub component_resources: Option<Vec<InstallationStatusComputedComponentResources>>,
     /// ControlPlaneNodeSelector is used to select control plane nodes on which to run Calico
     /// components. This is globally applied to all resources created by the operator excluding daemonsets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneNodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneNodeSelector")]
     pub control_plane_node_selector: Option<BTreeMap<String, String>>,
     /// ControlPlaneReplicas defines how many replicas of the control plane core components will be deployed.
     /// This field applies to all control plane components that support High Availability. Defaults to 2.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneReplicas")]
     pub control_plane_replicas: Option<i32>,
     /// ControlPlaneTolerations specify tolerations which are then globally applied to all resources
     /// created by the operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneTolerations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneTolerations")]
     pub control_plane_tolerations: Option<Vec<InstallationStatusComputedControlPlaneTolerations>>,
     /// CSINodeDriverDaemonSet configures the csi-node-driver DaemonSet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "csiNodeDriverDaemonSet"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "csiNodeDriverDaemonSet")]
     pub csi_node_driver_daemon_set: Option<InstallationStatusComputedCsiNodeDriverDaemonSet>,
     /// FIPSMode uses images and features only that are using FIPS 140-2 validated cryptographic modules and standards.
     /// Only supported for Variant=Calico.
@@ -7349,11 +6765,7 @@ pub struct InstallationStatusComputed {
     /// FlexVolumePath optionally specifies a custom path for FlexVolume. If not specified, FlexVolume will be
     /// enabled by default. If set to 'None', FlexVolume will be disabled. The default is based on the
     /// kubernetesProvider.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flexVolumePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolumePath")]
     pub flex_volume_path: Option<String>,
     /// ImagePath allows for the path part of an image to be specified. If specified
     /// then the specified value will be used as the image path for each image. If not specified
@@ -7373,38 +6785,22 @@ pub struct InstallationStatusComputed {
     /// Image format:
     ///    `<registry><imagePath>/<imagePrefix><imageName>:<image-tag>`
     /// This option allows configuring the `<imagePrefix>` portion of the above format.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePrefix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePrefix")]
     pub image_prefix: Option<String>,
     /// ImagePullSecrets is an array of references to container registry pull secrets to use. These are
     /// applied to all images to be pulled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<InstallationStatusComputedImagePullSecrets>>,
     /// KubeletVolumePluginPath optionally specifies enablement of Calico CSI plugin. If not specified,
     /// CSI will be enabled by default. If set to 'None', CSI will be disabled.
     /// Default: /var/lib/kubelet
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubeletVolumePluginPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeletVolumePluginPath")]
     pub kubelet_volume_plugin_path: Option<String>,
     /// KubernetesProvider specifies a particular provider of the Kubernetes platform and enables provider-specific configuration.
     /// If the specified value is empty, the Operator will attempt to automatically determine the current provider.
     /// If the specified value is not empty, the Operator will still attempt auto-detection, but
     /// will additionally compare the auto-detected value to the specified value to confirm they match.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesProvider"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesProvider")]
     pub kubernetes_provider: Option<InstallationStatusComputedKubernetesProvider>,
     /// Logging Configuration for Components
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7412,26 +6808,14 @@ pub struct InstallationStatusComputed {
     /// NodeMetricsPort specifies which port calico/node serves prometheus metrics on. By default, metrics are not enabled.
     /// If specified, this overrides any FelixConfiguration resources which may exist. If omitted, then
     /// prometheus metrics may still be configured through FelixConfiguration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeMetricsPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeMetricsPort")]
     pub node_metrics_port: Option<i32>,
     /// NodeUpdateStrategy can be used to customize the desired update strategy, such as the MaxUnavailable
     /// field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeUpdateStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeUpdateStrategy")]
     pub node_update_strategy: Option<InstallationStatusComputedNodeUpdateStrategy>,
     /// NonPrivileged configures Calico to be run in non-privileged containers as non-root users where possible.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nonPrivileged"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nonPrivileged")]
     pub non_privileged: Option<String>,
     /// Registry is the default Docker registry used for component Docker images.
     /// If specified then the given value must end with a slash character (`/`) and all images will be pulled from this registry.
@@ -7443,45 +6827,25 @@ pub struct InstallationStatusComputed {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub registry: Option<String>,
     /// Kubernetes Service CIDRs. Specifying this is required when using Calico for Windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceCIDRs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceCIDRs")]
     pub service_cid_rs: Option<Vec<String>>,
     /// Deprecated. Please use Installation.Spec.TyphaDeployment instead.
     /// TyphaAffinity allows configuration of node affinity characteristics for Typha pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "typhaAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "typhaAffinity")]
     pub typha_affinity: Option<InstallationStatusComputedTyphaAffinity>,
     /// TyphaDeployment configures the typha Deployment. If used in conjunction with the deprecated
     /// ComponentResources or TyphaAffinity, then these overrides take precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "typhaDeployment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "typhaDeployment")]
     pub typha_deployment: Option<InstallationStatusComputedTyphaDeployment>,
     /// TyphaMetricsPort specifies which port calico/typha serves prometheus metrics on. By default, metrics are not enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "typhaMetricsPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "typhaMetricsPort")]
     pub typha_metrics_port: Option<i32>,
     /// Variant is the product to install - one of Calico or TigeraSecureEnterprise
     /// Default: Calico
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub variant: Option<InstallationStatusComputedVariant>,
     /// Windows Configuration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsNodes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsNodes")]
     pub windows_nodes: Option<InstallationStatusComputedWindowsNodes>,
 }
 
@@ -7519,11 +6883,7 @@ pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpec {
     /// be ready without any of its container crashing, for it to be considered available.
     /// If specified, this overrides any minReadySeconds value that may be set on the calico-kube-controllers Deployment.
     /// If omitted, the calico-kube-controllers Deployment will use its default value for minReadySeconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minReadySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
     /// Template describes the calico-kube-controllers Deployment pod that will be created.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7536,8 +6896,7 @@ pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplate
     /// Metadata is a subset of a Kubernetes object's metadata that is added to
     /// the pod's metadata.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub metadata:
-        Option<InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateMetadata>,
+    pub metadata: Option<InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateMetadata>,
     /// Spec is the calico-kube-controllers Deployment's PodSpec.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub spec: Option<InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpec>,
@@ -7567,15 +6926,12 @@ pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplate
     /// If omitted, the calico-kube-controllers Deployment will use its default value for affinity.
     /// WARNING: Please note that this field will override the default calico-kube-controllers Deployment affinity.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub affinity:
-        Option<InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinity>,
+    pub affinity: Option<InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinity>,
     /// Containers is a list of calico-kube-controllers containers.
     /// If specified, this overrides the specified calico-kube-controllers Deployment containers.
     /// If omitted, the calico-kube-controllers Deployment will use its default values for its containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub containers: Option<
-        Vec<InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecContainers>,
-    >,
+    pub containers: Option<Vec<InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecContainers>>,
     /// NodeSelector is the calico-kube-controllers pod's scheduling constraints.
     /// If specified, each of the key/value pairs are added to the calico-kube-controllers Deployment nodeSelector provided
     /// the key does not already exist in the object's nodeSelector.
@@ -7584,20 +6940,14 @@ pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplate
     /// the key does not already exist in the object's nodeSelector.
     /// If omitted, the calico-kube-controllers Deployment will use its default value for nodeSelector.
     /// WARNING: Please note that this field will modify the default calico-kube-controllers Deployment nodeSelector.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Tolerations is the calico-kube-controllers pod's tolerations.
     /// If specified, this overrides any tolerations that may be set on the calico-kube-controllers Deployment.
     /// If omitted, the calico-kube-controllers Deployment will use its default value for tolerations.
     /// WARNING: Please note that this field will override the default calico-kube-controllers Deployment tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tolerations: Option<
-        Vec<InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecTolerations>,
-    >,
+    pub tolerations: Option<Vec<InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecTolerations>>,
 }
 
 /// Affinity is a group of affinity scheduling rules for the calico-kube-controllers pods.
@@ -7664,8 +7014,7 @@ pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplate
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -7683,8 +7032,7 @@ pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplate
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -7727,8 +7075,7 @@ pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplate
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -7746,8 +7093,7 @@ pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplate
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -7866,8 +7212,7 @@ pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplate
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -7901,8 +7246,7 @@ pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplate
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -7989,8 +7333,7 @@ pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplate
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8024,8 +7367,7 @@ pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplate
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8143,8 +7485,7 @@ pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplate
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8178,8 +7519,7 @@ pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplate
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8266,8 +7606,7 @@ pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplate
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8301,8 +7640,7 @@ pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplate
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8366,8 +7704,7 @@ pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplate
 
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecContainersResourcesClaims
-{
+pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplateSpecContainersResourcesClaims {
     /// Name must match the name of one entry in pod.spec.resourceClaims of
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
@@ -8396,11 +7733,7 @@ pub struct InstallationStatusComputedCalicoKubeControllersDeploymentSpecTemplate
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -8416,13 +7749,8 @@ pub struct InstallationStatusComputedCalicoNetwork {
     pub bgp: Option<InstallationStatusComputedCalicoNetworkBgp>,
     /// ContainerIPForwarding configures whether ip forwarding will be enabled for containers in the CNI configuration.
     /// Default: Disabled
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerIPForwarding"
-    )]
-    pub container_ip_forwarding:
-        Option<InstallationStatusComputedCalicoNetworkContainerIpForwarding>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerIPForwarding")]
+    pub container_ip_forwarding: Option<InstallationStatusComputedCalicoNetworkContainerIpForwarding>,
     /// HostPorts configures whether or not Calico will support Kubernetes HostPorts. Valid only when using the Calico CNI plugin.
     /// Default: Enabled
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPorts")]
@@ -8437,11 +7765,7 @@ pub struct InstallationStatusComputedCalicoNetwork {
     /// causes the operator to add required mounts and environment variables for the particular dataplane.
     /// If not specified, iptables mode is used.
     /// Default: Iptables
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "linuxDataplane"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "linuxDataplane")]
     pub linux_dataplane: Option<InstallationStatusComputedCalicoNetworkLinuxDataplane>,
     /// LinuxPolicySetupTimeoutSeconds delays new pods from running containers
     /// until their policy has been programmed in the dataplane.
@@ -8450,11 +7774,7 @@ pub struct InstallationStatusComputedCalicoNetwork {
     /// Only applies to pods created on Linux nodes.
     /// * A value of 0 disables pod startup delays.
     /// Default: 0
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "linuxPolicySetupTimeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "linuxPolicySetupTimeoutSeconds")]
     pub linux_policy_setup_timeout_seconds: Option<i32>,
     /// MTU specifies the maximum transmission unit to use on the pod network.
     /// If not specified, Calico will perform MTU auto-detection based on the cluster network.
@@ -8463,30 +7783,16 @@ pub struct InstallationStatusComputedCalicoNetwork {
     /// MultiInterfaceMode configures what will configure multiple interface per pod. Only valid for Calico Enterprise installations
     /// using the Calico CNI plugin.
     /// Default: None
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "multiInterfaceMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multiInterfaceMode")]
     pub multi_interface_mode: Option<InstallationStatusComputedCalicoNetworkMultiInterfaceMode>,
     /// NodeAddressAutodetectionV4 specifies an approach to automatically detect node IPv4 addresses. If not specified,
     /// will use default auto-detection settings to acquire an IPv4 address for each node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAddressAutodetectionV4"
-    )]
-    pub node_address_autodetection_v4:
-        Option<InstallationStatusComputedCalicoNetworkNodeAddressAutodetectionV4>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAddressAutodetectionV4")]
+    pub node_address_autodetection_v4: Option<InstallationStatusComputedCalicoNetworkNodeAddressAutodetectionV4>,
     /// NodeAddressAutodetectionV6 specifies an approach to automatically detect node IPv6 addresses. If not specified,
     /// IPv6 addresses will not be auto-detected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAddressAutodetectionV6"
-    )]
-    pub node_address_autodetection_v6:
-        Option<InstallationStatusComputedCalicoNetworkNodeAddressAutodetectionV6>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAddressAutodetectionV6")]
+    pub node_address_autodetection_v6: Option<InstallationStatusComputedCalicoNetworkNodeAddressAutodetectionV6>,
     /// Sysctl configures sysctl parameters for tuning plugin
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sysctl: Option<Vec<InstallationStatusComputedCalicoNetworkSysctl>>,
@@ -8494,11 +7800,7 @@ pub struct InstallationStatusComputedCalicoNetwork {
     /// causes the operator to add required mounts and environment variables for the particular dataplane.
     /// If not specified, it is disabled and the operator will not render the Calico Windows nodes daemonset.
     /// Default: Disabled
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsDataplane"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsDataplane")]
     pub windows_dataplane: Option<InstallationStatusComputedCalicoNetworkWindowsDataplane>,
 }
 
@@ -8527,11 +7829,7 @@ pub enum InstallationStatusComputedCalicoNetworkHostPorts {
 pub struct InstallationStatusComputedCalicoNetworkIpPools {
     /// AllowedUse controls what the IP pool will be used for.  If not specified or empty, defaults to
     /// ["Tunnel", "Workload"] for back-compatibility
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowedUses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedUses")]
     pub allowed_uses: Option<Vec<String>>,
     /// BlockSize specifies the CIDR prefex length to use when allocating per-node IP blocks from
     /// the main IP pool CIDR.
@@ -8542,20 +7840,12 @@ pub struct InstallationStatusComputedCalicoNetworkIpPools {
     pub cidr: String,
     /// DisableBGPExport specifies whether routes from this IP pool's CIDR are exported over BGP.
     /// Default: false
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableBGPExport"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableBGPExport")]
     pub disable_bgp_export: Option<bool>,
     /// DisableNewAllocations specifies whether or not new IP allocations are allowed from this pool.
     /// This is useful when you want to prevent new pods from receiving IP addresses from this pool, without
     /// impacting any existing pods that have already been assigned addresses from this pool.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableNewAllocations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableNewAllocations")]
     pub disable_new_allocations: Option<bool>,
     /// Encapsulation specifies the encapsulation type that will be used with
     /// the IP Pool.
@@ -8567,19 +7857,11 @@ pub struct InstallationStatusComputedCalicoNetworkIpPools {
     pub name: Option<String>,
     /// NATOutgoing specifies if NAT will be enabled or disabled for outgoing traffic.
     /// Default: Enabled
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "natOutgoing"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "natOutgoing")]
     pub nat_outgoing: Option<InstallationStatusComputedCalicoNetworkIpPoolsNatOutgoing>,
     /// NodeSelector specifies the node selector that will be set for the IP Pool.
     /// Default: 'all()'
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<String>,
 }
 
@@ -8634,26 +7916,17 @@ pub struct InstallationStatusComputedCalicoNetworkNodeAddressAutodetectionV4 {
     pub cidrs: Option<Vec<String>>,
     /// FirstFound uses default interface matching parameters to select an interface, performing best-effort
     /// filtering based on well-known interface names.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "firstFound"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "firstFound")]
     pub first_found: Option<bool>,
     /// Interface enables IP auto-detection based on interfaces that match the given regex.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interface: Option<String>,
     /// Kubernetes configures Calico to detect node addresses based on the Kubernetes API.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kubernetes:
-        Option<InstallationStatusComputedCalicoNetworkNodeAddressAutodetectionV4Kubernetes>,
+    pub kubernetes: Option<InstallationStatusComputedCalicoNetworkNodeAddressAutodetectionV4Kubernetes>,
     /// SkipInterface enables IP auto-detection based on interfaces that do not match
     /// the given regex.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "skipInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipInterface")]
     pub skip_interface: Option<String>,
 }
 
@@ -8679,26 +7952,17 @@ pub struct InstallationStatusComputedCalicoNetworkNodeAddressAutodetectionV6 {
     pub cidrs: Option<Vec<String>>,
     /// FirstFound uses default interface matching parameters to select an interface, performing best-effort
     /// filtering based on well-known interface names.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "firstFound"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "firstFound")]
     pub first_found: Option<bool>,
     /// Interface enables IP auto-detection based on interfaces that match the given regex.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interface: Option<String>,
     /// Kubernetes configures Calico to detect node addresses based on the Kubernetes API.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub kubernetes:
-        Option<InstallationStatusComputedCalicoNetworkNodeAddressAutodetectionV6Kubernetes>,
+    pub kubernetes: Option<InstallationStatusComputedCalicoNetworkNodeAddressAutodetectionV6Kubernetes>,
     /// SkipInterface enables IP auto-detection based on interfaces that do not match
     /// the given regex.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "skipInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipInterface")]
     pub skip_interface: Option<String>,
 }
 
@@ -8768,11 +8032,7 @@ pub struct InstallationStatusComputedCalicoNodeDaemonSetSpec {
     /// be ready without any of its container crashing, for it to be considered available.
     /// If specified, this overrides any minReadySeconds value that may be set on the calico-node DaemonSet.
     /// If omitted, the calico-node DaemonSet will use its default value for minReadySeconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minReadySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
     /// Template describes the calico-node DaemonSet pod that will be created.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8820,36 +8080,25 @@ pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpec {
     /// If specified, this overrides the specified calico-node DaemonSet containers.
     /// If omitted, the calico-node DaemonSet will use its default values for its containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub containers:
-        Option<Vec<InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecContainers>>,
+    pub containers: Option<Vec<InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecContainers>>,
     /// InitContainers is a list of calico-node init containers.
     /// If specified, this overrides the specified calico-node DaemonSet init containers.
     /// If omitted, the calico-node DaemonSet will use its default values for its init containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
-    pub init_containers:
-        Option<Vec<InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecInitContainers>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
+    pub init_containers: Option<Vec<InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecInitContainers>>,
     /// NodeSelector is the calico-node pod's scheduling constraints.
     /// If specified, each of the key/value pairs are added to the calico-node DaemonSet nodeSelector provided
     /// the key does not already exist in the object's nodeSelector.
     /// If omitted, the calico-node DaemonSet will use its default value for nodeSelector.
     /// WARNING: Please note that this field will modify the default calico-node DaemonSet nodeSelector.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Tolerations is the calico-node pod's tolerations.
     /// If specified, this overrides any tolerations that may be set on the calico-node DaemonSet.
     /// If omitted, the calico-node DaemonSet will use its default value for tolerations.
     /// WARNING: Please note that this field will override the default calico-node DaemonSet tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tolerations:
-        Option<Vec<InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecTolerations>>,
+    pub tolerations: Option<Vec<InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecTolerations>>,
 }
 
 /// Affinity is a group of affinity scheduling rules for the calico-node pods.
@@ -8859,30 +8108,14 @@ pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
-    pub node_affinity:
-        Option<InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityNodeAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
+    pub node_affinity: Option<InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
-    pub pod_affinity:
-        Option<InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
+    pub pod_affinity: Option<InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
-    pub pod_anti_affinity: Option<
-        InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinity,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinity>,
 }
 
 /// Describes node affinity scheduling rules for the pod.
@@ -8932,8 +8165,7 @@ pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinity
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -8951,8 +8183,7 @@ pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinity
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -8995,8 +8226,7 @@ pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinity
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -9014,8 +8244,7 @@ pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinity
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -9134,8 +8363,7 @@ pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinity
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -9169,8 +8397,7 @@ pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinity
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -9257,8 +8484,7 @@ pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinity
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -9292,8 +8518,7 @@ pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinity
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -9411,8 +8636,7 @@ pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinity
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -9446,8 +8670,7 @@ pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinity
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -9534,8 +8757,7 @@ pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinity
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -9569,8 +8791,7 @@ pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinity
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -9595,8 +8816,7 @@ pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecContaine
     /// If omitted, the calico-node DaemonSet will use its default value for this container's resources.
     /// If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources:
-        Option<InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecContainersResources>,
+    pub resources: Option<InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecContainersResources>,
 }
 
 /// CalicoNodeDaemonSetContainer is a calico-node DaemonSet container.
@@ -9618,9 +8838,7 @@ pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecContaine
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<
-        Vec<InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecContainersResourcesClaims>,
-    >,
+    pub claims: Option<Vec<InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9653,9 +8871,7 @@ pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecInitCont
     /// If omitted, the calico-node DaemonSet will use its default value for this container's resources.
     /// If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<
-        InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecInitContainersResources,
-    >,
+    pub resources: Option<InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecInitContainersResources>,
 }
 
 /// CalicoNodeDaemonSetInitContainer is a calico-node DaemonSet init container.
@@ -9702,8 +8918,7 @@ pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecInitCont
 
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecInitContainersResourcesClaims
-{
+pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecInitContainersResourcesClaims {
     /// Name must match the name of one entry in pod.spec.resourceClaims of
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
@@ -9732,11 +8947,7 @@ pub struct InstallationStatusComputedCalicoNodeDaemonSetSpecTemplateSpecTolerati
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -9777,11 +8988,7 @@ pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpec {
     /// be ready without any of its container crashing, for it to be considered available.
     /// If specified, this overrides any minReadySeconds value that may be set on the calico-node-windows DaemonSet.
     /// If omitted, the calico-node-windows DaemonSet will use its default value for minReadySeconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minReadySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
     /// Template describes the calico-node-windows DaemonSet pod that will be created.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9824,44 +9031,30 @@ pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpec 
     /// If omitted, the calico-node-windows DaemonSet will use its default value for affinity.
     /// WARNING: Please note that this field will override the default calico-node-windows DaemonSet affinity.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub affinity:
-        Option<InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinity>,
+    pub affinity: Option<InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinity>,
     /// Containers is a list of calico-node-windows containers.
     /// If specified, this overrides the specified calico-node-windows DaemonSet containers.
     /// If omitted, the calico-node-windows DaemonSet will use its default values for its containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub containers:
-        Option<Vec<InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecContainers>>,
+    pub containers: Option<Vec<InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecContainers>>,
     /// InitContainers is a list of calico-node-windows init containers.
     /// If specified, this overrides the specified calico-node-windows DaemonSet init containers.
     /// If omitted, the calico-node-windows DaemonSet will use its default values for its init containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
-    pub init_containers: Option<
-        Vec<InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecInitContainers>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
+    pub init_containers: Option<Vec<InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecInitContainers>>,
     /// NodeSelector is the calico-node-windows pod's scheduling constraints.
     /// If specified, each of the key/value pairs are added to the calico-node-windows DaemonSet nodeSelector provided
     /// the key does not already exist in the object's nodeSelector.
     /// If omitted, the calico-node-windows DaemonSet will use its default value for nodeSelector.
     /// WARNING: Please note that this field will modify the default calico-node-windows DaemonSet nodeSelector.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Tolerations is the calico-node-windows pod's tolerations.
     /// If specified, this overrides any tolerations that may be set on the calico-node-windows DaemonSet.
     /// If omitted, the calico-node-windows DaemonSet will use its default value for tolerations.
     /// WARNING: Please note that this field will override the default calico-node-windows DaemonSet tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tolerations: Option<
-        Vec<InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecTolerations>,
-    >,
+    pub tolerations: Option<Vec<InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecTolerations>>,
 }
 
 /// Affinity is a group of affinity scheduling rules for the calico-node-windows pods.
@@ -9871,32 +9064,14 @@ pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpec 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
-    pub node_affinity: Option<
-        InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityNodeAffinity,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
+    pub node_affinity: Option<InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
-    pub pod_affinity: Option<
-        InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffinity,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
+    pub pod_affinity: Option<InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
-    pub pod_anti_affinity: Option<
-        InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAntiAffinity,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAntiAffinity>,
 }
 
 /// Describes node affinity scheduling rules for the pod.
@@ -9946,8 +9121,7 @@ pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecA
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -9965,8 +9139,7 @@ pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecA
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -10009,8 +9182,7 @@ pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecA
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -10028,8 +9200,7 @@ pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecA
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -10148,8 +9319,7 @@ pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -10183,8 +9353,7 @@ pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -10271,8 +9440,7 @@ pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -10306,8 +9474,7 @@ pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -10425,8 +9592,7 @@ pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -10460,8 +9626,7 @@ pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -10548,8 +9713,7 @@ pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -10583,8 +9747,7 @@ pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -10609,9 +9772,7 @@ pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecC
     /// If omitted, the calico-node-windows DaemonSet will use its default value for this container's resources.
     /// If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<
-        InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecContainersResources,
-    >,
+    pub resources: Option<InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecContainersResources>,
 }
 
 /// CalicoNodeWindowsDaemonSetContainer is a calico-node-windows DaemonSet container.
@@ -10648,8 +9809,7 @@ pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecC
 
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecContainersResourcesClaims
-{
+pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecContainersResourcesClaims {
     /// Name must match the name of one entry in pod.spec.resourceClaims of
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
@@ -10661,16 +9821,13 @@ pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecC
 pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecInitContainers {
     /// Name is an enum which identifies the calico-node-windows DaemonSet init container by name.
     /// Supported values are: install-cni;hostpath-init, flexvol-driver, mount-bpffs, node-certs-key-cert-provisioner, calico-node-windows-prometheus-server-tls-key-cert-provisioner
-    pub name:
-        InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecInitContainersName,
+    pub name: InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecInitContainersName,
     /// Resources allows customization of limits and requests for compute resources such as cpu and memory.
     /// If specified, this overrides the named calico-node-windows DaemonSet init container's resources.
     /// If omitted, the calico-node-windows DaemonSet will use its default value for this container's resources.
     /// If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<
-        InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecInitContainersResources,
-    >,
+    pub resources: Option<InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecInitContainersResources>,
 }
 
 /// CalicoNodeWindowsDaemonSetInitContainer is a calico-node-windows DaemonSet init container.
@@ -10717,8 +9874,7 @@ pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecI
 
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecInitContainersResourcesClaims
-{
+pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecInitContainersResourcesClaims {
     /// Name must match the name of one entry in pod.spec.resourceClaims of
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
@@ -10747,11 +9903,7 @@ pub struct InstallationStatusComputedCalicoNodeWindowsDaemonSetSpecTemplateSpecT
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -10793,11 +9945,7 @@ pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpec {
     /// be ready without any of its container crashing, for it to be considered available.
     /// If specified, this overrides any minReadySeconds value that may be set on the calico-windows-upgrade DaemonSet.
     /// If omitted, the calico-windows-upgrade DaemonSet will use its default value for minReadySeconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minReadySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
     /// Template describes the calico-windows-upgrade DaemonSet pod that will be created.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -10810,8 +9958,7 @@ pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplate {
     /// Metadata is a subset of a Kubernetes object's metadata that is added to
     /// the pod's metadata.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub metadata:
-        Option<InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateMetadata>,
+    pub metadata: Option<InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateMetadata>,
     /// Spec is the calico-windows-upgrade DaemonSet's PodSpec.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub spec: Option<InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpec>,
@@ -10841,34 +9988,25 @@ pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSp
     /// If omitted, the calico-windows-upgrade DaemonSet will use its default value for affinity.
     /// WARNING: Please note that this field will override the default calico-windows-upgrade DaemonSet affinity.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub affinity:
-        Option<InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinity>,
+    pub affinity: Option<InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinity>,
     /// Containers is a list of calico-windows-upgrade containers.
     /// If specified, this overrides the specified calico-windows-upgrade DaemonSet containers.
     /// If omitted, the calico-windows-upgrade DaemonSet will use its default values for its containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub containers: Option<
-        Vec<InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecContainers>,
-    >,
+    pub containers: Option<Vec<InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecContainers>>,
     /// NodeSelector is the calico-windows-upgrade pod's scheduling constraints.
     /// If specified, each of the key/value pairs are added to the calico-windows-upgrade DaemonSet nodeSelector provided
     /// the key does not already exist in the object's nodeSelector.
     /// If omitted, the calico-windows-upgrade DaemonSet will use its default value for nodeSelector.
     /// WARNING: Please note that this field will modify the default calico-windows-upgrade DaemonSet nodeSelector.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Tolerations is the calico-windows-upgrade pod's tolerations.
     /// If specified, this overrides any tolerations that may be set on the calico-windows-upgrade DaemonSet.
     /// If omitted, the calico-windows-upgrade DaemonSet will use its default value for tolerations.
     /// WARNING: Please note that this field will override the default calico-windows-upgrade DaemonSet tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tolerations: Option<
-        Vec<InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecTolerations>,
-    >,
+    pub tolerations: Option<Vec<InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecTolerations>>,
 }
 
 /// Affinity is a group of affinity scheduling rules for the calico-windows-upgrade pods.
@@ -10935,8 +10073,7 @@ pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSp
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -10954,8 +10091,7 @@ pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSp
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -10998,8 +10134,7 @@ pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSp
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -11017,8 +10152,7 @@ pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSp
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -11137,8 +10271,7 @@ pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSp
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -11172,8 +10305,7 @@ pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSp
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -11260,8 +10392,7 @@ pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSp
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -11295,8 +10426,7 @@ pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSp
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -11414,8 +10544,7 @@ pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSp
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -11449,8 +10578,7 @@ pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSp
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -11537,8 +10665,7 @@ pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSp
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -11572,8 +10699,7 @@ pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSp
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -11596,9 +10722,7 @@ pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSp
     /// If specified, this overrides the named calico-windows-upgrade DaemonSet container's resources.
     /// If omitted, the calico-windows-upgrade DaemonSet will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<
-        InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecContainersResources,
-    >,
+    pub resources: Option<InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecContainersResources>,
 }
 
 /// CalicoWindowsUpgradeDaemonSetContainer is a calico-windows-upgrade DaemonSet container.
@@ -11634,8 +10758,7 @@ pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSp
 
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecContainersResourcesClaims
-{
+pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSpecContainersResourcesClaims {
     /// Name must match the name of one entry in pod.spec.resourceClaims of
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
@@ -11664,11 +10787,7 @@ pub struct InstallationStatusComputedCalicoWindowsUpgradeDaemonSetSpecTemplateSp
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -11686,21 +10805,12 @@ pub struct InstallationStatusComputedCertificateManagement {
     pub ca_cert: String,
     /// Specify the algorithm used by pods to generate a key pair that is associated with the X.509 certificate request.
     /// Default: RSAWithSize2048
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keyAlgorithm"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyAlgorithm")]
     pub key_algorithm: Option<InstallationStatusComputedCertificateManagementKeyAlgorithm>,
     /// Specify the algorithm used for the signature of the X.509 certificate request.
     /// Default: SHA256WithRSA
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "signatureAlgorithm"
-    )]
-    pub signature_algorithm:
-        Option<InstallationStatusComputedCertificateManagementSignatureAlgorithm>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signatureAlgorithm")]
+    pub signature_algorithm: Option<InstallationStatusComputedCertificateManagementSignatureAlgorithm>,
     /// When a CSR is issued to the certificates.k8s.io API, the signerName is added to the request in order to accommodate for clusters
     /// with multiple signers.
     /// Must be formatted as: `<my-domain>/<my-signername>`.
@@ -11886,11 +10996,7 @@ pub struct InstallationStatusComputedControlPlaneTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -11931,11 +11037,7 @@ pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpec {
     /// be ready without any of its container crashing, for it to be considered available.
     /// If specified, this overrides any minReadySeconds value that may be set on the csi-node-driver DaemonSet.
     /// If omitted, the csi-node-driver DaemonSet will use its default value for minReadySeconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minReadySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
     /// Template describes the csi-node-driver DaemonSet pod that will be created.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -11983,26 +11085,20 @@ pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpec {
     /// If specified, this overrides the specified csi-node-driver DaemonSet containers.
     /// If omitted, the csi-node-driver DaemonSet will use its default values for its containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub containers:
-        Option<Vec<InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecContainers>>,
+    pub containers: Option<Vec<InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecContainers>>,
     /// NodeSelector is the csi-node-driver pod's scheduling constraints.
     /// If specified, each of the key/value pairs are added to the csi-node-driver DaemonSet nodeSelector provided
     /// the key does not already exist in the object's nodeSelector.
     /// If omitted, the csi-node-driver DaemonSet will use its default value for nodeSelector.
     /// WARNING: Please note that this field will modify the default csi-node-driver DaemonSet nodeSelector.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Tolerations is the csi-node-driver pod's tolerations.
     /// If specified, this overrides any tolerations that may be set on the csi-node-driver DaemonSet.
     /// If omitted, the csi-node-driver DaemonSet will use its default value for tolerations.
     /// WARNING: Please note that this field will override the default csi-node-driver DaemonSet tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tolerations:
-        Option<Vec<InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecTolerations>>,
+    pub tolerations: Option<Vec<InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecTolerations>>,
 }
 
 /// Affinity is a group of affinity scheduling rules for the csi-node-driver pods.
@@ -12012,31 +11108,14 @@ pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
-    pub node_affinity: Option<
-        InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityNodeAffinity,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
+    pub node_affinity: Option<InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
-    pub pod_affinity:
-        Option<InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
+    pub pod_affinity: Option<InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
-    pub pod_anti_affinity: Option<
-        InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffinity,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffinity>,
 }
 
 /// Describes node affinity scheduling rules for the pod.
@@ -12086,8 +11165,7 @@ pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffin
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -12105,8 +11183,7 @@ pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffin
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -12149,8 +11226,7 @@ pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffin
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -12168,8 +11244,7 @@ pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffin
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -12288,8 +11363,7 @@ pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -12323,8 +11397,7 @@ pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -12411,8 +11484,7 @@ pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -12446,8 +11518,7 @@ pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -12565,8 +11636,7 @@ pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -12600,8 +11670,7 @@ pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -12688,8 +11757,7 @@ pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -12723,8 +11791,7 @@ pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -12748,8 +11815,7 @@ pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecConta
     /// If specified, this overrides the named csi-node-driver DaemonSet container's resources.
     /// If omitted, the csi-node-driver DaemonSet will use its default value for this container's resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources:
-        Option<InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecContainersResources>,
+    pub resources: Option<InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecContainersResources>,
 }
 
 /// CSINodeDriverDaemonSetContainer is a csi-node-driver DaemonSet container.
@@ -12789,8 +11855,7 @@ pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecConta
 
 /// ResourceClaim references one entry in PodSpec.ResourceClaims.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecContainersResourcesClaims
-{
+pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecContainersResourcesClaims {
     /// Name must match the name of one entry in pod.spec.resourceClaims of
     /// the Pod where this field is used. It makes that resource available
     /// inside a container.
@@ -12819,11 +11884,7 @@ pub struct InstallationStatusComputedCsiNodeDriverDaemonSetSpecTemplateSpecToler
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -12884,32 +11945,16 @@ pub struct InstallationStatusComputedLogging {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedLoggingCni {
     /// Default: 30 (days)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logFileMaxAgeDays"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logFileMaxAgeDays")]
     pub log_file_max_age_days: Option<i32>,
     /// Default: 10
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logFileMaxCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logFileMaxCount")]
     pub log_file_max_count: Option<i32>,
     /// Default: 100Mi
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logFileMaxSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logFileMaxSize")]
     pub log_file_max_size: Option<IntOrString>,
     /// Default: Info
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logSeverity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logSeverity")]
     pub log_severity: Option<InstallationStatusComputedLoggingCniLogSeverity>,
 }
 
@@ -12931,11 +11976,7 @@ pub struct InstallationStatusComputedNodeUpdateStrategy {
     /// TODO: Update this to follow our convention for oneOf, whatever we decide it
     /// to be. Same as Deployment `strategy.rollingUpdate`.
     /// See https://github.com/kubernetes/kubernetes/issues/35345
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollingUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<InstallationStatusComputedNodeUpdateStrategyRollingUpdate>,
     /// Type of daemon set update. Can be "RollingUpdate" or "OnDelete". Default is RollingUpdate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -12983,11 +12024,7 @@ pub struct InstallationStatusComputedNodeUpdateStrategyRollingUpdate {
     /// it then proceeds onto other DaemonSet pods, thus ensuring that at least
     /// 70% of original number of DaemonSet pods are available at all times during
     /// the update.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
 }
 
@@ -12996,11 +12033,7 @@ pub struct InstallationStatusComputedNodeUpdateStrategyRollingUpdate {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedTyphaAffinity {
     /// NodeAffinity describes node affinity scheduling rules for typha.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<InstallationStatusComputedTyphaAffinityNodeAffinity>,
 }
 
@@ -13052,8 +12085,7 @@ pub struct InstallationStatusComputedTyphaAffinityNodeAffinityPreferredDuringSch
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedTyphaAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct InstallationStatusComputedTyphaAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -13071,8 +12103,7 @@ pub struct InstallationStatusComputedTyphaAffinityNodeAffinityPreferredDuringSch
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedTyphaAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct InstallationStatusComputedTyphaAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -13122,8 +12153,7 @@ pub struct InstallationStatusComputedTyphaAffinityNodeAffinityRequiredDuringSche
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedTyphaAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct InstallationStatusComputedTyphaAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -13141,8 +12171,7 @@ pub struct InstallationStatusComputedTyphaAffinityNodeAffinityRequiredDuringSche
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedTyphaAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct InstallationStatusComputedTyphaAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -13191,11 +12220,7 @@ pub struct InstallationStatusComputedTyphaDeploymentSpec {
     /// be ready without any of its container crashing, for it to be considered available.
     /// If specified, this overrides any minReadySeconds value that may be set on the typha Deployment.
     /// If omitted, the typha Deployment will use its default value for minReadySeconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minReadySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
     /// The deployment strategy to use to replace existing pods with new ones.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -13211,11 +12236,7 @@ pub struct InstallationStatusComputedTyphaDeploymentSpecStrategy {
     /// Rolling update config params. Present only if DeploymentStrategyType =
     /// RollingUpdate.
     /// to be.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollingUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<InstallationStatusComputedTyphaDeploymentSpecStrategyRollingUpdate>,
 }
 
@@ -13247,11 +12268,7 @@ pub struct InstallationStatusComputedTyphaDeploymentSpecStrategyRollingUpdate {
     /// can be scaled down further, followed by scaling up the new ReplicaSet, ensuring
     /// that the total number of pods available at all times during the update is at
     /// least 70% of desired pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
 }
 
@@ -13297,28 +12314,18 @@ pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpec {
     /// If specified, this overrides the specified typha Deployment containers.
     /// If omitted, the typha Deployment will use its default values for its containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub containers:
-        Option<Vec<InstallationStatusComputedTyphaDeploymentSpecTemplateSpecContainers>>,
+    pub containers: Option<Vec<InstallationStatusComputedTyphaDeploymentSpecTemplateSpecContainers>>,
     /// InitContainers is a list of typha init containers.
     /// If specified, this overrides the specified typha Deployment init containers.
     /// If omitted, the typha Deployment will use its default values for its init containers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
-    pub init_containers:
-        Option<Vec<InstallationStatusComputedTyphaDeploymentSpecTemplateSpecInitContainers>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
+    pub init_containers: Option<Vec<InstallationStatusComputedTyphaDeploymentSpecTemplateSpecInitContainers>>,
     /// NodeSelector is the calico-typha pod's scheduling constraints.
     /// If specified, each of the key/value pairs are added to the calico-typha Deployment nodeSelector provided
     /// the key does not already exist in the object's nodeSelector.
     /// If omitted, the calico-typha Deployment will use its default value for nodeSelector.
     /// WARNING: Please note that this field will modify the default calico-typha Deployment nodeSelector.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Optional duration in seconds the pod needs to terminate gracefully. May be decreased in delete request.
     /// Value must be non-negative integer. The value zero indicates stop immediately via
@@ -13328,30 +12335,19 @@ pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpec {
     /// a termination signal and the time when the processes are forcibly halted with a kill signal.
     /// Set this value longer than the expected cleanup time for your process.
     /// Defaults to 30 seconds.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Tolerations is the typha pod's tolerations.
     /// If specified, this overrides any tolerations that may be set on the typha Deployment.
     /// If omitted, the typha Deployment will use its default value for tolerations.
     /// WARNING: Please note that this field will override the default calico-typha Deployment tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tolerations:
-        Option<Vec<InstallationStatusComputedTyphaDeploymentSpecTemplateSpecTolerations>>,
+    pub tolerations: Option<Vec<InstallationStatusComputedTyphaDeploymentSpecTemplateSpecTolerations>>,
     /// TopologySpreadConstraints describes how a group of pods ought to spread across topology
     /// domains. Scheduler will schedule pods in a way which abides by the constraints.
     /// All topologySpreadConstraints are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "topologySpreadConstraints"
-    )]
-    pub topology_spread_constraints: Option<
-        Vec<InstallationStatusComputedTyphaDeploymentSpecTemplateSpecTopologySpreadConstraints>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "topologySpreadConstraints")]
+    pub topology_spread_constraints: Option<Vec<InstallationStatusComputedTyphaDeploymentSpecTemplateSpecTopologySpreadConstraints>>,
 }
 
 /// Affinity is a group of affinity scheduling rules for the typha pods.
@@ -13362,29 +12358,14 @@ pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
-    pub node_affinity:
-        Option<InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityNodeAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
+    pub node_affinity: Option<InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
-    pub pod_affinity:
-        Option<InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
+    pub pod_affinity: Option<InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
-    pub pod_anti_affinity:
-        Option<InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinity>,
 }
 
 /// Describes node affinity scheduling rules for the pod.
@@ -13434,8 +12415,7 @@ pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityNode
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -13453,8 +12433,7 @@ pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityNode
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -13497,8 +12476,7 @@ pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityNode
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -13516,8 +12494,7 @@ pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityNode
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -13636,8 +12613,7 @@ pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -13671,8 +12647,7 @@ pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -13759,8 +12734,7 @@ pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -13794,8 +12768,7 @@ pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -13913,8 +12886,7 @@ pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -13948,8 +12920,7 @@ pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -14036,8 +13007,7 @@ pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -14071,8 +13041,7 @@ pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -14097,8 +13066,7 @@ pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecContainers {
     /// If omitted, the typha Deployment will use its default value for this container's resources.
     /// If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources:
-        Option<InstallationStatusComputedTyphaDeploymentSpecTemplateSpecContainersResources>,
+    pub resources: Option<InstallationStatusComputedTyphaDeploymentSpecTemplateSpecContainersResources>,
 }
 
 /// TyphaDeploymentContainer is a typha Deployment container.
@@ -14120,9 +13088,7 @@ pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecContainersRe
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<
-        Vec<InstallationStatusComputedTyphaDeploymentSpecTemplateSpecContainersResourcesClaims>,
-    >,
+    pub claims: Option<Vec<InstallationStatusComputedTyphaDeploymentSpecTemplateSpecContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -14155,8 +13121,7 @@ pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecInitContaine
     /// If omitted, the typha Deployment will use its default value for this init container's resources.
     /// If used in conjunction with the deprecated ComponentResources, then this value takes precedence.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources:
-        Option<InstallationStatusComputedTyphaDeploymentSpecTemplateSpecInitContainersResources>,
+    pub resources: Option<InstallationStatusComputedTyphaDeploymentSpecTemplateSpecInitContainersResources>,
 }
 
 /// TyphaDeploymentInitContainer is a typha Deployment init container.
@@ -14178,9 +13143,7 @@ pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecInitContaine
     /// DynamicResourceAllocation feature gate.
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims: Option<
-        Vec<InstallationStatusComputedTyphaDeploymentSpecTemplateSpecInitContainersResourcesClaims>,
-    >,
+    pub claims: Option<Vec<InstallationStatusComputedTyphaDeploymentSpecTemplateSpecInitContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -14224,11 +13187,7 @@ pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecTolerations 
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -14363,8 +13322,7 @@ pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecTopologySpre
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecTopologySpreadConstraintsLabelSelectorMatchExpressions
-{
+pub struct InstallationStatusComputedTyphaDeploymentSpecTemplateSpecTopologySpreadConstraintsLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -14400,28 +13358,16 @@ pub struct InstallationStatusComputedWindowsNodes {
     ///   [plugins."io.containerd.grpc.v1.cri"]
     ///     [plugins."io.containerd.grpc.v1.cri".cni]
     /// on the containerd 'config.toml' file on the Windows nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cniConfigDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cniConfigDir")]
     pub cni_config_dir: Option<String>,
     /// CNILogDir is the path to the Calico CNI logs directory on Windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "cniLogDir")]
     pub cni_log_dir: Option<String>,
     /// VXLANAdapter is the Network Adapter used for VXLAN, leave blank for primary NIC
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vxlanAdapter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vxlanAdapter")]
     pub vxlan_adapter: Option<String>,
     /// VXLANMACPrefix is the prefix used when generating MAC addresses for virtual NICs
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vxlanMACPrefix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vxlanMACPrefix")]
     pub vxlan_mac_prefix: Option<String>,
 }
 
@@ -14431,3 +13377,4 @@ pub enum InstallationStatusVariant {
     Calico,
     TigeraSecureEnterprise,
 }
+

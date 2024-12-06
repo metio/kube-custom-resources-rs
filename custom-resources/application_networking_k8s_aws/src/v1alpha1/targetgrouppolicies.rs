@@ -4,53 +4,40 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// TargetGroupPolicySpec defines the desired state of TargetGroupPolicy.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "application-networking.k8s.aws",
-    version = "v1alpha1",
-    kind = "TargetGroupPolicy",
-    plural = "targetgrouppolicies"
-)]
+#[kube(group = "application-networking.k8s.aws", version = "v1alpha1", kind = "TargetGroupPolicy", plural = "targetgrouppolicies")]
 #[kube(namespaced)]
 #[kube(status = "TargetGroupPolicyStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TargetGroupPolicySpec {
-    /// The health check configuration.
+    /// The health check configuration. 
     ///  Changes to this value will update VPC Lattice resource in place.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthCheck")]
     pub health_check: Option<TargetGroupPolicyHealthCheck>,
-    /// The protocol to use for routing traffic to the targets. Supported values are HTTP (default), HTTPS and TCP.
+    /// The protocol to use for routing traffic to the targets. Supported values are HTTP (default), HTTPS and TCP. 
     ///  Changes to this value results in a replacement of VPC Lattice target group.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<String>,
-    /// The protocol version to use. Supported values are HTTP1 (default) and HTTP2. When a policy Protocol is TCP, you should not set this field. Otherwise, the whole TargetGroupPolicy will not take effect. When a policy is behind GRPCRoute, this field value will be ignored as GRPC is only supported through HTTP/2.
+    /// The protocol version to use. Supported values are HTTP1 (default) and HTTP2. When a policy Protocol is TCP, you should not set this field. Otherwise, the whole TargetGroupPolicy will not take effect. When a policy is behind GRPCRoute, this field value will be ignored as GRPC is only supported through HTTP/2. 
     ///  Changes to this value results in a replacement of VPC Lattice target group.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protocolVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protocolVersion")]
     pub protocol_version: Option<String>,
-    /// TargetRef points to the kubernetes Service resource that will have this policy attached.
+    /// TargetRef points to the kubernetes Service resource that will have this policy attached. 
     ///  This field is following the guidelines of Kubernetes Gateway API policy attachment.
     #[serde(rename = "targetRef")]
     pub target_ref: TargetGroupPolicyTargetRef,
 }
 
-/// The health check configuration.
+/// The health check configuration. 
 ///  Changes to this value will update VPC Lattice resource in place.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TargetGroupPolicyHealthCheck {
@@ -58,18 +45,10 @@ pub struct TargetGroupPolicyHealthCheck {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// The number of consecutive successful health checks required before considering an unhealthy target healthy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthyThresholdCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthyThresholdCount")]
     pub healthy_threshold_count: Option<i64>,
     /// The approximate amount of time, in seconds, between health checks of an individual target.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "intervalSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "intervalSeconds")]
     pub interval_seconds: Option<i64>,
     /// The destination for health checks on the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -81,36 +60,20 @@ pub struct TargetGroupPolicyHealthCheck {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocol: Option<TargetGroupPolicyHealthCheckProtocol>,
     /// The protocol version used when performing health checks on targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protocolVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protocolVersion")]
     pub protocol_version: Option<TargetGroupPolicyHealthCheckProtocolVersion>,
     /// A regular expression to match HTTP status codes when checking for successful response from a target.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusMatch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusMatch")]
     pub status_match: Option<String>,
     /// The amount of time, in seconds, to wait before reporting a target as unhealthy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i64>,
     /// The number of consecutive failed health checks required before considering a target unhealthy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unhealthyThresholdCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyThresholdCount")]
     pub unhealthy_threshold_count: Option<i64>,
 }
 
-/// The health check configuration.
+/// The health check configuration. 
 ///  Changes to this value will update VPC Lattice resource in place.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum TargetGroupPolicyHealthCheckProtocol {
@@ -120,7 +83,7 @@ pub enum TargetGroupPolicyHealthCheckProtocol {
     Https,
 }
 
-/// The health check configuration.
+/// The health check configuration. 
 ///  Changes to this value will update VPC Lattice resource in place.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum TargetGroupPolicyHealthCheckProtocolVersion {
@@ -130,7 +93,7 @@ pub enum TargetGroupPolicyHealthCheckProtocolVersion {
     Http2,
 }
 
-/// TargetRef points to the kubernetes Service resource that will have this policy attached.
+/// TargetRef points to the kubernetes Service resource that will have this policy attached. 
 ///  This field is following the guidelines of Kubernetes Gateway API policy attachment.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TargetGroupPolicyTargetRef {
@@ -148,10 +111,11 @@ pub struct TargetGroupPolicyTargetRef {
 /// Status defines the current state of TargetGroupPolicy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct TargetGroupPolicyStatus {
-    /// Conditions describe the current conditions of the TargetGroup.
-    ///  Implementations should prefer to express Policy conditions using the `PolicyConditionType` and `PolicyConditionReason` constants so that operators and tools can converge on a common vocabulary to describe TargetGroup state.
-    ///  Known condition types are:
+    /// Conditions describe the current conditions of the TargetGroup. 
+    ///  Implementations should prefer to express Policy conditions using the `PolicyConditionType` and `PolicyConditionReason` constants so that operators and tools can converge on a common vocabulary to describe TargetGroup state. 
+    ///  Known condition types are: 
     ///  * "Accepted" * "Ready"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

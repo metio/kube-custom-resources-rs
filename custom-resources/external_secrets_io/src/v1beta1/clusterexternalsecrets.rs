@@ -5,65 +5,40 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// ClusterExternalSecretSpec defines the desired state of ClusterExternalSecret.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "external-secrets.io",
-    version = "v1beta1",
-    kind = "ClusterExternalSecret",
-    plural = "clusterexternalsecrets"
-)]
+#[kube(group = "external-secrets.io", version = "v1beta1", kind = "ClusterExternalSecret", plural = "clusterexternalsecrets")]
 #[kube(status = "ClusterExternalSecretStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterExternalSecretSpec {
     /// The metadata of the external secrets to be created
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalSecretMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalSecretMetadata")]
     pub external_secret_metadata: Option<ClusterExternalSecretExternalSecretMetadata>,
     /// The name of the external secrets to be created defaults to the name of the ClusterExternalSecret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalSecretName")]
     pub external_secret_name: Option<String>,
     /// The spec for the ExternalSecrets to be created
     #[serde(rename = "externalSecretSpec")]
     pub external_secret_spec: ClusterExternalSecretExternalSecretSpec,
     /// The labels to select by to find the Namespaces to create the ExternalSecrets in.
     /// Deprecated: Use NamespaceSelectors instead.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<ClusterExternalSecretNamespaceSelector>,
     /// A list of labels to select by to find the Namespaces to create the ExternalSecrets in. The selectors are ORed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceSelectors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelectors")]
     pub namespace_selectors: Option<Vec<ClusterExternalSecretNamespaceSelectors>>,
     /// Choose namespaces by name. This field is ORed with anything that NamespaceSelectors ends up choosing.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
     /// The time in which the controller should reconcile its objects and recheck namespaces for labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshTime")]
     pub refresh_time: Option<String>,
 }
 
@@ -89,18 +64,10 @@ pub struct ClusterExternalSecretExternalSecretSpec {
     /// RefreshInterval is the amount of time before the values are read again from the SecretStore provider
     /// Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h"
     /// May be set to zero to fetch and create it once. Defaults to 1h.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
     /// SecretStoreRef defines which SecretStore to fetch the ExternalSecret data.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretStoreRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretStoreRef")]
     pub secret_store_ref: Option<ClusterExternalSecretExternalSecretSpecSecretStoreRef>,
     /// ExternalSecretTarget defines the Kubernetes Secret to be created
     /// There can be only one target per ExternalSecret.
@@ -130,29 +97,15 @@ pub struct ClusterExternalSecretExternalSecretSpecData {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterExternalSecretExternalSecretSpecDataRemoteRef {
     /// Used to define a conversion Strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "conversionStrategy"
-    )]
-    pub conversion_strategy:
-        Option<ClusterExternalSecretExternalSecretSpecDataRemoteRefConversionStrategy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "conversionStrategy")]
+    pub conversion_strategy: Option<ClusterExternalSecretExternalSecretSpecDataRemoteRefConversionStrategy>,
     /// Used to define a decoding Strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "decodingStrategy"
-    )]
-    pub decoding_strategy:
-        Option<ClusterExternalSecretExternalSecretSpecDataRemoteRefDecodingStrategy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "decodingStrategy")]
+    pub decoding_strategy: Option<ClusterExternalSecretExternalSecretSpecDataRemoteRefDecodingStrategy>,
     /// Key is the key used in the Provider, mandatory
     pub key: String,
     /// Policy for fetching tags/labels from provider secrets, possible options are Fetch, None. Defaults to None
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metadataPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataPolicy")]
     pub metadata_policy: Option<ClusterExternalSecretExternalSecretSpecDataRemoteRefMetadataPolicy>,
     /// Used to select a specific property of the Provider value (if a map), if supported
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -194,14 +147,10 @@ pub enum ClusterExternalSecretExternalSecretSpecDataRemoteRefMetadataPolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterExternalSecretExternalSecretSpecDataSourceRef {
     /// GeneratorRef points to a generator custom resource.
-    ///
+    /// 
     /// Deprecated: The generatorRef is not implemented in .data[].
     /// this will be removed with v1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "generatorRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "generatorRef")]
     pub generator_ref: Option<ClusterExternalSecretExternalSecretSpecDataSourceRefGeneratorRef>,
     /// SecretStoreRef defines which SecretStore to fetch the ExternalSecret data.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storeRef")]
@@ -209,17 +158,13 @@ pub struct ClusterExternalSecretExternalSecretSpecDataSourceRef {
 }
 
 /// GeneratorRef points to a generator custom resource.
-///
+/// 
 /// Deprecated: The generatorRef is not implemented in .data[].
 /// this will be removed with v1.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterExternalSecretExternalSecretSpecDataSourceRefGeneratorRef {
     /// Specify the apiVersion of the generator resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Specify the Kind of the resource, e.g. Password, ACRAccessToken etc.
     pub kind: String,
@@ -267,31 +212,16 @@ pub struct ClusterExternalSecretExternalSecretSpecDataFrom {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterExternalSecretExternalSecretSpecDataFromExtract {
     /// Used to define a conversion Strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "conversionStrategy"
-    )]
-    pub conversion_strategy:
-        Option<ClusterExternalSecretExternalSecretSpecDataFromExtractConversionStrategy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "conversionStrategy")]
+    pub conversion_strategy: Option<ClusterExternalSecretExternalSecretSpecDataFromExtractConversionStrategy>,
     /// Used to define a decoding Strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "decodingStrategy"
-    )]
-    pub decoding_strategy:
-        Option<ClusterExternalSecretExternalSecretSpecDataFromExtractDecodingStrategy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "decodingStrategy")]
+    pub decoding_strategy: Option<ClusterExternalSecretExternalSecretSpecDataFromExtractDecodingStrategy>,
     /// Key is the key used in the Provider, mandatory
     pub key: String,
     /// Policy for fetching tags/labels from provider secrets, possible options are Fetch, None. Defaults to None
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metadataPolicy"
-    )]
-    pub metadata_policy:
-        Option<ClusterExternalSecretExternalSecretSpecDataFromExtractMetadataPolicy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metadataPolicy")]
+    pub metadata_policy: Option<ClusterExternalSecretExternalSecretSpecDataFromExtractMetadataPolicy>,
     /// Used to select a specific property of the Provider value (if a map), if supported
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub property: Option<String>,
@@ -332,21 +262,11 @@ pub enum ClusterExternalSecretExternalSecretSpecDataFromExtractMetadataPolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterExternalSecretExternalSecretSpecDataFromFind {
     /// Used to define a conversion Strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "conversionStrategy"
-    )]
-    pub conversion_strategy:
-        Option<ClusterExternalSecretExternalSecretSpecDataFromFindConversionStrategy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "conversionStrategy")]
+    pub conversion_strategy: Option<ClusterExternalSecretExternalSecretSpecDataFromFindConversionStrategy>,
     /// Used to define a decoding Strategy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "decodingStrategy"
-    )]
-    pub decoding_strategy:
-        Option<ClusterExternalSecretExternalSecretSpecDataFromFindDecodingStrategy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "decodingStrategy")]
+    pub decoding_strategy: Option<ClusterExternalSecretExternalSecretSpecDataFromFindDecodingStrategy>,
     /// Finds secrets based on the name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<ClusterExternalSecretExternalSecretSpecDataFromFindName>,
@@ -425,11 +345,7 @@ pub struct ClusterExternalSecretExternalSecretSpecDataFromRewriteTransform {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterExternalSecretExternalSecretSpecDataFromSourceRef {
     /// GeneratorRef points to a generator custom resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "generatorRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "generatorRef")]
     pub generator_ref: Option<ClusterExternalSecretExternalSecretSpecDataFromSourceRefGeneratorRef>,
     /// SecretStoreRef defines which SecretStore to fetch the ExternalSecret data.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "storeRef")]
@@ -440,11 +356,7 @@ pub struct ClusterExternalSecretExternalSecretSpecDataFromSourceRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterExternalSecretExternalSecretSpecDataFromSourceRefGeneratorRef {
     /// Specify the apiVersion of the generator resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Specify the Kind of the resource, e.g. Password, ACRAccessToken etc.
     pub kind: String,
@@ -480,19 +392,11 @@ pub struct ClusterExternalSecretExternalSecretSpecSecretStoreRef {
 pub struct ClusterExternalSecretExternalSecretSpecTarget {
     /// CreationPolicy defines rules on how to create the resulting Secret
     /// Defaults to 'Owner'
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "creationPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "creationPolicy")]
     pub creation_policy: Option<ClusterExternalSecretExternalSecretSpecTargetCreationPolicy>,
     /// DeletionPolicy defines rules on how to delete the resulting Secret
     /// Defaults to 'Retain'
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deletionPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletionPolicy")]
     pub deletion_policy: Option<ClusterExternalSecretExternalSecretSpecTargetDeletionPolicy>,
     /// Immutable defines if the final secret will be immutable
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -534,28 +438,15 @@ pub struct ClusterExternalSecretExternalSecretSpecTargetTemplate {
     /// EngineVersion specifies the template engine version
     /// that should be used to compile/execute the
     /// template specified in .data and .templateFrom[].
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "engineVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "engineVersion")]
     pub engine_version: Option<ClusterExternalSecretExternalSecretSpecTargetTemplateEngineVersion>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mergePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mergePolicy")]
     pub merge_policy: Option<ClusterExternalSecretExternalSecretSpecTargetTemplateMergePolicy>,
     /// ExternalSecretTemplateMetadata defines metadata fields for the Secret blueprint.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<ClusterExternalSecretExternalSecretSpecTargetTemplateMetadata>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "templateFrom"
-    )]
-    pub template_from:
-        Option<Vec<ClusterExternalSecretExternalSecretSpecTargetTemplateTemplateFrom>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateFrom")]
+    pub template_from: Option<Vec<ClusterExternalSecretExternalSecretSpecTargetTemplateTemplateFrom>>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
@@ -588,8 +479,7 @@ pub struct ClusterExternalSecretExternalSecretSpecTargetTemplateMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterExternalSecretExternalSecretSpecTargetTemplateTemplateFrom {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<ClusterExternalSecretExternalSecretSpecTargetTemplateTemplateFromConfigMap>,
+    pub config_map: Option<ClusterExternalSecretExternalSecretSpecTargetTemplateTemplateFromConfigMap>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub literal: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -607,14 +497,8 @@ pub struct ClusterExternalSecretExternalSecretSpecTargetTemplateTemplateFromConf
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterExternalSecretExternalSecretSpecTargetTemplateTemplateFromConfigMapItems {
     pub key: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "templateAs"
-    )]
-    pub template_as: Option<
-        ClusterExternalSecretExternalSecretSpecTargetTemplateTemplateFromConfigMapItemsTemplateAs,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateAs")]
+    pub template_as: Option<ClusterExternalSecretExternalSecretSpecTargetTemplateTemplateFromConfigMapItemsTemplateAs>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -632,14 +516,8 @@ pub struct ClusterExternalSecretExternalSecretSpecTargetTemplateTemplateFromSecr
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterExternalSecretExternalSecretSpecTargetTemplateTemplateFromSecretItems {
     pub key: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "templateAs"
-    )]
-    pub template_as: Option<
-        ClusterExternalSecretExternalSecretSpecTargetTemplateTemplateFromSecretItemsTemplateAs,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateAs")]
+    pub template_as: Option<ClusterExternalSecretExternalSecretSpecTargetTemplateTemplateFromSecretItemsTemplateAs>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -660,20 +538,12 @@ pub enum ClusterExternalSecretExternalSecretSpecTargetTemplateTemplateFromTarget
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterExternalSecretNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ClusterExternalSecretNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -700,20 +570,12 @@ pub struct ClusterExternalSecretNamespaceSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterExternalSecretNamespaceSelectors {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ClusterExternalSecretNamespaceSelectorsMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -740,25 +602,13 @@ pub struct ClusterExternalSecretStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<ClusterExternalSecretStatusConditions>>,
     /// ExternalSecretName is the name of the ExternalSecrets created by the ClusterExternalSecret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalSecretName")]
     pub external_secret_name: Option<String>,
     /// Failed namespaces are the namespaces that failed to apply an ExternalSecret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failedNamespaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failedNamespaces")]
     pub failed_namespaces: Option<Vec<ClusterExternalSecretStatusFailedNamespaces>>,
     /// ProvisionedNamespaces are the namespaces where the ClusterExternalSecret has secrets
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "provisionedNamespaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "provisionedNamespaces")]
     pub provisioned_namespaces: Option<Vec<String>>,
 }
 
@@ -780,3 +630,4 @@ pub struct ClusterExternalSecretStatusFailedNamespaces {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
 }
+

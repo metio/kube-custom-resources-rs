@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Spec is the desired Cilium specific rule specification.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "cilium.io",
-    version = "v2",
-    kind = "CiliumClusterwideNetworkPolicy",
-    plural = "ciliumclusterwidenetworkpolicies"
-)]
+#[kube(group = "cilium.io", version = "v2", kind = "CiliumClusterwideNetworkPolicy", plural = "ciliumclusterwidenetworkpolicies")]
 #[kube(status = "CiliumClusterwideNetworkPolicyStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CiliumClusterwideNetworkPolicySpec {
     /// Description is a free form string, it can be used by the creator of
     /// the rule to store human readable explanation of the purpose of this
@@ -38,41 +33,29 @@ pub struct CiliumClusterwideNetworkPolicySpec {
     /// Any rule inserted here will be denied regardless of the allowed egress
     /// rules in the 'egress' field.
     /// If omitted or empty, this rule does not apply at egress.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "egressDeny"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressDeny")]
     pub egress_deny: Option<Vec<CiliumClusterwideNetworkPolicyEgressDeny>>,
     /// EnableDefaultDeny determines whether this policy configures the
     /// subject endpoint(s) to have a default deny mode. If enabled,
     /// this causes all traffic not explicitly allowed by a network policy
     /// to be dropped.
-    ///
+    /// 
     /// If not specified, the default is true for each traffic direction
     /// that has rules, and false otherwise. For example, if a policy
     /// only has Ingress or IngressDeny rules, then the default for
     /// ingress is true and egress is false.
-    ///
+    /// 
     /// If multiple policies apply to an endpoint, that endpoint's default deny
     /// will be enabled if any policy requests it.
-    ///
+    /// 
     /// This is useful for creating broad-based network policies that will not
     /// cause endpoints to enter default-deny mode.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableDefaultDeny"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableDefaultDeny")]
     pub enable_default_deny: Option<CiliumClusterwideNetworkPolicyEnableDefaultDeny>,
     /// EndpointSelector selects all endpoints which should be subject to
     /// this rule. EndpointSelector and NodeSelector cannot be both empty and
     /// are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointSelector")]
     pub endpoint_selector: Option<CiliumClusterwideNetworkPolicyEndpointSelector>,
     /// Ingress is a list of IngressRule which are enforced at ingress.
     /// If omitted or empty, this rule does not apply at ingress.
@@ -82,11 +65,7 @@ pub struct CiliumClusterwideNetworkPolicySpec {
     /// Any rule inserted here will be denied regardless of the allowed ingress
     /// rules in the 'ingress' field.
     /// If omitted or empty, this rule does not apply at ingress.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressDeny"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressDeny")]
     pub ingress_deny: Option<Vec<CiliumClusterwideNetworkPolicyIngressDeny>>,
     /// Labels is a list of optional strings which can be used to
     /// re-identify the rule or to store metadata. It is possible to lookup
@@ -97,26 +76,22 @@ pub struct CiliumClusterwideNetworkPolicySpec {
     /// NodeSelector selects all nodes which should be subject to this rule.
     /// EndpointSelector and NodeSelector cannot be both empty and are mutually
     /// exclusive. Can only be used in CiliumClusterwideNetworkPolicies.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<CiliumClusterwideNetworkPolicyNodeSelector>,
 }
 
 /// EgressRule contains all rule types which can be applied at egress, i.e.
 /// network traffic that originates inside the endpoint and exits the endpoint
 /// selected by the endpointSelector.
-///
+/// 
 ///   - All members of this structure are optional. If omitted or empty, the
 ///     member will have no effect on the rule.
-///
+/// 
 ///   - If multiple members of the structure are specified, then all members
 ///     must match in order for the rule to take effect. The exception to this
 ///     rule is the ToRequires member; the effects of any Requires field in any
 ///     rule will apply to all other rules as well.
-///
+/// 
 ///   - ToEndpoints, ToCIDR, ToCIDRSet, ToEntities, ToServices and ToGroups are
 ///     mutually exclusive. Only one of these members may be present within an
 ///     individual rule.
@@ -127,7 +102,7 @@ pub struct CiliumClusterwideNetworkPolicyEgress {
     pub authentication: Option<CiliumClusterwideNetworkPolicyEgressAuthentication>,
     /// ICMPs is a list of ICMP rule identified by type number
     /// which the endpoint subject to the rule is allowed to connect to.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "app=httpd" is allowed to initiate
     /// type 8 ICMP connections.
@@ -140,7 +115,7 @@ pub struct CiliumClusterwideNetworkPolicyEgress {
     /// outgoing connections. Adding a prefix into ToCIDR or into ToCIDRSet
     /// with no ExcludeCIDRs is equivalent. Overlaps are allowed between
     /// ToCIDR and ToCIDRSet.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "app=database-proxy" is allowed to
     /// initiate connections to 10.2.3.0/24
@@ -154,7 +129,7 @@ pub struct CiliumClusterwideNetworkPolicyEgress {
     /// connections. Adding a prefix into ToCIDR or into ToCIDRSet with no
     /// ExcludeCIDRs is equivalent. Overlaps are allowed between ToCIDR and
     /// ToCIDRSet.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "app=database-proxy" is allowed to
     /// initiate connections to 10.2.3.0/24 except from IPs in subnet 10.2.3.0/28.
@@ -162,25 +137,17 @@ pub struct CiliumClusterwideNetworkPolicyEgress {
     pub to_cidr_set: Option<Vec<CiliumClusterwideNetworkPolicyEgressToCidrSet>>,
     /// ToEndpoints is a list of endpoints identified by an EndpointSelector to
     /// which the endpoints subject to the rule are allowed to communicate.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "role=frontend" can communicate with any
     /// endpoint carrying the label "role=backend".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "toEndpoints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "toEndpoints")]
     pub to_endpoints: Option<Vec<CiliumClusterwideNetworkPolicyEgressToEndpoints>>,
     /// ToEntities is a list of special entities to which the endpoint subject
     /// to the rule is allowed to initiate connections. Supported entities are
     /// `world`, `cluster`,`host`,`remote-node`,`kube-apiserver`, `init`,
     /// `health`,`unmanaged` and `all`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "toEntities"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "toEntities")]
     pub to_entities: Option<Vec<String>>,
     /// ToFQDN allows whitelisting DNS names in place of IPs. The IPs that result
     /// from DNS resolution of `ToFQDN.MatchName`s are added to the same
@@ -200,7 +167,7 @@ pub struct CiliumClusterwideNetworkPolicyEgress {
     /// ToGroups is a directive that allows the integration with multiple outside
     /// providers. Currently, only AWS is supported, and the rule can select by
     /// multiple sub directives:
-    ///
+    /// 
     /// Example:
     /// toGroups:
     /// - aws:
@@ -215,7 +182,7 @@ pub struct CiliumClusterwideNetworkPolicyEgress {
     /// ToPorts is a list of destination ports identified by port number and
     /// protocol which the endpoint subject to the rule is allowed to
     /// connect to.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "role=frontend" is allowed to initiate
     /// connections to destination port 8080/tcp
@@ -226,29 +193,21 @@ pub struct CiliumClusterwideNetworkPolicyEgress {
     /// endpoints. These additional constraints do no by itself grant access
     /// privileges and must always be accompanied with at least one matching
     /// ToEndpoints.
-    ///
+    /// 
     /// Example:
     /// Any Endpoint with the label "team=A" requires any endpoint to which it
     /// communicates to also carry the label "team=A".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "toRequires"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "toRequires")]
     pub to_requires: Option<Vec<CiliumClusterwideNetworkPolicyEgressToRequires>>,
     /// ToServices is a list of services to which the endpoint subject
     /// to the rule is allowed to initiate connections.
     /// Currently Cilium only supports toServices for K8s services without
     /// selectors.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "app=backend-app" is allowed to
     /// initiate connections to all cidrs backing the "external-service" service
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "toServices"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "toServices")]
     pub to_services: Option<Vec<CiliumClusterwideNetworkPolicyEgressToServices>>,
 }
 
@@ -323,11 +282,7 @@ pub struct CiliumClusterwideNetworkPolicyEgressToCidrSet {
     /// A CiliumCIDRGroup contains a list of CIDRs that the endpoint, subject to
     /// the rule, can (Ingress/Egress) or cannot (IngressDeny/EgressDeny) receive
     /// connections from.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cidrGroupRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrGroupRef")]
     pub cidr_group_ref: Option<String>,
     /// ExceptCIDRs is a list of IP blocks which the endpoint subject to the rule
     /// is not allowed to initiate connections to. These CIDR prefixes should be
@@ -343,21 +298,12 @@ pub struct CiliumClusterwideNetworkPolicyEgressToCidrSet {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicyEgressToEndpoints {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CiliumClusterwideNetworkPolicyEgressToEndpointsMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicyEgressToEndpointsMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -400,7 +346,7 @@ pub struct CiliumClusterwideNetworkPolicyEgressToFqdNs {
     /// the pattern. As a special case a "*" as the leftmost character, without a
     /// following "." matches all subdomains as well as the name to the right.
     /// A trailing "." is automatically added when missing.
-    ///
+    /// 
     /// Examples:
     /// `*.cilium.io` matches subomains of cilium at that level
     ///   www.cilium.io and blog.cilium.io match, cilium.io and google.com do not
@@ -411,11 +357,7 @@ pub struct CiliumClusterwideNetworkPolicyEgressToFqdNs {
     /// begins with "sub"
     ///   sub.cilium.io and subdomain.cilium.io match, www.cilium.io,
     ///   blog.cilium.io, cilium.io and google.com do not
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchPattern"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchPattern")]
     pub match_pattern: Option<String>,
 }
 
@@ -435,17 +377,9 @@ pub struct CiliumClusterwideNetworkPolicyEgressToGroupsAws {
     pub labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupsIds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupsIds")]
     pub security_groups_ids: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupsNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupsNames")]
     pub security_groups_names: Option<Vec<String>>,
 }
 
@@ -453,20 +387,12 @@ pub struct CiliumClusterwideNetworkPolicyEgressToGroupsAws {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicyEgressToNodes {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicyEgressToNodesMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -511,11 +437,7 @@ pub struct CiliumClusterwideNetworkPolicyEgressToPorts {
     /// to the remote destination. For ingress policy this specifies the
     /// client-side TLS parameters for the connection from the L7 proxy to
     /// the local endpoint.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "originatingTLS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "originatingTLS")]
     pub originating_tls: Option<CiliumClusterwideNetworkPolicyEgressToPortsOriginatingTls>,
     /// Ports is a list of L4 port/protocol
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -528,11 +450,7 @@ pub struct CiliumClusterwideNetworkPolicyEgressToPorts {
     /// ServerNames is a list of allowed TLS SNI values. If not empty, then
     /// TLS must be present and one of the provided SNIs must be indicated in the
     /// TLS handshake.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverNames")]
     pub server_names: Option<Vec<String>>,
     /// TerminatingTLS is the TLS context for the connection terminated by
     /// the L7 proxy.  For egress policy this specifies the server-side TLS
@@ -540,11 +458,7 @@ pub struct CiliumClusterwideNetworkPolicyEgressToPorts {
     /// endpoint and terminated by the L7 proxy. For ingress policy this specifies
     /// the server-side TLS parameters to be applied on the connections
     /// originated from a remote source and terminated by the L7 proxy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminatingTLS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminatingTLS")]
     pub terminating_tls: Option<CiliumClusterwideNetworkPolicyEgressToPortsTerminatingTls>,
 }
 
@@ -604,11 +518,7 @@ pub struct CiliumClusterwideNetworkPolicyEgressToPortsOriginatingTls {
     /// PrivateKey is the file name or k8s secret item name for the private key
     /// matching the certificate chain. If omitted, 'tls.key' is assumed, if it
     /// exists. If given, the item must exist.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<String>,
     /// Secret is the secret that contains the certificates and private key for
     /// the TLS context.
@@ -653,9 +563,9 @@ pub struct CiliumClusterwideNetworkPolicyEgressToPortsPorts {
     pub port: String,
     /// Protocol is the L4 protocol. If omitted or empty, any protocol
     /// matches. Accepted values: "TCP", "UDP", "SCTP", "ANY"
-    ///
+    /// 
     /// Matching on ICMP is not supported.
-    ///
+    /// 
     /// Named port specified for a container may narrow this down, but may not
     /// contradict this.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -710,7 +620,7 @@ pub struct CiliumClusterwideNetworkPolicyEgressToPortsRulesDns {
     /// the pattern. As a special case a "*" as the leftmost character, without a
     /// following "." matches all subdomains as well as the name to the right.
     /// A trailing "." is automatically added when missing.
-    ///
+    /// 
     /// Examples:
     /// `*.cilium.io` matches subomains of cilium at that level
     ///   www.cilium.io and blog.cilium.io match, cilium.io and google.com do not
@@ -721,18 +631,14 @@ pub struct CiliumClusterwideNetworkPolicyEgressToPortsRulesDns {
     /// begins with "sub"
     ///   sub.cilium.io and subdomain.cilium.io match, www.cilium.io,
     ///   blog.cilium.io, cilium.io and google.com do not
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchPattern"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchPattern")]
     pub match_pattern: Option<String>,
 }
 
 /// PortRuleHTTP is a list of HTTP protocol constraints. All fields are
 /// optional, if all fields are empty or missing, the rule does not have any
 /// effect.
-///
+/// 
 /// All fields of this type are extended POSIX regex as defined by IEEE Std
 /// 1003.1, (i.e this follows the egrep/unix syntax, not the perl syntax)
 /// matched against the path of an incoming request. Currently it can contain
@@ -743,13 +649,8 @@ pub struct CiliumClusterwideNetworkPolicyEgressToPortsRulesHttp {
     /// HeaderMatches is a list of HTTP headers which must be
     /// present and match against the given values. Mismatch field can be used
     /// to specify what to do when there is no match.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "headerMatches"
-    )]
-    pub header_matches:
-        Option<Vec<CiliumClusterwideNetworkPolicyEgressToPortsRulesHttpHeaderMatches>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "headerMatches")]
+    pub header_matches: Option<Vec<CiliumClusterwideNetworkPolicyEgressToPortsRulesHttpHeaderMatches>>,
     /// Headers is a list of HTTP headers which must be present in the
     /// request. If omitted or empty, requests are allowed regardless of
     /// headers present.
@@ -757,23 +658,23 @@ pub struct CiliumClusterwideNetworkPolicyEgressToPortsRulesHttp {
     pub headers: Option<Vec<String>>,
     /// Host is an extended POSIX regex matched against the host header of a
     /// request. Examples:
-    ///
+    /// 
     /// - foo.bar.com will match the host fooXbar.com or foo-bar.com
     /// - foo\.bar\.com will only match the host foo.bar.com
-    ///
+    /// 
     /// If omitted or empty, the value of the host header is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Method is an extended POSIX regex matched against the method of a
     /// request, e.g. "GET", "POST", "PUT", "PATCH", "DELETE", ...
-    ///
+    /// 
     /// If omitted or empty, all methods are allowed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub method: Option<String>,
     /// Path is an extended POSIX regex matched against the path of a
     /// request. Currently it can contain characters disallowed from the
     /// conventional "path" part of a URL as defined by RFC 3986.
-    ///
+    /// 
     /// If omitted or empty, all paths are all allowed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -841,23 +742,19 @@ pub struct CiliumClusterwideNetworkPolicyEgressToPortsRulesKafka {
     /// APIKey is a case-insensitive string matched against the key of a
     /// request, e.g. "produce", "fetch", "createtopic", "deletetopic", et al
     /// Reference: https://kafka.apache.org/protocol#protocol_api_keys
-    ///
+    /// 
     /// If omitted or empty, and if Role is not specified, then all keys are allowed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiKey")]
     pub api_key: Option<String>,
     /// APIVersion is the version matched against the api version of the
     /// Kafka message. If set, it has to be a string representing a positive
     /// integer.
-    ///
+    /// 
     /// If omitted or empty, all versions are allowed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// ClientID is the client identifier as provided in the request.
-    ///
+    /// 
     /// From Kafka protocol documentation:
     /// This is a user supplied identifier for the client application. The
     /// user can use any identifier they like and it will be used when
@@ -866,7 +763,7 @@ pub struct CiliumClusterwideNetworkPolicyEgressToPortsRulesKafka {
     /// number coming from each client application (each of which could
     /// reside on multiple servers). This id acts as a logical grouping
     /// across all requests from a particular client.
-    ///
+    /// 
     /// If omitted or empty, all client identifiers are allowed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientID")]
     pub client_id: Option<String>,
@@ -874,14 +771,14 @@ pub struct CiliumClusterwideNetworkPolicyEgressToPortsRulesKafka {
     /// necessary to perform certain higher-level Kafka operations such as "produce"
     /// or "consume". A Role automatically expands into all APIKeys required
     /// to perform the specified higher-level operation.
-    ///
+    /// 
     /// The following values are supported:
     ///  - "produce": Allow producing to the topics specified in the rule
     ///  - "consume": Allow consuming from the topics specified in the rule
-    ///
+    /// 
     /// This field is incompatible with the APIKey field, i.e APIKey and Role
     /// cannot both be specified in the same rule.
-    ///
+    /// 
     /// If omitted or empty, and if APIKey is not specified, then all keys are
     /// allowed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -889,16 +786,16 @@ pub struct CiliumClusterwideNetworkPolicyEgressToPortsRulesKafka {
     /// Topic is the topic name contained in the message. If a Kafka request
     /// contains multiple topics, then all topics must be allowed or the
     /// message will be rejected.
-    ///
+    /// 
     /// This constraint is ignored if the matched request message type
     /// doesn't contain any topic. Maximum size of Topic can be 249
     /// characters as per recent Kafka spec and allowed characters are
     /// a-z, A-Z, 0-9, -, . and _.
-    ///
+    /// 
     /// Older Kafka versions had longer topic lengths of 255, but in Kafka 0.10
     /// version the length was changed from 255 to 249. For compatibility
     /// reasons we are using 255.
-    ///
+    /// 
     /// If omitted or empty, all topics are allowed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub topic: Option<String>,
@@ -931,11 +828,7 @@ pub struct CiliumClusterwideNetworkPolicyEgressToPortsTerminatingTls {
     /// PrivateKey is the file name or k8s secret item name for the private key
     /// matching the certificate chain. If omitted, 'tls.key' is assumed, if it
     /// exists. If given, the item must exist.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<String>,
     /// Secret is the secret that contains the certificates and private key for
     /// the TLS context.
@@ -973,21 +866,12 @@ pub struct CiliumClusterwideNetworkPolicyEgressToPortsTerminatingTlsSecret {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicyEgressToRequires {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CiliumClusterwideNetworkPolicyEgressToRequiresMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicyEgressToRequiresMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -1022,20 +906,11 @@ pub enum CiliumClusterwideNetworkPolicyEgressToRequiresMatchExpressionsOperator 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicyEgressToServices {
     /// K8sService selects service by name and namespace pair
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "k8sService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "k8sService")]
     pub k8s_service: Option<CiliumClusterwideNetworkPolicyEgressToServicesK8sService>,
     /// K8sServiceSelector selects services by k8s labels and namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "k8sServiceSelector"
-    )]
-    pub k8s_service_selector:
-        Option<CiliumClusterwideNetworkPolicyEgressToServicesK8sServiceSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "k8sServiceSelector")]
+    pub k8s_service_selector: Option<CiliumClusterwideNetworkPolicyEgressToServicesK8sServiceSelector>,
 }
 
 /// K8sService selects service by name and namespace pair
@@ -1043,11 +918,7 @@ pub struct CiliumClusterwideNetworkPolicyEgressToServices {
 pub struct CiliumClusterwideNetworkPolicyEgressToServicesK8sService {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
 }
 
@@ -1093,8 +964,7 @@ pub struct CiliumClusterwideNetworkPolicyEgressToServicesK8sServiceSelectorSelec
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum CiliumClusterwideNetworkPolicyEgressToServicesK8sServiceSelectorSelectorMatchExpressionsOperator
-{
+pub enum CiliumClusterwideNetworkPolicyEgressToServicesK8sServiceSelectorSelectorMatchExpressionsOperator {
     In,
     NotIn,
     Exists,
@@ -1104,15 +974,15 @@ pub enum CiliumClusterwideNetworkPolicyEgressToServicesK8sServiceSelectorSelecto
 /// EgressDenyRule contains all rule types which can be applied at egress, i.e.
 /// network traffic that originates inside the endpoint and exits the endpoint
 /// selected by the endpointSelector.
-///
+/// 
 ///   - All members of this structure are optional. If omitted or empty, the
 ///     member will have no effect on the rule.
-///
+/// 
 ///   - If multiple members of the structure are specified, then all members
 ///     must match in order for the rule to take effect. The exception to this
 ///     rule is the ToRequires member; the effects of any Requires field in any
 ///     rule will apply to all other rules as well.
-///
+/// 
 ///   - ToEndpoints, ToCIDR, ToCIDRSet, ToEntities, ToServices and ToGroups are
 ///     mutually exclusive. Only one of these members may be present within an
 ///     individual rule.
@@ -1120,7 +990,7 @@ pub enum CiliumClusterwideNetworkPolicyEgressToServicesK8sServiceSelectorSelecto
 pub struct CiliumClusterwideNetworkPolicyEgressDeny {
     /// ICMPs is a list of ICMP rule identified by type number
     /// which the endpoint subject to the rule is not allowed to connect to.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "app=httpd" is not allowed to initiate
     /// type 8 ICMP connections.
@@ -1133,7 +1003,7 @@ pub struct CiliumClusterwideNetworkPolicyEgressDeny {
     /// outgoing connections. Adding a prefix into ToCIDR or into ToCIDRSet
     /// with no ExcludeCIDRs is equivalent. Overlaps are allowed between
     /// ToCIDR and ToCIDRSet.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "app=database-proxy" is allowed to
     /// initiate connections to 10.2.3.0/24
@@ -1147,7 +1017,7 @@ pub struct CiliumClusterwideNetworkPolicyEgressDeny {
     /// connections. Adding a prefix into ToCIDR or into ToCIDRSet with no
     /// ExcludeCIDRs is equivalent. Overlaps are allowed between ToCIDR and
     /// ToCIDRSet.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "app=database-proxy" is allowed to
     /// initiate connections to 10.2.3.0/24 except from IPs in subnet 10.2.3.0/28.
@@ -1155,30 +1025,22 @@ pub struct CiliumClusterwideNetworkPolicyEgressDeny {
     pub to_cidr_set: Option<Vec<CiliumClusterwideNetworkPolicyEgressDenyToCidrSet>>,
     /// ToEndpoints is a list of endpoints identified by an EndpointSelector to
     /// which the endpoints subject to the rule are allowed to communicate.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "role=frontend" can communicate with any
     /// endpoint carrying the label "role=backend".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "toEndpoints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "toEndpoints")]
     pub to_endpoints: Option<Vec<CiliumClusterwideNetworkPolicyEgressDenyToEndpoints>>,
     /// ToEntities is a list of special entities to which the endpoint subject
     /// to the rule is allowed to initiate connections. Supported entities are
     /// `world`, `cluster`,`host`,`remote-node`,`kube-apiserver`, `init`,
     /// `health`,`unmanaged` and `all`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "toEntities"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "toEntities")]
     pub to_entities: Option<Vec<String>>,
     /// ToGroups is a directive that allows the integration with multiple outside
     /// providers. Currently, only AWS is supported, and the rule can select by
     /// multiple sub directives:
-    ///
+    /// 
     /// Example:
     /// toGroups:
     /// - aws:
@@ -1193,7 +1055,7 @@ pub struct CiliumClusterwideNetworkPolicyEgressDeny {
     /// ToPorts is a list of destination ports identified by port number and
     /// protocol which the endpoint subject to the rule is not allowed to connect
     /// to.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "role=frontend" is not allowed to initiate
     /// connections to destination port 8080/tcp
@@ -1204,29 +1066,21 @@ pub struct CiliumClusterwideNetworkPolicyEgressDeny {
     /// endpoints. These additional constraints do no by itself grant access
     /// privileges and must always be accompanied with at least one matching
     /// ToEndpoints.
-    ///
+    /// 
     /// Example:
     /// Any Endpoint with the label "team=A" requires any endpoint to which it
     /// communicates to also carry the label "team=A".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "toRequires"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "toRequires")]
     pub to_requires: Option<Vec<CiliumClusterwideNetworkPolicyEgressDenyToRequires>>,
     /// ToServices is a list of services to which the endpoint subject
     /// to the rule is allowed to initiate connections.
     /// Currently Cilium only supports toServices for K8s services without
     /// selectors.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "app=backend-app" is allowed to
     /// initiate connections to all cidrs backing the "external-service" service
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "toServices"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "toServices")]
     pub to_services: Option<Vec<CiliumClusterwideNetworkPolicyEgressDenyToServices>>,
 }
 
@@ -1283,11 +1137,7 @@ pub struct CiliumClusterwideNetworkPolicyEgressDenyToCidrSet {
     /// A CiliumCIDRGroup contains a list of CIDRs that the endpoint, subject to
     /// the rule, can (Ingress/Egress) or cannot (IngressDeny/EgressDeny) receive
     /// connections from.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cidrGroupRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrGroupRef")]
     pub cidr_group_ref: Option<String>,
     /// ExceptCIDRs is a list of IP blocks which the endpoint subject to the rule
     /// is not allowed to initiate connections to. These CIDR prefixes should be
@@ -1303,21 +1153,12 @@ pub struct CiliumClusterwideNetworkPolicyEgressDenyToCidrSet {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicyEgressDenyToEndpoints {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CiliumClusterwideNetworkPolicyEgressDenyToEndpointsMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicyEgressDenyToEndpointsMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -1364,17 +1205,9 @@ pub struct CiliumClusterwideNetworkPolicyEgressDenyToGroupsAws {
     pub labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupsIds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupsIds")]
     pub security_groups_ids: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupsNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupsNames")]
     pub security_groups_names: Option<Vec<String>>,
 }
 
@@ -1382,21 +1215,12 @@ pub struct CiliumClusterwideNetworkPolicyEgressDenyToGroupsAws {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicyEgressDenyToNodes {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CiliumClusterwideNetworkPolicyEgressDenyToNodesMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicyEgressDenyToNodesMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -1448,9 +1272,9 @@ pub struct CiliumClusterwideNetworkPolicyEgressDenyToPortsPorts {
     pub port: String,
     /// Protocol is the L4 protocol. If omitted or empty, any protocol
     /// matches. Accepted values: "TCP", "UDP", "SCTP", "ANY"
-    ///
+    /// 
     /// Matching on ICMP is not supported.
-    ///
+    /// 
     /// Named port specified for a container may narrow this down, but may not
     /// contradict this.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1474,21 +1298,12 @@ pub enum CiliumClusterwideNetworkPolicyEgressDenyToPortsPortsProtocol {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicyEgressDenyToRequires {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CiliumClusterwideNetworkPolicyEgressDenyToRequiresMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicyEgressDenyToRequiresMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -1523,20 +1338,11 @@ pub enum CiliumClusterwideNetworkPolicyEgressDenyToRequiresMatchExpressionsOpera
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicyEgressDenyToServices {
     /// K8sService selects service by name and namespace pair
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "k8sService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "k8sService")]
     pub k8s_service: Option<CiliumClusterwideNetworkPolicyEgressDenyToServicesK8sService>,
     /// K8sServiceSelector selects services by k8s labels and namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "k8sServiceSelector"
-    )]
-    pub k8s_service_selector:
-        Option<CiliumClusterwideNetworkPolicyEgressDenyToServicesK8sServiceSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "k8sServiceSelector")]
+    pub k8s_service_selector: Option<CiliumClusterwideNetworkPolicyEgressDenyToServicesK8sServiceSelector>,
 }
 
 /// K8sService selects service by name and namespace pair
@@ -1544,11 +1350,7 @@ pub struct CiliumClusterwideNetworkPolicyEgressDenyToServices {
 pub struct CiliumClusterwideNetworkPolicyEgressDenyToServicesK8sService {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
 }
 
@@ -1594,8 +1396,7 @@ pub struct CiliumClusterwideNetworkPolicyEgressDenyToServicesK8sServiceSelectorS
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum CiliumClusterwideNetworkPolicyEgressDenyToServicesK8sServiceSelectorSelectorMatchExpressionsOperator
-{
+pub enum CiliumClusterwideNetworkPolicyEgressDenyToServicesK8sServiceSelectorSelectorMatchExpressionsOperator {
     In,
     NotIn,
     Exists,
@@ -1606,15 +1407,15 @@ pub enum CiliumClusterwideNetworkPolicyEgressDenyToServicesK8sServiceSelectorSel
 /// subject endpoint(s) to have a default deny mode. If enabled,
 /// this causes all traffic not explicitly allowed by a network policy
 /// to be dropped.
-///
+/// 
 /// If not specified, the default is true for each traffic direction
 /// that has rules, and false otherwise. For example, if a policy
 /// only has Ingress or IngressDeny rules, then the default for
 /// ingress is true and egress is false.
-///
+/// 
 /// If multiple policies apply to an endpoint, that endpoint's default deny
 /// will be enabled if any policy requests it.
-///
+/// 
 /// This is useful for creating broad-based network policies that will not
 /// cause endpoints to enter default-deny mode.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1635,21 +1436,12 @@ pub struct CiliumClusterwideNetworkPolicyEnableDefaultDeny {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicyEndpointSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CiliumClusterwideNetworkPolicyEndpointSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicyEndpointSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -1683,15 +1475,15 @@ pub enum CiliumClusterwideNetworkPolicyEndpointSelectorMatchExpressionsOperator 
 /// IngressRule contains all rule types which can be applied at ingress,
 /// i.e. network traffic that originates outside of the endpoint and
 /// is entering the endpoint selected by the endpointSelector.
-///
+/// 
 ///   - All members of this structure are optional. If omitted or empty, the
 ///     member will have no effect on the rule.
-///
+/// 
 ///   - If multiple members are set, all of them need to match in order for
 ///     the rule to take effect. The exception to this rule is FromRequires field;
 ///     the effects of any Requires field in any rule will apply to all other
 ///     rules as well.
-///
+/// 
 ///   - FromEndpoints, FromCIDR, FromCIDRSet and FromEntities are mutually
 ///     exclusive. Only one of these members may be present within an individual
 ///     rule.
@@ -1708,7 +1500,7 @@ pub struct CiliumClusterwideNetworkPolicyIngress {
     /// incoming connections. Adding  a prefix into FromCIDR or into
     /// FromCIDRSet with no ExcludeCIDRs is  equivalent.  Overlaps are
     /// allowed between FromCIDR and FromCIDRSet.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "app=my-legacy-pet" is allowed to receive
     /// connections from 10.3.9.1
@@ -1721,52 +1513,36 @@ pub struct CiliumClusterwideNetworkPolicyIngress {
     /// This will match on the source IP address of incoming connections. Adding
     /// a prefix into FromCIDR or into FromCIDRSet with no ExcludeCIDRs is
     /// equivalent. Overlaps are allowed between FromCIDR and FromCIDRSet.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "app=my-legacy-pet" is allowed to receive
     /// connections from 10.0.0.0/8 except from IPs in subnet 10.96.0.0/12.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fromCIDRSet"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromCIDRSet")]
     pub from_cidr_set: Option<Vec<CiliumClusterwideNetworkPolicyIngressFromCidrSet>>,
     /// FromEndpoints is a list of endpoints identified by an
     /// EndpointSelector which are allowed to communicate with the endpoint
     /// subject to the rule.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "role=backend" can be consumed by any
     /// endpoint carrying the label "role=frontend".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fromEndpoints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromEndpoints")]
     pub from_endpoints: Option<Vec<CiliumClusterwideNetworkPolicyIngressFromEndpoints>>,
     /// FromEntities is a list of special entities which the endpoint subject
     /// to the rule is allowed to receive connections from. Supported entities are
     /// `world`, `cluster` and `host`
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fromEntities"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromEntities")]
     pub from_entities: Option<Vec<String>>,
     /// FromGroups is a directive that allows the integration with multiple outside
     /// providers. Currently, only AWS is supported, and the rule can select by
     /// multiple sub directives:
-    ///
+    /// 
     /// Example:
     /// FromGroups:
     /// - aws:
     ///     securityGroupsIds:
     ///     - 'sg-XXXXXXXXXXXXX'
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fromGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromGroups")]
     pub from_groups: Option<Vec<CiliumClusterwideNetworkPolicyIngressFromGroups>>,
     /// FromNodes is a list of nodes identified by an
     /// EndpointSelector which are allowed to communicate with the endpoint
@@ -1777,20 +1553,16 @@ pub struct CiliumClusterwideNetworkPolicyIngress {
     /// in order for the selected endpoints to be reachable. These
     /// additional constraints do no by itself grant access privileges and
     /// must always be accompanied with at least one matching FromEndpoints.
-    ///
+    /// 
     /// Example:
     /// Any Endpoint with the label "team=A" requires consuming endpoint
     /// to also carry the label "team=A".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fromRequires"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromRequires")]
     pub from_requires: Option<Vec<CiliumClusterwideNetworkPolicyIngressFromRequires>>,
     /// ICMPs is a list of ICMP rule identified by type number
     /// which the endpoint subject to the rule is allowed to
     /// receive connections on.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "app=httpd" can only accept incoming
     /// type 8 ICMP connections.
@@ -1799,7 +1571,7 @@ pub struct CiliumClusterwideNetworkPolicyIngress {
     /// ToPorts is a list of destination ports identified by port number and
     /// protocol which the endpoint subject to the rule is allowed to
     /// receive connections on.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "app=httpd" can only accept incoming
     /// connections on port 80/tcp.
@@ -1837,11 +1609,7 @@ pub struct CiliumClusterwideNetworkPolicyIngressFromCidrSet {
     /// A CiliumCIDRGroup contains a list of CIDRs that the endpoint, subject to
     /// the rule, can (Ingress/Egress) or cannot (IngressDeny/EgressDeny) receive
     /// connections from.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cidrGroupRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrGroupRef")]
     pub cidr_group_ref: Option<String>,
     /// ExceptCIDRs is a list of IP blocks which the endpoint subject to the rule
     /// is not allowed to initiate connections to. These CIDR prefixes should be
@@ -1857,21 +1625,12 @@ pub struct CiliumClusterwideNetworkPolicyIngressFromCidrSet {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicyIngressFromEndpoints {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CiliumClusterwideNetworkPolicyIngressFromEndpointsMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicyIngressFromEndpointsMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -1918,17 +1677,9 @@ pub struct CiliumClusterwideNetworkPolicyIngressFromGroupsAws {
     pub labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupsIds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupsIds")]
     pub security_groups_ids: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupsNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupsNames")]
     pub security_groups_names: Option<Vec<String>>,
 }
 
@@ -1936,21 +1687,12 @@ pub struct CiliumClusterwideNetworkPolicyIngressFromGroupsAws {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicyIngressFromNodes {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CiliumClusterwideNetworkPolicyIngressFromNodesMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicyIngressFromNodesMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -1985,21 +1727,12 @@ pub enum CiliumClusterwideNetworkPolicyIngressFromNodesMatchExpressionsOperator 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicyIngressFromRequires {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CiliumClusterwideNetworkPolicyIngressFromRequiresMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicyIngressFromRequiresMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -2085,11 +1818,7 @@ pub struct CiliumClusterwideNetworkPolicyIngressToPorts {
     /// to the remote destination. For ingress policy this specifies the
     /// client-side TLS parameters for the connection from the L7 proxy to
     /// the local endpoint.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "originatingTLS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "originatingTLS")]
     pub originating_tls: Option<CiliumClusterwideNetworkPolicyIngressToPortsOriginatingTls>,
     /// Ports is a list of L4 port/protocol
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2102,11 +1831,7 @@ pub struct CiliumClusterwideNetworkPolicyIngressToPorts {
     /// ServerNames is a list of allowed TLS SNI values. If not empty, then
     /// TLS must be present and one of the provided SNIs must be indicated in the
     /// TLS handshake.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverNames")]
     pub server_names: Option<Vec<String>>,
     /// TerminatingTLS is the TLS context for the connection terminated by
     /// the L7 proxy.  For egress policy this specifies the server-side TLS
@@ -2114,11 +1839,7 @@ pub struct CiliumClusterwideNetworkPolicyIngressToPorts {
     /// endpoint and terminated by the L7 proxy. For ingress policy this specifies
     /// the server-side TLS parameters to be applied on the connections
     /// originated from a remote source and terminated by the L7 proxy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminatingTLS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminatingTLS")]
     pub terminating_tls: Option<CiliumClusterwideNetworkPolicyIngressToPortsTerminatingTls>,
 }
 
@@ -2178,11 +1899,7 @@ pub struct CiliumClusterwideNetworkPolicyIngressToPortsOriginatingTls {
     /// PrivateKey is the file name or k8s secret item name for the private key
     /// matching the certificate chain. If omitted, 'tls.key' is assumed, if it
     /// exists. If given, the item must exist.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<String>,
     /// Secret is the secret that contains the certificates and private key for
     /// the TLS context.
@@ -2227,9 +1944,9 @@ pub struct CiliumClusterwideNetworkPolicyIngressToPortsPorts {
     pub port: String,
     /// Protocol is the L4 protocol. If omitted or empty, any protocol
     /// matches. Accepted values: "TCP", "UDP", "SCTP", "ANY"
-    ///
+    /// 
     /// Matching on ICMP is not supported.
-    ///
+    /// 
     /// Named port specified for a container may narrow this down, but may not
     /// contradict this.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2284,7 +2001,7 @@ pub struct CiliumClusterwideNetworkPolicyIngressToPortsRulesDns {
     /// the pattern. As a special case a "*" as the leftmost character, without a
     /// following "." matches all subdomains as well as the name to the right.
     /// A trailing "." is automatically added when missing.
-    ///
+    /// 
     /// Examples:
     /// `*.cilium.io` matches subomains of cilium at that level
     ///   www.cilium.io and blog.cilium.io match, cilium.io and google.com do not
@@ -2295,18 +2012,14 @@ pub struct CiliumClusterwideNetworkPolicyIngressToPortsRulesDns {
     /// begins with "sub"
     ///   sub.cilium.io and subdomain.cilium.io match, www.cilium.io,
     ///   blog.cilium.io, cilium.io and google.com do not
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchPattern"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchPattern")]
     pub match_pattern: Option<String>,
 }
 
 /// PortRuleHTTP is a list of HTTP protocol constraints. All fields are
 /// optional, if all fields are empty or missing, the rule does not have any
 /// effect.
-///
+/// 
 /// All fields of this type are extended POSIX regex as defined by IEEE Std
 /// 1003.1, (i.e this follows the egrep/unix syntax, not the perl syntax)
 /// matched against the path of an incoming request. Currently it can contain
@@ -2317,13 +2030,8 @@ pub struct CiliumClusterwideNetworkPolicyIngressToPortsRulesHttp {
     /// HeaderMatches is a list of HTTP headers which must be
     /// present and match against the given values. Mismatch field can be used
     /// to specify what to do when there is no match.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "headerMatches"
-    )]
-    pub header_matches:
-        Option<Vec<CiliumClusterwideNetworkPolicyIngressToPortsRulesHttpHeaderMatches>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "headerMatches")]
+    pub header_matches: Option<Vec<CiliumClusterwideNetworkPolicyIngressToPortsRulesHttpHeaderMatches>>,
     /// Headers is a list of HTTP headers which must be present in the
     /// request. If omitted or empty, requests are allowed regardless of
     /// headers present.
@@ -2331,23 +2039,23 @@ pub struct CiliumClusterwideNetworkPolicyIngressToPortsRulesHttp {
     pub headers: Option<Vec<String>>,
     /// Host is an extended POSIX regex matched against the host header of a
     /// request. Examples:
-    ///
+    /// 
     /// - foo.bar.com will match the host fooXbar.com or foo-bar.com
     /// - foo\.bar\.com will only match the host foo.bar.com
-    ///
+    /// 
     /// If omitted or empty, the value of the host header is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Method is an extended POSIX regex matched against the method of a
     /// request, e.g. "GET", "POST", "PUT", "PATCH", "DELETE", ...
-    ///
+    /// 
     /// If omitted or empty, all methods are allowed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub method: Option<String>,
     /// Path is an extended POSIX regex matched against the path of a
     /// request. Currently it can contain characters disallowed from the
     /// conventional "path" part of a URL as defined by RFC 3986.
-    ///
+    /// 
     /// If omitted or empty, all paths are all allowed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -2363,8 +2071,7 @@ pub struct CiliumClusterwideNetworkPolicyIngressToPortsRulesHttpHeaderMatches {
     /// to drop the request. Otherwise the overall rule is still considered as
     /// matching, but the mismatches are logged in the access log.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub mismatch:
-        Option<CiliumClusterwideNetworkPolicyIngressToPortsRulesHttpHeaderMatchesMismatch>,
+    pub mismatch: Option<CiliumClusterwideNetworkPolicyIngressToPortsRulesHttpHeaderMatchesMismatch>,
     /// Name identifies the header.
     pub name: String,
     /// Secret refers to a secret that contains the value to be matched against.
@@ -2416,23 +2123,19 @@ pub struct CiliumClusterwideNetworkPolicyIngressToPortsRulesKafka {
     /// APIKey is a case-insensitive string matched against the key of a
     /// request, e.g. "produce", "fetch", "createtopic", "deletetopic", et al
     /// Reference: https://kafka.apache.org/protocol#protocol_api_keys
-    ///
+    /// 
     /// If omitted or empty, and if Role is not specified, then all keys are allowed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiKey")]
     pub api_key: Option<String>,
     /// APIVersion is the version matched against the api version of the
     /// Kafka message. If set, it has to be a string representing a positive
     /// integer.
-    ///
+    /// 
     /// If omitted or empty, all versions are allowed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// ClientID is the client identifier as provided in the request.
-    ///
+    /// 
     /// From Kafka protocol documentation:
     /// This is a user supplied identifier for the client application. The
     /// user can use any identifier they like and it will be used when
@@ -2441,7 +2144,7 @@ pub struct CiliumClusterwideNetworkPolicyIngressToPortsRulesKafka {
     /// number coming from each client application (each of which could
     /// reside on multiple servers). This id acts as a logical grouping
     /// across all requests from a particular client.
-    ///
+    /// 
     /// If omitted or empty, all client identifiers are allowed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientID")]
     pub client_id: Option<String>,
@@ -2449,14 +2152,14 @@ pub struct CiliumClusterwideNetworkPolicyIngressToPortsRulesKafka {
     /// necessary to perform certain higher-level Kafka operations such as "produce"
     /// or "consume". A Role automatically expands into all APIKeys required
     /// to perform the specified higher-level operation.
-    ///
+    /// 
     /// The following values are supported:
     ///  - "produce": Allow producing to the topics specified in the rule
     ///  - "consume": Allow consuming from the topics specified in the rule
-    ///
+    /// 
     /// This field is incompatible with the APIKey field, i.e APIKey and Role
     /// cannot both be specified in the same rule.
-    ///
+    /// 
     /// If omitted or empty, and if APIKey is not specified, then all keys are
     /// allowed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2464,16 +2167,16 @@ pub struct CiliumClusterwideNetworkPolicyIngressToPortsRulesKafka {
     /// Topic is the topic name contained in the message. If a Kafka request
     /// contains multiple topics, then all topics must be allowed or the
     /// message will be rejected.
-    ///
+    /// 
     /// This constraint is ignored if the matched request message type
     /// doesn't contain any topic. Maximum size of Topic can be 249
     /// characters as per recent Kafka spec and allowed characters are
     /// a-z, A-Z, 0-9, -, . and _.
-    ///
+    /// 
     /// Older Kafka versions had longer topic lengths of 255, but in Kafka 0.10
     /// version the length was changed from 255 to 249. For compatibility
     /// reasons we are using 255.
-    ///
+    /// 
     /// If omitted or empty, all topics are allowed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub topic: Option<String>,
@@ -2506,11 +2209,7 @@ pub struct CiliumClusterwideNetworkPolicyIngressToPortsTerminatingTls {
     /// PrivateKey is the file name or k8s secret item name for the private key
     /// matching the certificate chain. If omitted, 'tls.key' is assumed, if it
     /// exists. If given, the item must exist.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<String>,
     /// Secret is the secret that contains the certificates and private key for
     /// the TLS context.
@@ -2547,15 +2246,15 @@ pub struct CiliumClusterwideNetworkPolicyIngressToPortsTerminatingTlsSecret {
 /// IngressDenyRule contains all rule types which can be applied at ingress,
 /// i.e. network traffic that originates outside of the endpoint and
 /// is entering the endpoint selected by the endpointSelector.
-///
+/// 
 ///   - All members of this structure are optional. If omitted or empty, the
 ///     member will have no effect on the rule.
-///
+/// 
 ///   - If multiple members are set, all of them need to match in order for
 ///     the rule to take effect. The exception to this rule is FromRequires field;
 ///     the effects of any Requires field in any rule will apply to all other
 ///     rules as well.
-///
+/// 
 ///   - FromEndpoints, FromCIDR, FromCIDRSet, FromGroups and FromEntities are mutually
 ///     exclusive. Only one of these members may be present within an individual
 ///     rule.
@@ -2569,7 +2268,7 @@ pub struct CiliumClusterwideNetworkPolicyIngressDeny {
     /// incoming connections. Adding  a prefix into FromCIDR or into
     /// FromCIDRSet with no ExcludeCIDRs is  equivalent.  Overlaps are
     /// allowed between FromCIDR and FromCIDRSet.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "app=my-legacy-pet" is allowed to receive
     /// connections from 10.3.9.1
@@ -2582,52 +2281,36 @@ pub struct CiliumClusterwideNetworkPolicyIngressDeny {
     /// This will match on the source IP address of incoming connections. Adding
     /// a prefix into FromCIDR or into FromCIDRSet with no ExcludeCIDRs is
     /// equivalent. Overlaps are allowed between FromCIDR and FromCIDRSet.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "app=my-legacy-pet" is allowed to receive
     /// connections from 10.0.0.0/8 except from IPs in subnet 10.96.0.0/12.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fromCIDRSet"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromCIDRSet")]
     pub from_cidr_set: Option<Vec<CiliumClusterwideNetworkPolicyIngressDenyFromCidrSet>>,
     /// FromEndpoints is a list of endpoints identified by an
     /// EndpointSelector which are allowed to communicate with the endpoint
     /// subject to the rule.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "role=backend" can be consumed by any
     /// endpoint carrying the label "role=frontend".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fromEndpoints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromEndpoints")]
     pub from_endpoints: Option<Vec<CiliumClusterwideNetworkPolicyIngressDenyFromEndpoints>>,
     /// FromEntities is a list of special entities which the endpoint subject
     /// to the rule is allowed to receive connections from. Supported entities are
     /// `world`, `cluster` and `host`
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fromEntities"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromEntities")]
     pub from_entities: Option<Vec<String>>,
     /// FromGroups is a directive that allows the integration with multiple outside
     /// providers. Currently, only AWS is supported, and the rule can select by
     /// multiple sub directives:
-    ///
+    /// 
     /// Example:
     /// FromGroups:
     /// - aws:
     ///     securityGroupsIds:
     ///     - 'sg-XXXXXXXXXXXXX'
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fromGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromGroups")]
     pub from_groups: Option<Vec<CiliumClusterwideNetworkPolicyIngressDenyFromGroups>>,
     /// FromNodes is a list of nodes identified by an
     /// EndpointSelector which are allowed to communicate with the endpoint
@@ -2638,20 +2321,16 @@ pub struct CiliumClusterwideNetworkPolicyIngressDeny {
     /// in order for the selected endpoints to be reachable. These
     /// additional constraints do no by itself grant access privileges and
     /// must always be accompanied with at least one matching FromEndpoints.
-    ///
+    /// 
     /// Example:
     /// Any Endpoint with the label "team=A" requires consuming endpoint
     /// to also carry the label "team=A".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fromRequires"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromRequires")]
     pub from_requires: Option<Vec<CiliumClusterwideNetworkPolicyIngressDenyFromRequires>>,
     /// ICMPs is a list of ICMP rule identified by type number
     /// which the endpoint subject to the rule is not allowed to
     /// receive connections on.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "app=httpd" can not accept incoming
     /// type 8 ICMP connections.
@@ -2660,7 +2339,7 @@ pub struct CiliumClusterwideNetworkPolicyIngressDeny {
     /// ToPorts is a list of destination ports identified by port number and
     /// protocol which the endpoint subject to the rule is not allowed to
     /// receive connections on.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "app=httpd" can not accept incoming
     /// connections on port 80/tcp.
@@ -2680,11 +2359,7 @@ pub struct CiliumClusterwideNetworkPolicyIngressDenyFromCidrSet {
     /// A CiliumCIDRGroup contains a list of CIDRs that the endpoint, subject to
     /// the rule, can (Ingress/Egress) or cannot (IngressDeny/EgressDeny) receive
     /// connections from.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cidrGroupRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrGroupRef")]
     pub cidr_group_ref: Option<String>,
     /// ExceptCIDRs is a list of IP blocks which the endpoint subject to the rule
     /// is not allowed to initiate connections to. These CIDR prefixes should be
@@ -2700,21 +2375,12 @@ pub struct CiliumClusterwideNetworkPolicyIngressDenyFromCidrSet {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicyIngressDenyFromEndpoints {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CiliumClusterwideNetworkPolicyIngressDenyFromEndpointsMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicyIngressDenyFromEndpointsMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -2761,17 +2427,9 @@ pub struct CiliumClusterwideNetworkPolicyIngressDenyFromGroupsAws {
     pub labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupsIds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupsIds")]
     pub security_groups_ids: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupsNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupsNames")]
     pub security_groups_names: Option<Vec<String>>,
 }
 
@@ -2779,21 +2437,12 @@ pub struct CiliumClusterwideNetworkPolicyIngressDenyFromGroupsAws {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicyIngressDenyFromNodes {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CiliumClusterwideNetworkPolicyIngressDenyFromNodesMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicyIngressDenyFromNodesMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -2828,21 +2477,12 @@ pub enum CiliumClusterwideNetworkPolicyIngressDenyFromNodesMatchExpressionsOpera
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicyIngressDenyFromRequires {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CiliumClusterwideNetworkPolicyIngressDenyFromRequiresMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicyIngressDenyFromRequiresMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -2935,9 +2575,9 @@ pub struct CiliumClusterwideNetworkPolicyIngressDenyToPortsPorts {
     pub port: String,
     /// Protocol is the L4 protocol. If omitted or empty, any protocol
     /// matches. Accepted values: "TCP", "UDP", "SCTP", "ANY"
-    ///
+    /// 
     /// Matching on ICMP is not supported.
-    ///
+    /// 
     /// Named port specified for a container may narrow this down, but may not
     /// contradict this.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2974,20 +2614,12 @@ pub struct CiliumClusterwideNetworkPolicyLabels {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicyNodeSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicyNodeSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -3020,13 +2652,13 @@ pub enum CiliumClusterwideNetworkPolicyNodeSelectorMatchExpressionsOperator {
 
 /// Rule is a policy rule which must be applied to all endpoints which match the
 /// labels contained in the endpointSelector
-///
+/// 
 /// Each rule is split into an ingress section which contains all rules
 /// applicable at ingress, and an egress section applicable at egress. For rule
 /// types such as `L4Rule` and `CIDR` which can be applied at both ingress and
 /// egress, both ingress and egress side have to either specifically allow the
 /// connection or one side has to be omitted.
-///
+/// 
 /// Either ingress, egress, or both can be provided. If both ingress and egress
 /// are omitted, the rule has no effect.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3044,41 +2676,29 @@ pub struct CiliumClusterwideNetworkPolicys {
     /// Any rule inserted here will be denied regardless of the allowed egress
     /// rules in the 'egress' field.
     /// If omitted or empty, this rule does not apply at egress.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "egressDeny"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressDeny")]
     pub egress_deny: Option<Vec<CiliumClusterwideNetworkPolicysEgressDeny>>,
     /// EnableDefaultDeny determines whether this policy configures the
     /// subject endpoint(s) to have a default deny mode. If enabled,
     /// this causes all traffic not explicitly allowed by a network policy
     /// to be dropped.
-    ///
+    /// 
     /// If not specified, the default is true for each traffic direction
     /// that has rules, and false otherwise. For example, if a policy
     /// only has Ingress or IngressDeny rules, then the default for
     /// ingress is true and egress is false.
-    ///
+    /// 
     /// If multiple policies apply to an endpoint, that endpoint's default deny
     /// will be enabled if any policy requests it.
-    ///
+    /// 
     /// This is useful for creating broad-based network policies that will not
     /// cause endpoints to enter default-deny mode.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableDefaultDeny"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableDefaultDeny")]
     pub enable_default_deny: Option<CiliumClusterwideNetworkPolicysEnableDefaultDeny>,
     /// EndpointSelector selects all endpoints which should be subject to
     /// this rule. EndpointSelector and NodeSelector cannot be both empty and
     /// are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointSelector")]
     pub endpoint_selector: Option<CiliumClusterwideNetworkPolicysEndpointSelector>,
     /// Ingress is a list of IngressRule which are enforced at ingress.
     /// If omitted or empty, this rule does not apply at ingress.
@@ -3088,11 +2708,7 @@ pub struct CiliumClusterwideNetworkPolicys {
     /// Any rule inserted here will be denied regardless of the allowed ingress
     /// rules in the 'ingress' field.
     /// If omitted or empty, this rule does not apply at ingress.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressDeny"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressDeny")]
     pub ingress_deny: Option<Vec<CiliumClusterwideNetworkPolicysIngressDeny>>,
     /// Labels is a list of optional strings which can be used to
     /// re-identify the rule or to store metadata. It is possible to lookup
@@ -3103,26 +2719,22 @@ pub struct CiliumClusterwideNetworkPolicys {
     /// NodeSelector selects all nodes which should be subject to this rule.
     /// EndpointSelector and NodeSelector cannot be both empty and are mutually
     /// exclusive. Can only be used in CiliumClusterwideNetworkPolicies.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<CiliumClusterwideNetworkPolicysNodeSelector>,
 }
 
 /// EgressRule contains all rule types which can be applied at egress, i.e.
 /// network traffic that originates inside the endpoint and exits the endpoint
 /// selected by the endpointSelector.
-///
+/// 
 ///   - All members of this structure are optional. If omitted or empty, the
 ///     member will have no effect on the rule.
-///
+/// 
 ///   - If multiple members of the structure are specified, then all members
 ///     must match in order for the rule to take effect. The exception to this
 ///     rule is the ToRequires member; the effects of any Requires field in any
 ///     rule will apply to all other rules as well.
-///
+/// 
 ///   - ToEndpoints, ToCIDR, ToCIDRSet, ToEntities, ToServices and ToGroups are
 ///     mutually exclusive. Only one of these members may be present within an
 ///     individual rule.
@@ -3133,7 +2745,7 @@ pub struct CiliumClusterwideNetworkPolicysEgress {
     pub authentication: Option<CiliumClusterwideNetworkPolicysEgressAuthentication>,
     /// ICMPs is a list of ICMP rule identified by type number
     /// which the endpoint subject to the rule is allowed to connect to.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "app=httpd" is allowed to initiate
     /// type 8 ICMP connections.
@@ -3146,7 +2758,7 @@ pub struct CiliumClusterwideNetworkPolicysEgress {
     /// outgoing connections. Adding a prefix into ToCIDR or into ToCIDRSet
     /// with no ExcludeCIDRs is equivalent. Overlaps are allowed between
     /// ToCIDR and ToCIDRSet.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "app=database-proxy" is allowed to
     /// initiate connections to 10.2.3.0/24
@@ -3160,7 +2772,7 @@ pub struct CiliumClusterwideNetworkPolicysEgress {
     /// connections. Adding a prefix into ToCIDR or into ToCIDRSet with no
     /// ExcludeCIDRs is equivalent. Overlaps are allowed between ToCIDR and
     /// ToCIDRSet.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "app=database-proxy" is allowed to
     /// initiate connections to 10.2.3.0/24 except from IPs in subnet 10.2.3.0/28.
@@ -3168,25 +2780,17 @@ pub struct CiliumClusterwideNetworkPolicysEgress {
     pub to_cidr_set: Option<Vec<CiliumClusterwideNetworkPolicysEgressToCidrSet>>,
     /// ToEndpoints is a list of endpoints identified by an EndpointSelector to
     /// which the endpoints subject to the rule are allowed to communicate.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "role=frontend" can communicate with any
     /// endpoint carrying the label "role=backend".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "toEndpoints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "toEndpoints")]
     pub to_endpoints: Option<Vec<CiliumClusterwideNetworkPolicysEgressToEndpoints>>,
     /// ToEntities is a list of special entities to which the endpoint subject
     /// to the rule is allowed to initiate connections. Supported entities are
     /// `world`, `cluster`,`host`,`remote-node`,`kube-apiserver`, `init`,
     /// `health`,`unmanaged` and `all`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "toEntities"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "toEntities")]
     pub to_entities: Option<Vec<String>>,
     /// ToFQDN allows whitelisting DNS names in place of IPs. The IPs that result
     /// from DNS resolution of `ToFQDN.MatchName`s are added to the same
@@ -3206,7 +2810,7 @@ pub struct CiliumClusterwideNetworkPolicysEgress {
     /// ToGroups is a directive that allows the integration with multiple outside
     /// providers. Currently, only AWS is supported, and the rule can select by
     /// multiple sub directives:
-    ///
+    /// 
     /// Example:
     /// toGroups:
     /// - aws:
@@ -3221,7 +2825,7 @@ pub struct CiliumClusterwideNetworkPolicysEgress {
     /// ToPorts is a list of destination ports identified by port number and
     /// protocol which the endpoint subject to the rule is allowed to
     /// connect to.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "role=frontend" is allowed to initiate
     /// connections to destination port 8080/tcp
@@ -3232,29 +2836,21 @@ pub struct CiliumClusterwideNetworkPolicysEgress {
     /// endpoints. These additional constraints do no by itself grant access
     /// privileges and must always be accompanied with at least one matching
     /// ToEndpoints.
-    ///
+    /// 
     /// Example:
     /// Any Endpoint with the label "team=A" requires any endpoint to which it
     /// communicates to also carry the label "team=A".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "toRequires"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "toRequires")]
     pub to_requires: Option<Vec<CiliumClusterwideNetworkPolicysEgressToRequires>>,
     /// ToServices is a list of services to which the endpoint subject
     /// to the rule is allowed to initiate connections.
     /// Currently Cilium only supports toServices for K8s services without
     /// selectors.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "app=backend-app" is allowed to
     /// initiate connections to all cidrs backing the "external-service" service
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "toServices"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "toServices")]
     pub to_services: Option<Vec<CiliumClusterwideNetworkPolicysEgressToServices>>,
 }
 
@@ -3329,11 +2925,7 @@ pub struct CiliumClusterwideNetworkPolicysEgressToCidrSet {
     /// A CiliumCIDRGroup contains a list of CIDRs that the endpoint, subject to
     /// the rule, can (Ingress/Egress) or cannot (IngressDeny/EgressDeny) receive
     /// connections from.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cidrGroupRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrGroupRef")]
     pub cidr_group_ref: Option<String>,
     /// ExceptCIDRs is a list of IP blocks which the endpoint subject to the rule
     /// is not allowed to initiate connections to. These CIDR prefixes should be
@@ -3349,21 +2941,12 @@ pub struct CiliumClusterwideNetworkPolicysEgressToCidrSet {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicysEgressToEndpoints {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CiliumClusterwideNetworkPolicysEgressToEndpointsMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicysEgressToEndpointsMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -3406,7 +2989,7 @@ pub struct CiliumClusterwideNetworkPolicysEgressToFqdNs {
     /// the pattern. As a special case a "*" as the leftmost character, without a
     /// following "." matches all subdomains as well as the name to the right.
     /// A trailing "." is automatically added when missing.
-    ///
+    /// 
     /// Examples:
     /// `*.cilium.io` matches subomains of cilium at that level
     ///   www.cilium.io and blog.cilium.io match, cilium.io and google.com do not
@@ -3417,11 +3000,7 @@ pub struct CiliumClusterwideNetworkPolicysEgressToFqdNs {
     /// begins with "sub"
     ///   sub.cilium.io and subdomain.cilium.io match, www.cilium.io,
     ///   blog.cilium.io, cilium.io and google.com do not
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchPattern"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchPattern")]
     pub match_pattern: Option<String>,
 }
 
@@ -3441,17 +3020,9 @@ pub struct CiliumClusterwideNetworkPolicysEgressToGroupsAws {
     pub labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupsIds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupsIds")]
     pub security_groups_ids: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupsNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupsNames")]
     pub security_groups_names: Option<Vec<String>>,
 }
 
@@ -3459,21 +3030,12 @@ pub struct CiliumClusterwideNetworkPolicysEgressToGroupsAws {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicysEgressToNodes {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CiliumClusterwideNetworkPolicysEgressToNodesMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicysEgressToNodesMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -3518,11 +3080,7 @@ pub struct CiliumClusterwideNetworkPolicysEgressToPorts {
     /// to the remote destination. For ingress policy this specifies the
     /// client-side TLS parameters for the connection from the L7 proxy to
     /// the local endpoint.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "originatingTLS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "originatingTLS")]
     pub originating_tls: Option<CiliumClusterwideNetworkPolicysEgressToPortsOriginatingTls>,
     /// Ports is a list of L4 port/protocol
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3535,11 +3093,7 @@ pub struct CiliumClusterwideNetworkPolicysEgressToPorts {
     /// ServerNames is a list of allowed TLS SNI values. If not empty, then
     /// TLS must be present and one of the provided SNIs must be indicated in the
     /// TLS handshake.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverNames")]
     pub server_names: Option<Vec<String>>,
     /// TerminatingTLS is the TLS context for the connection terminated by
     /// the L7 proxy.  For egress policy this specifies the server-side TLS
@@ -3547,11 +3101,7 @@ pub struct CiliumClusterwideNetworkPolicysEgressToPorts {
     /// endpoint and terminated by the L7 proxy. For ingress policy this specifies
     /// the server-side TLS parameters to be applied on the connections
     /// originated from a remote source and terminated by the L7 proxy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminatingTLS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminatingTLS")]
     pub terminating_tls: Option<CiliumClusterwideNetworkPolicysEgressToPortsTerminatingTls>,
 }
 
@@ -3611,11 +3161,7 @@ pub struct CiliumClusterwideNetworkPolicysEgressToPortsOriginatingTls {
     /// PrivateKey is the file name or k8s secret item name for the private key
     /// matching the certificate chain. If omitted, 'tls.key' is assumed, if it
     /// exists. If given, the item must exist.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<String>,
     /// Secret is the secret that contains the certificates and private key for
     /// the TLS context.
@@ -3660,9 +3206,9 @@ pub struct CiliumClusterwideNetworkPolicysEgressToPortsPorts {
     pub port: String,
     /// Protocol is the L4 protocol. If omitted or empty, any protocol
     /// matches. Accepted values: "TCP", "UDP", "SCTP", "ANY"
-    ///
+    /// 
     /// Matching on ICMP is not supported.
-    ///
+    /// 
     /// Named port specified for a container may narrow this down, but may not
     /// contradict this.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3717,7 +3263,7 @@ pub struct CiliumClusterwideNetworkPolicysEgressToPortsRulesDns {
     /// the pattern. As a special case a "*" as the leftmost character, without a
     /// following "." matches all subdomains as well as the name to the right.
     /// A trailing "." is automatically added when missing.
-    ///
+    /// 
     /// Examples:
     /// `*.cilium.io` matches subomains of cilium at that level
     ///   www.cilium.io and blog.cilium.io match, cilium.io and google.com do not
@@ -3728,18 +3274,14 @@ pub struct CiliumClusterwideNetworkPolicysEgressToPortsRulesDns {
     /// begins with "sub"
     ///   sub.cilium.io and subdomain.cilium.io match, www.cilium.io,
     ///   blog.cilium.io, cilium.io and google.com do not
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchPattern"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchPattern")]
     pub match_pattern: Option<String>,
 }
 
 /// PortRuleHTTP is a list of HTTP protocol constraints. All fields are
 /// optional, if all fields are empty or missing, the rule does not have any
 /// effect.
-///
+/// 
 /// All fields of this type are extended POSIX regex as defined by IEEE Std
 /// 1003.1, (i.e this follows the egrep/unix syntax, not the perl syntax)
 /// matched against the path of an incoming request. Currently it can contain
@@ -3750,13 +3292,8 @@ pub struct CiliumClusterwideNetworkPolicysEgressToPortsRulesHttp {
     /// HeaderMatches is a list of HTTP headers which must be
     /// present and match against the given values. Mismatch field can be used
     /// to specify what to do when there is no match.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "headerMatches"
-    )]
-    pub header_matches:
-        Option<Vec<CiliumClusterwideNetworkPolicysEgressToPortsRulesHttpHeaderMatches>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "headerMatches")]
+    pub header_matches: Option<Vec<CiliumClusterwideNetworkPolicysEgressToPortsRulesHttpHeaderMatches>>,
     /// Headers is a list of HTTP headers which must be present in the
     /// request. If omitted or empty, requests are allowed regardless of
     /// headers present.
@@ -3764,23 +3301,23 @@ pub struct CiliumClusterwideNetworkPolicysEgressToPortsRulesHttp {
     pub headers: Option<Vec<String>>,
     /// Host is an extended POSIX regex matched against the host header of a
     /// request. Examples:
-    ///
+    /// 
     /// - foo.bar.com will match the host fooXbar.com or foo-bar.com
     /// - foo\.bar\.com will only match the host foo.bar.com
-    ///
+    /// 
     /// If omitted or empty, the value of the host header is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Method is an extended POSIX regex matched against the method of a
     /// request, e.g. "GET", "POST", "PUT", "PATCH", "DELETE", ...
-    ///
+    /// 
     /// If omitted or empty, all methods are allowed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub method: Option<String>,
     /// Path is an extended POSIX regex matched against the path of a
     /// request. Currently it can contain characters disallowed from the
     /// conventional "path" part of a URL as defined by RFC 3986.
-    ///
+    /// 
     /// If omitted or empty, all paths are all allowed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -3796,8 +3333,7 @@ pub struct CiliumClusterwideNetworkPolicysEgressToPortsRulesHttpHeaderMatches {
     /// to drop the request. Otherwise the overall rule is still considered as
     /// matching, but the mismatches are logged in the access log.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub mismatch:
-        Option<CiliumClusterwideNetworkPolicysEgressToPortsRulesHttpHeaderMatchesMismatch>,
+    pub mismatch: Option<CiliumClusterwideNetworkPolicysEgressToPortsRulesHttpHeaderMatchesMismatch>,
     /// Name identifies the header.
     pub name: String,
     /// Secret refers to a secret that contains the value to be matched against.
@@ -3849,23 +3385,19 @@ pub struct CiliumClusterwideNetworkPolicysEgressToPortsRulesKafka {
     /// APIKey is a case-insensitive string matched against the key of a
     /// request, e.g. "produce", "fetch", "createtopic", "deletetopic", et al
     /// Reference: https://kafka.apache.org/protocol#protocol_api_keys
-    ///
+    /// 
     /// If omitted or empty, and if Role is not specified, then all keys are allowed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiKey")]
     pub api_key: Option<String>,
     /// APIVersion is the version matched against the api version of the
     /// Kafka message. If set, it has to be a string representing a positive
     /// integer.
-    ///
+    /// 
     /// If omitted or empty, all versions are allowed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// ClientID is the client identifier as provided in the request.
-    ///
+    /// 
     /// From Kafka protocol documentation:
     /// This is a user supplied identifier for the client application. The
     /// user can use any identifier they like and it will be used when
@@ -3874,7 +3406,7 @@ pub struct CiliumClusterwideNetworkPolicysEgressToPortsRulesKafka {
     /// number coming from each client application (each of which could
     /// reside on multiple servers). This id acts as a logical grouping
     /// across all requests from a particular client.
-    ///
+    /// 
     /// If omitted or empty, all client identifiers are allowed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientID")]
     pub client_id: Option<String>,
@@ -3882,14 +3414,14 @@ pub struct CiliumClusterwideNetworkPolicysEgressToPortsRulesKafka {
     /// necessary to perform certain higher-level Kafka operations such as "produce"
     /// or "consume". A Role automatically expands into all APIKeys required
     /// to perform the specified higher-level operation.
-    ///
+    /// 
     /// The following values are supported:
     ///  - "produce": Allow producing to the topics specified in the rule
     ///  - "consume": Allow consuming from the topics specified in the rule
-    ///
+    /// 
     /// This field is incompatible with the APIKey field, i.e APIKey and Role
     /// cannot both be specified in the same rule.
-    ///
+    /// 
     /// If omitted or empty, and if APIKey is not specified, then all keys are
     /// allowed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3897,16 +3429,16 @@ pub struct CiliumClusterwideNetworkPolicysEgressToPortsRulesKafka {
     /// Topic is the topic name contained in the message. If a Kafka request
     /// contains multiple topics, then all topics must be allowed or the
     /// message will be rejected.
-    ///
+    /// 
     /// This constraint is ignored if the matched request message type
     /// doesn't contain any topic. Maximum size of Topic can be 249
     /// characters as per recent Kafka spec and allowed characters are
     /// a-z, A-Z, 0-9, -, . and _.
-    ///
+    /// 
     /// Older Kafka versions had longer topic lengths of 255, but in Kafka 0.10
     /// version the length was changed from 255 to 249. For compatibility
     /// reasons we are using 255.
-    ///
+    /// 
     /// If omitted or empty, all topics are allowed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub topic: Option<String>,
@@ -3939,11 +3471,7 @@ pub struct CiliumClusterwideNetworkPolicysEgressToPortsTerminatingTls {
     /// PrivateKey is the file name or k8s secret item name for the private key
     /// matching the certificate chain. If omitted, 'tls.key' is assumed, if it
     /// exists. If given, the item must exist.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<String>,
     /// Secret is the secret that contains the certificates and private key for
     /// the TLS context.
@@ -3981,21 +3509,12 @@ pub struct CiliumClusterwideNetworkPolicysEgressToPortsTerminatingTlsSecret {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicysEgressToRequires {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CiliumClusterwideNetworkPolicysEgressToRequiresMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicysEgressToRequiresMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -4030,20 +3549,11 @@ pub enum CiliumClusterwideNetworkPolicysEgressToRequiresMatchExpressionsOperator
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicysEgressToServices {
     /// K8sService selects service by name and namespace pair
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "k8sService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "k8sService")]
     pub k8s_service: Option<CiliumClusterwideNetworkPolicysEgressToServicesK8sService>,
     /// K8sServiceSelector selects services by k8s labels and namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "k8sServiceSelector"
-    )]
-    pub k8s_service_selector:
-        Option<CiliumClusterwideNetworkPolicysEgressToServicesK8sServiceSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "k8sServiceSelector")]
+    pub k8s_service_selector: Option<CiliumClusterwideNetworkPolicysEgressToServicesK8sServiceSelector>,
 }
 
 /// K8sService selects service by name and namespace pair
@@ -4051,11 +3561,7 @@ pub struct CiliumClusterwideNetworkPolicysEgressToServices {
 pub struct CiliumClusterwideNetworkPolicysEgressToServicesK8sService {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
 }
 
@@ -4101,8 +3607,7 @@ pub struct CiliumClusterwideNetworkPolicysEgressToServicesK8sServiceSelectorSele
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum CiliumClusterwideNetworkPolicysEgressToServicesK8sServiceSelectorSelectorMatchExpressionsOperator
-{
+pub enum CiliumClusterwideNetworkPolicysEgressToServicesK8sServiceSelectorSelectorMatchExpressionsOperator {
     In,
     NotIn,
     Exists,
@@ -4112,15 +3617,15 @@ pub enum CiliumClusterwideNetworkPolicysEgressToServicesK8sServiceSelectorSelect
 /// EgressDenyRule contains all rule types which can be applied at egress, i.e.
 /// network traffic that originates inside the endpoint and exits the endpoint
 /// selected by the endpointSelector.
-///
+/// 
 ///   - All members of this structure are optional. If omitted or empty, the
 ///     member will have no effect on the rule.
-///
+/// 
 ///   - If multiple members of the structure are specified, then all members
 ///     must match in order for the rule to take effect. The exception to this
 ///     rule is the ToRequires member; the effects of any Requires field in any
 ///     rule will apply to all other rules as well.
-///
+/// 
 ///   - ToEndpoints, ToCIDR, ToCIDRSet, ToEntities, ToServices and ToGroups are
 ///     mutually exclusive. Only one of these members may be present within an
 ///     individual rule.
@@ -4128,7 +3633,7 @@ pub enum CiliumClusterwideNetworkPolicysEgressToServicesK8sServiceSelectorSelect
 pub struct CiliumClusterwideNetworkPolicysEgressDeny {
     /// ICMPs is a list of ICMP rule identified by type number
     /// which the endpoint subject to the rule is not allowed to connect to.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "app=httpd" is not allowed to initiate
     /// type 8 ICMP connections.
@@ -4141,7 +3646,7 @@ pub struct CiliumClusterwideNetworkPolicysEgressDeny {
     /// outgoing connections. Adding a prefix into ToCIDR or into ToCIDRSet
     /// with no ExcludeCIDRs is equivalent. Overlaps are allowed between
     /// ToCIDR and ToCIDRSet.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "app=database-proxy" is allowed to
     /// initiate connections to 10.2.3.0/24
@@ -4155,7 +3660,7 @@ pub struct CiliumClusterwideNetworkPolicysEgressDeny {
     /// connections. Adding a prefix into ToCIDR or into ToCIDRSet with no
     /// ExcludeCIDRs is equivalent. Overlaps are allowed between ToCIDR and
     /// ToCIDRSet.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "app=database-proxy" is allowed to
     /// initiate connections to 10.2.3.0/24 except from IPs in subnet 10.2.3.0/28.
@@ -4163,30 +3668,22 @@ pub struct CiliumClusterwideNetworkPolicysEgressDeny {
     pub to_cidr_set: Option<Vec<CiliumClusterwideNetworkPolicysEgressDenyToCidrSet>>,
     /// ToEndpoints is a list of endpoints identified by an EndpointSelector to
     /// which the endpoints subject to the rule are allowed to communicate.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "role=frontend" can communicate with any
     /// endpoint carrying the label "role=backend".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "toEndpoints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "toEndpoints")]
     pub to_endpoints: Option<Vec<CiliumClusterwideNetworkPolicysEgressDenyToEndpoints>>,
     /// ToEntities is a list of special entities to which the endpoint subject
     /// to the rule is allowed to initiate connections. Supported entities are
     /// `world`, `cluster`,`host`,`remote-node`,`kube-apiserver`, `init`,
     /// `health`,`unmanaged` and `all`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "toEntities"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "toEntities")]
     pub to_entities: Option<Vec<String>>,
     /// ToGroups is a directive that allows the integration with multiple outside
     /// providers. Currently, only AWS is supported, and the rule can select by
     /// multiple sub directives:
-    ///
+    /// 
     /// Example:
     /// toGroups:
     /// - aws:
@@ -4201,7 +3698,7 @@ pub struct CiliumClusterwideNetworkPolicysEgressDeny {
     /// ToPorts is a list of destination ports identified by port number and
     /// protocol which the endpoint subject to the rule is not allowed to connect
     /// to.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "role=frontend" is not allowed to initiate
     /// connections to destination port 8080/tcp
@@ -4212,29 +3709,21 @@ pub struct CiliumClusterwideNetworkPolicysEgressDeny {
     /// endpoints. These additional constraints do no by itself grant access
     /// privileges and must always be accompanied with at least one matching
     /// ToEndpoints.
-    ///
+    /// 
     /// Example:
     /// Any Endpoint with the label "team=A" requires any endpoint to which it
     /// communicates to also carry the label "team=A".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "toRequires"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "toRequires")]
     pub to_requires: Option<Vec<CiliumClusterwideNetworkPolicysEgressDenyToRequires>>,
     /// ToServices is a list of services to which the endpoint subject
     /// to the rule is allowed to initiate connections.
     /// Currently Cilium only supports toServices for K8s services without
     /// selectors.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "app=backend-app" is allowed to
     /// initiate connections to all cidrs backing the "external-service" service
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "toServices"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "toServices")]
     pub to_services: Option<Vec<CiliumClusterwideNetworkPolicysEgressDenyToServices>>,
 }
 
@@ -4291,11 +3780,7 @@ pub struct CiliumClusterwideNetworkPolicysEgressDenyToCidrSet {
     /// A CiliumCIDRGroup contains a list of CIDRs that the endpoint, subject to
     /// the rule, can (Ingress/Egress) or cannot (IngressDeny/EgressDeny) receive
     /// connections from.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cidrGroupRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrGroupRef")]
     pub cidr_group_ref: Option<String>,
     /// ExceptCIDRs is a list of IP blocks which the endpoint subject to the rule
     /// is not allowed to initiate connections to. These CIDR prefixes should be
@@ -4311,21 +3796,12 @@ pub struct CiliumClusterwideNetworkPolicysEgressDenyToCidrSet {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicysEgressDenyToEndpoints {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CiliumClusterwideNetworkPolicysEgressDenyToEndpointsMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicysEgressDenyToEndpointsMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -4372,17 +3848,9 @@ pub struct CiliumClusterwideNetworkPolicysEgressDenyToGroupsAws {
     pub labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupsIds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupsIds")]
     pub security_groups_ids: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupsNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupsNames")]
     pub security_groups_names: Option<Vec<String>>,
 }
 
@@ -4390,21 +3858,12 @@ pub struct CiliumClusterwideNetworkPolicysEgressDenyToGroupsAws {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicysEgressDenyToNodes {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CiliumClusterwideNetworkPolicysEgressDenyToNodesMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicysEgressDenyToNodesMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -4456,9 +3915,9 @@ pub struct CiliumClusterwideNetworkPolicysEgressDenyToPortsPorts {
     pub port: String,
     /// Protocol is the L4 protocol. If omitted or empty, any protocol
     /// matches. Accepted values: "TCP", "UDP", "SCTP", "ANY"
-    ///
+    /// 
     /// Matching on ICMP is not supported.
-    ///
+    /// 
     /// Named port specified for a container may narrow this down, but may not
     /// contradict this.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4482,21 +3941,12 @@ pub enum CiliumClusterwideNetworkPolicysEgressDenyToPortsPortsProtocol {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicysEgressDenyToRequires {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CiliumClusterwideNetworkPolicysEgressDenyToRequiresMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicysEgressDenyToRequiresMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -4531,20 +3981,11 @@ pub enum CiliumClusterwideNetworkPolicysEgressDenyToRequiresMatchExpressionsOper
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicysEgressDenyToServices {
     /// K8sService selects service by name and namespace pair
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "k8sService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "k8sService")]
     pub k8s_service: Option<CiliumClusterwideNetworkPolicysEgressDenyToServicesK8sService>,
     /// K8sServiceSelector selects services by k8s labels and namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "k8sServiceSelector"
-    )]
-    pub k8s_service_selector:
-        Option<CiliumClusterwideNetworkPolicysEgressDenyToServicesK8sServiceSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "k8sServiceSelector")]
+    pub k8s_service_selector: Option<CiliumClusterwideNetworkPolicysEgressDenyToServicesK8sServiceSelector>,
 }
 
 /// K8sService selects service by name and namespace pair
@@ -4552,11 +3993,7 @@ pub struct CiliumClusterwideNetworkPolicysEgressDenyToServices {
 pub struct CiliumClusterwideNetworkPolicysEgressDenyToServicesK8sService {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
 }
 
@@ -4602,8 +4039,7 @@ pub struct CiliumClusterwideNetworkPolicysEgressDenyToServicesK8sServiceSelector
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum CiliumClusterwideNetworkPolicysEgressDenyToServicesK8sServiceSelectorSelectorMatchExpressionsOperator
-{
+pub enum CiliumClusterwideNetworkPolicysEgressDenyToServicesK8sServiceSelectorSelectorMatchExpressionsOperator {
     In,
     NotIn,
     Exists,
@@ -4614,15 +4050,15 @@ pub enum CiliumClusterwideNetworkPolicysEgressDenyToServicesK8sServiceSelectorSe
 /// subject endpoint(s) to have a default deny mode. If enabled,
 /// this causes all traffic not explicitly allowed by a network policy
 /// to be dropped.
-///
+/// 
 /// If not specified, the default is true for each traffic direction
 /// that has rules, and false otherwise. For example, if a policy
 /// only has Ingress or IngressDeny rules, then the default for
 /// ingress is true and egress is false.
-///
+/// 
 /// If multiple policies apply to an endpoint, that endpoint's default deny
 /// will be enabled if any policy requests it.
-///
+/// 
 /// This is useful for creating broad-based network policies that will not
 /// cause endpoints to enter default-deny mode.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4643,21 +4079,12 @@ pub struct CiliumClusterwideNetworkPolicysEnableDefaultDeny {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicysEndpointSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CiliumClusterwideNetworkPolicysEndpointSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicysEndpointSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -4691,15 +4118,15 @@ pub enum CiliumClusterwideNetworkPolicysEndpointSelectorMatchExpressionsOperator
 /// IngressRule contains all rule types which can be applied at ingress,
 /// i.e. network traffic that originates outside of the endpoint and
 /// is entering the endpoint selected by the endpointSelector.
-///
+/// 
 ///   - All members of this structure are optional. If omitted or empty, the
 ///     member will have no effect on the rule.
-///
+/// 
 ///   - If multiple members are set, all of them need to match in order for
 ///     the rule to take effect. The exception to this rule is FromRequires field;
 ///     the effects of any Requires field in any rule will apply to all other
 ///     rules as well.
-///
+/// 
 ///   - FromEndpoints, FromCIDR, FromCIDRSet and FromEntities are mutually
 ///     exclusive. Only one of these members may be present within an individual
 ///     rule.
@@ -4716,7 +4143,7 @@ pub struct CiliumClusterwideNetworkPolicysIngress {
     /// incoming connections. Adding  a prefix into FromCIDR or into
     /// FromCIDRSet with no ExcludeCIDRs is  equivalent.  Overlaps are
     /// allowed between FromCIDR and FromCIDRSet.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "app=my-legacy-pet" is allowed to receive
     /// connections from 10.3.9.1
@@ -4729,52 +4156,36 @@ pub struct CiliumClusterwideNetworkPolicysIngress {
     /// This will match on the source IP address of incoming connections. Adding
     /// a prefix into FromCIDR or into FromCIDRSet with no ExcludeCIDRs is
     /// equivalent. Overlaps are allowed between FromCIDR and FromCIDRSet.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "app=my-legacy-pet" is allowed to receive
     /// connections from 10.0.0.0/8 except from IPs in subnet 10.96.0.0/12.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fromCIDRSet"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromCIDRSet")]
     pub from_cidr_set: Option<Vec<CiliumClusterwideNetworkPolicysIngressFromCidrSet>>,
     /// FromEndpoints is a list of endpoints identified by an
     /// EndpointSelector which are allowed to communicate with the endpoint
     /// subject to the rule.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "role=backend" can be consumed by any
     /// endpoint carrying the label "role=frontend".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fromEndpoints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromEndpoints")]
     pub from_endpoints: Option<Vec<CiliumClusterwideNetworkPolicysIngressFromEndpoints>>,
     /// FromEntities is a list of special entities which the endpoint subject
     /// to the rule is allowed to receive connections from. Supported entities are
     /// `world`, `cluster` and `host`
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fromEntities"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromEntities")]
     pub from_entities: Option<Vec<String>>,
     /// FromGroups is a directive that allows the integration with multiple outside
     /// providers. Currently, only AWS is supported, and the rule can select by
     /// multiple sub directives:
-    ///
+    /// 
     /// Example:
     /// FromGroups:
     /// - aws:
     ///     securityGroupsIds:
     ///     - 'sg-XXXXXXXXXXXXX'
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fromGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromGroups")]
     pub from_groups: Option<Vec<CiliumClusterwideNetworkPolicysIngressFromGroups>>,
     /// FromNodes is a list of nodes identified by an
     /// EndpointSelector which are allowed to communicate with the endpoint
@@ -4785,20 +4196,16 @@ pub struct CiliumClusterwideNetworkPolicysIngress {
     /// in order for the selected endpoints to be reachable. These
     /// additional constraints do no by itself grant access privileges and
     /// must always be accompanied with at least one matching FromEndpoints.
-    ///
+    /// 
     /// Example:
     /// Any Endpoint with the label "team=A" requires consuming endpoint
     /// to also carry the label "team=A".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fromRequires"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromRequires")]
     pub from_requires: Option<Vec<CiliumClusterwideNetworkPolicysIngressFromRequires>>,
     /// ICMPs is a list of ICMP rule identified by type number
     /// which the endpoint subject to the rule is allowed to
     /// receive connections on.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "app=httpd" can only accept incoming
     /// type 8 ICMP connections.
@@ -4807,7 +4214,7 @@ pub struct CiliumClusterwideNetworkPolicysIngress {
     /// ToPorts is a list of destination ports identified by port number and
     /// protocol which the endpoint subject to the rule is allowed to
     /// receive connections on.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "app=httpd" can only accept incoming
     /// connections on port 80/tcp.
@@ -4845,11 +4252,7 @@ pub struct CiliumClusterwideNetworkPolicysIngressFromCidrSet {
     /// A CiliumCIDRGroup contains a list of CIDRs that the endpoint, subject to
     /// the rule, can (Ingress/Egress) or cannot (IngressDeny/EgressDeny) receive
     /// connections from.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cidrGroupRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrGroupRef")]
     pub cidr_group_ref: Option<String>,
     /// ExceptCIDRs is a list of IP blocks which the endpoint subject to the rule
     /// is not allowed to initiate connections to. These CIDR prefixes should be
@@ -4865,21 +4268,12 @@ pub struct CiliumClusterwideNetworkPolicysIngressFromCidrSet {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicysIngressFromEndpoints {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CiliumClusterwideNetworkPolicysIngressFromEndpointsMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicysIngressFromEndpointsMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -4926,17 +4320,9 @@ pub struct CiliumClusterwideNetworkPolicysIngressFromGroupsAws {
     pub labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupsIds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupsIds")]
     pub security_groups_ids: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupsNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupsNames")]
     pub security_groups_names: Option<Vec<String>>,
 }
 
@@ -4944,21 +4330,12 @@ pub struct CiliumClusterwideNetworkPolicysIngressFromGroupsAws {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicysIngressFromNodes {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CiliumClusterwideNetworkPolicysIngressFromNodesMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicysIngressFromNodesMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -4993,21 +4370,12 @@ pub enum CiliumClusterwideNetworkPolicysIngressFromNodesMatchExpressionsOperator
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicysIngressFromRequires {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CiliumClusterwideNetworkPolicysIngressFromRequiresMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicysIngressFromRequiresMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -5093,11 +4461,7 @@ pub struct CiliumClusterwideNetworkPolicysIngressToPorts {
     /// to the remote destination. For ingress policy this specifies the
     /// client-side TLS parameters for the connection from the L7 proxy to
     /// the local endpoint.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "originatingTLS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "originatingTLS")]
     pub originating_tls: Option<CiliumClusterwideNetworkPolicysIngressToPortsOriginatingTls>,
     /// Ports is a list of L4 port/protocol
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5110,11 +4474,7 @@ pub struct CiliumClusterwideNetworkPolicysIngressToPorts {
     /// ServerNames is a list of allowed TLS SNI values. If not empty, then
     /// TLS must be present and one of the provided SNIs must be indicated in the
     /// TLS handshake.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverNames")]
     pub server_names: Option<Vec<String>>,
     /// TerminatingTLS is the TLS context for the connection terminated by
     /// the L7 proxy.  For egress policy this specifies the server-side TLS
@@ -5122,11 +4482,7 @@ pub struct CiliumClusterwideNetworkPolicysIngressToPorts {
     /// endpoint and terminated by the L7 proxy. For ingress policy this specifies
     /// the server-side TLS parameters to be applied on the connections
     /// originated from a remote source and terminated by the L7 proxy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminatingTLS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminatingTLS")]
     pub terminating_tls: Option<CiliumClusterwideNetworkPolicysIngressToPortsTerminatingTls>,
 }
 
@@ -5186,11 +4542,7 @@ pub struct CiliumClusterwideNetworkPolicysIngressToPortsOriginatingTls {
     /// PrivateKey is the file name or k8s secret item name for the private key
     /// matching the certificate chain. If omitted, 'tls.key' is assumed, if it
     /// exists. If given, the item must exist.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<String>,
     /// Secret is the secret that contains the certificates and private key for
     /// the TLS context.
@@ -5235,9 +4587,9 @@ pub struct CiliumClusterwideNetworkPolicysIngressToPortsPorts {
     pub port: String,
     /// Protocol is the L4 protocol. If omitted or empty, any protocol
     /// matches. Accepted values: "TCP", "UDP", "SCTP", "ANY"
-    ///
+    /// 
     /// Matching on ICMP is not supported.
-    ///
+    /// 
     /// Named port specified for a container may narrow this down, but may not
     /// contradict this.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5292,7 +4644,7 @@ pub struct CiliumClusterwideNetworkPolicysIngressToPortsRulesDns {
     /// the pattern. As a special case a "*" as the leftmost character, without a
     /// following "." matches all subdomains as well as the name to the right.
     /// A trailing "." is automatically added when missing.
-    ///
+    /// 
     /// Examples:
     /// `*.cilium.io` matches subomains of cilium at that level
     ///   www.cilium.io and blog.cilium.io match, cilium.io and google.com do not
@@ -5303,18 +4655,14 @@ pub struct CiliumClusterwideNetworkPolicysIngressToPortsRulesDns {
     /// begins with "sub"
     ///   sub.cilium.io and subdomain.cilium.io match, www.cilium.io,
     ///   blog.cilium.io, cilium.io and google.com do not
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchPattern"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchPattern")]
     pub match_pattern: Option<String>,
 }
 
 /// PortRuleHTTP is a list of HTTP protocol constraints. All fields are
 /// optional, if all fields are empty or missing, the rule does not have any
 /// effect.
-///
+/// 
 /// All fields of this type are extended POSIX regex as defined by IEEE Std
 /// 1003.1, (i.e this follows the egrep/unix syntax, not the perl syntax)
 /// matched against the path of an incoming request. Currently it can contain
@@ -5325,13 +4673,8 @@ pub struct CiliumClusterwideNetworkPolicysIngressToPortsRulesHttp {
     /// HeaderMatches is a list of HTTP headers which must be
     /// present and match against the given values. Mismatch field can be used
     /// to specify what to do when there is no match.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "headerMatches"
-    )]
-    pub header_matches:
-        Option<Vec<CiliumClusterwideNetworkPolicysIngressToPortsRulesHttpHeaderMatches>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "headerMatches")]
+    pub header_matches: Option<Vec<CiliumClusterwideNetworkPolicysIngressToPortsRulesHttpHeaderMatches>>,
     /// Headers is a list of HTTP headers which must be present in the
     /// request. If omitted or empty, requests are allowed regardless of
     /// headers present.
@@ -5339,23 +4682,23 @@ pub struct CiliumClusterwideNetworkPolicysIngressToPortsRulesHttp {
     pub headers: Option<Vec<String>>,
     /// Host is an extended POSIX regex matched against the host header of a
     /// request. Examples:
-    ///
+    /// 
     /// - foo.bar.com will match the host fooXbar.com or foo-bar.com
     /// - foo\.bar\.com will only match the host foo.bar.com
-    ///
+    /// 
     /// If omitted or empty, the value of the host header is ignored.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Method is an extended POSIX regex matched against the method of a
     /// request, e.g. "GET", "POST", "PUT", "PATCH", "DELETE", ...
-    ///
+    /// 
     /// If omitted or empty, all methods are allowed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub method: Option<String>,
     /// Path is an extended POSIX regex matched against the path of a
     /// request. Currently it can contain characters disallowed from the
     /// conventional "path" part of a URL as defined by RFC 3986.
-    ///
+    /// 
     /// If omitted or empty, all paths are all allowed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -5371,8 +4714,7 @@ pub struct CiliumClusterwideNetworkPolicysIngressToPortsRulesHttpHeaderMatches {
     /// to drop the request. Otherwise the overall rule is still considered as
     /// matching, but the mismatches are logged in the access log.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub mismatch:
-        Option<CiliumClusterwideNetworkPolicysIngressToPortsRulesHttpHeaderMatchesMismatch>,
+    pub mismatch: Option<CiliumClusterwideNetworkPolicysIngressToPortsRulesHttpHeaderMatchesMismatch>,
     /// Name identifies the header.
     pub name: String,
     /// Secret refers to a secret that contains the value to be matched against.
@@ -5424,23 +4766,19 @@ pub struct CiliumClusterwideNetworkPolicysIngressToPortsRulesKafka {
     /// APIKey is a case-insensitive string matched against the key of a
     /// request, e.g. "produce", "fetch", "createtopic", "deletetopic", et al
     /// Reference: https://kafka.apache.org/protocol#protocol_api_keys
-    ///
+    /// 
     /// If omitted or empty, and if Role is not specified, then all keys are allowed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiKey")]
     pub api_key: Option<String>,
     /// APIVersion is the version matched against the api version of the
     /// Kafka message. If set, it has to be a string representing a positive
     /// integer.
-    ///
+    /// 
     /// If omitted or empty, all versions are allowed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// ClientID is the client identifier as provided in the request.
-    ///
+    /// 
     /// From Kafka protocol documentation:
     /// This is a user supplied identifier for the client application. The
     /// user can use any identifier they like and it will be used when
@@ -5449,7 +4787,7 @@ pub struct CiliumClusterwideNetworkPolicysIngressToPortsRulesKafka {
     /// number coming from each client application (each of which could
     /// reside on multiple servers). This id acts as a logical grouping
     /// across all requests from a particular client.
-    ///
+    /// 
     /// If omitted or empty, all client identifiers are allowed.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientID")]
     pub client_id: Option<String>,
@@ -5457,14 +4795,14 @@ pub struct CiliumClusterwideNetworkPolicysIngressToPortsRulesKafka {
     /// necessary to perform certain higher-level Kafka operations such as "produce"
     /// or "consume". A Role automatically expands into all APIKeys required
     /// to perform the specified higher-level operation.
-    ///
+    /// 
     /// The following values are supported:
     ///  - "produce": Allow producing to the topics specified in the rule
     ///  - "consume": Allow consuming from the topics specified in the rule
-    ///
+    /// 
     /// This field is incompatible with the APIKey field, i.e APIKey and Role
     /// cannot both be specified in the same rule.
-    ///
+    /// 
     /// If omitted or empty, and if APIKey is not specified, then all keys are
     /// allowed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5472,16 +4810,16 @@ pub struct CiliumClusterwideNetworkPolicysIngressToPortsRulesKafka {
     /// Topic is the topic name contained in the message. If a Kafka request
     /// contains multiple topics, then all topics must be allowed or the
     /// message will be rejected.
-    ///
+    /// 
     /// This constraint is ignored if the matched request message type
     /// doesn't contain any topic. Maximum size of Topic can be 249
     /// characters as per recent Kafka spec and allowed characters are
     /// a-z, A-Z, 0-9, -, . and _.
-    ///
+    /// 
     /// Older Kafka versions had longer topic lengths of 255, but in Kafka 0.10
     /// version the length was changed from 255 to 249. For compatibility
     /// reasons we are using 255.
-    ///
+    /// 
     /// If omitted or empty, all topics are allowed.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub topic: Option<String>,
@@ -5514,11 +4852,7 @@ pub struct CiliumClusterwideNetworkPolicysIngressToPortsTerminatingTls {
     /// PrivateKey is the file name or k8s secret item name for the private key
     /// matching the certificate chain. If omitted, 'tls.key' is assumed, if it
     /// exists. If given, the item must exist.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<String>,
     /// Secret is the secret that contains the certificates and private key for
     /// the TLS context.
@@ -5555,15 +4889,15 @@ pub struct CiliumClusterwideNetworkPolicysIngressToPortsTerminatingTlsSecret {
 /// IngressDenyRule contains all rule types which can be applied at ingress,
 /// i.e. network traffic that originates outside of the endpoint and
 /// is entering the endpoint selected by the endpointSelector.
-///
+/// 
 ///   - All members of this structure are optional. If omitted or empty, the
 ///     member will have no effect on the rule.
-///
+/// 
 ///   - If multiple members are set, all of them need to match in order for
 ///     the rule to take effect. The exception to this rule is FromRequires field;
 ///     the effects of any Requires field in any rule will apply to all other
 ///     rules as well.
-///
+/// 
 ///   - FromEndpoints, FromCIDR, FromCIDRSet, FromGroups and FromEntities are mutually
 ///     exclusive. Only one of these members may be present within an individual
 ///     rule.
@@ -5577,7 +4911,7 @@ pub struct CiliumClusterwideNetworkPolicysIngressDeny {
     /// incoming connections. Adding  a prefix into FromCIDR or into
     /// FromCIDRSet with no ExcludeCIDRs is  equivalent.  Overlaps are
     /// allowed between FromCIDR and FromCIDRSet.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "app=my-legacy-pet" is allowed to receive
     /// connections from 10.3.9.1
@@ -5590,52 +4924,36 @@ pub struct CiliumClusterwideNetworkPolicysIngressDeny {
     /// This will match on the source IP address of incoming connections. Adding
     /// a prefix into FromCIDR or into FromCIDRSet with no ExcludeCIDRs is
     /// equivalent. Overlaps are allowed between FromCIDR and FromCIDRSet.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "app=my-legacy-pet" is allowed to receive
     /// connections from 10.0.0.0/8 except from IPs in subnet 10.96.0.0/12.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fromCIDRSet"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromCIDRSet")]
     pub from_cidr_set: Option<Vec<CiliumClusterwideNetworkPolicysIngressDenyFromCidrSet>>,
     /// FromEndpoints is a list of endpoints identified by an
     /// EndpointSelector which are allowed to communicate with the endpoint
     /// subject to the rule.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "role=backend" can be consumed by any
     /// endpoint carrying the label "role=frontend".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fromEndpoints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromEndpoints")]
     pub from_endpoints: Option<Vec<CiliumClusterwideNetworkPolicysIngressDenyFromEndpoints>>,
     /// FromEntities is a list of special entities which the endpoint subject
     /// to the rule is allowed to receive connections from. Supported entities are
     /// `world`, `cluster` and `host`
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fromEntities"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromEntities")]
     pub from_entities: Option<Vec<String>>,
     /// FromGroups is a directive that allows the integration with multiple outside
     /// providers. Currently, only AWS is supported, and the rule can select by
     /// multiple sub directives:
-    ///
+    /// 
     /// Example:
     /// FromGroups:
     /// - aws:
     ///     securityGroupsIds:
     ///     - 'sg-XXXXXXXXXXXXX'
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fromGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromGroups")]
     pub from_groups: Option<Vec<CiliumClusterwideNetworkPolicysIngressDenyFromGroups>>,
     /// FromNodes is a list of nodes identified by an
     /// EndpointSelector which are allowed to communicate with the endpoint
@@ -5646,20 +4964,16 @@ pub struct CiliumClusterwideNetworkPolicysIngressDeny {
     /// in order for the selected endpoints to be reachable. These
     /// additional constraints do no by itself grant access privileges and
     /// must always be accompanied with at least one matching FromEndpoints.
-    ///
+    /// 
     /// Example:
     /// Any Endpoint with the label "team=A" requires consuming endpoint
     /// to also carry the label "team=A".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fromRequires"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fromRequires")]
     pub from_requires: Option<Vec<CiliumClusterwideNetworkPolicysIngressDenyFromRequires>>,
     /// ICMPs is a list of ICMP rule identified by type number
     /// which the endpoint subject to the rule is not allowed to
     /// receive connections on.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "app=httpd" can not accept incoming
     /// type 8 ICMP connections.
@@ -5668,7 +4982,7 @@ pub struct CiliumClusterwideNetworkPolicysIngressDeny {
     /// ToPorts is a list of destination ports identified by port number and
     /// protocol which the endpoint subject to the rule is not allowed to
     /// receive connections on.
-    ///
+    /// 
     /// Example:
     /// Any endpoint with the label "app=httpd" can not accept incoming
     /// connections on port 80/tcp.
@@ -5688,11 +5002,7 @@ pub struct CiliumClusterwideNetworkPolicysIngressDenyFromCidrSet {
     /// A CiliumCIDRGroup contains a list of CIDRs that the endpoint, subject to
     /// the rule, can (Ingress/Egress) or cannot (IngressDeny/EgressDeny) receive
     /// connections from.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cidrGroupRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrGroupRef")]
     pub cidr_group_ref: Option<String>,
     /// ExceptCIDRs is a list of IP blocks which the endpoint subject to the rule
     /// is not allowed to initiate connections to. These CIDR prefixes should be
@@ -5708,21 +5018,12 @@ pub struct CiliumClusterwideNetworkPolicysIngressDenyFromCidrSet {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicysIngressDenyFromEndpoints {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CiliumClusterwideNetworkPolicysIngressDenyFromEndpointsMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicysIngressDenyFromEndpointsMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -5769,17 +5070,9 @@ pub struct CiliumClusterwideNetworkPolicysIngressDenyFromGroupsAws {
     pub labels: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupsIds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupsIds")]
     pub security_groups_ids: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroupsNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroupsNames")]
     pub security_groups_names: Option<Vec<String>>,
 }
 
@@ -5787,21 +5080,12 @@ pub struct CiliumClusterwideNetworkPolicysIngressDenyFromGroupsAws {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicysIngressDenyFromNodes {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CiliumClusterwideNetworkPolicysIngressDenyFromNodesMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicysIngressDenyFromNodesMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -5836,21 +5120,12 @@ pub enum CiliumClusterwideNetworkPolicysIngressDenyFromNodesMatchExpressionsOper
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicysIngressDenyFromRequires {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CiliumClusterwideNetworkPolicysIngressDenyFromRequiresMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicysIngressDenyFromRequiresMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -5943,9 +5218,9 @@ pub struct CiliumClusterwideNetworkPolicysIngressDenyToPortsPorts {
     pub port: String,
     /// Protocol is the L4 protocol. If omitted or empty, any protocol
     /// matches. Accepted values: "TCP", "UDP", "SCTP", "ANY"
-    ///
+    /// 
     /// Matching on ICMP is not supported.
-    ///
+    /// 
     /// Named port specified for a container may narrow this down, but may not
     /// contradict this.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5982,20 +5257,12 @@ pub struct CiliumClusterwideNetworkPolicysLabels {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumClusterwideNetworkPolicysNodeSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CiliumClusterwideNetworkPolicysNodeSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -6027,7 +5294,7 @@ pub enum CiliumClusterwideNetworkPolicysNodeSelectorMatchExpressionsOperator {
 }
 
 /// Status is the status of the Cilium policy rule.
-///
+/// 
 /// The reason this field exists in this structure is due a bug in the k8s
 /// code-generator that doesn't create a `UpdateStatus` method because the
 /// field does not exist in the structure.
@@ -6037,13 +5304,8 @@ pub struct CiliumClusterwideNetworkPolicyStatus {
     pub conditions: Option<Vec<Condition>>,
     /// DerivativePolicies is the status of all policies derived from the Cilium
     /// policy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "derivativePolicies"
-    )]
-    pub derivative_policies:
-        Option<BTreeMap<String, CiliumClusterwideNetworkPolicyStatusDerivativePolicies>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "derivativePolicies")]
+    pub derivative_policies: Option<BTreeMap<String, CiliumClusterwideNetworkPolicyStatusDerivativePolicies>>,
 }
 
 /// DerivativePolicies is the status of all policies derived from the Cilium
@@ -6068,22 +5330,15 @@ pub struct CiliumClusterwideNetworkPolicyStatusDerivativePolicies {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub error: Option<String>,
     /// LastUpdated contains the last time this status was updated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdated"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdated")]
     pub last_updated: Option<String>,
     /// Revision is the policy revision of the repository which first implemented
     /// this policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localPolicyRevision"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localPolicyRevision")]
     pub local_policy_revision: Option<i64>,
     /// OK is true when the policy has been parsed and imported successfully
     /// into the in-memory policy repository on the node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ok: Option<bool>,
 }
+

@@ -4,35 +4,26 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ModelPackageGroupSpec defines the desired state of ModelPackageGroup.
-///
-///
+/// 
+/// 
 /// A group of versioned models in the model registry.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "sagemaker.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "ModelPackageGroup",
-    plural = "modelpackagegroups"
-)]
+#[kube(group = "sagemaker.services.k8s.aws", version = "v1alpha1", kind = "ModelPackageGroup", plural = "modelpackagegroups")]
 #[kube(namespaced)]
 #[kube(status = "ModelPackageGroupStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ModelPackageGroupSpec {
     /// A description for the model group.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelPackageGroupDescription"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelPackageGroupDescription")]
     pub model_package_group_description: Option<String>,
     /// The name of the model group.
     #[serde(rename = "modelPackageGroupName")]
@@ -46,14 +37,14 @@ pub struct ModelPackageGroupSpec {
 
 /// A tag object that consists of a key and an optional value, used to manage
 /// metadata for SageMaker Amazon Web Services resources.
-///
-///
+/// 
+/// 
 /// You can add tags to notebook instances, training jobs, hyperparameter tuning
 /// jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,
 /// and endpoints. For more information on adding tags to SageMaker resources,
 /// see AddTags (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html).
-///
-///
+/// 
+/// 
 /// For more information on adding metadata to your Amazon Web Services resources
 /// with tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).
 /// For advice on best practices for managing Amazon Web Services resources with
@@ -73,11 +64,7 @@ pub struct ModelPackageGroupStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<ModelPackageGroupStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -86,11 +73,7 @@ pub struct ModelPackageGroupStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The status of the model group.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "modelPackageGroupStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "modelPackageGroupStatus")]
     pub model_package_group_status: Option<String>,
 }
 
@@ -116,3 +99,4 @@ pub struct ModelPackageGroupStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

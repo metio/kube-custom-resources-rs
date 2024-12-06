@@ -5,7 +5,7 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
@@ -41,16 +41,11 @@ pub struct CouchbaseMigrationReplicationMigrationMappingMappingsTargetKeyspace {
 
 /// CouchbaseReplicationSpec allows configuration of an XDCR replication.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "couchbase.com",
-    version = "v2",
-    kind = "CouchbaseMigrationReplication",
-    plural = "couchbasemigrationreplications"
-)]
+#[kube(group = "couchbase.com", version = "v2", kind = "CouchbaseMigrationReplication", plural = "couchbasemigrationreplications")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CouchbaseMigrationReplicationSpec {
     /// Bucket is the source bucket to replicate from.  This refers to the Couchbase
     /// bucket name, not the resource name of the bucket.  A bucket with this name must
@@ -62,18 +57,10 @@ pub struct CouchbaseMigrationReplicationSpec {
     /// transferred between clusters.  When Auto, Couchbase server will automatically
     /// compress documents as they are transferred to reduce bandwidth requirements.
     /// This field must be one of "None" or "Auto", defaulting to "Auto".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "compressionType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionType")]
     pub compression_type: Option<CouchbaseMigrationReplicationCompressionType>,
     /// FilterExpression allows certain documents to be filtered out of the replication.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "filterExpression"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filterExpression")]
     pub filter_expression: Option<String>,
     /// Paused allows a replication to be stopped and restarted without having to
     /// restart the replication from the beginning.
@@ -93,3 +80,4 @@ pub enum CouchbaseMigrationReplicationCompressionType {
     None,
     Auto,
 }
+

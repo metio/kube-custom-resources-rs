@@ -4,32 +4,23 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// UserSpec defines the desired state of User
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "k8s.mariadb.com",
-    version = "v1alpha1",
-    kind = "User",
-    plural = "users"
-)]
+#[kube(group = "k8s.mariadb.com", version = "v1alpha1", kind = "User", plural = "users")]
 #[kube(namespaced)]
 #[kube(status = "UserStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct UserSpec {
     /// CleanupPolicy defines the behavior for cleaning up a SQL resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cleanupPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanupPolicy")]
     pub cleanup_policy: Option<UserCleanupPolicy>,
     /// Host related to the User.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -38,52 +29,28 @@ pub struct UserSpec {
     #[serde(rename = "mariaDbRef")]
     pub maria_db_ref: UserMariaDbRef,
     /// MaxUserConnections defines the maximum number of simultaneous connections that the User can establish.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUserConnections"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUserConnections")]
     pub max_user_connections: Option<i32>,
     /// Name overrides the default name provided by metadata.name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// PasswordHashSecretKeyRef is a reference to the password hash to be used by the User.
     /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password hash.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passwordHashSecretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordHashSecretKeyRef")]
     pub password_hash_secret_key_ref: Option<UserPasswordHashSecretKeyRef>,
     /// PasswordPlugin is a reference to the password plugin and arguments to be used by the User.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passwordPlugin"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordPlugin")]
     pub password_plugin: Option<UserPasswordPlugin>,
     /// PasswordSecretKeyRef is a reference to the password to be used by the User.
     /// If not provided, the account will be locked and the password will expire.
     /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the password.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passwordSecretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordSecretKeyRef")]
     pub password_secret_key_ref: Option<UserPasswordSecretKeyRef>,
     /// RequeueInterval is used to perform requeue reconciliations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requeueInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requeueInterval")]
     pub requeue_interval: Option<String>,
     /// RetryInterval is the interval used to perform retries.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryInterval")]
     pub retry_interval: Option<String>,
 }
 
@@ -120,19 +87,11 @@ pub struct UserPasswordHashSecretKeyRef {
 pub struct UserPasswordPlugin {
     /// PluginArgSecretKeyRef is a reference to the arguments to be provided to the authentication plugin for the User.
     /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the authentication plugin arguments.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pluginArgSecretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pluginArgSecretKeyRef")]
     pub plugin_arg_secret_key_ref: Option<UserPasswordPluginPluginArgSecretKeyRef>,
     /// PluginNameSecretKeyRef is a reference to the authentication plugin to be used by the User.
     /// If the referred Secret is labeled with "k8s.mariadb.com/watch", updates may be performed to the Secret in order to update the authentication plugin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pluginNameSecretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pluginNameSecretKeyRef")]
     pub plugin_name_secret_key_ref: Option<UserPasswordPluginPluginNameSecretKeyRef>,
 }
 
@@ -171,3 +130,4 @@ pub struct UserStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

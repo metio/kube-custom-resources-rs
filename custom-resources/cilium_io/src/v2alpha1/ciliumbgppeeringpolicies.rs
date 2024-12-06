@@ -5,32 +5,23 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// Spec is a human readable description of a BGP peering policy
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "cilium.io",
-    version = "v2alpha1",
-    kind = "CiliumBGPPeeringPolicy",
-    plural = "ciliumbgppeeringpolicies"
-)]
+#[kube(group = "cilium.io", version = "v2alpha1", kind = "CiliumBGPPeeringPolicy", plural = "ciliumbgppeeringpolicies")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CiliumBGPPeeringPolicySpec {
     /// NodeSelector selects a group of nodes where this BGP Peering
     /// Policy applies.
-    ///
+    /// 
     /// If empty / nil this policy applies to all nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<CiliumBGPPeeringPolicyNodeSelector>,
     /// A list of CiliumBGPVirtualRouter(s) which instructs
     /// the BGP control plane how to instantiate virtual BGP routers.
@@ -40,25 +31,17 @@ pub struct CiliumBGPPeeringPolicySpec {
 
 /// NodeSelector selects a group of nodes where this BGP Peering
 /// Policy applies.
-///
+/// 
 /// If empty / nil this policy applies to all nodes.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumBGPPeeringPolicyNodeSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CiliumBGPPeeringPolicyNodeSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -94,11 +77,7 @@ pub enum CiliumBGPPeeringPolicyNodeSelectorMatchExpressionsOperator {
 pub struct CiliumBGPPeeringPolicyVirtualRouters {
     /// ExportPodCIDR determines whether to export the Node's private CIDR block
     /// to the configured neighbors.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "exportPodCIDR"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exportPodCIDR")]
     pub export_pod_cidr: Option<bool>,
     /// LocalASN is the ASN of this virtual router.
     /// Supports extended 32bit ASNs
@@ -108,36 +87,24 @@ pub struct CiliumBGPPeeringPolicyVirtualRouters {
     pub neighbors: Vec<CiliumBGPPeeringPolicyVirtualRoutersNeighbors>,
     /// PodIPPoolSelector selects CiliumPodIPPools based on labels. The virtual
     /// router will announce allocated CIDRs of matching CiliumPodIPPools.
-    ///
+    /// 
     /// If empty / nil no CiliumPodIPPools will be announced.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podIPPoolSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIPPoolSelector")]
     pub pod_ip_pool_selector: Option<CiliumBGPPeeringPolicyVirtualRoutersPodIpPoolSelector>,
     /// ServiceAdvertisements selects a group of BGP Advertisement(s) to advertise
     /// for the selected services.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAdvertisements"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAdvertisements")]
     pub service_advertisements: Option<Vec<String>>,
     /// ServiceSelector selects a group of load balancer services which this
     /// virtual router will announce. The loadBalancerClass for a service must
     /// be nil or specify a class supported by Cilium, e.g. "io.cilium/bgp-control-plane".
     /// Refer to the following document for additional details regarding load balancer
     /// classes:
-    ///
+    /// 
     ///   https://kubernetes.io/docs/concepts/services-networking/service/#load-balancer-class
-    ///
+    /// 
     /// If empty / nil no services will be announced.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceSelector")]
     pub service_selector: Option<CiliumBGPPeeringPolicyVirtualRoutersServiceSelector>,
 }
 
@@ -148,68 +115,39 @@ pub struct CiliumBGPPeeringPolicyVirtualRoutersNeighbors {
     /// AdvertisedPathAttributes can be used to apply additional path attributes
     /// to selected routes when advertising them to the peer.
     /// If empty / nil, no additional path attributes are advertised.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "advertisedPathAttributes"
-    )]
-    pub advertised_path_attributes:
-        Option<Vec<CiliumBGPPeeringPolicyVirtualRoutersNeighborsAdvertisedPathAttributes>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "advertisedPathAttributes")]
+    pub advertised_path_attributes: Option<Vec<CiliumBGPPeeringPolicyVirtualRoutersNeighborsAdvertisedPathAttributes>>,
     /// AuthSecretRef is the name of the secret to use to fetch a TCP
     /// authentication password for this peer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authSecretRef")]
     pub auth_secret_ref: Option<String>,
     /// ConnectRetryTimeSeconds defines the initial value for the BGP ConnectRetryTimer (RFC 4271, Section 8).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectRetryTimeSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectRetryTimeSeconds")]
     pub connect_retry_time_seconds: Option<i32>,
     /// EBGPMultihopTTL controls the multi-hop feature for eBGP peers.
     /// Its value defines the Time To Live (TTL) value used in BGP packets sent to the neighbor.
     /// The value 1 implies that eBGP multi-hop feature is disabled (only a single hop is allowed).
     /// This field is ignored for iBGP peers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "eBGPMultihopTTL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "eBGPMultihopTTL")]
     pub e_bgp_multihop_ttl: Option<i32>,
     /// Families, if provided, defines a set of AFI/SAFIs the speaker will
     /// negotiate with it's peer.
-    ///
+    /// 
     /// If this slice is not provided the default families of IPv6 and IPv4 will
     /// be provided.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub families: Option<Vec<CiliumBGPPeeringPolicyVirtualRoutersNeighborsFamilies>>,
     /// GracefulRestart defines graceful restart parameters which are negotiated
     /// with this neighbor. If empty / nil, the graceful restart capability is disabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gracefulRestart"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracefulRestart")]
     pub graceful_restart: Option<CiliumBGPPeeringPolicyVirtualRoutersNeighborsGracefulRestart>,
     /// HoldTimeSeconds defines the initial value for the BGP HoldTimer (RFC 4271, Section 4.2).
     /// Updating this value will cause a session reset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "holdTimeSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "holdTimeSeconds")]
     pub hold_time_seconds: Option<i32>,
     /// KeepaliveTimeSeconds defines the initial value for the BGP KeepaliveTimer (RFC 4271, Section 8).
     /// It can not be larger than HoldTimeSeconds. Updating this value will cause a session reset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keepAliveTimeSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepAliveTimeSeconds")]
     pub keep_alive_time_seconds: Option<i32>,
     /// PeerASN is the ASN of the peer BGP router.
     /// Supports extended 32bit ASNs
@@ -233,25 +171,19 @@ pub struct CiliumBGPPeeringPolicyVirtualRoutersNeighborsAdvertisedPathAttributes
     /// Communities defines a set of community values advertised in the supported BGP Communities path attributes.
     /// If nil / not set, no BGP Communities path attribute will be advertised.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub communities:
-        Option<CiliumBGPPeeringPolicyVirtualRoutersNeighborsAdvertisedPathAttributesCommunities>,
+    pub communities: Option<CiliumBGPPeeringPolicyVirtualRoutersNeighborsAdvertisedPathAttributesCommunities>,
     /// LocalPreference defines the preference value advertised in the BGP Local Preference path attribute.
     /// As Local Preference is only valid for iBGP peers, this value will be ignored for eBGP peers
     /// (no Local Preference path attribute will be advertised).
     /// If nil / not set, the default Local Preference of 100 will be advertised in
     /// the Local Preference path attribute for iBGP peers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localPreference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localPreference")]
     pub local_preference: Option<i64>,
     /// Selector selects a group of objects of the SelectorType
     /// resulting into routes that will be announced with the configured Attributes.
     /// If nil / not set, all objects of the SelectorType are selected.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub selector:
-        Option<CiliumBGPPeeringPolicyVirtualRoutersNeighborsAdvertisedPathAttributesSelector>,
+    pub selector: Option<CiliumBGPPeeringPolicyVirtualRoutersNeighborsAdvertisedPathAttributesSelector>,
     /// SelectorType defines the object type on which the Selector applies:
     /// - For "PodCIDR" the Selector matches k8s CiliumNode resources
     ///   (path attributes apply to routes announced for PodCIDRs of selected CiliumNodes.
@@ -261,8 +193,7 @@ pub struct CiliumBGPPeeringPolicyVirtualRoutersNeighborsAdvertisedPathAttributes
     /// - For "CiliumPodIPPool" the Selector matches CiliumPodIPPool custom resources
     ///   (path attributes apply to routes announced for allocated CIDRs of selected CiliumPodIPPools).
     #[serde(rename = "selectorType")]
-    pub selector_type:
-        CiliumBGPPeeringPolicyVirtualRoutersNeighborsAdvertisedPathAttributesSelectorType,
+    pub selector_type: CiliumBGPPeeringPolicyVirtualRoutersNeighborsAdvertisedPathAttributesSelectorType,
 }
 
 /// Communities defines a set of community values advertised in the supported BGP Communities path attributes.
@@ -316,8 +247,7 @@ pub struct CiliumBGPPeeringPolicyVirtualRoutersNeighborsAdvertisedPathAttributes
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum CiliumBGPPeeringPolicyVirtualRoutersNeighborsAdvertisedPathAttributesSelectorMatchExpressionsOperator
-{
+pub enum CiliumBGPPeeringPolicyVirtualRoutersNeighborsAdvertisedPathAttributesSelectorMatchExpressionsOperator {
     In,
     NotIn,
     Exists,
@@ -405,36 +335,23 @@ pub struct CiliumBGPPeeringPolicyVirtualRoutersNeighborsGracefulRestart {
     /// session to be re-established with peer after a restart.
     /// After this period, peer will remove stale routes. This is
     /// described RFC 4724 section 4.2.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartTimeSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartTimeSeconds")]
     pub restart_time_seconds: Option<i32>,
 }
 
 /// PodIPPoolSelector selects CiliumPodIPPools based on labels. The virtual
 /// router will announce allocated CIDRs of matching CiliumPodIPPools.
-///
+/// 
 /// If empty / nil no CiliumPodIPPools will be announced.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumBGPPeeringPolicyVirtualRoutersPodIpPoolSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CiliumBGPPeeringPolicyVirtualRoutersPodIpPoolSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumBGPPeeringPolicyVirtualRoutersPodIpPoolSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -470,28 +387,19 @@ pub enum CiliumBGPPeeringPolicyVirtualRoutersPodIpPoolSelectorMatchExpressionsOp
 /// be nil or specify a class supported by Cilium, e.g. "io.cilium/bgp-control-plane".
 /// Refer to the following document for additional details regarding load balancer
 /// classes:
-///
+/// 
 ///   https://kubernetes.io/docs/concepts/services-networking/service/#load-balancer-class
-///
+/// 
 /// If empty / nil no services will be announced.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumBGPPeeringPolicyVirtualRoutersServiceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CiliumBGPPeeringPolicyVirtualRoutersServiceSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CiliumBGPPeeringPolicyVirtualRoutersServiceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -521,3 +429,4 @@ pub enum CiliumBGPPeeringPolicyVirtualRoutersServiceSelectorMatchExpressionsOper
     Exists,
     DoesNotExist,
 }
+

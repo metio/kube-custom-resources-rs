@@ -4,37 +4,32 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// AccessLogPolicySpec defines the desired state of AccessLogPolicy.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "application-networking.k8s.aws",
-    version = "v1alpha1",
-    kind = "AccessLogPolicy",
-    plural = "accesslogpolicies"
-)]
+#[kube(group = "application-networking.k8s.aws", version = "v1alpha1", kind = "AccessLogPolicy", plural = "accesslogpolicies")]
 #[kube(namespaced)]
 #[kube(status = "AccessLogPolicyStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct AccessLogPolicySpec {
-    /// The Amazon Resource Name (ARN) of the destination that will store access logs. Supported values are S3 Bucket, CloudWatch Log Group, and Firehose Delivery Stream ARNs.
+    /// The Amazon Resource Name (ARN) of the destination that will store access logs. Supported values are S3 Bucket, CloudWatch Log Group, and Firehose Delivery Stream ARNs. 
     ///  Changes to this value results in replacement of the VPC Lattice Access Log Subscription.
     #[serde(rename = "destinationArn")]
     pub destination_arn: String,
-    /// TargetRef points to the Kubernetes Gateway, HTTPRoute, or GRPCRoute resource that will have this policy attached.
+    /// TargetRef points to the Kubernetes Gateway, HTTPRoute, or GRPCRoute resource that will have this policy attached. 
     ///  This field is following the guidelines of Kubernetes Gateway API policy attachment.
     #[serde(rename = "targetRef")]
     pub target_ref: AccessLogPolicyTargetRef,
 }
 
-/// TargetRef points to the Kubernetes Gateway, HTTPRoute, or GRPCRoute resource that will have this policy attached.
+/// TargetRef points to the Kubernetes Gateway, HTTPRoute, or GRPCRoute resource that will have this policy attached. 
 ///  This field is following the guidelines of Kubernetes Gateway API policy attachment.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AccessLogPolicyTargetRef {
@@ -52,10 +47,11 @@ pub struct AccessLogPolicyTargetRef {
 /// Status defines the current state of AccessLogPolicy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AccessLogPolicyStatus {
-    /// Conditions describe the current conditions of the AccessLogPolicy.
-    ///  Implementations should prefer to express Policy conditions using the `PolicyConditionType` and `PolicyConditionReason` constants so that operators and tools can converge on a common vocabulary to describe AccessLogPolicy state.
-    ///  Known condition types are:
+    /// Conditions describe the current conditions of the AccessLogPolicy. 
+    ///  Implementations should prefer to express Policy conditions using the `PolicyConditionType` and `PolicyConditionReason` constants so that operators and tools can converge on a common vocabulary to describe AccessLogPolicy state. 
+    ///  Known condition types are: 
     ///  * "Accepted" * "Ready"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

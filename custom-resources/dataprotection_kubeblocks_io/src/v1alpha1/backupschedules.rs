@@ -5,24 +5,19 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// BackupScheduleSpec defines the desired state of BackupSchedule.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "dataprotection.kubeblocks.io",
-    version = "v1alpha1",
-    kind = "BackupSchedule",
-    plural = "backupschedules"
-)]
+#[kube(group = "dataprotection.kubeblocks.io", version = "v1alpha1", kind = "BackupSchedule", plural = "backupschedules")]
 #[kube(namespaced)]
 #[kube(status = "BackupScheduleStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct BackupScheduleSpec {
     /// Specifies the backupPolicy to be applied for the `schedules`.
     #[serde(rename = "backupPolicyName")]
@@ -31,11 +26,7 @@ pub struct BackupScheduleSpec {
     pub schedules: Vec<BackupScheduleSchedules>,
     /// Defines the deadline in minutes for starting the backup workload if it
     /// misses its scheduled time for any reason.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startingDeadlineMinutes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startingDeadlineMinutes")]
     pub starting_deadline_minutes: Option<i64>,
 }
 
@@ -55,21 +46,17 @@ pub struct BackupScheduleSchedules {
     /// KubeBlocks will remove all backups that are older than the RetentionPeriod.
     /// For example, RetentionPeriod of `30d` will keep only the backups of last 30 days.
     /// Sample duration format:
-    ///
-    ///
+    /// 
+    /// 
     /// - years: 	2y
     /// - months: 	6mo
     /// - days: 		30d
     /// - hours: 	12h
     /// - minutes: 	30m
-    ///
-    ///
+    /// 
+    /// 
     /// You can also combine the above durations. For example: 30d12h30m
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retentionPeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retentionPeriod")]
     pub retention_period: Option<String>,
 }
 
@@ -77,20 +64,12 @@ pub struct BackupScheduleSchedules {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupScheduleStatus {
     /// Represents an error that caused the backup to fail.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureReason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
     /// Represents the most recent generation observed for this BackupSchedule.
     /// It refers to the BackupSchedule's generation, which is updated on mutation
     /// by the API Server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// Describes the phase of the BackupSchedule.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -104,27 +83,16 @@ pub struct BackupScheduleStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct BackupScheduleStatusSchedules {
     /// Represents an error that caused the backup to fail.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureReason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
     /// Records the last time the backup was scheduled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastScheduleTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastScheduleTime")]
     pub last_schedule_time: Option<String>,
     /// Records the last time the backup was successfully completed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastSuccessfulTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSuccessfulTime")]
     pub last_successful_time: Option<String>,
     /// Describes the phase of the schedule.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
 }
+

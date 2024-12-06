@@ -5,7 +5,7 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
@@ -13,37 +13,20 @@ use self::prelude::*;
 /// The spec includes multiple fields, where each field represents a different policy.
 /// Only one policy (field) is allowed.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "k8s.nginx.org",
-    version = "v1alpha1",
-    kind = "Policy",
-    plural = "policies"
-)]
+#[kube(group = "k8s.nginx.org", version = "v1alpha1", kind = "Policy", plural = "policies")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PolicySpec {
     /// AccessControl defines an access policy based on the source IP of a request.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessControl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessControl")]
     pub access_control: Option<PolicyAccessControl>,
     /// EgressMTLS defines an Egress MTLS policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "egressMTLS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressMTLS")]
     pub egress_mtls: Option<PolicyEgressMtls>,
     /// IngressMTLS defines an Ingress MTLS policy.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ingressMTLS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ingressMTLS")]
     pub ingress_mtls: Option<PolicyIngressMtls>,
     /// JWTAuth holds JWT authentication configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -69,62 +52,30 @@ pub struct PolicyEgressMtls {
     pub ciphers: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub protocols: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sessionReuse"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sessionReuse")]
     pub session_reuse: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslName")]
     pub ssl_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsSecret")]
     pub tls_secret: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trustedCertSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trustedCertSecret")]
     pub trusted_cert_secret: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "verifyDepth"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyDepth")]
     pub verify_depth: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "verifyServer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyServer")]
     pub verify_server: Option<bool>,
 }
 
 /// IngressMTLS defines an Ingress MTLS policy.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyIngressMtls {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertSecret")]
     pub client_cert_secret: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "verifyClient"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyClient")]
     pub verify_client: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "verifyDepth"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "verifyDepth")]
     pub verify_depth: Option<i64>,
 }
 
@@ -156,12 +107,9 @@ pub struct PolicyRateLimit {
     pub no_delay: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rate: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rejectCode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rejectCode")]
     pub reject_code: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "zoneSize")]
     pub zone_size: Option<String>,
 }
+

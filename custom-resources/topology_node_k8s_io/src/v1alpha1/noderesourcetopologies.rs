@@ -4,9 +4,9 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
@@ -55,3 +55,4 @@ pub struct NodeResourceTopologyZonesResources {
     /// Name of the resource.
     pub name: String,
 }
+

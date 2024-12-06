@@ -4,45 +4,36 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// DBSubnetGroupSpec defines the desired state of DBSubnetGroup.
-///
+/// 
 /// Detailed information about a subnet group.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "documentdb.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "DBSubnetGroup",
-    plural = "dbsubnetgroups"
-)]
+#[kube(group = "documentdb.services.k8s.aws", version = "v1alpha1", kind = "DBSubnetGroup", plural = "dbsubnetgroups")]
 #[kube(namespaced)]
 #[kube(status = "DBSubnetGroupStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DBSubnetGroupSpec {
     /// The description for the subnet group.
     pub description: String,
     /// The name for the subnet group. This value is stored as a lowercase string.
-    ///
+    /// 
     /// Constraints: Must contain no more than 255 letters, numbers, periods, underscores,
     /// spaces, or hyphens. Must not be default.
-    ///
+    /// 
     /// Example: mySubnetgroup
     pub name: String,
     /// The Amazon EC2 subnet IDs for the subnet group.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetIDs")]
     pub subnet_i_ds: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subnetRefs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetRefs")]
     pub subnet_refs: Option<Vec<DBSubnetGroupSubnetRefs>>,
     /// The tags to be assigned to the subnet group.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -53,7 +44,7 @@ pub struct DBSubnetGroupSpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -90,11 +81,7 @@ pub struct DBSubnetGroupStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<DBSubnetGroupStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -103,11 +90,7 @@ pub struct DBSubnetGroupStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// Provides the status of the subnet group.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subnetGroupStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetGroupStatus")]
     pub subnet_group_status: Option<String>,
     /// Detailed information about one or more subnets within a subnet group.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -143,23 +126,11 @@ pub struct DBSubnetGroupStatusAckResourceMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DBSubnetGroupStatusSubnets {
     /// Information about an Availability Zone.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subnetAvailabilityZone"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetAvailabilityZone")]
     pub subnet_availability_zone: Option<DBSubnetGroupStatusSubnetsSubnetAvailabilityZone>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subnetIdentifier"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetIdentifier")]
     pub subnet_identifier: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subnetStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnetStatus")]
     pub subnet_status: Option<String>,
 }
 
@@ -169,3 +140,4 @@ pub struct DBSubnetGroupStatusSubnetsSubnetAvailabilityZone {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
+

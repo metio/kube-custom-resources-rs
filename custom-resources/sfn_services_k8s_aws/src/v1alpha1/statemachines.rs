@@ -4,54 +4,45 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// StateMachineSpec defines the desired state of StateMachine.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "sfn.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "StateMachine",
-    plural = "statemachines"
-)]
+#[kube(group = "sfn.services.k8s.aws", version = "v1alpha1", kind = "StateMachine", plural = "statemachines")]
 #[kube(namespaced)]
 #[kube(status = "StateMachineStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct StateMachineSpec {
     /// The Amazon States Language definition of the state machine. See Amazon States
     /// Language (https://docs.aws.amazon.com/step-functions/latest/dg/concepts-amazon-states-language.html).
     pub definition: String,
     /// Defines what execution history events are logged and where they are logged.
-    ///
+    /// 
     /// By default, the level is set to OFF. For more information see Log Levels
     /// (https://docs.aws.amazon.com/step-functions/latest/dg/cloudwatch-log-level.html)
     /// in the AWS Step Functions User Guide.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loggingConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loggingConfiguration")]
     pub logging_configuration: Option<StateMachineLoggingConfiguration>,
     /// The name of the state machine.
-    ///
+    /// 
     /// A name must not contain:
-    ///
+    /// 
     ///    * white space
-    ///
+    /// 
     ///    * brackets < > { } [ ]
-    ///
+    /// 
     ///    * wildcard characters ? *
-    ///
+    /// 
     ///    * special characters " # % \ ^ | ~ ` $ & , ; : /
-    ///
+    /// 
     ///    * control characters (U+0000-001F, U+007F-009F)
-    ///
+    /// 
     /// To enable logging with CloudWatch Logs, the name should only contain 0-9,
     /// A-Z, a-z, - and _.
     pub name: String,
@@ -59,22 +50,18 @@ pub struct StateMachineSpec {
     #[serde(rename = "roleARN")]
     pub role_arn: String,
     /// Tags to be added when creating a state machine.
-    ///
+    /// 
     /// An array of key-value pairs. For more information, see Using Cost Allocation
     /// Tags (https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html)
     /// in the AWS Billing and Cost Management User Guide, and Controlling Access
     /// Using IAM Tags (https://docs.aws.amazon.com/IAM/latest/UserGuide/access_iam-tags.html).
-    ///
+    /// 
     /// Tags may only contain Unicode letters, digits, white space, or these symbols:
     /// _ . : / = + - @.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<StateMachineTags>>,
     /// Selects whether AWS X-Ray tracing is enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tracingConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tracingConfiguration")]
     pub tracing_configuration: Option<StateMachineTracingConfiguration>,
     /// Determines whether a Standard or Express state machine is created. The default
     /// is STANDARD. You cannot update the type of a state machine once it has been
@@ -84,7 +71,7 @@ pub struct StateMachineSpec {
 }
 
 /// Defines what execution history events are logged and where they are logged.
-///
+/// 
 /// By default, the level is set to OFF. For more information see Log Levels
 /// (https://docs.aws.amazon.com/step-functions/latest/dg/cloudwatch-log-level.html)
 /// in the AWS Step Functions User Guide.
@@ -92,11 +79,7 @@ pub struct StateMachineSpec {
 pub struct StateMachineLoggingConfiguration {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub destinations: Option<Vec<StateMachineLoggingConfigurationDestinations>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includeExecutionData"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeExecutionData")]
     pub include_execution_data: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<String>,
@@ -104,33 +87,24 @@ pub struct StateMachineLoggingConfiguration {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StateMachineLoggingConfigurationDestinations {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cloudWatchLogsLogGroup"
-    )]
-    pub cloud_watch_logs_log_group:
-        Option<StateMachineLoggingConfigurationDestinationsCloudWatchLogsLogGroup>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cloudWatchLogsLogGroup")]
+    pub cloud_watch_logs_log_group: Option<StateMachineLoggingConfigurationDestinationsCloudWatchLogsLogGroup>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StateMachineLoggingConfigurationDestinationsCloudWatchLogsLogGroup {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "logGroupARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "logGroupARN")]
     pub log_group_arn: Option<String>,
 }
 
 /// Tags are key-value pairs that can be associated with Step Functions state
 /// machines and activities.
-///
+/// 
 /// An array of key-value pairs. For more information, see Using Cost Allocation
 /// Tags (https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html)
 /// in the AWS Billing and Cost Management User Guide, and Controlling Access
 /// Using IAM Tags (https://docs.aws.amazon.com/IAM/latest/UserGuide/access_iam-tags.html).
-///
+/// 
 /// Tags may only contain Unicode letters, digits, white space, or these symbols:
 /// _ . : / = + - @.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -154,11 +128,7 @@ pub struct StateMachineStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<StateMachineStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -167,11 +137,7 @@ pub struct StateMachineStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The date the state machine is created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "creationDate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "creationDate")]
     pub creation_date: Option<String>,
 }
 
@@ -196,3 +162,4 @@ pub struct StateMachineStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

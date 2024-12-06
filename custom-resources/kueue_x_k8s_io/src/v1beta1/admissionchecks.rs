@@ -4,24 +4,19 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// AdmissionCheckSpec defines the desired state of AdmissionCheck
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kueue.x-k8s.io",
-    version = "v1beta1",
-    kind = "AdmissionCheck",
-    plural = "admissionchecks"
-)]
+#[kube(group = "kueue.x-k8s.io", version = "v1beta1", kind = "AdmissionCheck", plural = "admissionchecks")]
 #[kube(status = "AdmissionCheckStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct AdmissionCheckSpec {
     /// controllerName identifies the controller that processes the AdmissionCheck,
     /// not necessarily a Kubernetes Pod or Deployment name. Cannot be empty.
@@ -35,11 +30,7 @@ pub struct AdmissionCheckSpec {
     /// a failed check (after it transitioned to False). When the delay period has passed, the check
     /// state goes to "Unknown". The default is 15 min.
     /// Deprecated: retryDelayMinutes has already been deprecated since v0.8 and will be removed in v1beta2.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "retryDelayMinutes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "retryDelayMinutes")]
     pub retry_delay_minutes: Option<i64>,
 }
 
@@ -64,3 +55,4 @@ pub struct AdmissionCheckStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

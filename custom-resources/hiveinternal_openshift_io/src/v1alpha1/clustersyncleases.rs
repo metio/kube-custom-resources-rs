@@ -5,24 +5,20 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// ClusterSyncLeaseSpec is the specification of a ClusterSyncLease.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "hiveinternal.openshift.io",
-    version = "v1alpha1",
-    kind = "ClusterSyncLease",
-    plural = "clustersyncleases"
-)]
+#[kube(group = "hiveinternal.openshift.io", version = "v1alpha1", kind = "ClusterSyncLease", plural = "clustersyncleases")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterSyncLeaseSpec {
     /// RenewTime is the time when SyncSets and SelectorSyncSets were last applied to the cluster.
     #[serde(rename = "renewTime")]
     pub renew_time: String,
 }
+

@@ -5,21 +5,16 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// ClusterImageSetSpec defines the desired state of ClusterImageSet
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "hive.openshift.io",
-    version = "v1",
-    kind = "ClusterImageSet",
-    plural = "clusterimagesets"
-)]
+#[kube(group = "hive.openshift.io", version = "v1", kind = "ClusterImageSet", plural = "clusterimagesets")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterImageSetSpec {
     /// ReleaseImage is the image that contains the payload to use when installing
     /// a cluster.
@@ -29,4 +24,6 @@ pub struct ClusterImageSetSpec {
 
 /// ClusterImageSetStatus defines the observed state of ClusterImageSet
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterImageSetStatus {}
+pub struct ClusterImageSetStatus {
+}
+

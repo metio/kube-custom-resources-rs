@@ -4,40 +4,35 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// InstanceProfileSpec defines the desired state of InstanceProfile.
-///
+/// 
 /// Contains information about an instance profile.
-///
+/// 
 /// This data type is used as a response element in the following operations:
-///
+/// 
 ///    * CreateInstanceProfile
-///
+/// 
 ///    * GetInstanceProfile
-///
+/// 
 ///    * ListInstanceProfiles
-///
+/// 
 ///    * ListInstanceProfilesForRole
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "iam.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "InstanceProfile",
-    plural = "instanceprofiles"
-)]
+#[kube(group = "iam.services.k8s.aws", version = "v1alpha1", kind = "InstanceProfile", plural = "instanceprofiles")]
 #[kube(namespaced)]
 #[kube(status = "InstanceProfileStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct InstanceProfileSpec {
     /// The name of the instance profile to create.
-    ///
+    /// 
     /// This parameter allows (through its regex pattern (http://wikipedia.org/wiki/regex))
     /// a string of characters consisting of upper and lowercase alphanumeric characters
     /// with no spaces. You can also include any of the following characters: _+=,.@-
@@ -45,10 +40,10 @@ pub struct InstanceProfileSpec {
     /// The path to the instance profile. For more information about paths, see IAM
     /// Identifiers (https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html)
     /// in the IAM User Guide.
-    ///
+    /// 
     /// This parameter is optional. If it is not included, it defaults to a slash
     /// (/).
-    ///
+    /// 
     /// This parameter allows (through its regex pattern (http://wikipedia.org/wiki/regex))
     /// a string of characters consisting of either a forward slash (/) by itself
     /// or a string that must begin and end with forward slashes. In addition, it
@@ -63,7 +58,7 @@ pub struct InstanceProfileSpec {
     /// type to provide more user friendly syntax for references using 'from' field
     /// Ex:
     /// APIIDRef:
-    ///
+    /// 
     /// 	from:
     /// 	  name: my-api
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "roleRef")]
@@ -72,7 +67,7 @@ pub struct InstanceProfileSpec {
     /// profile. Each tag consists of a key name and an associated value. For more
     /// information about tagging, see Tagging IAM resources (https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html)
     /// in the IAM User Guide.
-    ///
+    /// 
     /// If any one of the tags is invalid or if you exceed the allowed maximum number
     /// of tags, then the entire request fails and the resource is not created.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -83,7 +78,7 @@ pub struct InstanceProfileSpec {
 /// type to provide more user friendly syntax for references using 'from' field
 /// Ex:
 /// APIIDRef:
-///
+/// 
 /// 	from:
 /// 	  name: my-api
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -122,11 +117,7 @@ pub struct InstanceProfileStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<InstanceProfileStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -135,20 +126,12 @@ pub struct InstanceProfileStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The date when the instance profile was created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "createDate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "createDate")]
     pub create_date: Option<String>,
     /// The stable and unique string identifying the instance profile. For more information
     /// about IDs, see IAM identifiers (https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html)
     /// in the IAM User Guide.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceProfileID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceProfileID")]
     pub instance_profile_id: Option<String>,
 }
 
@@ -173,3 +156,4 @@ pub struct InstanceProfileStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

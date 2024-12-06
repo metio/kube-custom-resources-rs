@@ -5,52 +5,31 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// WorkflowSpec defines the desired state of Workflow.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "tinkerbell.org",
-    version = "v1alpha1",
-    kind = "Workflow",
-    plural = "workflows"
-)]
+#[kube(group = "tinkerbell.org", version = "v1alpha1", kind = "Workflow", plural = "workflows")]
 #[kube(namespaced)]
 #[kube(status = "WorkflowStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct WorkflowSpec {
     /// BootOptions are options that control the booting of Hardware.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bootOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootOptions")]
     pub boot_options: Option<WorkflowBootOptions>,
     /// A mapping of template devices to hadware mac addresses.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hardwareMap"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hardwareMap")]
     pub hardware_map: Option<BTreeMap<String, String>>,
     /// Name of the Hardware associated with this workflow.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hardwareRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hardwareRef")]
     pub hardware_ref: Option<String>,
     /// Name of the Template associated with this workflow.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "templateRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateRef")]
     pub template_ref: Option<String>,
 }
 
@@ -68,11 +47,7 @@ pub struct WorkflowBootOptions {
     /// ToggleAllowNetboot indicates whether the controller should toggle the field in the associated hardware for allowing PXE booting.
     /// This will be enabled before a Workflow is executed and disabled after the Workflow has completed successfully.
     /// A HardwareRef must be provided.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "toggleAllowNetboot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "toggleAllowNetboot")]
     pub toggle_allow_netboot: Option<bool>,
 }
 
@@ -89,28 +64,16 @@ pub enum WorkflowBootOptionsBootMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowStatus {
     /// BootOptions holds the state of any boot options.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bootOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bootOptions")]
     pub boot_options: Option<WorkflowStatusBootOptions>,
     /// Conditions are the latest available observations of an object's current state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<WorkflowStatusConditions>>,
     /// CurrentAction is the action that is currently in the running state.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentAction"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentAction")]
     pub current_action: Option<String>,
     /// GlobalTimeout represents the max execution time.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "globalTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalTimeout")]
     pub global_timeout: Option<i64>,
     /// State is the current overall state of the Workflow.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -120,11 +83,7 @@ pub struct WorkflowStatus {
     pub tasks: Option<Vec<WorkflowStatusTasks>>,
     /// TemplateRendering indicates whether the template was rendered successfully.
     /// Possible values are "successful" or "failed" or "unknown".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "templateRending"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateRending")]
     pub template_rending: Option<String>,
 }
 
@@ -132,11 +91,7 @@ pub struct WorkflowStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowStatusBootOptions {
     /// AllowNetboot holds the state of the the controller's interactions with the allowPXE field in a Hardware object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowNetboot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowNetboot")]
     pub allow_netboot: Option<WorkflowStatusBootOptionsAllowNetboot>,
     /// Jobs holds the state of any job.bmc.tinkerbell.org objects created.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -146,17 +101,9 @@ pub struct WorkflowStatusBootOptions {
 /// AllowNetboot holds the state of the the controller's interactions with the allowPXE field in a Hardware object.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct WorkflowStatusBootOptionsAllowNetboot {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "toggledFalse"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "toggledFalse")]
     pub toggled_false: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "toggledTrue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "toggledTrue")]
     pub toggled_true: Option<bool>,
 }
 
@@ -170,11 +117,7 @@ pub struct WorkflowStatusBootOptionsJobs {
     /// The name of each job.bmc.tinkerbell.org object created by the controller is the same, so only one can exist at a time.
     /// Using the same name was chosen so that there is only ever 1 job.bmc.tinkerbell.org per Hardware/Machine.bmc.tinkerbell.org.
     /// This makes clean up easier and we dont just orphan jobs every time.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "existingJobDeleted"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "existingJobDeleted")]
     pub existing_job_deleted: Option<bool>,
     /// UID is the UID of the job.bmc.tinkerbell.org object associated with this workflow.
     /// This is used to uniquely identify the job.bmc.tinkerbell.org object, as
@@ -240,3 +183,4 @@ pub struct WorkflowStatusTasksActions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<Vec<String>>,
 }
+

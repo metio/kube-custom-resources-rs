@@ -4,127 +4,62 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ClusterSpec defines the desired state of Cluster.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "anywhere.eks.amazonaws.com",
-    version = "v1alpha1",
-    kind = "Cluster",
-    plural = "clusters"
-)]
+#[kube(group = "anywhere.eks.amazonaws.com", version = "v1alpha1", kind = "Cluster", plural = "clusters")]
 #[kube(namespaced)]
 #[kube(status = "ClusterStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterSpec {
     /// BundlesRef contains a reference to the Bundles containing the desired dependencies for the cluster. DEPRECATED: Use EksaVersion instead.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bundlesRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bundlesRef")]
     pub bundles_ref: Option<ClusterBundlesRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterNetwork"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterNetwork")]
     pub cluster_network: Option<ClusterClusterNetwork>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "controlPlaneConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "controlPlaneConfiguration")]
     pub control_plane_configuration: Option<ClusterControlPlaneConfiguration>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datacenterRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datacenterRef")]
     pub datacenter_ref: Option<ClusterDatacenterRef>,
     /// EksaVersion is the semver identifying the release of eks-a used to populate the cluster components.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "eksaVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "eksaVersion")]
     pub eksa_version: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "etcdEncryption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "etcdEncryption")]
     pub etcd_encryption: Option<Vec<ClusterEtcdEncryption>>,
     /// ExternalEtcdConfiguration defines the configuration options for using unstacked etcd topology.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalEtcdConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalEtcdConfiguration")]
     pub external_etcd_configuration: Option<ClusterExternalEtcdConfiguration>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "gitOpsRef")]
     pub git_ops_ref: Option<ClusterGitOpsRef>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identityProviderRefs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityProviderRefs")]
     pub identity_provider_refs: Option<Vec<ClusterIdentityProviderRefs>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesVersion")]
     pub kubernetes_version: Option<String>,
     /// MachineHealthCheck allows to configure timeouts for machine health checks. Machine Health Checks are responsible for remediating unhealthy Machines. Configuring these values will decide how long to wait to remediate unhealthy machine or determine health of nodes' machines.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "machineHealthCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineHealthCheck")]
     pub machine_health_check: Option<ClusterMachineHealthCheck>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "managementCluster"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "managementCluster")]
     pub management_cluster: Option<ClusterManagementCluster>,
     /// PackageConfiguration for installing EKS Anywhere curated packages.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub packages: Option<ClusterPackages>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podIamConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIamConfig")]
     pub pod_iam_config: Option<ClusterPodIamConfig>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConfiguration")]
     pub proxy_configuration: Option<ClusterProxyConfiguration>,
     /// RegistryMirrorConfiguration defines the settings for image registry mirror.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "registryMirrorConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "registryMirrorConfiguration")]
     pub registry_mirror_configuration: Option<ClusterRegistryMirrorConfiguration>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workerNodeGroupConfigurations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workerNodeGroupConfigurations")]
     pub worker_node_group_configurations: Option<Vec<ClusterWorkerNodeGroupConfigurations>>,
 }
 
@@ -174,61 +109,34 @@ pub struct ClusterClusterNetworkCniConfig {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClusterNetworkCniConfigCilium {
     /// EgressMasquaradeInterfaces determines which network interfaces are used for masquerading. Accepted values are a valid interface name or interface prefix.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "egressMasqueradeInterfaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "egressMasqueradeInterfaces")]
     pub egress_masquerade_interfaces: Option<String>,
     /// IPv4NativeRoutingCIDR specifies the CIDR to use when RoutingMode is set to direct. When specified, Cilium assumes networking for this CIDR is preconfigured and hands traffic destined for that range to the Linux network stack without applying any SNAT. If this is not set autoDirectNodeRoutes will be set to true
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipv4NativeRoutingCIDR"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipv4NativeRoutingCIDR")]
     pub ipv4_native_routing_cidr: Option<String>,
     /// IPv6NativeRoutingCIDR specifies the IPv6 CIDR to use when RoutingMode is set to direct. When specified, Cilium assumes networking for this CIDR is preconfigured and hands traffic destined for that range to the Linux network stack without applying any SNAT. If this is not set autoDirectNodeRoutes will be set to true
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipv6NativeRoutingCIDR"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipv6NativeRoutingCIDR")]
     pub ipv6_native_routing_cidr: Option<String>,
     /// PolicyEnforcementMode determines communication allowed between pods. Accepted values are default, always, never.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "policyEnforcementMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "policyEnforcementMode")]
     pub policy_enforcement_mode: Option<String>,
     /// RoutingMode indicates the routing tunnel mode to use for Cilium. Accepted values are overlay (geneve tunnel with overlay) or direct (tunneling disabled with direct routing) Defaults to overlay.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "routingMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "routingMode")]
     pub routing_mode: Option<String>,
     /// SkipUpgrade indicicates that Cilium maintenance should be skipped during upgrades. This can be used when operators wish to self manage the Cilium installation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "skipUpgrade"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipUpgrade")]
     pub skip_upgrade: Option<bool>,
 }
 
 /// KindnetdConfig contains configuration specific to the Kindnetd CNI.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterClusterNetworkCniConfigKindnetd {}
+pub struct ClusterClusterNetworkCniConfigKindnetd {
+}
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClusterNetworkDns {
     /// ResolvConf refers to the DNS resolver configuration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resolvConf"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resolvConf")]
     pub resolv_conf: Option<ClusterClusterNetworkDnsResolvConf>,
 }
 
@@ -243,43 +151,27 @@ pub struct ClusterClusterNetworkDnsResolvConf {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClusterNetworkNodes {
     /// CIDRMaskSize defines the mask size for node cidr in the cluster, default for ipv4 is 24. This is an optional field
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cidrMaskSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrMaskSize")]
     pub cidr_mask_size: Option<i64>,
 }
 
 /// Comma-separated list of CIDR blocks to use for pod and service subnets. Defaults to 192.168.0.0/16 for pod subnet.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClusterNetworkPods {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cidrBlocks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrBlocks")]
     pub cidr_blocks: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterClusterNetworkServices {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cidrBlocks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidrBlocks")]
     pub cidr_blocks: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterControlPlaneConfiguration {
     /// APIServerExtraArgs defines the flags to configure for the API server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiServerExtraArgs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiServerExtraArgs")]
     pub api_server_extra_args: Option<BTreeMap<String, String>>,
     /// CertSANs is a slice of domain names or IPs to be added as Subject Name Alternatives of the Kube API Servers Certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certSans")]
@@ -291,45 +183,25 @@ pub struct ClusterControlPlaneConfiguration {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<ClusterControlPlaneConfigurationEndpoint>,
     /// KubeletConfiguration is a struct that exposes the Kubelet settings for the user to set on control plane nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubeletConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeletConfiguration")]
     pub kubelet_configuration: Option<BTreeMap<String, serde_json::Value>>,
     /// Labels define the labels to assign to the node
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// MachineGroupRef defines the machine group configuration for the control plane.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "machineGroupRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineGroupRef")]
     pub machine_group_ref: Option<ClusterControlPlaneConfigurationMachineGroupRef>,
     /// MachineHealthCheck is a control-plane level override for the timeouts and maxUnhealthy specified in the top-level MHC configuration. If not configured, the defaults in the top-level MHC configuration are used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "machineHealthCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineHealthCheck")]
     pub machine_health_check: Option<ClusterControlPlaneConfigurationMachineHealthCheck>,
     /// SkipLoadBalancerDeployment skip deploying control plane load balancer. Make sure your infrastructure can handle control plane load balancing when you set this field to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "skipLoadBalancerDeployment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "skipLoadBalancerDeployment")]
     pub skip_load_balancer_deployment: Option<bool>,
     /// Taints define the set of taints to be applied on control plane nodes
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub taints: Option<Vec<ClusterControlPlaneConfigurationTaints>>,
     /// UpgradeRolloutStrategy determines the rollout strategy to use for rolling upgrades and related parameters/knobs
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "upgradeRolloutStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradeRolloutStrategy")]
     pub upgrade_rollout_strategy: Option<ClusterControlPlaneConfigurationUpgradeRolloutStrategy>,
 }
 
@@ -353,25 +225,13 @@ pub struct ClusterControlPlaneConfigurationMachineGroupRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterControlPlaneConfigurationMachineHealthCheck {
     /// MaxUnhealthy is used to configure the maximum number of unhealthy machines in machine health checks. This setting applies to both control plane and worker machines. If the number of unhealthy machines exceeds the limit set by maxUnhealthy, further remediation will not be performed. If not configured, the default value is set to "100%" for controlplane machines and "40%" for worker machines.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnhealthy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnhealthy")]
     pub max_unhealthy: Option<IntOrString>,
     /// NodeStartupTimeout is used to configure the node startup timeout in machine health checks. It determines how long a MachineHealthCheck should wait for a Node to join the cluster, before considering a Machine unhealthy. If not configured, the default value is set to "10m0s" (10 minutes) for all providers. For Tinkerbell provider the default is "20m0s".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeStartupTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeStartupTimeout")]
     pub node_startup_timeout: Option<String>,
     /// UnhealthyMachineTimeout is used to configure the unhealthy machine timeout in machine health checks. If any unhealthy conditions are met for the amount of time specified as the timeout, the machines are considered unhealthy. If not configured, the default value is set to "5m0s" (5 minutes).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unhealthyMachineTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyMachineTimeout")]
     pub unhealthy_machine_timeout: Option<String>,
 }
 
@@ -394,11 +254,7 @@ pub struct ClusterControlPlaneConfigurationTaints {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterControlPlaneConfigurationUpgradeRolloutStrategy {
     /// ControlPlaneRollingUpdateParams is API for rolling update strategy knobs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollingUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<ClusterControlPlaneConfigurationUpgradeRolloutStrategyRollingUpdate>,
     /// UpgradeRolloutStrategyType defines the types of upgrade rollout strategies.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -457,11 +313,7 @@ pub struct ClusterExternalEtcdConfiguration {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub count: Option<i64>,
     /// MachineGroupRef defines the machine group configuration for the etcd machines.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "machineGroupRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineGroupRef")]
     pub machine_group_ref: Option<ClusterExternalEtcdConfigurationMachineGroupRef>,
 }
 
@@ -494,25 +346,13 @@ pub struct ClusterIdentityProviderRefs {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterMachineHealthCheck {
     /// MaxUnhealthy is used to configure the maximum number of unhealthy machines in machine health checks. This setting applies to both control plane and worker machines. If the number of unhealthy machines exceeds the limit set by maxUnhealthy, further remediation will not be performed. If not configured, the default value is set to "100%" for controlplane machines and "40%" for worker machines.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnhealthy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnhealthy")]
     pub max_unhealthy: Option<IntOrString>,
     /// NodeStartupTimeout is used to configure the node startup timeout in machine health checks. It determines how long a MachineHealthCheck should wait for a Node to join the cluster, before considering a Machine unhealthy. If not configured, the default value is set to "10m0s" (10 minutes) for all providers. For Tinkerbell provider the default is "20m0s".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeStartupTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeStartupTimeout")]
     pub node_startup_timeout: Option<String>,
     /// UnhealthyMachineTimeout is used to configure the unhealthy machine timeout in machine health checks. If any unhealthy conditions are met for the amount of time specified as the timeout, the machines are considered unhealthy. If not configured, the default value is set to "5m0s" (5 minutes).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unhealthyMachineTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyMachineTimeout")]
     pub unhealthy_machine_timeout: Option<String>,
 }
 
@@ -543,11 +383,7 @@ pub struct ClusterPackagesController {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub digest: Option<String>,
     /// DisableWebhooks on package controller
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableWebhooks"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableWebhooks")]
     pub disable_webhooks: Option<bool>,
     /// Env of package controller in the format `key=value`
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -623,11 +459,7 @@ pub struct ClusterPodIamConfig {
 pub struct ClusterProxyConfiguration {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpProxy")]
     pub http_proxy: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpsProxy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpsProxy")]
     pub https_proxy: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<Vec<String>>,
@@ -640,28 +472,16 @@ pub struct ClusterRegistryMirrorConfiguration {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authenticate: Option<bool>,
     /// CACertContent defines the contents registry mirror CA certificate
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertContent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertContent")]
     pub ca_cert_content: Option<String>,
     /// Endpoint defines the registry mirror endpoint to use for pulling images
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
     /// InsecureSkipVerify skips the registry certificate verification. Only use this solution for isolated testing or in a tightly controlled, air-gapped environment.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// OCINamespaces defines the mapping from an upstream registry to a local namespace where upstream artifacts are placed into
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ociNamespaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ociNamespaces")]
     pub oci_namespaces: Option<Vec<ClusterRegistryMirrorConfigurationOciNamespaces>>,
     /// Port defines the port exposed for registry mirror endpoint
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -680,46 +500,25 @@ pub struct ClusterRegistryMirrorConfigurationOciNamespaces {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterWorkerNodeGroupConfigurations {
     /// AutoScalingConfiguration defines the auto scaling configuration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoscalingConfiguration"
-    )]
-    pub autoscaling_configuration:
-        Option<ClusterWorkerNodeGroupConfigurationsAutoscalingConfiguration>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoscalingConfiguration")]
+    pub autoscaling_configuration: Option<ClusterWorkerNodeGroupConfigurationsAutoscalingConfiguration>,
     /// Count defines the number of desired worker nodes. Defaults to 1.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub count: Option<i64>,
     /// KubeletConfiguration is a struct that exposes the Kubelet settings for the user to set on worker nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubeletConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubeletConfiguration")]
     pub kubelet_configuration: Option<BTreeMap<String, serde_json::Value>>,
     /// KubernetesVersion defines the version for worker nodes. If not set, the top level spec kubernetesVersion will be used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesVersion")]
     pub kubernetes_version: Option<String>,
     /// Labels define the labels to assign to the node
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// MachineGroupRef defines the machine group configuration for the worker nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "machineGroupRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineGroupRef")]
     pub machine_group_ref: Option<ClusterWorkerNodeGroupConfigurationsMachineGroupRef>,
     /// MachineHealthCheck is a worker node level override for the timeouts and maxUnhealthy specified in the top-level MHC configuration. If not configured, the defaults in the top-level MHC configuration are used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "machineHealthCheck"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "machineHealthCheck")]
     pub machine_health_check: Option<ClusterWorkerNodeGroupConfigurationsMachineHealthCheck>,
     /// Name refers to the name of the worker node group
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -728,13 +527,8 @@ pub struct ClusterWorkerNodeGroupConfigurations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub taints: Option<Vec<ClusterWorkerNodeGroupConfigurationsTaints>>,
     /// UpgradeRolloutStrategy determines the rollout strategy to use for rolling upgrades and related parameters/knobs
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "upgradeRolloutStrategy"
-    )]
-    pub upgrade_rollout_strategy:
-        Option<ClusterWorkerNodeGroupConfigurationsUpgradeRolloutStrategy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upgradeRolloutStrategy")]
+    pub upgrade_rollout_strategy: Option<ClusterWorkerNodeGroupConfigurationsUpgradeRolloutStrategy>,
 }
 
 /// AutoScalingConfiguration defines the auto scaling configuration
@@ -761,25 +555,13 @@ pub struct ClusterWorkerNodeGroupConfigurationsMachineGroupRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterWorkerNodeGroupConfigurationsMachineHealthCheck {
     /// MaxUnhealthy is used to configure the maximum number of unhealthy machines in machine health checks. This setting applies to both control plane and worker machines. If the number of unhealthy machines exceeds the limit set by maxUnhealthy, further remediation will not be performed. If not configured, the default value is set to "100%" for controlplane machines and "40%" for worker machines.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnhealthy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnhealthy")]
     pub max_unhealthy: Option<IntOrString>,
     /// NodeStartupTimeout is used to configure the node startup timeout in machine health checks. It determines how long a MachineHealthCheck should wait for a Node to join the cluster, before considering a Machine unhealthy. If not configured, the default value is set to "10m0s" (10 minutes) for all providers. For Tinkerbell provider the default is "20m0s".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeStartupTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeStartupTimeout")]
     pub node_startup_timeout: Option<String>,
     /// UnhealthyMachineTimeout is used to configure the unhealthy machine timeout in machine health checks. If any unhealthy conditions are met for the amount of time specified as the timeout, the machines are considered unhealthy. If not configured, the default value is set to "5m0s" (5 minutes).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "unhealthyMachineTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "unhealthyMachineTimeout")]
     pub unhealthy_machine_timeout: Option<String>,
 }
 
@@ -802,13 +584,8 @@ pub struct ClusterWorkerNodeGroupConfigurationsTaints {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterWorkerNodeGroupConfigurationsUpgradeRolloutStrategy {
     /// WorkerNodesRollingUpdateParams is API for rolling update strategy knobs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollingUpdate"
-    )]
-    pub rolling_update:
-        Option<ClusterWorkerNodeGroupConfigurationsUpgradeRolloutStrategyRollingUpdate>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
+    pub rolling_update: Option<ClusterWorkerNodeGroupConfigurationsUpgradeRolloutStrategyRollingUpdate>,
     /// UpgradeRolloutStrategyType defines the types of upgrade rollout strategies.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -827,48 +604,24 @@ pub struct ClusterWorkerNodeGroupConfigurationsUpgradeRolloutStrategyRollingUpda
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterStatus {
     /// ChildrenReconciledGeneration represents the sum of the .metadata.generation for all the linked objects for the cluster, observed the last time the cluster was successfully reconciled. NOTE: This field was added for internal use and we do not provide guarantees to its behavior if changed externally. Its meaning and implementation are subject to change in the future.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "childrenReconciledGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "childrenReconciledGeneration")]
     pub children_reconciled_generation: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// EksdReleaseRef defines the properties of the EKS-D object on the cluster
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "eksdReleaseRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "eksdReleaseRef")]
     pub eksd_release_ref: Option<ClusterStatusEksdReleaseRef>,
     /// Descriptive message about a fatal problem while reconciling a cluster
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
     pub failure_message: Option<String>,
     /// Machine readable value about a terminal problem while reconciling the cluster set at the same time as failureMessage
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureReason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
     /// ObservedGeneration is the latest generation observed by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// ReconciledGeneration represents the .metadata.generation the last time the cluster was successfully reconciled. It is the latest generation observed by the controller. NOTE: This field was added for internal use and we do not provide guarantees to its behavior if changed externally. Its meaning and implementation are subject to change in the future.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reconciledGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reconciledGeneration")]
     pub reconciled_generation: Option<i64>,
 }
 
@@ -885,3 +638,4 @@ pub struct ClusterStatusEksdReleaseRef {
     /// Namespace refers to the namespace for the EKS-D release resources
     pub namespace: String,
 }
+

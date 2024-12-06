@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// Specification of the desired behavior of the pod group.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "scheduling.sigs.k8s.io",
-    version = "v1alpha1",
-    kind = "PodGroup",
-    plural = "podgroups"
-)]
+#[kube(group = "scheduling.sigs.k8s.io", version = "v1alpha1", kind = "PodGroup", plural = "podgroups")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PodGroupSpec {
     /// MinMember defines the minimal number of members/tasks to run the pod group;
     /// if there's not enough resources to start all tasks, the scheduler
@@ -32,18 +27,10 @@ pub struct PodGroupSpec {
     /// MinResources defines the minimal resource of members/tasks to run the pod group;
     /// if there's not enough resources to start all tasks, the scheduler
     /// will not start anyone.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minResources")]
     pub min_resources: Option<BTreeMap<String, IntOrString>>,
     /// ScheduleTimeoutSeconds defines the maximal time of members/tasks to wait before run the pod group;
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scheduleTimeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scheduleTimeoutSeconds")]
     pub schedule_timeout_seconds: Option<i32>,
 }
 
@@ -56,11 +43,7 @@ pub struct PodGroupStatus {
     pub failed: Option<i32>,
     /// OccupiedBy marks the workload (e.g., deployment, statefulset) UID that occupy the podgroup.
     /// It is empty if not initialized.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "occupiedBy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "occupiedBy")]
     pub occupied_by: Option<String>,
     /// Current phase of PodGroup.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -69,11 +52,7 @@ pub struct PodGroupStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub running: Option<i32>,
     /// ScheduleStartTime of the group
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scheduleStartTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scheduleStartTime")]
     pub schedule_start_time: Option<String>,
     /// The number of actively running pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -82,3 +61,4 @@ pub struct PodGroupStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub succeeded: Option<i32>,
 }
+

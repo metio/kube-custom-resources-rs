@@ -5,31 +5,26 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "rules.kubeedge.io",
-    version = "v1",
-    kind = "RuleEndpoint",
-    plural = "ruleendpoints"
-)]
+#[kube(group = "rules.kubeedge.io", version = "v1", kind = "RuleEndpoint", plural = "ruleendpoints")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct RuleEndpointSpec {
     /// properties is not required except for servicebus rule-endpoint type. It is a map
     /// value representing rule-endpoint properties. When ruleEndpointType is servicebus,
     /// its value is {"service_port":"8080"}.
-    ///
+    /// 
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub properties: Option<BTreeMap<String, String>>,
     /// ruleEndpointType is a string value representing rule-endpoint type. its value is
     /// one of rest/eventbus/servicebus.
-    ///
+    /// 
     #[serde(rename = "ruleEndpointType")]
     pub rule_endpoint_type: RuleEndpointRuleEndpointType,
 }
@@ -43,3 +38,4 @@ pub enum RuleEndpointRuleEndpointType {
     #[serde(rename = "servicebus")]
     Servicebus,
 }
+

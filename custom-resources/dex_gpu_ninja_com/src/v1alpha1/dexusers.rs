@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// DexUserSpec defines the desired state of the user.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "dex.gpu-ninja.com",
-    version = "v1alpha1",
-    kind = "DexUser",
-    plural = "dexusers"
-)]
+#[kube(group = "dex.gpu-ninja.com", version = "v1alpha1", kind = "DexUser", plural = "dexusers")]
 #[kube(namespaced)]
 #[kube(status = "DexUserStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DexUserSpec {
     /// Email and identifying name of the password. Emails are assumed to be valid and determining that an end-user controls the address is left to an outside application.
     pub email: String,
@@ -44,11 +39,7 @@ pub struct DexUserIdentityProviderRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DexUserStatus {
     /// ObservedGeneration is the most recent generation observed for this user by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// Phase is the current phase of the user.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -57,3 +48,4 @@ pub struct DexUserStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub reason: Option<String>,
 }
+

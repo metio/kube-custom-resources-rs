@@ -5,21 +5,16 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// BGPFilterSpec contains the IPv4 and IPv6 filter rules of the BGP Filter.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "crd.projectcalico.org",
-    version = "v1",
-    kind = "BGPFilter",
-    plural = "bgpfilters"
-)]
+#[kube(group = "crd.projectcalico.org", version = "v1", kind = "BGPFilter", plural = "bgpfilters")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct BGPFilterSpec {
     /// The ordered set of IPv4 BGPFilter rules acting on exporting routes to a peer.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "exportV4")]
@@ -43,17 +38,9 @@ pub struct BGPFilterExportV4 {
     pub cidr: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interface: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchOperator"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchOperator")]
     pub match_operator: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "prefixLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prefixLength")]
     pub prefix_length: Option<BGPFilterExportV4PrefixLength>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
@@ -75,17 +62,9 @@ pub struct BGPFilterExportV6 {
     pub cidr: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interface: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchOperator"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchOperator")]
     pub match_operator: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "prefixLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prefixLength")]
     pub prefix_length: Option<BGPFilterExportV6PrefixLength>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
@@ -107,17 +86,9 @@ pub struct BGPFilterImportV4 {
     pub cidr: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interface: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchOperator"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchOperator")]
     pub match_operator: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "prefixLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prefixLength")]
     pub prefix_length: Option<BGPFilterImportV4PrefixLength>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
@@ -139,17 +110,9 @@ pub struct BGPFilterImportV6 {
     pub cidr: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interface: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchOperator"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchOperator")]
     pub match_operator: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "prefixLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "prefixLength")]
     pub prefix_length: Option<BGPFilterImportV6PrefixLength>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub source: Option<String>,
@@ -162,3 +125,4 @@ pub struct BGPFilterImportV6PrefixLength {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub min: Option<i32>,
 }
+

@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Spec declares policy behaviors.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kyverno.io",
-    version = "v2alpha1",
-    kind = "CleanupPolicy",
-    plural = "cleanuppolicies"
-)]
+#[kube(group = "kyverno.io", version = "v2alpha1", kind = "CleanupPolicy", plural = "cleanuppolicies")]
 #[kube(namespaced)]
 #[kube(status = "CleanupPolicyStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CleanupPolicySpec {
     /// Conditions defines the conditions used to select the resources which will be cleaned up.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -151,19 +146,11 @@ pub struct CleanupPolicyContext {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<CleanupPolicyContextConfigMap>,
     /// GlobalContextEntryReference is a reference to a cached global context entry.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "globalReference"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalReference")]
     pub global_reference: Option<CleanupPolicyContextGlobalReference>,
     /// ImageRegistry defines requests to an OCI/Docker V2 registry to fetch image
     /// details.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageRegistry"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistry")]
     pub image_registry: Option<CleanupPolicyContextImageRegistry>,
     /// Name is the variable name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -269,13 +256,8 @@ pub struct CleanupPolicyContextGlobalReference {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CleanupPolicyContextImageRegistry {
     /// ImageRegistryCredentials provides credentials that will be used for authentication with registry
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageRegistryCredentials"
-    )]
-    pub image_registry_credentials:
-        Option<CleanupPolicyContextImageRegistryImageRegistryCredentials>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistryCredentials")]
+    pub image_registry_credentials: Option<CleanupPolicyContextImageRegistryImageRegistryCredentials>,
     /// JMESPath is an optional JSON Match Expression that can be used to
     /// transform the ImageData struct returned as a result of processing
     /// the image reference.
@@ -290,11 +272,7 @@ pub struct CleanupPolicyContextImageRegistry {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CleanupPolicyContextImageRegistryImageRegistryCredentials {
     /// AllowInsecureRegistry allows insecure access to a registry.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowInsecureRegistry"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowInsecureRegistry")]
     pub allow_insecure_registry: Option<bool>,
     /// Providers specifies a list of OCI Registry names, whose authentication providers are provided.
     /// It can be of one of these values: default,google,azure,amazon,github.
@@ -339,11 +317,7 @@ pub struct CleanupPolicyExclude {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CleanupPolicyExcludeAll {
     /// ClusterRoles is the list of cluster-wide role names for the user.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterRoles"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterRoles")]
     pub cluster_roles: Option<Vec<String>>,
     /// ResourceDescription contains information about the resource being created or modified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -381,11 +355,7 @@ pub struct CleanupPolicyExcludeAllResources {
     /// and `?` (matches one character).Wildcards allows writing label selectors like
     /// ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but
     /// does not match an empty label set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<CleanupPolicyExcludeAllResourcesNamespaceSelector>,
     /// Namespaces is a list of namespaces names. Each name supports wildcard characters
     /// "*" (matches zero or many characters) and "?" (at least one character).
@@ -410,21 +380,12 @@ pub struct CleanupPolicyExcludeAllResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CleanupPolicyExcludeAllResourcesNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CleanupPolicyExcludeAllResourcesNamespaceSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CleanupPolicyExcludeAllResourcesNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -452,20 +413,12 @@ pub struct CleanupPolicyExcludeAllResourcesNamespaceSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CleanupPolicyExcludeAllResourcesSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CleanupPolicyExcludeAllResourcesSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -510,11 +463,7 @@ pub struct CleanupPolicyExcludeAllSubjects {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CleanupPolicyExcludeAny {
     /// ClusterRoles is the list of cluster-wide role names for the user.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterRoles"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterRoles")]
     pub cluster_roles: Option<Vec<String>>,
     /// ResourceDescription contains information about the resource being created or modified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -552,11 +501,7 @@ pub struct CleanupPolicyExcludeAnyResources {
     /// and `?` (matches one character).Wildcards allows writing label selectors like
     /// ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but
     /// does not match an empty label set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<CleanupPolicyExcludeAnyResourcesNamespaceSelector>,
     /// Namespaces is a list of namespaces names. Each name supports wildcard characters
     /// "*" (matches zero or many characters) and "?" (at least one character).
@@ -581,21 +526,12 @@ pub struct CleanupPolicyExcludeAnyResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CleanupPolicyExcludeAnyResourcesNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CleanupPolicyExcludeAnyResourcesNamespaceSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CleanupPolicyExcludeAnyResourcesNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -623,20 +559,12 @@ pub struct CleanupPolicyExcludeAnyResourcesNamespaceSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CleanupPolicyExcludeAnyResourcesSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CleanupPolicyExcludeAnyResourcesSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -695,11 +623,7 @@ pub struct CleanupPolicyMatch {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CleanupPolicyMatchAll {
     /// ClusterRoles is the list of cluster-wide role names for the user.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterRoles"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterRoles")]
     pub cluster_roles: Option<Vec<String>>,
     /// ResourceDescription contains information about the resource being created or modified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -737,11 +661,7 @@ pub struct CleanupPolicyMatchAllResources {
     /// and `?` (matches one character).Wildcards allows writing label selectors like
     /// ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but
     /// does not match an empty label set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<CleanupPolicyMatchAllResourcesNamespaceSelector>,
     /// Namespaces is a list of namespaces names. Each name supports wildcard characters
     /// "*" (matches zero or many characters) and "?" (at least one character).
@@ -766,21 +686,12 @@ pub struct CleanupPolicyMatchAllResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CleanupPolicyMatchAllResourcesNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CleanupPolicyMatchAllResourcesNamespaceSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CleanupPolicyMatchAllResourcesNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -808,20 +719,12 @@ pub struct CleanupPolicyMatchAllResourcesNamespaceSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CleanupPolicyMatchAllResourcesSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CleanupPolicyMatchAllResourcesSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -866,11 +769,7 @@ pub struct CleanupPolicyMatchAllSubjects {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CleanupPolicyMatchAny {
     /// ClusterRoles is the list of cluster-wide role names for the user.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterRoles"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterRoles")]
     pub cluster_roles: Option<Vec<String>>,
     /// ResourceDescription contains information about the resource being created or modified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -908,11 +807,7 @@ pub struct CleanupPolicyMatchAnyResources {
     /// and `?` (matches one character).Wildcards allows writing label selectors like
     /// ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but
     /// does not match an empty label set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<CleanupPolicyMatchAnyResourcesNamespaceSelector>,
     /// Namespaces is a list of namespaces names. Each name supports wildcard characters
     /// "*" (matches zero or many characters) and "?" (at least one character).
@@ -937,21 +832,12 @@ pub struct CleanupPolicyMatchAnyResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CleanupPolicyMatchAnyResourcesNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<CleanupPolicyMatchAnyResourcesNamespaceSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<CleanupPolicyMatchAnyResourcesNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -979,20 +865,12 @@ pub struct CleanupPolicyMatchAnyResourcesNamespaceSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CleanupPolicyMatchAnyResourcesSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CleanupPolicyMatchAnyResourcesSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -1038,10 +916,7 @@ pub struct CleanupPolicyMatchAnySubjects {
 pub struct CleanupPolicyStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastExecutionTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastExecutionTime")]
     pub last_execution_time: Option<String>,
 }
+

@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// PulpRestoreSpec defines the desired state of PulpRestore
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "repo-manager.pulpproject.org",
-    version = "v1beta2",
-    kind = "PulpRestore",
-    plural = "pulprestores"
-)]
+#[kube(group = "repo-manager.pulpproject.org", version = "v1beta2", kind = "PulpRestore", plural = "pulprestores")]
 #[kube(namespaced)]
 #[kube(status = "PulpRestoreStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PulpRestoreSpec {
     /// Backup directory name, set as a status found on the backup object (backupDirectory)
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -59,3 +54,4 @@ pub struct PulpRestoreStatus {
     pub conditions: Vec<Condition>,
     pub postgres_secret: String,
 }
+

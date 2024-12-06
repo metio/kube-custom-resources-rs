@@ -4,46 +4,29 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// NodeSpec defines the desired state of the Longhorn node
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "longhorn.io",
-    version = "v1beta2",
-    kind = "Node",
-    plural = "nodes"
-)]
+#[kube(group = "longhorn.io", version = "v1beta2", kind = "Node", plural = "nodes")]
 #[kube(namespaced)]
 #[kube(status = "NodeStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct NodeSpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowScheduling"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowScheduling")]
     pub allow_scheduling: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disks: Option<BTreeMap<String, NodeDisks>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "evictionRequested"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictionRequested")]
     pub eviction_requested: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceManagerCPURequest"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceManagerCPURequest")]
     pub instance_manager_cpu_request: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -53,33 +36,17 @@ pub struct NodeSpec {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeDisks {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowScheduling"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowScheduling")]
     pub allow_scheduling: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "diskDriver"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskDriver")]
     pub disk_driver: Option<NodeDisksDiskDriver>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskType")]
     pub disk_type: Option<NodeDisksDiskType>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "evictionRequested"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictionRequested")]
     pub eviction_requested: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageReserved"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageReserved")]
     pub storage_reserved: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tags: Option<Vec<String>>,
@@ -106,27 +73,15 @@ pub enum NodeDisksDiskType {
 /// NodeStatus defines the observed state of the Longhorn node
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoEvicting"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoEvicting")]
     pub auto_evicting: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "diskStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskStatus")]
     pub disk_status: Option<BTreeMap<String, NodeStatusDiskStatus>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotCheckStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotCheckStatus")]
     pub snapshot_check_status: Option<NodeStatusSnapshotCheckStatus>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub zone: Option<String>,
@@ -136,11 +91,7 @@ pub struct NodeStatus {
 pub struct NodeStatusDiskStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "diskDriver"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskDriver")]
     pub disk_driver: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskName")]
     pub disk_name: Option<String>,
@@ -150,56 +101,25 @@ pub struct NodeStatusDiskStatus {
     pub disk_type: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "diskUUID")]
     pub disk_uuid: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "filesystemType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filesystemType")]
     pub filesystem_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceManagerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceManagerName")]
     pub instance_manager_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scheduledBackingImage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scheduledBackingImage")]
     pub scheduled_backing_image: Option<BTreeMap<String, i64>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scheduledReplica"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scheduledReplica")]
     pub scheduled_replica: Option<BTreeMap<String, i64>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageAvailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageAvailable")]
     pub storage_available: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageMaximum"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMaximum")]
     pub storage_maximum: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageScheduled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageScheduled")]
     pub storage_scheduled: Option<i64>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct NodeStatusSnapshotCheckStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastPeriodicCheckedAt"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastPeriodicCheckedAt")]
     pub last_periodic_checked_at: Option<String>,
 }
+

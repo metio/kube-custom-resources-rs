@@ -5,7 +5,7 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
@@ -15,11 +15,7 @@ pub struct ConstraintPodStatusStatus {
     /// Storing the constraint UID allows us to detect drift, such as
     /// when a constraint has been recreated after its CRD was deleted
     /// out from under it, interrupting the watch
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "constraintUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "constraintUID")]
     pub constraint_uid: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enforced: Option<bool>,
@@ -27,11 +23,7 @@ pub struct ConstraintPodStatusStatus {
     pub errors: Option<Vec<ConstraintPodStatusStatusErrors>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operations: Option<Vec<String>>,
@@ -45,3 +37,4 @@ pub struct ConstraintPodStatusStatusErrors {
     pub location: Option<String>,
     pub message: String,
 }
+

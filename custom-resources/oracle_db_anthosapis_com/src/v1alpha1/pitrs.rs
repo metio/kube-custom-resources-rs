@@ -4,33 +4,24 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// PITRSpec defines the desired state of PITR
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "oracle.db.anthosapis.com",
-    version = "v1alpha1",
-    kind = "PITR",
-    plural = "pitrs"
-)]
+#[kube(group = "oracle.db.anthosapis.com", version = "v1alpha1", kind = "PITR", plural = "pitrs")]
 #[kube(namespaced)]
 #[kube(status = "PITRStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PITRSpec {
     /// Schedule is a cron-style expression of the schedule on which Backup will be created for PITR. For allowed syntax, see en.wikipedia.org/wiki/Cron and godoc.org/github.com/robfig/cron. Default to backup every 4 hours.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupSchedule"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupSchedule")]
     pub backup_schedule: Option<String>,
     /// Images defines PITR service agent images. This is a required map that allows a customer to specify GCR images.
     pub images: BTreeMap<String, String>,
@@ -38,11 +29,7 @@ pub struct PITRSpec {
     #[serde(rename = "instanceRef")]
     pub instance_ref: PITRInstanceRef,
     /// StorageURI is the URI to store PITR backups and redo logs. Currently only gs:// (GCS) schemes are supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageURI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageURI")]
     pub storage_uri: Option<String>,
 }
 
@@ -58,35 +45,19 @@ pub struct PITRInstanceRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PITRStatus {
     /// AvailableRecoveryWindowSCN represents the actual PITR recoverable SCN ranges for an instance in the current timeline/incarnation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availableRecoveryWindowSCN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableRecoveryWindowSCN")]
     pub available_recovery_window_scn: Option<Vec<PITRStatusAvailableRecoveryWindowScn>>,
     /// AvailableRecoveryWindowTime represents the actual PITR recoverable time ranges for an instance in the current timeline/incarnation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availableRecoveryWindowTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableRecoveryWindowTime")]
     pub available_recovery_window_time: Option<Vec<PITRStatusAvailableRecoveryWindowTime>>,
     /// BackupTotal stores the total number of current existing backups managed by a PITR.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupTotal"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupTotal")]
     pub backup_total: Option<i64>,
     /// Conditions represents the latest available observations of the PITR's current state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// CurrentDatabaseIncarnation stores the current database incarnation number for the PITR enabled instance.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "currentDatabaseIncarnation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "currentDatabaseIncarnation")]
     pub current_database_incarnation: Option<String>,
 }
 
@@ -109,3 +80,4 @@ pub struct PITRStatusAvailableRecoveryWindowTime {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub end: Option<String>,
 }
+

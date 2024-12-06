@@ -4,44 +4,32 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ClusterStateSpec defines the desired state of ClusterState
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "hive.openshift.io",
-    version = "v1",
-    kind = "ClusterState",
-    plural = "clusterstates"
-)]
+#[kube(group = "hive.openshift.io", version = "v1", kind = "ClusterState", plural = "clusterstates")]
 #[kube(namespaced)]
 #[kube(status = "ClusterStateStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
-pub struct ClusterStateSpec {}
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
+pub struct ClusterStateSpec {
+}
 
 /// ClusterStateStatus defines the observed state of ClusterState
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterStateStatus {
     /// ClusterOperators contains the state for every cluster operator in the
     /// target cluster
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterOperators"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterOperators")]
     pub cluster_operators: Option<Vec<ClusterStateStatusClusterOperators>>,
     /// LastUpdated is the last time that operator state was updated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastUpdated"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastUpdated")]
     pub last_updated: Option<String>,
 }
 
@@ -55,3 +43,4 @@ pub struct ClusterStateStatusClusterOperators {
     /// Name is the name of the cluster operator
     pub name: String,
 }
+

@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// Spec declares policy exception behaviors.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "kyverno.io",
-    version = "v2beta1",
-    kind = "PolicyException",
-    plural = "policyexceptions"
-)]
+#[kube(group = "kyverno.io", version = "v2beta1", kind = "PolicyException", plural = "policyexceptions")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PolicyExceptionSpec {
     /// Background controls if exceptions are applied to existing policies during a background scan.
     /// Optional. Default value is "true". The value must be set to "false" if the policy rule
@@ -39,11 +34,7 @@ pub struct PolicyExceptionSpec {
     pub r#match: PolicyExceptionMatch,
     /// PodSecurity specifies the Pod Security Standard controls to be excluded.
     /// Applicable only to policies that have validate.podSecurity subrule.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSecurity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSecurity")]
     pub pod_security: Option<Vec<PolicyExceptionPodSecurity>>,
 }
 
@@ -169,11 +160,7 @@ pub struct PolicyExceptionMatch {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyExceptionMatchAll {
     /// ClusterRoles is the list of cluster-wide role names for the user.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterRoles"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterRoles")]
     pub cluster_roles: Option<Vec<String>>,
     /// ResourceDescription contains information about the resource being created or modified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -211,11 +198,7 @@ pub struct PolicyExceptionMatchAllResources {
     /// and `?` (matches one character).Wildcards allows writing label selectors like
     /// ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but
     /// does not match an empty label set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<PolicyExceptionMatchAllResourcesNamespaceSelector>,
     /// Namespaces is a list of namespaces names. Each name supports wildcard characters
     /// "*" (matches zero or many characters) and "?" (at least one character).
@@ -240,21 +223,12 @@ pub struct PolicyExceptionMatchAllResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyExceptionMatchAllResourcesNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<PolicyExceptionMatchAllResourcesNamespaceSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PolicyExceptionMatchAllResourcesNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -282,20 +256,12 @@ pub struct PolicyExceptionMatchAllResourcesNamespaceSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyExceptionMatchAllResourcesSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PolicyExceptionMatchAllResourcesSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -340,11 +306,7 @@ pub struct PolicyExceptionMatchAllSubjects {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyExceptionMatchAny {
     /// ClusterRoles is the list of cluster-wide role names for the user.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterRoles"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterRoles")]
     pub cluster_roles: Option<Vec<String>>,
     /// ResourceDescription contains information about the resource being created or modified.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -382,11 +344,7 @@ pub struct PolicyExceptionMatchAnyResources {
     /// and `?` (matches one character).Wildcards allows writing label selectors like
     /// ["storage.k8s.io/*": "*"]. Note that using ["*" : "*"] matches any key and value but
     /// does not match an empty label set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "namespaceSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "namespaceSelector")]
     pub namespace_selector: Option<PolicyExceptionMatchAnyResourcesNamespaceSelector>,
     /// Namespaces is a list of namespaces names. Each name supports wildcard characters
     /// "*" (matches zero or many characters) and "?" (at least one character).
@@ -411,21 +369,12 @@ pub struct PolicyExceptionMatchAnyResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyExceptionMatchAnyResourcesNamespaceSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<PolicyExceptionMatchAnyResourcesNamespaceSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<PolicyExceptionMatchAnyResourcesNamespaceSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -453,20 +402,12 @@ pub struct PolicyExceptionMatchAnyResourcesNamespaceSelectorMatchExpressions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PolicyExceptionMatchAnyResourcesSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<PolicyExceptionMatchAnyResourcesSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -522,11 +463,7 @@ pub struct PolicyExceptionPodSecurity {
     pub images: Option<Vec<String>>,
     /// RestrictedField selects the field for the given Pod Security Standard control.
     /// When not set, all restricted fields for the control are selected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restrictedField"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restrictedField")]
     pub restricted_field: Option<String>,
     /// Values defines the allowed values that can be excluded.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -562,3 +499,4 @@ pub enum PolicyExceptionPodSecurityControlName {
     #[serde(rename = "Running as Non-root user")]
     RunningAsNonRootUser,
 }
+

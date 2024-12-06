@@ -5,24 +5,19 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// VMRuleSpec defines the desired state of VMRule
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "operator.victoriametrics.com",
-    version = "v1beta1",
-    kind = "VMRule",
-    plural = "vmrules"
-)]
+#[kube(group = "operator.victoriametrics.com", version = "v1beta1", kind = "VMRule", plural = "vmrules")]
 #[kube(namespaced)]
 #[kube(status = "VMRuleStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct VMRuleSpec {
     /// Groups list of group rules
     pub groups: Vec<VMRuleGroups>,
@@ -142,13 +137,10 @@ pub struct VMRuleGroupsRules {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMRuleStatus {
     /// LastSyncError contains error message for unsuccessful config generation
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastSyncError"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSyncError")]
     pub last_sync_error: Option<String>,
     /// Status defines CRD processing status
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }
+

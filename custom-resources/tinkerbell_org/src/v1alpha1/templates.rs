@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// TemplateSpec defines the desired state of Template.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "tinkerbell.org",
-    version = "v1alpha1",
-    kind = "Template",
-    plural = "templates"
-)]
+#[kube(group = "tinkerbell.org", version = "v1alpha1", kind = "Template", plural = "templates")]
 #[kube(namespaced)]
 #[kube(status = "TemplateStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TemplateSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<String>,
@@ -34,3 +29,4 @@ pub struct TemplateStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+

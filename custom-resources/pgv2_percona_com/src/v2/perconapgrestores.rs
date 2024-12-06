@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "pgv2.percona.com",
-    version = "v2",
-    kind = "PerconaPGRestore",
-    plural = "perconapgrestores"
-)]
+#[kube(group = "pgv2.percona.com", version = "v2", kind = "PerconaPGRestore", plural = "perconapgrestores")]
 #[kube(namespaced)]
 #[kube(status = "PerconaPGRestoreStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PerconaPGRestoreSpec {
     /// Command line options to include when running the pgBackRest restore command.
     /// https://pgbackrest.org/command.html#command-restore
@@ -45,3 +40,4 @@ pub struct PerconaPGRestoreStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+

@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// UserProfileSpec defines the desired state of UserProfile.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "sagemaker.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "UserProfile",
-    plural = "userprofiles"
-)]
+#[kube(group = "sagemaker.services.k8s.aws", version = "v1alpha1", kind = "UserProfile", plural = "userprofiles")]
 #[kube(namespaced)]
 #[kube(status = "UserProfileStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct UserProfileSpec {
     /// The ID of the associated Domain.
     #[serde(rename = "domainID")]
@@ -31,27 +26,19 @@ pub struct UserProfileSpec {
     /// the only supported value is "UserName". If the Domain's AuthMode is IAM Identity
     /// Center, this field is required. If the Domain's AuthMode is not IAM Identity
     /// Center, this field cannot be specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "singleSignOnUserIdentifier"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "singleSignOnUserIdentifier")]
     pub single_sign_on_user_identifier: Option<String>,
     /// The username of the associated Amazon Web Services Single Sign-On User for
     /// this UserProfile. If the Domain's AuthMode is IAM Identity Center, this field
     /// is required, and must match a valid username of a user in your directory.
     /// If the Domain's AuthMode is not IAM Identity Center, this field cannot be
     /// specified.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "singleSignOnUserValue"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "singleSignOnUserValue")]
     pub single_sign_on_user_value: Option<String>,
     /// Each tag consists of a key and an optional value. Tag keys must be unique
     /// per resource.
-    ///
-    ///
+    /// 
+    /// 
     /// Tags that you specify for the User Profile are also added to all Apps that
     /// the User Profile launches.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -60,24 +47,20 @@ pub struct UserProfileSpec {
     #[serde(rename = "userProfileName")]
     pub user_profile_name: String,
     /// A collection of settings.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userSettings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userSettings")]
     pub user_settings: Option<UserProfileUserSettings>,
 }
 
 /// A tag object that consists of a key and an optional value, used to manage
 /// metadata for SageMaker Amazon Web Services resources.
-///
-///
+/// 
+/// 
 /// You can add tags to notebook instances, training jobs, hyperparameter tuning
 /// jobs, batch transform jobs, models, labeling jobs, work teams, endpoint configurations,
 /// and endpoints. For more information on adding tags to SageMaker resources,
 /// see AddTags (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AddTags.html).
-///
-///
+/// 
+/// 
 /// For more information on adding metadata to your Amazon Web Services resources
 /// with tagging, see Tagging Amazon Web Services resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html).
 /// For advice on best practices for managing Amazon Web Services resources with
@@ -95,130 +78,64 @@ pub struct UserProfileTags {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UserProfileUserSettings {
     /// The Code Editor application settings.
-    ///
-    ///
+    /// 
+    /// 
     /// For more information about Code Editor, see Get started with Code Editor
     /// in Amazon SageMaker (https://docs.aws.amazon.com/sagemaker/latest/dg/code-editor.html).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "codeEditorAppSettings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "codeEditorAppSettings")]
     pub code_editor_app_settings: Option<UserProfileUserSettingsCodeEditorAppSettings>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customFileSystemConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customFileSystemConfigs")]
     pub custom_file_system_configs: Option<Vec<UserProfileUserSettingsCustomFileSystemConfigs>>,
     /// Details about the POSIX identity that is used for file system operations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customPosixUserConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customPosixUserConfig")]
     pub custom_posix_user_config: Option<UserProfileUserSettingsCustomPosixUserConfig>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultLandingURI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultLandingURI")]
     pub default_landing_uri: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "executionRole"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "executionRole")]
     pub execution_role: Option<String>,
     /// The settings for the JupyterLab application.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jupyterLabAppSettings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jupyterLabAppSettings")]
     pub jupyter_lab_app_settings: Option<UserProfileUserSettingsJupyterLabAppSettings>,
     /// The JupyterServer app settings.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jupyterServerAppSettings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jupyterServerAppSettings")]
     pub jupyter_server_app_settings: Option<UserProfileUserSettingsJupyterServerAppSettings>,
     /// The KernelGateway app settings.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kernelGatewayAppSettings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kernelGatewayAppSettings")]
     pub kernel_gateway_app_settings: Option<UserProfileUserSettingsKernelGatewayAppSettings>,
     /// A collection of settings that configure user interaction with the RStudioServerPro
     /// app.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rStudioServerProAppSettings"
-    )]
-    pub r_studio_server_pro_app_settings:
-        Option<UserProfileUserSettingsRStudioServerProAppSettings>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rStudioServerProAppSettings")]
+    pub r_studio_server_pro_app_settings: Option<UserProfileUserSettingsRStudioServerProAppSettings>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityGroups")]
     pub security_groups: Option<Vec<String>>,
     /// Specifies options for sharing Amazon SageMaker Studio notebooks. These settings
     /// are specified as part of DefaultUserSettings when the CreateDomain API is
     /// called, and as part of UserSettings when the CreateUserProfile API is called.
     /// When SharingSettings is not specified, notebook sharing isn't allowed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sharingSettings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sharingSettings")]
     pub sharing_settings: Option<UserProfileUserSettingsSharingSettings>,
     /// The default storage settings for a private space.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "spaceStorageSettings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "spaceStorageSettings")]
     pub space_storage_settings: Option<UserProfileUserSettingsSpaceStorageSettings>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "studioWebPortal"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "studioWebPortal")]
     pub studio_web_portal: Option<String>,
     /// The TensorBoard app settings.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tensorBoardAppSettings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tensorBoardAppSettings")]
     pub tensor_board_app_settings: Option<UserProfileUserSettingsTensorBoardAppSettings>,
 }
 
 /// The Code Editor application settings.
-///
-///
+/// 
+/// 
 /// For more information about Code Editor, see Get started with Code Editor
 /// in Amazon SageMaker (https://docs.aws.amazon.com/sagemaker/latest/dg/code-editor.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UserProfileUserSettingsCodeEditorAppSettings {
     /// Specifies the ARN's of a SageMaker image and SageMaker image version, and
     /// the instance type that the version runs on.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultResourceSpec"
-    )]
-    pub default_resource_spec:
-        Option<UserProfileUserSettingsCodeEditorAppSettingsDefaultResourceSpec>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lifecycleConfigARNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultResourceSpec")]
+    pub default_resource_spec: Option<UserProfileUserSettingsCodeEditorAppSettingsDefaultResourceSpec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifecycleConfigARNs")]
     pub lifecycle_config_ar_ns: Option<Vec<String>>,
 }
 
@@ -226,35 +143,15 @@ pub struct UserProfileUserSettingsCodeEditorAppSettings {
 /// the instance type that the version runs on.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UserProfileUserSettingsCodeEditorAppSettingsDefaultResourceSpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
     pub instance_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lifecycleConfigARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifecycleConfigARN")]
     pub lifecycle_config_arn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sageMakerImageARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageARN")]
     pub sage_maker_image_arn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sageMakerImageVersionARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageVersionARN")]
     pub sage_maker_image_version_arn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sageMakerImageVersionAlias"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageVersionAlias")]
     pub sage_maker_image_version_alias: Option<String>,
 }
 
@@ -265,30 +162,17 @@ pub struct UserProfileUserSettingsCodeEditorAppSettingsDefaultResourceSpec {
 pub struct UserProfileUserSettingsCustomFileSystemConfigs {
     /// The settings for assigning a custom Amazon EFS file system to a user profile
     /// or space for an Amazon SageMaker Domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "efsFileSystemConfig"
-    )]
-    pub efs_file_system_config:
-        Option<UserProfileUserSettingsCustomFileSystemConfigsEfsFileSystemConfig>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "efsFileSystemConfig")]
+    pub efs_file_system_config: Option<UserProfileUserSettingsCustomFileSystemConfigsEfsFileSystemConfig>,
 }
 
 /// The settings for assigning a custom Amazon EFS file system to a user profile
 /// or space for an Amazon SageMaker Domain.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UserProfileUserSettingsCustomFileSystemConfigsEfsFileSystemConfig {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fileSystemID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemID")]
     pub file_system_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fileSystemPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSystemPath")]
     pub file_system_path: Option<String>,
 }
 
@@ -304,26 +188,13 @@ pub struct UserProfileUserSettingsCustomPosixUserConfig {
 /// The settings for the JupyterLab application.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UserProfileUserSettingsJupyterLabAppSettings {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customImages"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customImages")]
     pub custom_images: Option<Vec<UserProfileUserSettingsJupyterLabAppSettingsCustomImages>>,
     /// Specifies the ARN's of a SageMaker image and SageMaker image version, and
     /// the instance type that the version runs on.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultResourceSpec"
-    )]
-    pub default_resource_spec:
-        Option<UserProfileUserSettingsJupyterLabAppSettingsDefaultResourceSpec>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lifecycleConfigARNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultResourceSpec")]
+    pub default_resource_spec: Option<UserProfileUserSettingsJupyterLabAppSettingsDefaultResourceSpec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifecycleConfigARNs")]
     pub lifecycle_config_ar_ns: Option<Vec<String>>,
 }
 
@@ -331,19 +202,11 @@ pub struct UserProfileUserSettingsJupyterLabAppSettings {
 /// image (https://docs.aws.amazon.com/sagemaker/latest/dg/studio-byoi.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UserProfileUserSettingsJupyterLabAppSettingsCustomImages {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appImageConfigName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appImageConfigName")]
     pub app_image_config_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageName")]
     pub image_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageVersionNumber"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageVersionNumber")]
     pub image_version_number: Option<i64>,
 }
 
@@ -351,35 +214,15 @@ pub struct UserProfileUserSettingsJupyterLabAppSettingsCustomImages {
 /// the instance type that the version runs on.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UserProfileUserSettingsJupyterLabAppSettingsDefaultResourceSpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
     pub instance_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lifecycleConfigARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifecycleConfigARN")]
     pub lifecycle_config_arn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sageMakerImageARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageARN")]
     pub sage_maker_image_arn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sageMakerImageVersionARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageVersionARN")]
     pub sage_maker_image_version_arn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sageMakerImageVersionAlias"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageVersionAlias")]
     pub sage_maker_image_version_alias: Option<String>,
 }
 
@@ -388,18 +231,9 @@ pub struct UserProfileUserSettingsJupyterLabAppSettingsDefaultResourceSpec {
 pub struct UserProfileUserSettingsJupyterServerAppSettings {
     /// Specifies the ARN's of a SageMaker image and SageMaker image version, and
     /// the instance type that the version runs on.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultResourceSpec"
-    )]
-    pub default_resource_spec:
-        Option<UserProfileUserSettingsJupyterServerAppSettingsDefaultResourceSpec>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lifecycleConfigARNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultResourceSpec")]
+    pub default_resource_spec: Option<UserProfileUserSettingsJupyterServerAppSettingsDefaultResourceSpec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifecycleConfigARNs")]
     pub lifecycle_config_ar_ns: Option<Vec<String>>,
 }
 
@@ -407,61 +241,28 @@ pub struct UserProfileUserSettingsJupyterServerAppSettings {
 /// the instance type that the version runs on.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UserProfileUserSettingsJupyterServerAppSettingsDefaultResourceSpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
     pub instance_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lifecycleConfigARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifecycleConfigARN")]
     pub lifecycle_config_arn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sageMakerImageARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageARN")]
     pub sage_maker_image_arn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sageMakerImageVersionARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageVersionARN")]
     pub sage_maker_image_version_arn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sageMakerImageVersionAlias"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageVersionAlias")]
     pub sage_maker_image_version_alias: Option<String>,
 }
 
 /// The KernelGateway app settings.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UserProfileUserSettingsKernelGatewayAppSettings {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customImages"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customImages")]
     pub custom_images: Option<Vec<UserProfileUserSettingsKernelGatewayAppSettingsCustomImages>>,
     /// Specifies the ARN's of a SageMaker image and SageMaker image version, and
     /// the instance type that the version runs on.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultResourceSpec"
-    )]
-    pub default_resource_spec:
-        Option<UserProfileUserSettingsKernelGatewayAppSettingsDefaultResourceSpec>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lifecycleConfigARNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultResourceSpec")]
+    pub default_resource_spec: Option<UserProfileUserSettingsKernelGatewayAppSettingsDefaultResourceSpec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifecycleConfigARNs")]
     pub lifecycle_config_ar_ns: Option<Vec<String>>,
 }
 
@@ -469,19 +270,11 @@ pub struct UserProfileUserSettingsKernelGatewayAppSettings {
 /// image (https://docs.aws.amazon.com/sagemaker/latest/dg/studio-byoi.html).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UserProfileUserSettingsKernelGatewayAppSettingsCustomImages {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appImageConfigName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appImageConfigName")]
     pub app_image_config_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageName")]
     pub image_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageVersionNumber"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageVersionNumber")]
     pub image_version_number: Option<i64>,
 }
 
@@ -489,35 +282,15 @@ pub struct UserProfileUserSettingsKernelGatewayAppSettingsCustomImages {
 /// the instance type that the version runs on.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UserProfileUserSettingsKernelGatewayAppSettingsDefaultResourceSpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
     pub instance_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lifecycleConfigARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifecycleConfigARN")]
     pub lifecycle_config_arn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sageMakerImageARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageARN")]
     pub sage_maker_image_arn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sageMakerImageVersionARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageVersionARN")]
     pub sage_maker_image_version_arn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sageMakerImageVersionAlias"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageVersionAlias")]
     pub sage_maker_image_version_alias: Option<String>,
 }
 
@@ -525,11 +298,7 @@ pub struct UserProfileUserSettingsKernelGatewayAppSettingsDefaultResourceSpec {
 /// app.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UserProfileUserSettingsRStudioServerProAppSettings {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessStatus")]
     pub access_status: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "userGroup")]
     pub user_group: Option<String>,
@@ -541,23 +310,11 @@ pub struct UserProfileUserSettingsRStudioServerProAppSettings {
 /// When SharingSettings is not specified, notebook sharing isn't allowed.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UserProfileUserSettingsSharingSettings {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "notebookOutputOption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "notebookOutputOption")]
     pub notebook_output_option: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3KMSKeyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3KMSKeyID")]
     pub s3_kms_key_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "s3OutputPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "s3OutputPath")]
     pub s3_output_path: Option<String>,
 }
 
@@ -566,30 +323,17 @@ pub struct UserProfileUserSettingsSharingSettings {
 pub struct UserProfileUserSettingsSpaceStorageSettings {
     /// A collection of default EBS storage settings that applies to private spaces
     /// created within a domain or user profile.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultEBSStorageSettings"
-    )]
-    pub default_ebs_storage_settings:
-        Option<UserProfileUserSettingsSpaceStorageSettingsDefaultEbsStorageSettings>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultEBSStorageSettings")]
+    pub default_ebs_storage_settings: Option<UserProfileUserSettingsSpaceStorageSettingsDefaultEbsStorageSettings>,
 }
 
 /// A collection of default EBS storage settings that applies to private spaces
 /// created within a domain or user profile.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UserProfileUserSettingsSpaceStorageSettingsDefaultEbsStorageSettings {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultEBSVolumeSizeInGb"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultEBSVolumeSizeInGb")]
     pub default_ebs_volume_size_in_gb: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maximumEBSVolumeSizeInGb"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumEBSVolumeSizeInGb")]
     pub maximum_ebs_volume_size_in_gb: Option<i64>,
 }
 
@@ -598,48 +342,23 @@ pub struct UserProfileUserSettingsSpaceStorageSettingsDefaultEbsStorageSettings 
 pub struct UserProfileUserSettingsTensorBoardAppSettings {
     /// Specifies the ARN's of a SageMaker image and SageMaker image version, and
     /// the instance type that the version runs on.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultResourceSpec"
-    )]
-    pub default_resource_spec:
-        Option<UserProfileUserSettingsTensorBoardAppSettingsDefaultResourceSpec>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultResourceSpec")]
+    pub default_resource_spec: Option<UserProfileUserSettingsTensorBoardAppSettingsDefaultResourceSpec>,
 }
 
 /// Specifies the ARN's of a SageMaker image and SageMaker image version, and
 /// the instance type that the version runs on.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UserProfileUserSettingsTensorBoardAppSettingsDefaultResourceSpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instanceType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instanceType")]
     pub instance_type: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lifecycleConfigARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lifecycleConfigARN")]
     pub lifecycle_config_arn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sageMakerImageARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageARN")]
     pub sage_maker_image_arn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sageMakerImageVersionARN"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageVersionARN")]
     pub sage_maker_image_version_arn: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sageMakerImageVersionAlias"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sageMakerImageVersionAlias")]
     pub sage_maker_image_version_alias: Option<String>,
 }
 
@@ -649,11 +368,7 @@ pub struct UserProfileStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<UserProfileStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -688,3 +403,4 @@ pub struct UserProfileStatusAckResourceMetadata {
     /// Region is the AWS region in which the resource exists or will exist.
     pub region: String,
 }
+

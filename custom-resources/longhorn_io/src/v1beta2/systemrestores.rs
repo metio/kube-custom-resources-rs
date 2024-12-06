@@ -4,25 +4,20 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// SystemRestoreSpec defines the desired state of the Longhorn SystemRestore
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "longhorn.io",
-    version = "v1beta2",
-    kind = "SystemRestore",
-    plural = "systemrestores"
-)]
+#[kube(group = "longhorn.io", version = "v1beta2", kind = "SystemRestore", plural = "systemrestores")]
 #[kube(namespaced)]
 #[kube(status = "SystemRestoreStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SystemRestoreSpec {
     /// The system backup name in the object store.
     #[serde(rename = "systemBackup")]
@@ -44,3 +39,4 @@ pub struct SystemRestoreStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+

@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// ReleaserControllerSpec defines the desired state of ReleaserController
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "devops.kubesphere.io",
-    version = "v1alpha1",
-    kind = "ReleaserController",
-    plural = "releasercontrollers"
-)]
+#[kube(group = "devops.kubesphere.io", version = "v1alpha1", kind = "ReleaserController", plural = "releasercontrollers")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ReleaserControllerSpec {
     /// Image is an example field of ReleaserController. Edit releasercontroller_types.go to remove/update
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -35,4 +30,6 @@ pub struct ReleaserControllerSpec {
 
 /// ReleaserControllerStatus defines the observed state of ReleaserController
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ReleaserControllerStatus {}
+pub struct ReleaserControllerStatus {
+}
+

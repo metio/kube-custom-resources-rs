@@ -4,31 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::api::core::v1::ObjectReference;
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
+    pub use k8s_openapi::api::core::v1::ObjectReference;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "scheduling.koordinator.sh",
-    version = "v1alpha1",
-    kind = "PodMigrationJob",
-    plural = "podmigrationjobs"
-)]
+#[kube(group = "scheduling.koordinator.sh", version = "v1alpha1", kind = "PodMigrationJob", plural = "podmigrationjobs")]
 #[kube(status = "PodMigrationJobStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PodMigrationJobSpec {
     /// DeleteOptions defines the deleting options for the migrated Pod and preempted Pods
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deleteOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deleteOptions")]
     pub delete_options: Option<PodMigrationJobDeleteOptions>,
     /// Mode represents the operating mode of the Job
     /// Default is PodMigrationJobModeReservationFirst
@@ -42,11 +33,7 @@ pub struct PodMigrationJobSpec {
     #[serde(rename = "podRef")]
     pub pod_ref: ObjectReference,
     /// ReservationOptions defines the Reservation options for migrated Pod
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reservationOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reservationOptions")]
     pub reservation_options: Option<PodMigrationJobReservationOptions>,
     /// TTL controls the PodMigrationJob timeout duration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -60,11 +47,7 @@ pub struct PodMigrationJobDeleteOptions {
     /// Servers should convert recognized schemas to the latest internal value, and
     /// may reject unrecognized values.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// When present, indicates that modifications should not be
     /// persisted. An invalid or unrecognized dryRun directive will
@@ -77,11 +60,7 @@ pub struct PodMigrationJobDeleteOptions {
     /// The value zero indicates delete immediately. If this value is nil, the default grace period for the
     /// specified type will be used.
     /// Defaults to a per object value if not specified. zero means delete immediately.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracePeriodSeconds")]
     pub grace_period_seconds: Option<i64>,
     /// Kind is a string value representing the REST resource this object represents.
     /// Servers may infer this from the endpoint the client submits requests to.
@@ -94,11 +73,7 @@ pub struct PodMigrationJobDeleteOptions {
     /// Should the dependent objects be orphaned. If true/false, the "orphan"
     /// finalizer will be added to/removed from the object's finalizers list.
     /// Either this field or PropagationPolicy may be set, but not both.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "orphanDependents"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "orphanDependents")]
     pub orphan_dependents: Option<bool>,
     /// Must be fulfilled before a deletion is carried out. If not possible, a 409 Conflict status will be
     /// returned.
@@ -112,11 +87,7 @@ pub struct PodMigrationJobDeleteOptions {
     /// allow the garbage collector to delete the dependents in the background;
     /// 'Foreground' - a cascading policy that deletes all dependents in the
     /// foreground.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "propagationPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "propagationPolicy")]
     pub propagation_policy: Option<String>,
 }
 
@@ -125,11 +96,7 @@ pub struct PodMigrationJobDeleteOptions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PodMigrationJobDeleteOptionsPreconditions {
     /// Specifies the target ResourceVersion
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// Specifies the target UID.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -140,11 +107,7 @@ pub struct PodMigrationJobDeleteOptionsPreconditions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PodMigrationJobPodRef {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -170,11 +133,7 @@ pub struct PodMigrationJobPodRef {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -187,20 +146,12 @@ pub struct PodMigrationJobPodRef {
 pub struct PodMigrationJobReservationOptions {
     /// PreemptionOption decides whether to preempt other Pods.
     /// The preemption is safe and reserves resources for preempted Pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preemptionOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preemptionOptions")]
     pub preemption_options: Option<PodMigrationJobReservationOptionsPreemptionOptions>,
     /// ReservationRef if specified, PodMigrationJob will check if the status of Reservation is available.
     /// ReservationRef if not specified, PodMigrationJob controller will create Reservation by Template,
     /// and update the ReservationRef to reference the Reservation
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "reservationRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "reservationRef")]
     pub reservation_ref: Option<ObjectReference>,
     /// Template is the object that describes the Reservation that will be created if not specified ReservationRef
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -210,7 +161,8 @@ pub struct PodMigrationJobReservationOptions {
 /// PreemptionOption decides whether to preempt other Pods.
 /// The preemption is safe and reserves resources for preempted Pods.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct PodMigrationJobReservationOptionsPreemptionOptions {}
+pub struct PodMigrationJobReservationOptionsPreemptionOptions {
+}
 
 /// ReservationRef if specified, PodMigrationJob will check if the status of Reservation is available.
 /// ReservationRef if not specified, PodMigrationJob controller will create Reservation by Template,
@@ -218,11 +170,7 @@ pub struct PodMigrationJobReservationOptionsPreemptionOptions {}
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PodMigrationJobReservationOptionsReservationRef {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -248,11 +196,7 @@ pub struct PodMigrationJobReservationOptionsReservationRef {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -279,18 +223,10 @@ pub struct PodMigrationJobStatus {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podRef")]
     pub pod_ref: Option<ObjectReference>,
     /// PreemptedPodsRef represents the Pods that be preempted
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preemptedPodsRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preemptedPodsRef")]
     pub preempted_pods_ref: Option<Vec<ObjectReference>>,
     /// PreemptedPodsReservations records information about Reservations created due to preemption
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preemptedPodsReservation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preemptedPodsReservation")]
     pub preempted_pods_reservation: Option<Vec<PodMigrationJobStatusPreemptedPodsReservation>>,
     /// Reason represents a brief CamelCase message indicating details about why the PodMigrationJob is in this state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -305,11 +241,7 @@ pub struct PodMigrationJobStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PodMigrationJobStatusPodRef {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -335,11 +267,7 @@ pub struct PodMigrationJobStatusPodRef {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -365,11 +293,7 @@ pub struct PodMigrationJobStatusPreemptedPodsReservation {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podsRef")]
     pub pods_ref: Option<Vec<ObjectReference>>,
     /// PreemptedPodRef represents the Pod that be preempted
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preemptedPodRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preemptedPodRef")]
     pub preempted_pod_ref: Option<ObjectReference>,
 }
 
@@ -377,11 +301,7 @@ pub struct PodMigrationJobStatusPreemptedPodsReservation {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PodMigrationJobStatusPreemptedPodsReservationPreemptedPodRef {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -407,14 +327,11 @@ pub struct PodMigrationJobStatusPreemptedPodsReservationPreemptedPodRef {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub uid: Option<String>,
 }
+

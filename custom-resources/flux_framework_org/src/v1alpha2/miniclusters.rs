@@ -4,28 +4,23 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// MiniCluster is an HPC cluster in Kubernetes you can control
 /// Either to submit a single job (and go away) or for a persistent single- or multi- user cluster
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "flux-framework.org",
-    version = "v1alpha2",
-    kind = "MiniCluster",
-    plural = "miniclusters"
-)]
+#[kube(group = "flux-framework.org", version = "v1alpha2", kind = "MiniCluster", plural = "miniclusters")]
 #[kube(namespaced)]
 #[kube(status = "MiniClusterStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct MiniClusterSpec {
     /// Archive to load or save
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -38,11 +33,7 @@ pub struct MiniClusterSpec {
     pub containers: Vec<MiniClusterContainers>,
     /// Should the job be limited to a particular number of seconds?
     /// Approximately one year. This cannot be zero or job won't start
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deadlineSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deadlineSeconds")]
     pub deadline_seconds: Option<i64>,
     /// Flux options for the broker, shared across cluster
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -75,11 +66,7 @@ pub struct MiniClusterSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub services: Option<Vec<MiniClusterServices>>,
     /// Share process namespace?
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "shareProcessNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "shareProcessNamespace")]
     pub share_process_namespace: Option<bool>,
     /// Size (number of job pods to run, size of minicluster in pods)
     /// This is also the minimum number required to start Flux
@@ -123,11 +110,7 @@ pub struct MiniClusterContainers {
     /// this with the name of an already existing
     /// imagePullSecret will specify that secret
     /// in the pod spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecret")]
     pub image_pull_secret: Option<String>,
     /// Indicate that the command is a launcher that will
     /// ask for its own jobs (and provided directly to flux start)
@@ -143,11 +126,7 @@ pub struct MiniClusterContainers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Do not wrap the entrypoint to wait for flux, add to path, etc?
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "noWrapEntrypoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noWrapEntrypoint")]
     pub no_wrap_entrypoint: Option<bool>,
     /// Ports to be exposed to other containers in the cluster
     /// We take a single list of integers and map to the same
@@ -156,11 +135,7 @@ pub struct MiniClusterContainers {
     /// Allow the user to dictate pulling
     /// By default we pull if not present. Setting
     /// this to true will indicate to pull always
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pullAlways"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullAlways")]
     pub pull_always: Option<bool>,
     /// Resources include limits and requests
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -174,21 +149,13 @@ pub struct MiniClusterContainers {
     pub secrets: Option<BTreeMap<String, MiniClusterContainersSecrets>>,
     /// Security Context
     /// https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<MiniClusterContainersSecurityContext>,
     /// Existing volumes that can be mounted
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<BTreeMap<String, MiniClusterContainersVolumes>>,
     /// Working directory to run command from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -215,11 +182,7 @@ pub struct MiniClusterContainersCommands {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub script: Option<String>,
     /// A command only for service start.sh tor run
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "servicePre"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "servicePre")]
     pub service_pre: Option<String>,
     /// A command only for workers to run
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workerPre")]
@@ -229,17 +192,9 @@ pub struct MiniClusterContainersCommands {
 /// Lifecycle can handle post start commands, etc.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiniClusterContainersLifeCycle {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "postStartExec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStartExec")]
     pub post_start_exec: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preStopExec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStopExec")]
     pub pre_stop_exec: Option<String>,
 }
 
@@ -269,11 +224,7 @@ pub struct MiniClusterContainersSecrets {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiniClusterContainersSecurityContext {
     /// Capabilities to add
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "addCapabilities"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "addCapabilities")]
     pub add_capabilities: Option<Vec<String>>,
     /// Privileged container
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -288,27 +239,15 @@ pub struct MiniClusterContainersVolumes {
     pub claim_name: Option<String>,
     /// Config map name if the existing volume is a config map
     /// You should also define items if you are using this
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapName")]
     pub config_map_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<bool>,
     /// Add an empty directory custom type
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "emptyDirMedium"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDirMedium")]
     pub empty_dir_medium: Option<String>,
     /// Add an empty directory sizeLimit
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "emptyDirSizeLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDirSizeLimit")]
     pub empty_dir_size_limit: Option<String>,
     /// An existing hostPath to bind to path
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
@@ -322,11 +261,7 @@ pub struct MiniClusterContainersVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// An existing secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -339,11 +274,7 @@ pub struct MiniClusterFlux {
     pub arch: Option<String>,
     /// Optionally provide a manually created broker config
     /// this is intended for bursting to remote clusters
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "brokerConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "brokerConfig")]
     pub broker_config: Option<String>,
     /// Bursting - one or more external clusters to burst to
     /// We assume a single, central MiniCluster with an ipaddress
@@ -352,18 +283,10 @@ pub struct MiniClusterFlux {
     pub bursting: Option<MiniClusterFluxBursting>,
     /// Complete workers when they fail
     /// This is ideal if you don't want them to restart
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "completeWorkers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "completeWorkers")]
     pub complete_workers: Option<bool>,
     /// Single user executable to provide to flux start
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeout")]
     pub connect_timeout: Option<String>,
     /// Container base for flux
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -374,58 +297,34 @@ pub struct MiniClusterFlux {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "curveCert")]
     pub curve_cert: Option<String>,
     /// Disable specifying the socket path
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableSocket"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableSocket")]
     pub disable_socket: Option<bool>,
     /// Log level to use for flux logging (only in non TestMode)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<i32>,
     /// Only expose the broker service (to reduce load on DNS)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimalService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimalService")]
     pub minimal_service: Option<bool>,
     /// Expect a secret (named according to this string)
     /// for a munge key. This is intended for bursting.
     /// Assumed to be at /etc/munge/munge.key
     /// This is binary data.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mungeSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mungeSecret")]
     pub munge_secret: Option<String>,
     /// Do not wait for the socket
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "noWaitSocket"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noWaitSocket")]
     pub no_wait_socket: Option<bool>,
     /// Flux option flags, usually provided with -o
     /// optional - if needed, default option flags for the server
     /// These can also be set in the user interface to override here.
     /// This is only valid for a FluxRunner "runFlux" true
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "optionFlags"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "optionFlags")]
     pub option_flags: Option<String>,
     /// Custom attributes for the fluxion scheduler
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheduler: Option<MiniClusterFluxScheduler>,
     /// Modify flux submit to be something else
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "submitCommand"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "submitCommand")]
     pub submit_command: Option<String>,
     /// Specify a custom Topology
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -454,11 +353,7 @@ pub struct MiniClusterFluxBursting {
     /// The lead broker ip address to join to. E.g., if we burst
     /// to cluster 2, this is the address to connect to cluster 1
     /// For the first cluster, this should not be defined
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "leadBroker"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "leadBroker")]
     pub lead_broker: Option<MiniClusterFluxBurstingLeadBroker>,
 }
 
@@ -504,11 +399,7 @@ pub struct MiniClusterFluxContainer {
     /// this with the name of an already existing
     /// imagePullSecret will specify that secret
     /// in the pod spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecret")]
     pub image_pull_secret: Option<String>,
     /// Mount path for flux to be at (will be added to path)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPath")]
@@ -519,18 +410,10 @@ pub struct MiniClusterFluxContainer {
     /// Allow the user to dictate pulling
     /// By default we pull if not present. Setting
     /// this to true will indicate to pull always
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pullAlways"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullAlways")]
     pub pull_always: Option<bool>,
     /// Customize python path for flux
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pythonPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pythonPath")]
     pub python_path: Option<String>,
     /// Resources include limits and requests
     /// These must be defined for cpu and memory
@@ -538,11 +421,7 @@ pub struct MiniClusterFluxContainer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<MiniClusterFluxContainerResources>,
     /// Working directory to run command from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -561,11 +440,7 @@ pub struct MiniClusterFluxContainerResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiniClusterFluxScheduler {
     /// Scheduler queue policy, defaults to "fcfs" can also be "easy"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "queuePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "queuePolicy")]
     pub queue_policy: Option<String>,
 }
 
@@ -593,18 +468,10 @@ pub struct MiniClusterLogging {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiniClusterNetwork {
     /// Disable affinity rules that guarantee one network address / node
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableAffinity")]
     pub disable_affinity: Option<bool>,
     /// Name for cluster headless service
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "headlessName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "headlessName")]
     pub headless_name: Option<String>,
 }
 
@@ -615,52 +482,28 @@ pub struct MiniClusterPod {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
     /// Automatically mount the service account name
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "automountServiceAccountToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "automountServiceAccountToken")]
     pub automount_service_account_token: Option<bool>,
     /// Labels for each pod
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
     /// NodeSelectors for a pod
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Resources include limits and requests
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<BTreeMap<String, IntOrString>>,
     /// Restart Policy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     /// RuntimeClassName for the pod
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runtimeClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeClassName")]
     pub runtime_class_name: Option<String>,
     /// Scheduler name for the pod
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "schedulerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "schedulerName")]
     pub scheduler_name: Option<String>,
     /// Service account name for the pod
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
 }
 
@@ -689,11 +532,7 @@ pub struct MiniClusterServices {
     /// this with the name of an already existing
     /// imagePullSecret will specify that secret
     /// in the pod spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecret")]
     pub image_pull_secret: Option<String>,
     /// Indicate that the command is a launcher that will
     /// ask for its own jobs (and provided directly to flux start)
@@ -709,11 +548,7 @@ pub struct MiniClusterServices {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Do not wrap the entrypoint to wait for flux, add to path, etc?
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "noWrapEntrypoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noWrapEntrypoint")]
     pub no_wrap_entrypoint: Option<bool>,
     /// Ports to be exposed to other containers in the cluster
     /// We take a single list of integers and map to the same
@@ -722,11 +557,7 @@ pub struct MiniClusterServices {
     /// Allow the user to dictate pulling
     /// By default we pull if not present. Setting
     /// this to true will indicate to pull always
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pullAlways"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullAlways")]
     pub pull_always: Option<bool>,
     /// Resources include limits and requests
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -740,21 +571,13 @@ pub struct MiniClusterServices {
     pub secrets: Option<BTreeMap<String, MiniClusterServicesSecrets>>,
     /// Security Context
     /// https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<MiniClusterServicesSecurityContext>,
     /// Existing volumes that can be mounted
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub volumes: Option<BTreeMap<String, MiniClusterServicesVolumes>>,
     /// Working directory to run command from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -781,11 +604,7 @@ pub struct MiniClusterServicesCommands {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub script: Option<String>,
     /// A command only for service start.sh tor run
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "servicePre"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "servicePre")]
     pub service_pre: Option<String>,
     /// A command only for workers to run
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "workerPre")]
@@ -795,17 +614,9 @@ pub struct MiniClusterServicesCommands {
 /// Lifecycle can handle post start commands, etc.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiniClusterServicesLifeCycle {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "postStartExec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "postStartExec")]
     pub post_start_exec: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preStopExec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preStopExec")]
     pub pre_stop_exec: Option<String>,
 }
 
@@ -835,11 +646,7 @@ pub struct MiniClusterServicesSecrets {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MiniClusterServicesSecurityContext {
     /// Capabilities to add
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "addCapabilities"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "addCapabilities")]
     pub add_capabilities: Option<Vec<String>>,
     /// Privileged container
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -854,27 +661,15 @@ pub struct MiniClusterServicesVolumes {
     pub claim_name: Option<String>,
     /// Config map name if the existing volume is a config map
     /// You should also define items if you are using this
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapName")]
     pub config_map_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<bool>,
     /// Add an empty directory custom type
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "emptyDirMedium"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDirMedium")]
     pub empty_dir_medium: Option<String>,
     /// Add an empty directory sizeLimit
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "emptyDirSizeLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDirSizeLimit")]
     pub empty_dir_size_limit: Option<String>,
     /// An existing hostPath to bind to path
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostPath")]
@@ -888,11 +683,7 @@ pub struct MiniClusterServicesVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// An existing secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -913,3 +704,4 @@ pub struct MiniClusterStatus {
     /// These are for the sub-resource scale functionality
     pub size: i32,
 }
+

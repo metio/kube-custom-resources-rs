@@ -4,54 +4,37 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "iot.eclipse.org",
-    version = "v1alpha1",
-    kind = "Ditto",
-    plural = "dittos"
-)]
+#[kube(group = "iot.eclipse.org", version = "v1alpha1", kind = "Ditto", plural = "dittos")]
 #[kube(namespaced)]
 #[kube(status = "DittoStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DittoSpec {
     /// Create the default "ditto" user when initially deploying.
-    ///
+    /// 
     /// This has no effect when using OAuth2.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "createDefaultUser"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "createDefaultUser")]
     pub create_default_user: Option<bool>,
     /// Devops endpoint
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub devops: Option<DittoDevops>,
     /// Don't expose infra endpoints
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableInfraProxy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableInfraProxy")]
     pub disable_infra_proxy: Option<bool>,
     /// Allow disabling the welcome page
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableWelcomePage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableWelcomePage")]
     pub disable_welcome_page: Option<bool>,
     /// Configure ingress options
-    ///
+    /// 
     /// If the field is missing, no ingress resource is being created.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ingress: Option<DittoIngress>,
@@ -73,13 +56,9 @@ pub struct DittoSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "openApi")]
     pub open_api: Option<DittoOpenApi>,
     /// Override the imagePullPolicy
-    ///
+    /// 
     /// By default this will use Always if the image version is ":latest" and IfNotPresent otherwise
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
     pub pull_policy: Option<String>,
     /// Allow to override the Ditto container registry
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -104,11 +83,7 @@ pub struct DittoDevops {
     pub insecure: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub password: Option<DittoDevopsPassword>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusPassword"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusPassword")]
     pub status_password: Option<DittoDevopsStatusPassword>,
 }
 
@@ -189,14 +164,14 @@ pub struct DittoDevopsStatusPasswordSecret {
 }
 
 /// Configure ingress options
-///
+/// 
 /// If the field is missing, no ingress resource is being created.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DittoIngress {
     /// Annotations which should be applied to the ingress resources.
-    ///
+    /// 
     /// The annotations will be set to the resource, not merged. All changes done on the ingress resource itself will be overridden.
-    ///
+    /// 
     /// If no annotations are configured, reasonable defaults will be used instead. You can prevent this by setting a single dummy annotation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
@@ -204,7 +179,7 @@ pub struct DittoIngress {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "className")]
     pub class_name: Option<String>,
     /// The host of the ingress resource.
-    ///
+    /// 
     /// This is required if the ingress resource should be created by the operator
     pub host: String,
 }
@@ -212,11 +187,7 @@ pub struct DittoIngress {
 /// Kafka options
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DittoKafka {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consumerThrottlingLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consumerThrottlingLimit")]
     pub consumer_throttling_limit: Option<u32>,
 }
 
@@ -230,11 +201,7 @@ pub struct DittoKeycloak {
     /// Description of this login option.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableProxy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableProxy")]
     pub disable_proxy: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub groups: Option<Vec<String>>,
@@ -243,11 +210,7 @@ pub struct DittoKeycloak {
     pub label: Option<String>,
     pub realm: String,
     /// Allow overriding the redirect URL.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "redirectUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "redirectUrl")]
     pub redirect_url: Option<String>,
     pub url: String,
 }
@@ -490,11 +453,7 @@ pub struct DittoOauthIssuers {
 /// Influence some options of the hosted OpenAPI spec.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DittoOpenApi {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverLabel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverLabel")]
     pub server_label: Option<String>,
 }
 
@@ -517,11 +476,7 @@ pub struct DittoServices {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub things: Option<DittoServicesThings>,
     /// The things search service
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "thingsSearch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "thingsSearch")]
     pub things_search: Option<DittoServicesThingsSearch>,
 }
 
@@ -529,20 +484,12 @@ pub struct DittoServices {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DittoServicesConcierge {
     /// Additional system properties, which will be appended to the list of system properties.
-    ///
+    /// 
     /// Note: Setting arbitrary system properties may break the deployment and may also not be compatible with future versions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalProperties"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalProperties")]
     pub additional_properties: Option<BTreeMap<String, String>>,
     /// Allow configuring the application log level.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appLogLevel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appLogLevel")]
     pub app_log_level: Option<DittoServicesConciergeAppLogLevel>,
     /// Allow configuring all log levels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
@@ -554,11 +501,7 @@ pub struct DittoServicesConcierge {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<DittoServicesConciergeResources>,
     /// Allow configuring the root log level.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rootLogLevel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootLogLevel")]
     pub root_log_level: Option<DittoServicesConciergeRootLogLevel>,
 }
 
@@ -622,20 +565,12 @@ pub enum DittoServicesConciergeRootLogLevel {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DittoServicesConnectivity {
     /// Additional system properties, which will be appended to the list of system properties.
-    ///
+    /// 
     /// Note: Setting arbitrary system properties may break the deployment and may also not be compatible with future versions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalProperties"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalProperties")]
     pub additional_properties: Option<BTreeMap<String, String>>,
     /// Allow configuring the application log level.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appLogLevel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appLogLevel")]
     pub app_log_level: Option<DittoServicesConnectivityAppLogLevel>,
     /// Allow configuring all log levels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
@@ -647,11 +582,7 @@ pub struct DittoServicesConnectivity {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<DittoServicesConnectivityResources>,
     /// Allow configuring the root log level.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rootLogLevel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootLogLevel")]
     pub root_log_level: Option<DittoServicesConnectivityRootLogLevel>,
 }
 
@@ -715,20 +646,12 @@ pub enum DittoServicesConnectivityRootLogLevel {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DittoServicesGateway {
     /// Additional system properties, which will be appended to the list of system properties.
-    ///
+    /// 
     /// Note: Setting arbitrary system properties may break the deployment and may also not be compatible with future versions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalProperties"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalProperties")]
     pub additional_properties: Option<BTreeMap<String, String>>,
     /// Allow configuring the application log level.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appLogLevel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appLogLevel")]
     pub app_log_level: Option<DittoServicesGatewayAppLogLevel>,
     /// Allow configuring all log levels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
@@ -740,11 +663,7 @@ pub struct DittoServicesGateway {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<DittoServicesGatewayResources>,
     /// Allow configuring the root log level.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rootLogLevel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootLogLevel")]
     pub root_log_level: Option<DittoServicesGatewayRootLogLevel>,
 }
 
@@ -808,20 +727,12 @@ pub enum DittoServicesGatewayRootLogLevel {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DittoServicesPolicies {
     /// Additional system properties, which will be appended to the list of system properties.
-    ///
+    /// 
     /// Note: Setting arbitrary system properties may break the deployment and may also not be compatible with future versions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalProperties"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalProperties")]
     pub additional_properties: Option<BTreeMap<String, String>>,
     /// Allow configuring the application log level.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appLogLevel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appLogLevel")]
     pub app_log_level: Option<DittoServicesPoliciesAppLogLevel>,
     /// Allow configuring all log levels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
@@ -833,11 +744,7 @@ pub struct DittoServicesPolicies {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<DittoServicesPoliciesResources>,
     /// Allow configuring the root log level.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rootLogLevel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootLogLevel")]
     pub root_log_level: Option<DittoServicesPoliciesRootLogLevel>,
 }
 
@@ -901,20 +808,12 @@ pub enum DittoServicesPoliciesRootLogLevel {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DittoServicesThings {
     /// Additional system properties, which will be appended to the list of system properties.
-    ///
+    /// 
     /// Note: Setting arbitrary system properties may break the deployment and may also not be compatible with future versions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalProperties"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalProperties")]
     pub additional_properties: Option<BTreeMap<String, String>>,
     /// Allow configuring the application log level.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appLogLevel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appLogLevel")]
     pub app_log_level: Option<DittoServicesThingsAppLogLevel>,
     /// Allow configuring all log levels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
@@ -926,11 +825,7 @@ pub struct DittoServicesThings {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<DittoServicesThingsResources>,
     /// Allow configuring the root log level.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rootLogLevel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootLogLevel")]
     pub root_log_level: Option<DittoServicesThingsRootLogLevel>,
 }
 
@@ -994,20 +889,12 @@ pub enum DittoServicesThingsRootLogLevel {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DittoServicesThingsSearch {
     /// Additional system properties, which will be appended to the list of system properties.
-    ///
+    /// 
     /// Note: Setting arbitrary system properties may break the deployment and may also not be compatible with future versions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalProperties"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalProperties")]
     pub additional_properties: Option<BTreeMap<String, String>>,
     /// Allow configuring the application log level.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appLogLevel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appLogLevel")]
     pub app_log_level: Option<DittoServicesThingsSearchAppLogLevel>,
     /// Allow configuring all log levels.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
@@ -1019,11 +906,7 @@ pub struct DittoServicesThingsSearch {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<DittoServicesThingsSearchResources>,
     /// Allow configuring the root log level.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rootLogLevel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootLogLevel")]
     pub root_log_level: Option<DittoServicesThingsSearchRootLogLevel>,
 }
 
@@ -1104,3 +987,4 @@ pub struct DittoStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
 }
+

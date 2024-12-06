@@ -5,7 +5,7 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
@@ -17,22 +17,14 @@ pub struct ExpansionTemplatePodStatusStatus {
     /// Important: Run "make" to regenerate code after modifying this file
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operations: Option<Vec<String>>,
     /// UID is a type that holds unique ID values, including UUIDs.  Because we
     /// don't ONLY use UUIDs, this is an alias to string.  Being a type captures
     /// intent and helps make sure that UIDs and names do not get conflated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "templateUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "templateUID")]
     pub template_uid: Option<String>,
 }
 
@@ -42,3 +34,4 @@ pub struct ExpansionTemplatePodStatusStatusErrors {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
+

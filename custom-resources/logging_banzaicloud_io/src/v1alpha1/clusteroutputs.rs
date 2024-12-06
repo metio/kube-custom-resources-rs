@@ -5,29 +5,20 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "logging.banzaicloud.io",
-    version = "v1alpha1",
-    kind = "ClusterOutput",
-    plural = "clusteroutputs"
-)]
+#[kube(group = "logging.banzaicloud.io", version = "v1alpha1", kind = "ClusterOutput", plural = "clusteroutputs")]
 #[kube(namespaced)]
 #[kube(status = "ClusterOutputStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterOutputSpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsElasticsearch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticsearch")]
     pub aws_elasticsearch: Option<ClusterOutputAwsElasticsearch>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub azurestorage: Option<ClusterOutputAzurestorage>,
@@ -37,11 +28,7 @@ pub struct ClusterOutputSpec {
     pub datadog: Option<ClusterOutputDatadog>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub elasticsearch: Option<ClusterOutputElasticsearch>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enabledNamespaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enabledNamespaces")]
     pub enabled_namespaces: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub file: Option<ClusterOutputFile>,
@@ -55,25 +42,13 @@ pub struct ClusterOutputSpec {
     pub http: Option<ClusterOutputHttp>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub kafka: Option<ClusterOutputKafka>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kinesisFirehose"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kinesisFirehose")]
     pub kinesis_firehose: Option<ClusterOutputKinesisFirehose>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kinesisStream"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kinesisStream")]
     pub kinesis_stream: Option<ClusterOutputKinesisStream>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logdna: Option<ClusterOutputLogdna>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loggingRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loggingRef")]
     pub logging_ref: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logz: Option<ClusterOutputLogz>,
@@ -105,17 +80,9 @@ pub struct ClusterOutputSpec {
     pub sumologic: Option<ClusterOutputSumologic>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub syslog: Option<ClusterOutputSyslog>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vmwareLogInsight"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vmwareLogInsight")]
     pub vmware_log_insight: Option<ClusterOutputVmwareLogInsight>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vmwareLogIntelligence"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vmwareLogIntelligence")]
     pub vmware_log_intelligence: Option<ClusterOutputVmwareLogIntelligence>,
 }
 
@@ -327,11 +294,7 @@ pub struct ClusterOutputAwsElasticsearchApiKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputAwsElasticsearchApiKeyMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputAwsElasticsearchApiKeyMountFromSecretKeyRef>,
 }
 
@@ -346,11 +309,7 @@ pub struct ClusterOutputAwsElasticsearchApiKeyMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputAwsElasticsearchApiKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputAwsElasticsearchApiKeyValueFromSecretKeyRef>,
 }
 
@@ -445,11 +404,7 @@ pub struct ClusterOutputAwsElasticsearchCaFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputAwsElasticsearchCaFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputAwsElasticsearchCaFileMountFromSecretKeyRef>,
 }
 
@@ -464,11 +419,7 @@ pub struct ClusterOutputAwsElasticsearchCaFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputAwsElasticsearchCaFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputAwsElasticsearchCaFileValueFromSecretKeyRef>,
 }
 
@@ -493,11 +444,7 @@ pub struct ClusterOutputAwsElasticsearchClientCert {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputAwsElasticsearchClientCertMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputAwsElasticsearchClientCertMountFromSecretKeyRef>,
 }
 
@@ -512,11 +459,7 @@ pub struct ClusterOutputAwsElasticsearchClientCertMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputAwsElasticsearchClientCertValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputAwsElasticsearchClientCertValueFromSecretKeyRef>,
 }
 
@@ -541,11 +484,7 @@ pub struct ClusterOutputAwsElasticsearchClientKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputAwsElasticsearchClientKeyMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputAwsElasticsearchClientKeyMountFromSecretKeyRef>,
 }
 
@@ -560,11 +499,7 @@ pub struct ClusterOutputAwsElasticsearchClientKeyMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputAwsElasticsearchClientKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputAwsElasticsearchClientKeyValueFromSecretKeyRef>,
 }
 
@@ -589,11 +524,7 @@ pub struct ClusterOutputAwsElasticsearchClientKeyPass {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputAwsElasticsearchClientKeyPassMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputAwsElasticsearchClientKeyPassMountFromSecretKeyRef>,
 }
 
@@ -608,11 +539,7 @@ pub struct ClusterOutputAwsElasticsearchClientKeyPassMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputAwsElasticsearchClientKeyPassValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputAwsElasticsearchClientKeyPassValueFromSecretKeyRef>,
 }
 
@@ -632,14 +559,11 @@ pub struct ClusterOutputAwsElasticsearchEndpoint {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub assume_role_arn: Option<ClusterOutputAwsElasticsearchEndpointAssumeRoleArn>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub assume_role_session_name:
-        Option<ClusterOutputAwsElasticsearchEndpointAssumeRoleSessionName>,
+    pub assume_role_session_name: Option<ClusterOutputAwsElasticsearchEndpointAssumeRoleSessionName>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub assume_role_web_identity_token_file:
-        Option<ClusterOutputAwsElasticsearchEndpointAssumeRoleWebIdentityTokenFile>,
+    pub assume_role_web_identity_token_file: Option<ClusterOutputAwsElasticsearchEndpointAssumeRoleWebIdentityTokenFile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ecs_container_credentials_relative_uri:
-        Option<ClusterOutputAwsElasticsearchEndpointEcsContainerCredentialsRelativeUri>,
+    pub ecs_container_credentials_relative_uri: Option<ClusterOutputAwsElasticsearchEndpointEcsContainerCredentialsRelativeUri>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -662,13 +586,8 @@ pub struct ClusterOutputAwsElasticsearchEndpointAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputAwsElasticsearchEndpointAccessKeyIdMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterOutputAwsElasticsearchEndpointAccessKeyIdMountFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputAwsElasticsearchEndpointAccessKeyIdMountFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -682,13 +601,8 @@ pub struct ClusterOutputAwsElasticsearchEndpointAccessKeyIdMountFromSecretKeyRef
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputAwsElasticsearchEndpointAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterOutputAwsElasticsearchEndpointAccessKeyIdValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputAwsElasticsearchEndpointAccessKeyIdValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -712,13 +626,8 @@ pub struct ClusterOutputAwsElasticsearchEndpointAssumeRoleArn {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputAwsElasticsearchEndpointAssumeRoleArnMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterOutputAwsElasticsearchEndpointAssumeRoleArnMountFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputAwsElasticsearchEndpointAssumeRoleArnMountFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -732,13 +641,8 @@ pub struct ClusterOutputAwsElasticsearchEndpointAssumeRoleArnMountFromSecretKeyR
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputAwsElasticsearchEndpointAssumeRoleArnValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterOutputAwsElasticsearchEndpointAssumeRoleArnValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputAwsElasticsearchEndpointAssumeRoleArnValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -762,13 +666,8 @@ pub struct ClusterOutputAwsElasticsearchEndpointAssumeRoleSessionName {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputAwsElasticsearchEndpointAssumeRoleSessionNameMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterOutputAwsElasticsearchEndpointAssumeRoleSessionNameMountFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputAwsElasticsearchEndpointAssumeRoleSessionNameMountFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -782,13 +681,8 @@ pub struct ClusterOutputAwsElasticsearchEndpointAssumeRoleSessionNameMountFromSe
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputAwsElasticsearchEndpointAssumeRoleSessionNameValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterOutputAwsElasticsearchEndpointAssumeRoleSessionNameValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputAwsElasticsearchEndpointAssumeRoleSessionNameValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -803,30 +697,21 @@ pub struct ClusterOutputAwsElasticsearchEndpointAssumeRoleSessionNameValueFromSe
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputAwsElasticsearchEndpointAssumeRoleWebIdentityTokenFile {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountFrom")]
-    pub mount_from:
-        Option<ClusterOutputAwsElasticsearchEndpointAssumeRoleWebIdentityTokenFileMountFrom>,
+    pub mount_from: Option<ClusterOutputAwsElasticsearchEndpointAssumeRoleWebIdentityTokenFileMountFrom>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from:
-        Option<ClusterOutputAwsElasticsearchEndpointAssumeRoleWebIdentityTokenFileValueFrom>,
+    pub value_from: Option<ClusterOutputAwsElasticsearchEndpointAssumeRoleWebIdentityTokenFileValueFrom>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputAwsElasticsearchEndpointAssumeRoleWebIdentityTokenFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref: Option<
-        ClusterOutputAwsElasticsearchEndpointAssumeRoleWebIdentityTokenFileMountFromSecretKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputAwsElasticsearchEndpointAssumeRoleWebIdentityTokenFileMountFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterOutputAwsElasticsearchEndpointAssumeRoleWebIdentityTokenFileMountFromSecretKeyRef
-{
+pub struct ClusterOutputAwsElasticsearchEndpointAssumeRoleWebIdentityTokenFileMountFromSecretKeyRef {
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -836,19 +721,12 @@ pub struct ClusterOutputAwsElasticsearchEndpointAssumeRoleWebIdentityTokenFileMo
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputAwsElasticsearchEndpointAssumeRoleWebIdentityTokenFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref: Option<
-        ClusterOutputAwsElasticsearchEndpointAssumeRoleWebIdentityTokenFileValueFromSecretKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputAwsElasticsearchEndpointAssumeRoleWebIdentityTokenFileValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterOutputAwsElasticsearchEndpointAssumeRoleWebIdentityTokenFileValueFromSecretKeyRef
-{
+pub struct ClusterOutputAwsElasticsearchEndpointAssumeRoleWebIdentityTokenFileValueFromSecretKeyRef {
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -859,13 +737,11 @@ pub struct ClusterOutputAwsElasticsearchEndpointAssumeRoleWebIdentityTokenFileVa
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputAwsElasticsearchEndpointEcsContainerCredentialsRelativeUri {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountFrom")]
-    pub mount_from:
-        Option<ClusterOutputAwsElasticsearchEndpointEcsContainerCredentialsRelativeUriMountFrom>,
+    pub mount_from: Option<ClusterOutputAwsElasticsearchEndpointEcsContainerCredentialsRelativeUriMountFrom>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from:
-        Option<ClusterOutputAwsElasticsearchEndpointEcsContainerCredentialsRelativeUriValueFrom>,
+    pub value_from: Option<ClusterOutputAwsElasticsearchEndpointEcsContainerCredentialsRelativeUriValueFrom>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -875,8 +751,7 @@ pub struct ClusterOutputAwsElasticsearchEndpointEcsContainerCredentialsRelativeU
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterOutputAwsElasticsearchEndpointEcsContainerCredentialsRelativeUriMountFromSecretKeyRef
-{
+pub struct ClusterOutputAwsElasticsearchEndpointEcsContainerCredentialsRelativeUriMountFromSecretKeyRef {
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -891,8 +766,7 @@ pub struct ClusterOutputAwsElasticsearchEndpointEcsContainerCredentialsRelativeU
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ClusterOutputAwsElasticsearchEndpointEcsContainerCredentialsRelativeUriValueFromSecretKeyRef
-{
+pub struct ClusterOutputAwsElasticsearchEndpointEcsContainerCredentialsRelativeUriValueFromSecretKeyRef {
     pub key: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -912,13 +786,8 @@ pub struct ClusterOutputAwsElasticsearchEndpointSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputAwsElasticsearchEndpointSecretAccessKeyMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterOutputAwsElasticsearchEndpointSecretAccessKeyMountFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputAwsElasticsearchEndpointSecretAccessKeyMountFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -932,13 +801,8 @@ pub struct ClusterOutputAwsElasticsearchEndpointSecretAccessKeyMountFromSecretKe
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputAwsElasticsearchEndpointSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterOutputAwsElasticsearchEndpointSecretAccessKeyValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputAwsElasticsearchEndpointSecretAccessKeyValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -962,13 +826,8 @@ pub struct ClusterOutputAwsElasticsearchEndpointStsCredentialsRegion {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputAwsElasticsearchEndpointStsCredentialsRegionMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterOutputAwsElasticsearchEndpointStsCredentialsRegionMountFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputAwsElasticsearchEndpointStsCredentialsRegionMountFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -982,13 +841,8 @@ pub struct ClusterOutputAwsElasticsearchEndpointStsCredentialsRegionMountFromSec
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputAwsElasticsearchEndpointStsCredentialsRegionValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterOutputAwsElasticsearchEndpointStsCredentialsRegionValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputAwsElasticsearchEndpointStsCredentialsRegionValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1040,11 +894,7 @@ pub struct ClusterOutputAwsElasticsearchPassword {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputAwsElasticsearchPasswordMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputAwsElasticsearchPasswordMountFromSecretKeyRef>,
 }
 
@@ -1059,11 +909,7 @@ pub struct ClusterOutputAwsElasticsearchPasswordMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputAwsElasticsearchPasswordValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputAwsElasticsearchPasswordValueFromSecretKeyRef>,
 }
 
@@ -1088,11 +934,7 @@ pub struct ClusterOutputAwsElasticsearchTemplateFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputAwsElasticsearchTemplateFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputAwsElasticsearchTemplateFileMountFromSecretKeyRef>,
 }
 
@@ -1107,11 +949,7 @@ pub struct ClusterOutputAwsElasticsearchTemplateFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputAwsElasticsearchTemplateFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputAwsElasticsearchTemplateFileValueFromSecretKeyRef>,
 }
 
@@ -1162,11 +1000,7 @@ pub struct ClusterOutputAzurestorageAzureStorageAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputAzurestorageAzureStorageAccessKeyMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputAzurestorageAzureStorageAccessKeyMountFromSecretKeyRef>,
 }
 
@@ -1181,11 +1015,7 @@ pub struct ClusterOutputAzurestorageAzureStorageAccessKeyMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputAzurestorageAzureStorageAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputAzurestorageAzureStorageAccessKeyValueFromSecretKeyRef>,
 }
 
@@ -1210,11 +1040,7 @@ pub struct ClusterOutputAzurestorageAzureStorageAccount {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputAzurestorageAzureStorageAccountMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputAzurestorageAzureStorageAccountMountFromSecretKeyRef>,
 }
 
@@ -1229,11 +1055,7 @@ pub struct ClusterOutputAzurestorageAzureStorageAccountMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputAzurestorageAzureStorageAccountValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputAzurestorageAzureStorageAccountValueFromSecretKeyRef>,
 }
 
@@ -1258,11 +1080,7 @@ pub struct ClusterOutputAzurestorageAzureStorageSasToken {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputAzurestorageAzureStorageSasTokenMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputAzurestorageAzureStorageSasTokenMountFromSecretKeyRef>,
 }
 
@@ -1277,11 +1095,7 @@ pub struct ClusterOutputAzurestorageAzureStorageSasTokenMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputAzurestorageAzureStorageSasTokenValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputAzurestorageAzureStorageSasTokenValueFromSecretKeyRef>,
 }
 
@@ -1455,11 +1269,7 @@ pub struct ClusterOutputCloudwatchAwsKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputCloudwatchAwsKeyIdMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputCloudwatchAwsKeyIdMountFromSecretKeyRef>,
 }
 
@@ -1474,11 +1284,7 @@ pub struct ClusterOutputCloudwatchAwsKeyIdMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputCloudwatchAwsKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputCloudwatchAwsKeyIdValueFromSecretKeyRef>,
 }
 
@@ -1503,11 +1309,7 @@ pub struct ClusterOutputCloudwatchAwsSecKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputCloudwatchAwsSecKeyMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputCloudwatchAwsSecKeyMountFromSecretKeyRef>,
 }
 
@@ -1522,11 +1324,7 @@ pub struct ClusterOutputCloudwatchAwsSecKeyMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputCloudwatchAwsSecKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputCloudwatchAwsSecKeyValueFromSecretKeyRef>,
 }
 
@@ -1696,11 +1494,7 @@ pub struct ClusterOutputDatadogApiKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputDatadogApiKeyMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputDatadogApiKeyMountFromSecretKeyRef>,
 }
 
@@ -1715,11 +1509,7 @@ pub struct ClusterOutputDatadogApiKeyMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputDatadogApiKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputDatadogApiKeyValueFromSecretKeyRef>,
 }
 
@@ -2004,11 +1794,7 @@ pub struct ClusterOutputElasticsearchApiKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputElasticsearchApiKeyMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputElasticsearchApiKeyMountFromSecretKeyRef>,
 }
 
@@ -2023,11 +1809,7 @@ pub struct ClusterOutputElasticsearchApiKeyMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputElasticsearchApiKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputElasticsearchApiKeyValueFromSecretKeyRef>,
 }
 
@@ -2122,11 +1904,7 @@ pub struct ClusterOutputElasticsearchCaFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputElasticsearchCaFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputElasticsearchCaFileMountFromSecretKeyRef>,
 }
 
@@ -2141,11 +1919,7 @@ pub struct ClusterOutputElasticsearchCaFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputElasticsearchCaFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputElasticsearchCaFileValueFromSecretKeyRef>,
 }
 
@@ -2170,11 +1944,7 @@ pub struct ClusterOutputElasticsearchClientCert {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputElasticsearchClientCertMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputElasticsearchClientCertMountFromSecretKeyRef>,
 }
 
@@ -2189,11 +1959,7 @@ pub struct ClusterOutputElasticsearchClientCertMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputElasticsearchClientCertValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputElasticsearchClientCertValueFromSecretKeyRef>,
 }
 
@@ -2218,11 +1984,7 @@ pub struct ClusterOutputElasticsearchClientKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputElasticsearchClientKeyMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputElasticsearchClientKeyMountFromSecretKeyRef>,
 }
 
@@ -2237,11 +1999,7 @@ pub struct ClusterOutputElasticsearchClientKeyMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputElasticsearchClientKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputElasticsearchClientKeyValueFromSecretKeyRef>,
 }
 
@@ -2266,11 +2024,7 @@ pub struct ClusterOutputElasticsearchClientKeyPass {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputElasticsearchClientKeyPassMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputElasticsearchClientKeyPassMountFromSecretKeyRef>,
 }
 
@@ -2285,11 +2039,7 @@ pub struct ClusterOutputElasticsearchClientKeyPassMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputElasticsearchClientKeyPassValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputElasticsearchClientKeyPassValueFromSecretKeyRef>,
 }
 
@@ -2314,11 +2064,7 @@ pub struct ClusterOutputElasticsearchPassword {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputElasticsearchPasswordMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputElasticsearchPasswordMountFromSecretKeyRef>,
 }
 
@@ -2333,11 +2079,7 @@ pub struct ClusterOutputElasticsearchPasswordMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputElasticsearchPasswordValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputElasticsearchPasswordValueFromSecretKeyRef>,
 }
 
@@ -2362,11 +2104,7 @@ pub struct ClusterOutputElasticsearchTemplateFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputElasticsearchTemplateFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputElasticsearchTemplateFileMountFromSecretKeyRef>,
 }
 
@@ -2381,11 +2119,7 @@ pub struct ClusterOutputElasticsearchTemplateFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputElasticsearchTemplateFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputElasticsearchTemplateFileValueFromSecretKeyRef>,
 }
 
@@ -2575,8 +2309,7 @@ pub struct ClusterOutputForward {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls_client_cert_path: Option<ClusterOutputForwardTlsClientCertPath>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub tls_client_private_key_passphrase:
-        Option<ClusterOutputForwardTlsClientPrivateKeyPassphrase>,
+    pub tls_client_private_key_passphrase: Option<ClusterOutputForwardTlsClientPrivateKeyPassphrase>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls_client_private_key_path: Option<ClusterOutputForwardTlsClientPrivateKeyPath>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2702,11 +2435,7 @@ pub struct ClusterOutputForwardServersPassword {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputForwardServersPasswordMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputForwardServersPasswordMountFromSecretKeyRef>,
 }
 
@@ -2721,11 +2450,7 @@ pub struct ClusterOutputForwardServersPasswordMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputForwardServersPasswordValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputForwardServersPasswordValueFromSecretKeyRef>,
 }
 
@@ -2750,11 +2475,7 @@ pub struct ClusterOutputForwardServersSharedKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputForwardServersSharedKeyMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputForwardServersSharedKeyMountFromSecretKeyRef>,
 }
 
@@ -2769,11 +2490,7 @@ pub struct ClusterOutputForwardServersSharedKeyMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputForwardServersSharedKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputForwardServersSharedKeyValueFromSecretKeyRef>,
 }
 
@@ -2798,11 +2515,7 @@ pub struct ClusterOutputForwardServersUsername {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputForwardServersUsernameMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputForwardServersUsernameMountFromSecretKeyRef>,
 }
 
@@ -2817,11 +2530,7 @@ pub struct ClusterOutputForwardServersUsernameMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputForwardServersUsernameValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputForwardServersUsernameValueFromSecretKeyRef>,
 }
 
@@ -2846,11 +2555,7 @@ pub struct ClusterOutputForwardTlsCertPath {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputForwardTlsCertPathMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputForwardTlsCertPathMountFromSecretKeyRef>,
 }
 
@@ -2865,11 +2570,7 @@ pub struct ClusterOutputForwardTlsCertPathMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputForwardTlsCertPathValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputForwardTlsCertPathValueFromSecretKeyRef>,
 }
 
@@ -2894,11 +2595,7 @@ pub struct ClusterOutputForwardTlsClientCertPath {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputForwardTlsClientCertPathMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputForwardTlsClientCertPathMountFromSecretKeyRef>,
 }
 
@@ -2913,11 +2610,7 @@ pub struct ClusterOutputForwardTlsClientCertPathMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputForwardTlsClientCertPathValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputForwardTlsClientCertPathValueFromSecretKeyRef>,
 }
 
@@ -2942,13 +2635,8 @@ pub struct ClusterOutputForwardTlsClientPrivateKeyPassphrase {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputForwardTlsClientPrivateKeyPassphraseMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterOutputForwardTlsClientPrivateKeyPassphraseMountFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputForwardTlsClientPrivateKeyPassphraseMountFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2962,13 +2650,8 @@ pub struct ClusterOutputForwardTlsClientPrivateKeyPassphraseMountFromSecretKeyRe
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputForwardTlsClientPrivateKeyPassphraseValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterOutputForwardTlsClientPrivateKeyPassphraseValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputForwardTlsClientPrivateKeyPassphraseValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2992,11 +2675,7 @@ pub struct ClusterOutputForwardTlsClientPrivateKeyPath {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputForwardTlsClientPrivateKeyPathMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputForwardTlsClientPrivateKeyPathMountFromSecretKeyRef>,
 }
 
@@ -3011,11 +2690,7 @@ pub struct ClusterOutputForwardTlsClientPrivateKeyPathMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputForwardTlsClientPrivateKeyPathValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputForwardTlsClientPrivateKeyPathValueFromSecretKeyRef>,
 }
 
@@ -3152,11 +2827,7 @@ pub struct ClusterOutputGcsCredentialsJson {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputGcsCredentialsJsonMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputGcsCredentialsJsonMountFromSecretKeyRef>,
 }
 
@@ -3171,11 +2842,7 @@ pub struct ClusterOutputGcsCredentialsJsonMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputGcsCredentialsJsonValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputGcsCredentialsJsonValueFromSecretKeyRef>,
 }
 
@@ -3373,11 +3040,7 @@ pub struct ClusterOutputHttpAuthPassword {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputHttpAuthPasswordMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputHttpAuthPasswordMountFromSecretKeyRef>,
 }
 
@@ -3392,11 +3055,7 @@ pub struct ClusterOutputHttpAuthPasswordMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputHttpAuthPasswordValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputHttpAuthPasswordValueFromSecretKeyRef>,
 }
 
@@ -3421,11 +3080,7 @@ pub struct ClusterOutputHttpAuthUsername {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputHttpAuthUsernameMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputHttpAuthUsernameMountFromSecretKeyRef>,
 }
 
@@ -3440,11 +3095,7 @@ pub struct ClusterOutputHttpAuthUsernameMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputHttpAuthUsernameValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputHttpAuthUsernameValueFromSecretKeyRef>,
 }
 
@@ -3567,11 +3218,7 @@ pub struct ClusterOutputHttpTlsCaCertPath {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputHttpTlsCaCertPathMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputHttpTlsCaCertPathMountFromSecretKeyRef>,
 }
 
@@ -3586,11 +3233,7 @@ pub struct ClusterOutputHttpTlsCaCertPathMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputHttpTlsCaCertPathValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputHttpTlsCaCertPathValueFromSecretKeyRef>,
 }
 
@@ -3615,11 +3258,7 @@ pub struct ClusterOutputHttpTlsClientCertPath {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputHttpTlsClientCertPathMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputHttpTlsClientCertPathMountFromSecretKeyRef>,
 }
 
@@ -3634,11 +3273,7 @@ pub struct ClusterOutputHttpTlsClientCertPathMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputHttpTlsClientCertPathValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputHttpTlsClientCertPathValueFromSecretKeyRef>,
 }
 
@@ -3663,11 +3298,7 @@ pub struct ClusterOutputHttpTlsPrivateKeyPassphrase {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputHttpTlsPrivateKeyPassphraseMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputHttpTlsPrivateKeyPassphraseMountFromSecretKeyRef>,
 }
 
@@ -3682,11 +3313,7 @@ pub struct ClusterOutputHttpTlsPrivateKeyPassphraseMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputHttpTlsPrivateKeyPassphraseValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputHttpTlsPrivateKeyPassphraseValueFromSecretKeyRef>,
 }
 
@@ -3711,11 +3338,7 @@ pub struct ClusterOutputHttpTlsPrivateKeyPath {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputHttpTlsPrivateKeyPathMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputHttpTlsPrivateKeyPathMountFromSecretKeyRef>,
 }
 
@@ -3730,11 +3353,7 @@ pub struct ClusterOutputHttpTlsPrivateKeyPathMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputHttpTlsPrivateKeyPathValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputHttpTlsPrivateKeyPathValueFromSecretKeyRef>,
 }
 
@@ -3939,11 +3558,7 @@ pub struct ClusterOutputKafkaKeytab {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputKafkaKeytabMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputKafkaKeytabMountFromSecretKeyRef>,
 }
 
@@ -3958,11 +3573,7 @@ pub struct ClusterOutputKafkaKeytabMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputKafkaKeytabValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputKafkaKeytabValueFromSecretKeyRef>,
 }
 
@@ -3987,11 +3598,7 @@ pub struct ClusterOutputKafkaPassword {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputKafkaPasswordMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputKafkaPasswordMountFromSecretKeyRef>,
 }
 
@@ -4006,11 +3613,7 @@ pub struct ClusterOutputKafkaPasswordMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputKafkaPasswordValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputKafkaPasswordValueFromSecretKeyRef>,
 }
 
@@ -4035,11 +3638,7 @@ pub struct ClusterOutputKafkaSslCaCert {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputKafkaSslCaCertMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputKafkaSslCaCertMountFromSecretKeyRef>,
 }
 
@@ -4054,11 +3653,7 @@ pub struct ClusterOutputKafkaSslCaCertMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputKafkaSslCaCertValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputKafkaSslCaCertValueFromSecretKeyRef>,
 }
 
@@ -4083,11 +3678,7 @@ pub struct ClusterOutputKafkaSslClientCert {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputKafkaSslClientCertMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputKafkaSslClientCertMountFromSecretKeyRef>,
 }
 
@@ -4102,11 +3693,7 @@ pub struct ClusterOutputKafkaSslClientCertMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputKafkaSslClientCertValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputKafkaSslClientCertValueFromSecretKeyRef>,
 }
 
@@ -4131,11 +3718,7 @@ pub struct ClusterOutputKafkaSslClientCertChain {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputKafkaSslClientCertChainMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputKafkaSslClientCertChainMountFromSecretKeyRef>,
 }
 
@@ -4150,11 +3733,7 @@ pub struct ClusterOutputKafkaSslClientCertChainMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputKafkaSslClientCertChainValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputKafkaSslClientCertChainValueFromSecretKeyRef>,
 }
 
@@ -4179,11 +3758,7 @@ pub struct ClusterOutputKafkaSslClientCertKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputKafkaSslClientCertKeyMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputKafkaSslClientCertKeyMountFromSecretKeyRef>,
 }
 
@@ -4198,11 +3773,7 @@ pub struct ClusterOutputKafkaSslClientCertKeyMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputKafkaSslClientCertKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputKafkaSslClientCertKeyValueFromSecretKeyRef>,
 }
 
@@ -4227,11 +3798,7 @@ pub struct ClusterOutputKafkaUsername {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputKafkaUsernameMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputKafkaUsernameMountFromSecretKeyRef>,
 }
 
@@ -4246,11 +3813,7 @@ pub struct ClusterOutputKafkaUsernameMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputKafkaUsernameValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputKafkaUsernameValueFromSecretKeyRef>,
 }
 
@@ -4322,11 +3885,7 @@ pub struct ClusterOutputKinesisFirehoseAwsKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputKinesisFirehoseAwsKeyIdMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputKinesisFirehoseAwsKeyIdMountFromSecretKeyRef>,
 }
 
@@ -4341,11 +3900,7 @@ pub struct ClusterOutputKinesisFirehoseAwsKeyIdMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputKinesisFirehoseAwsKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputKinesisFirehoseAwsKeyIdValueFromSecretKeyRef>,
 }
 
@@ -4370,11 +3925,7 @@ pub struct ClusterOutputKinesisFirehoseAwsSecKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputKinesisFirehoseAwsSecKeyMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputKinesisFirehoseAwsSecKeyMountFromSecretKeyRef>,
 }
 
@@ -4389,11 +3940,7 @@ pub struct ClusterOutputKinesisFirehoseAwsSecKeyMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputKinesisFirehoseAwsSecKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputKinesisFirehoseAwsSecKeyValueFromSecretKeyRef>,
 }
 
@@ -4418,11 +3965,7 @@ pub struct ClusterOutputKinesisFirehoseAwsSesToken {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputKinesisFirehoseAwsSesTokenMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputKinesisFirehoseAwsSesTokenMountFromSecretKeyRef>,
 }
 
@@ -4437,11 +3980,7 @@ pub struct ClusterOutputKinesisFirehoseAwsSesTokenMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputKinesisFirehoseAwsSesTokenValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputKinesisFirehoseAwsSesTokenValueFromSecretKeyRef>,
 }
 
@@ -4616,11 +4155,7 @@ pub struct ClusterOutputKinesisStreamAwsKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputKinesisStreamAwsKeyIdMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputKinesisStreamAwsKeyIdMountFromSecretKeyRef>,
 }
 
@@ -4635,11 +4170,7 @@ pub struct ClusterOutputKinesisStreamAwsKeyIdMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputKinesisStreamAwsKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputKinesisStreamAwsKeyIdValueFromSecretKeyRef>,
 }
 
@@ -4664,11 +4195,7 @@ pub struct ClusterOutputKinesisStreamAwsSecKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputKinesisStreamAwsSecKeyMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputKinesisStreamAwsSecKeyMountFromSecretKeyRef>,
 }
 
@@ -4683,11 +4210,7 @@ pub struct ClusterOutputKinesisStreamAwsSecKeyMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputKinesisStreamAwsSecKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputKinesisStreamAwsSecKeyValueFromSecretKeyRef>,
 }
 
@@ -4712,11 +4235,7 @@ pub struct ClusterOutputKinesisStreamAwsSesToken {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputKinesisStreamAwsSesTokenMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputKinesisStreamAwsSesTokenMountFromSecretKeyRef>,
 }
 
@@ -4731,11 +4250,7 @@ pub struct ClusterOutputKinesisStreamAwsSesTokenMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputKinesisStreamAwsSesTokenValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputKinesisStreamAwsSesTokenValueFromSecretKeyRef>,
 }
 
@@ -5058,11 +4573,7 @@ pub struct ClusterOutputLogzEndpointToken {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputLogzEndpointTokenMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputLogzEndpointTokenMountFromSecretKeyRef>,
 }
 
@@ -5077,11 +4588,7 @@ pub struct ClusterOutputLogzEndpointTokenMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputLogzEndpointTokenValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputLogzEndpointTokenValueFromSecretKeyRef>,
 }
 
@@ -5216,11 +4723,7 @@ pub struct ClusterOutputLokiCaCert {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputLokiCaCertMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputLokiCaCertMountFromSecretKeyRef>,
 }
 
@@ -5235,11 +4738,7 @@ pub struct ClusterOutputLokiCaCertMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputLokiCaCertValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputLokiCaCertValueFromSecretKeyRef>,
 }
 
@@ -5264,11 +4763,7 @@ pub struct ClusterOutputLokiCert {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputLokiCertMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputLokiCertMountFromSecretKeyRef>,
 }
 
@@ -5283,11 +4778,7 @@ pub struct ClusterOutputLokiCertMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputLokiCertValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputLokiCertValueFromSecretKeyRef>,
 }
 
@@ -5312,11 +4803,7 @@ pub struct ClusterOutputLokiKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputLokiKeyMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputLokiKeyMountFromSecretKeyRef>,
 }
 
@@ -5331,11 +4818,7 @@ pub struct ClusterOutputLokiKeyMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputLokiKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputLokiKeyValueFromSecretKeyRef>,
 }
 
@@ -5360,11 +4843,7 @@ pub struct ClusterOutputLokiPassword {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputLokiPasswordMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputLokiPasswordMountFromSecretKeyRef>,
 }
 
@@ -5379,11 +4858,7 @@ pub struct ClusterOutputLokiPasswordMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputLokiPasswordValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputLokiPasswordValueFromSecretKeyRef>,
 }
 
@@ -5408,11 +4883,7 @@ pub struct ClusterOutputLokiUsername {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputLokiUsernameMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputLokiUsernameMountFromSecretKeyRef>,
 }
 
@@ -5427,11 +4898,7 @@ pub struct ClusterOutputLokiUsernameMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputLokiUsernameValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputLokiUsernameValueFromSecretKeyRef>,
 }
 
@@ -5473,11 +4940,7 @@ pub struct ClusterOutputMattermostCaPath {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputMattermostCaPathMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputMattermostCaPathMountFromSecretKeyRef>,
 }
 
@@ -5492,11 +4955,7 @@ pub struct ClusterOutputMattermostCaPathMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputMattermostCaPathValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputMattermostCaPathValueFromSecretKeyRef>,
 }
 
@@ -5521,11 +4980,7 @@ pub struct ClusterOutputMattermostWebhookUrl {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputMattermostWebhookUrlMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputMattermostWebhookUrlMountFromSecretKeyRef>,
 }
 
@@ -5540,11 +4995,7 @@ pub struct ClusterOutputMattermostWebhookUrlMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputMattermostWebhookUrlValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputMattermostWebhookUrlValueFromSecretKeyRef>,
 }
 
@@ -5583,11 +5034,7 @@ pub struct ClusterOutputNewrelicApiKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputNewrelicApiKeyMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputNewrelicApiKeyMountFromSecretKeyRef>,
 }
 
@@ -5602,11 +5049,7 @@ pub struct ClusterOutputNewrelicApiKeyMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputNewrelicApiKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputNewrelicApiKeyValueFromSecretKeyRef>,
 }
 
@@ -5729,11 +5172,7 @@ pub struct ClusterOutputNewrelicLicenseKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputNewrelicLicenseKeyMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputNewrelicLicenseKeyMountFromSecretKeyRef>,
 }
 
@@ -5748,11 +5187,7 @@ pub struct ClusterOutputNewrelicLicenseKeyMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputNewrelicLicenseKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputNewrelicLicenseKeyValueFromSecretKeyRef>,
 }
 
@@ -6035,11 +5470,7 @@ pub struct ClusterOutputOpensearchCaFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOpensearchCaFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOpensearchCaFileMountFromSecretKeyRef>,
 }
 
@@ -6054,11 +5485,7 @@ pub struct ClusterOutputOpensearchCaFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOpensearchCaFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOpensearchCaFileValueFromSecretKeyRef>,
 }
 
@@ -6083,11 +5510,7 @@ pub struct ClusterOutputOpensearchClientCert {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOpensearchClientCertMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOpensearchClientCertMountFromSecretKeyRef>,
 }
 
@@ -6102,11 +5525,7 @@ pub struct ClusterOutputOpensearchClientCertMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOpensearchClientCertValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOpensearchClientCertValueFromSecretKeyRef>,
 }
 
@@ -6131,11 +5550,7 @@ pub struct ClusterOutputOpensearchClientKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOpensearchClientKeyMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOpensearchClientKeyMountFromSecretKeyRef>,
 }
 
@@ -6150,11 +5565,7 @@ pub struct ClusterOutputOpensearchClientKeyMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOpensearchClientKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOpensearchClientKeyValueFromSecretKeyRef>,
 }
 
@@ -6179,11 +5590,7 @@ pub struct ClusterOutputOpensearchClientKeyPass {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOpensearchClientKeyPassMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOpensearchClientKeyPassMountFromSecretKeyRef>,
 }
 
@@ -6198,11 +5605,7 @@ pub struct ClusterOutputOpensearchClientKeyPassMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOpensearchClientKeyPassValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOpensearchClientKeyPassValueFromSecretKeyRef>,
 }
 
@@ -6224,11 +5627,9 @@ pub struct ClusterOutputOpensearchEndpoint {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub assume_role_session_name: Option<ClusterOutputOpensearchEndpointAssumeRoleSessionName>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub assume_role_web_identity_token_file:
-        Option<ClusterOutputOpensearchEndpointAssumeRoleWebIdentityTokenFile>,
+    pub assume_role_web_identity_token_file: Option<ClusterOutputOpensearchEndpointAssumeRoleWebIdentityTokenFile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub ecs_container_credentials_relative_uri:
-        Option<ClusterOutputOpensearchEndpointEcsContainerCredentialsRelativeUri>,
+    pub ecs_container_credentials_relative_uri: Option<ClusterOutputOpensearchEndpointEcsContainerCredentialsRelativeUri>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6250,11 +5651,7 @@ pub struct ClusterOutputOpensearchEndpointAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOpensearchEndpointAccessKeyIdMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOpensearchEndpointAccessKeyIdMountFromSecretKeyRef>,
 }
 
@@ -6269,11 +5666,7 @@ pub struct ClusterOutputOpensearchEndpointAccessKeyIdMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOpensearchEndpointAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOpensearchEndpointAccessKeyIdValueFromSecretKeyRef>,
 }
 
@@ -6298,11 +5691,7 @@ pub struct ClusterOutputOpensearchEndpointAssumeRoleArn {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOpensearchEndpointAssumeRoleArnMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOpensearchEndpointAssumeRoleArnMountFromSecretKeyRef>,
 }
 
@@ -6317,11 +5706,7 @@ pub struct ClusterOutputOpensearchEndpointAssumeRoleArnMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOpensearchEndpointAssumeRoleArnValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOpensearchEndpointAssumeRoleArnValueFromSecretKeyRef>,
 }
 
@@ -6346,13 +5731,8 @@ pub struct ClusterOutputOpensearchEndpointAssumeRoleSessionName {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOpensearchEndpointAssumeRoleSessionNameMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterOutputOpensearchEndpointAssumeRoleSessionNameMountFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputOpensearchEndpointAssumeRoleSessionNameMountFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6366,13 +5746,8 @@ pub struct ClusterOutputOpensearchEndpointAssumeRoleSessionNameMountFromSecretKe
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOpensearchEndpointAssumeRoleSessionNameValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterOutputOpensearchEndpointAssumeRoleSessionNameValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputOpensearchEndpointAssumeRoleSessionNameValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6396,13 +5771,8 @@ pub struct ClusterOutputOpensearchEndpointAssumeRoleWebIdentityTokenFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOpensearchEndpointAssumeRoleWebIdentityTokenFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterOutputOpensearchEndpointAssumeRoleWebIdentityTokenFileMountFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputOpensearchEndpointAssumeRoleWebIdentityTokenFileMountFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6416,13 +5786,8 @@ pub struct ClusterOutputOpensearchEndpointAssumeRoleWebIdentityTokenFileMountFro
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOpensearchEndpointAssumeRoleWebIdentityTokenFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterOutputOpensearchEndpointAssumeRoleWebIdentityTokenFileValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputOpensearchEndpointAssumeRoleWebIdentityTokenFileValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6437,25 +5802,17 @@ pub struct ClusterOutputOpensearchEndpointAssumeRoleWebIdentityTokenFileValueFro
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOpensearchEndpointEcsContainerCredentialsRelativeUri {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountFrom")]
-    pub mount_from:
-        Option<ClusterOutputOpensearchEndpointEcsContainerCredentialsRelativeUriMountFrom>,
+    pub mount_from: Option<ClusterOutputOpensearchEndpointEcsContainerCredentialsRelativeUriMountFrom>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub value: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from:
-        Option<ClusterOutputOpensearchEndpointEcsContainerCredentialsRelativeUriValueFrom>,
+    pub value_from: Option<ClusterOutputOpensearchEndpointEcsContainerCredentialsRelativeUriValueFrom>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOpensearchEndpointEcsContainerCredentialsRelativeUriMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref: Option<
-        ClusterOutputOpensearchEndpointEcsContainerCredentialsRelativeUriMountFromSecretKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputOpensearchEndpointEcsContainerCredentialsRelativeUriMountFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6469,14 +5826,8 @@ pub struct ClusterOutputOpensearchEndpointEcsContainerCredentialsRelativeUriMoun
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOpensearchEndpointEcsContainerCredentialsRelativeUriValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref: Option<
-        ClusterOutputOpensearchEndpointEcsContainerCredentialsRelativeUriValueFromSecretKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputOpensearchEndpointEcsContainerCredentialsRelativeUriValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6500,11 +5851,7 @@ pub struct ClusterOutputOpensearchEndpointSecretAccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOpensearchEndpointSecretAccessKeyMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOpensearchEndpointSecretAccessKeyMountFromSecretKeyRef>,
 }
 
@@ -6519,11 +5866,7 @@ pub struct ClusterOutputOpensearchEndpointSecretAccessKeyMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOpensearchEndpointSecretAccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOpensearchEndpointSecretAccessKeyValueFromSecretKeyRef>,
 }
 
@@ -6548,13 +5891,8 @@ pub struct ClusterOutputOpensearchEndpointStsCredentialsRegion {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOpensearchEndpointStsCredentialsRegionMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterOutputOpensearchEndpointStsCredentialsRegionMountFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputOpensearchEndpointStsCredentialsRegionMountFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6568,13 +5906,8 @@ pub struct ClusterOutputOpensearchEndpointStsCredentialsRegionMountFromSecretKey
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOpensearchEndpointStsCredentialsRegionValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterOutputOpensearchEndpointStsCredentialsRegionValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputOpensearchEndpointStsCredentialsRegionValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -6598,11 +5931,7 @@ pub struct ClusterOutputOpensearchPassword {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOpensearchPasswordMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOpensearchPasswordMountFromSecretKeyRef>,
 }
 
@@ -6617,11 +5946,7 @@ pub struct ClusterOutputOpensearchPasswordMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOpensearchPasswordValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOpensearchPasswordValueFromSecretKeyRef>,
 }
 
@@ -6646,11 +5971,7 @@ pub struct ClusterOutputOpensearchTemplateFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOpensearchTemplateFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOpensearchTemplateFileMountFromSecretKeyRef>,
 }
 
@@ -6665,11 +5986,7 @@ pub struct ClusterOutputOpensearchTemplateFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOpensearchTemplateFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOpensearchTemplateFileValueFromSecretKeyRef>,
 }
 
@@ -6738,11 +6055,7 @@ pub struct ClusterOutputOssAccessKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOssAccessKeyIdMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOssAccessKeyIdMountFromSecretKeyRef>,
 }
 
@@ -6757,11 +6070,7 @@ pub struct ClusterOutputOssAccessKeyIdMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOssAccessKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOssAccessKeyIdValueFromSecretKeyRef>,
 }
 
@@ -6786,11 +6095,7 @@ pub struct ClusterOutputOssAccessKeySecret {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOssAccessKeySecretMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOssAccessKeySecretMountFromSecretKeyRef>,
 }
 
@@ -6805,11 +6110,7 @@ pub struct ClusterOutputOssAccessKeySecretMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputOssAccessKeySecretValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputOssAccessKeySecretValueFromSecretKeyRef>,
 }
 
@@ -7056,11 +6357,7 @@ pub struct ClusterOutputRedisPassword {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputRedisPasswordMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputRedisPasswordMountFromSecretKeyRef>,
 }
 
@@ -7075,11 +6372,7 @@ pub struct ClusterOutputRedisPasswordMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputRedisPasswordValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputRedisPasswordValueFromSecretKeyRef>,
 }
 
@@ -7214,11 +6507,7 @@ pub struct ClusterOutputS3AwsKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputS3AwsKeyIdMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputS3AwsKeyIdMountFromSecretKeyRef>,
 }
 
@@ -7233,11 +6522,7 @@ pub struct ClusterOutputS3AwsKeyIdMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputS3AwsKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputS3AwsKeyIdValueFromSecretKeyRef>,
 }
 
@@ -7262,11 +6547,7 @@ pub struct ClusterOutputS3AwsSecKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputS3AwsSecKeyMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputS3AwsSecKeyMountFromSecretKeyRef>,
 }
 
@@ -7281,11 +6562,7 @@ pub struct ClusterOutputS3AwsSecKeyMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputS3AwsSecKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputS3AwsSecKeyValueFromSecretKeyRef>,
 }
 
@@ -7582,11 +6859,7 @@ pub struct ClusterOutputSplunkHecCaFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputSplunkHecCaFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputSplunkHecCaFileMountFromSecretKeyRef>,
 }
 
@@ -7601,11 +6874,7 @@ pub struct ClusterOutputSplunkHecCaFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputSplunkHecCaFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputSplunkHecCaFileValueFromSecretKeyRef>,
 }
 
@@ -7630,11 +6899,7 @@ pub struct ClusterOutputSplunkHecCaPath {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputSplunkHecCaPathMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputSplunkHecCaPathMountFromSecretKeyRef>,
 }
 
@@ -7649,11 +6914,7 @@ pub struct ClusterOutputSplunkHecCaPathMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputSplunkHecCaPathValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputSplunkHecCaPathValueFromSecretKeyRef>,
 }
 
@@ -7678,11 +6939,7 @@ pub struct ClusterOutputSplunkHecClientCert {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputSplunkHecClientCertMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputSplunkHecClientCertMountFromSecretKeyRef>,
 }
 
@@ -7697,11 +6954,7 @@ pub struct ClusterOutputSplunkHecClientCertMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputSplunkHecClientCertValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputSplunkHecClientCertValueFromSecretKeyRef>,
 }
 
@@ -7726,11 +6979,7 @@ pub struct ClusterOutputSplunkHecClientKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputSplunkHecClientKeyMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputSplunkHecClientKeyMountFromSecretKeyRef>,
 }
 
@@ -7745,11 +6994,7 @@ pub struct ClusterOutputSplunkHecClientKeyMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputSplunkHecClientKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputSplunkHecClientKeyValueFromSecretKeyRef>,
 }
 
@@ -7802,11 +7047,7 @@ pub struct ClusterOutputSplunkHecHecToken {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputSplunkHecHecTokenMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputSplunkHecHecTokenMountFromSecretKeyRef>,
 }
 
@@ -7821,11 +7062,7 @@ pub struct ClusterOutputSplunkHecHecTokenMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputSplunkHecHecTokenValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputSplunkHecHecTokenValueFromSecretKeyRef>,
 }
 
@@ -7878,11 +7115,7 @@ pub struct ClusterOutputSqsAwsKeyId {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputSqsAwsKeyIdMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputSqsAwsKeyIdMountFromSecretKeyRef>,
 }
 
@@ -7897,11 +7130,7 @@ pub struct ClusterOutputSqsAwsKeyIdMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputSqsAwsKeyIdValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputSqsAwsKeyIdValueFromSecretKeyRef>,
 }
 
@@ -7926,11 +7155,7 @@ pub struct ClusterOutputSqsAwsSecKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputSqsAwsSecKeyMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputSqsAwsSecKeyMountFromSecretKeyRef>,
 }
 
@@ -7945,11 +7170,7 @@ pub struct ClusterOutputSqsAwsSecKeyMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputSqsAwsSecKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputSqsAwsSecKeyValueFromSecretKeyRef>,
 }
 
@@ -8162,11 +7383,7 @@ pub struct ClusterOutputSumologicEndpoint {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputSumologicEndpointMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputSumologicEndpointMountFromSecretKeyRef>,
 }
 
@@ -8181,11 +7398,7 @@ pub struct ClusterOutputSumologicEndpointMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputSumologicEndpointValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputSumologicEndpointValueFromSecretKeyRef>,
 }
 
@@ -8315,11 +7528,7 @@ pub struct ClusterOutputSyslogClientCertPath {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputSyslogClientCertPathMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputSyslogClientCertPathMountFromSecretKeyRef>,
 }
 
@@ -8334,11 +7543,7 @@ pub struct ClusterOutputSyslogClientCertPathMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputSyslogClientCertPathValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputSyslogClientCertPathValueFromSecretKeyRef>,
 }
 
@@ -8401,11 +7606,7 @@ pub struct ClusterOutputSyslogPrivateKeyPassphrase {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputSyslogPrivateKeyPassphraseMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputSyslogPrivateKeyPassphraseMountFromSecretKeyRef>,
 }
 
@@ -8420,11 +7621,7 @@ pub struct ClusterOutputSyslogPrivateKeyPassphraseMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputSyslogPrivateKeyPassphraseValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputSyslogPrivateKeyPassphraseValueFromSecretKeyRef>,
 }
 
@@ -8449,11 +7646,7 @@ pub struct ClusterOutputSyslogPrivateKeyPath {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputSyslogPrivateKeyPathMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputSyslogPrivateKeyPathMountFromSecretKeyRef>,
 }
 
@@ -8468,11 +7661,7 @@ pub struct ClusterOutputSyslogPrivateKeyPathMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputSyslogPrivateKeyPathValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputSyslogPrivateKeyPathValueFromSecretKeyRef>,
 }
 
@@ -8497,11 +7686,7 @@ pub struct ClusterOutputSyslogTrustedCaPath {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputSyslogTrustedCaPathMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputSyslogTrustedCaPathMountFromSecretKeyRef>,
 }
 
@@ -8516,11 +7701,7 @@ pub struct ClusterOutputSyslogTrustedCaPathMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputSyslogTrustedCaPathValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputSyslogTrustedCaPathValueFromSecretKeyRef>,
 }
 
@@ -8675,11 +7856,7 @@ pub struct ClusterOutputVmwareLogInsightCaFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputVmwareLogInsightCaFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputVmwareLogInsightCaFileMountFromSecretKeyRef>,
 }
 
@@ -8694,11 +7871,7 @@ pub struct ClusterOutputVmwareLogInsightCaFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputVmwareLogInsightCaFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputVmwareLogInsightCaFileValueFromSecretKeyRef>,
 }
 
@@ -8729,11 +7902,7 @@ pub struct ClusterOutputVmwareLogInsightPassword {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputVmwareLogInsightPasswordMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputVmwareLogInsightPasswordMountFromSecretKeyRef>,
 }
 
@@ -8748,11 +7917,7 @@ pub struct ClusterOutputVmwareLogInsightPasswordMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputVmwareLogInsightPasswordValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputVmwareLogInsightPasswordValueFromSecretKeyRef>,
 }
 
@@ -8791,11 +7956,7 @@ pub struct ClusterOutputVmwareLogInsightUsername {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputVmwareLogInsightUsernameMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputVmwareLogInsightUsernameMountFromSecretKeyRef>,
 }
 
@@ -8810,11 +7971,7 @@ pub struct ClusterOutputVmwareLogInsightUsernameMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputVmwareLogInsightUsernameValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ClusterOutputVmwareLogInsightUsernameValueFromSecretKeyRef>,
 }
 
@@ -8957,13 +8114,8 @@ pub struct ClusterOutputVmwareLogIntelligenceHeadersAuthorization {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputVmwareLogIntelligenceHeadersAuthorizationMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterOutputVmwareLogIntelligenceHeadersAuthorizationMountFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputVmwareLogIntelligenceHeadersAuthorizationMountFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -8977,13 +8129,8 @@ pub struct ClusterOutputVmwareLogIntelligenceHeadersAuthorizationMountFromSecret
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterOutputVmwareLogIntelligenceHeadersAuthorizationValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<ClusterOutputVmwareLogIntelligenceHeadersAuthorizationValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ClusterOutputVmwareLogIntelligenceHeadersAuthorizationValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -9001,10 +8148,7 @@ pub struct ClusterOutputStatus {
     pub active: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub problems: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "problemsCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "problemsCount")]
     pub problems_count: Option<i64>,
 }
+

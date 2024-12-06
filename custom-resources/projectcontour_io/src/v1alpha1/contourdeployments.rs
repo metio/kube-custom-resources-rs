@@ -4,28 +4,23 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ContourDeploymentSpec specifies options for how a Contour
 /// instance should be provisioned.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "projectcontour.io",
-    version = "v1alpha1",
-    kind = "ContourDeployment",
-    plural = "contourdeployments"
-)]
+#[kube(group = "projectcontour.io", version = "v1alpha1", kind = "ContourDeployment", plural = "contourdeployments")]
 #[kube(namespaced)]
 #[kube(status = "ContourDeploymentStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ContourDeploymentSpec {
     /// Contour specifies deployment-time settings for the Contour
     /// part of the installation, i.e. the xDS server/control plane
@@ -43,20 +38,12 @@ pub struct ContourDeploymentSpec {
     /// ResourceLabels is a set of labels to add to the provisioned Contour resources.
     /// Deprecated: use Gateway.Spec.Infrastructure.Labels instead. This field will be
     /// removed in a future release.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceLabels")]
     pub resource_labels: Option<BTreeMap<String, String>>,
     /// RuntimeSettings is a ContourConfiguration spec to be used when
     /// provisioning a Contour instance that will influence aspects of
     /// the Contour instance's runtime behavior.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runtimeSettings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runtimeSettings")]
     pub runtime_settings: Option<ContourDeploymentRuntimeSettings>,
 }
 
@@ -71,38 +58,22 @@ pub struct ContourDeploymentContour {
     pub deployment: Option<ContourDeploymentContourDeployment>,
     /// DisabledFeatures defines an array of resources that will be ignored by
     /// contour reconciler.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disabledFeatures"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disabledFeatures")]
     pub disabled_features: Option<Vec<String>>,
     /// KubernetesLogLevel Enable Kubernetes client debug logging with log level. If unset,
     /// defaults to 0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesLogLevel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesLogLevel")]
     pub kubernetes_log_level: Option<i64>,
     /// LogLevel sets the log level for Contour
     /// Allowed values are "info", "debug".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<String>,
     /// NodePlacement describes node scheduling configuration of Contour pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePlacement"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePlacement")]
     pub node_placement: Option<ContourDeploymentContourNodePlacement>,
     /// PodAnnotations defines annotations to add to the Contour pods.
     /// the annotations for Prometheus will be appended or overwritten with predefined value.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAnnotations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAnnotations")]
     pub pod_annotations: Option<BTreeMap<String, String>>,
     /// Deprecated: Use `DeploymentSettings.Replicas` instead.
     /// Replicas is the desired number of Contour replicas. If if unset,
@@ -117,11 +88,7 @@ pub struct ContourDeploymentContour {
     pub resources: Option<ContourDeploymentContourResources>,
     /// WatchNamespaces is an array of namespaces. Setting it will instruct the contour instance
     /// to only watch this subset of namespaces.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "watchNamespaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "watchNamespaces")]
     pub watch_namespaces: Option<Vec<String>>,
 }
 
@@ -141,11 +108,7 @@ pub struct ContourDeploymentContourDeployment {
 pub struct ContourDeploymentContourDeploymentStrategy {
     /// Rolling update config params. Present only if DeploymentStrategyType =
     /// RollingUpdate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollingUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<ContourDeploymentContourDeploymentStrategyRollingUpdate>,
     /// Type of deployment. Can be "Recreate" or "RollingUpdate". Default is RollingUpdate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -179,11 +142,7 @@ pub struct ContourDeploymentContourDeploymentStrategyRollingUpdate {
     /// can be scaled down further, followed by scaling up the new ReplicaSet, ensuring
     /// that the total number of pods available at all times during the update is at
     /// least 70% of desired pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
 }
 
@@ -195,11 +154,7 @@ pub struct ContourDeploymentContourNodePlacement {
     /// to run on a node, the node must have each of the indicated key-value pairs
     /// as labels (it can have additional labels as well).
     /// If unset, the pod(s) will be scheduled to any available node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Tolerations work with taints to ensure that pods are not scheduled
     /// onto inappropriate nodes. One or more taints are applied to a node; this
@@ -234,11 +189,7 @@ pub struct ContourDeploymentContourNodePlacementTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -306,55 +257,31 @@ pub struct ContourDeploymentEnvoy {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub deployment: Option<ContourDeploymentEnvoyDeployment>,
     /// ExtraVolumeMounts holds the extra volume mounts to add (normally used with extraVolumes).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "extraVolumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraVolumeMounts")]
     pub extra_volume_mounts: Option<Vec<ContourDeploymentEnvoyExtraVolumeMounts>>,
     /// ExtraVolumes holds the extra volumes to add.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "extraVolumes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extraVolumes")]
     pub extra_volumes: Option<Vec<ContourDeploymentEnvoyExtraVolumes>>,
     /// LogLevel sets the log level for Envoy.
     /// Allowed values are "trace", "debug", "info", "warn", "error", "critical", "off".
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "logLevel")]
     pub log_level: Option<String>,
     /// NetworkPublishing defines how to expose Envoy to a network.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkPublishing"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkPublishing")]
     pub network_publishing: Option<ContourDeploymentEnvoyNetworkPublishing>,
     /// NodePlacement describes node scheduling configuration of Envoy pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePlacement"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePlacement")]
     pub node_placement: Option<ContourDeploymentEnvoyNodePlacement>,
     /// OverloadMaxHeapSize defines the maximum heap memory of the envoy controlled by the overload manager.
     /// When the value is greater than 0, the overload manager is enabled,
     /// and when envoy reaches 95% of the maximum heap size, it performs a shrink heap operation,
     /// When it reaches 98% of the maximum heap size, Envoy Will stop accepting requests.
     /// More info: https://projectcontour.io/docs/main/config/overload-manager/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "overloadMaxHeapSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "overloadMaxHeapSize")]
     pub overload_max_heap_size: Option<i64>,
     /// PodAnnotations defines annotations to add to the Envoy pods.
     /// the annotations for Prometheus will be appended or overwritten with predefined value.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAnnotations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAnnotations")]
     pub pod_annotations: Option<BTreeMap<String, String>>,
     /// Deprecated: Use `DeploymentSettings.Replicas` instead.
     /// Replicas is the desired number of Envoy replicas. If WorkloadType
@@ -371,11 +298,7 @@ pub struct ContourDeploymentEnvoy {
     /// WorkloadType is the type of workload to install Envoy
     /// as. Choices are DaemonSet and Deployment. If unset, defaults
     /// to DaemonSet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workloadType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadType")]
     pub workload_type: Option<String>,
 }
 
@@ -384,11 +307,7 @@ pub struct ContourDeploymentEnvoy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ContourDeploymentEnvoyDaemonSet {
     /// Strategy describes the deployment strategy to use to replace existing DaemonSet pods with new pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "updateStrategy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "updateStrategy")]
     pub update_strategy: Option<ContourDeploymentEnvoyDaemonSetUpdateStrategy>,
 }
 
@@ -396,11 +315,7 @@ pub struct ContourDeploymentEnvoyDaemonSet {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ContourDeploymentEnvoyDaemonSetUpdateStrategy {
     /// Rolling update config params. Present only if type = "RollingUpdate".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollingUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<ContourDeploymentEnvoyDaemonSetUpdateStrategyRollingUpdate>,
     /// Type of daemon set update. Can be "RollingUpdate" or "OnDelete". Default is RollingUpdate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -444,11 +359,7 @@ pub struct ContourDeploymentEnvoyDaemonSetUpdateStrategyRollingUpdate {
     /// it then proceeds onto other DaemonSet pods, thus ensuring that at least
     /// 70% of original number of DaemonSet pods are available at all times during
     /// the update.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
 }
 
@@ -469,11 +380,7 @@ pub struct ContourDeploymentEnvoyDeployment {
 pub struct ContourDeploymentEnvoyDeploymentStrategy {
     /// Rolling update config params. Present only if DeploymentStrategyType =
     /// RollingUpdate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollingUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdate")]
     pub rolling_update: Option<ContourDeploymentEnvoyDeploymentStrategyRollingUpdate>,
     /// Type of deployment. Can be "Recreate" or "RollingUpdate". Default is RollingUpdate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -507,11 +414,7 @@ pub struct ContourDeploymentEnvoyDeploymentStrategyRollingUpdate {
     /// can be scaled down further, followed by scaling up the new ReplicaSet, ensuring
     /// that the total number of pods available at all times during the update is at
     /// least 70% of desired pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
 }
 
@@ -528,11 +431,7 @@ pub struct ContourDeploymentEnvoyExtraVolumeMounts {
     /// This field is beta in 1.10.
     /// When RecursiveReadOnly is set to IfPossible or to Enabled, MountPropagation must be None or unspecified
     /// (which defaults to None).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -552,11 +451,7 @@ pub struct ContourDeploymentEnvoyExtraVolumeMounts {
     /// If this field is set to IfPossible or Enabled, MountPropagation must be set to
     /// None (or be unspecified, which defaults to None).
     /// If this field is not specified, it is treated as an equivalent of Disabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recursiveReadOnly"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recursiveReadOnly")]
     pub recursive_read_only: Option<String>,
     /// Path within the volume from which the container's volume should be mounted.
     /// Defaults to "" (volume's root).
@@ -566,11 +461,7 @@ pub struct ContourDeploymentEnvoyExtraVolumeMounts {
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -580,11 +471,7 @@ pub struct ContourDeploymentEnvoyExtraVolumes {
     /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsElasticBlockStore"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
     pub aws_elastic_block_store: Option<ContourDeploymentEnvoyExtraVolumesAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
@@ -606,11 +493,7 @@ pub struct ContourDeploymentEnvoyExtraVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<ContourDeploymentEnvoyExtraVolumesCsi>,
     /// downwardAPI represents downward API about the pod that should populate this volume
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<ContourDeploymentEnvoyExtraVolumesDownwardApi>,
     /// emptyDir represents a temporary directory that shares a pod's lifetime.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
@@ -643,11 +526,7 @@ pub struct ContourDeploymentEnvoyExtraVolumes {
     pub fc: Option<ContourDeploymentEnvoyExtraVolumesFc>,
     /// flexVolume represents a generic volume resource that is
     /// provisioned/attached using an exec based plugin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flexVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<ContourDeploymentEnvoyExtraVolumesFlexVolume>,
     /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -655,11 +534,7 @@ pub struct ContourDeploymentEnvoyExtraVolumes {
     /// gcePersistentDisk represents a GCE Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gcePersistentDisk"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
     pub gce_persistent_disk: Option<ContourDeploymentEnvoyExtraVolumesGcePersistentDisk>,
     /// gitRepo represents a git repository at a particular revision.
     /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
@@ -708,25 +583,13 @@ pub struct ContourDeploymentEnvoyExtraVolumes {
     /// persistentVolumeClaimVolumeSource represents a reference to a
     /// PersistentVolumeClaim in the same namespace.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<ContourDeploymentEnvoyExtraVolumesPersistentVolumeClaim>,
     /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "photonPersistentDisk"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
     pub photon_persistent_disk: Option<ContourDeploymentEnvoyExtraVolumesPhotonPersistentDisk>,
     /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portworxVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
     pub portworx_volume: Option<ContourDeploymentEnvoyExtraVolumesPortworxVolume>,
     /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -749,11 +612,7 @@ pub struct ContourDeploymentEnvoyExtraVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storageos: Option<ContourDeploymentEnvoyExtraVolumesStorageos>,
     /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vsphereVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
     pub vsphere_volume: Option<ContourDeploymentEnvoyExtraVolumesVsphereVolume>,
 }
 
@@ -788,11 +647,7 @@ pub struct ContourDeploymentEnvoyExtraVolumesAwsElasticBlockStore {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ContourDeploymentEnvoyExtraVolumesAzureDisk {
     /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachingMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
     pub caching_mode: Option<String>,
     /// diskName is the Name of the data disk in the blob storage
     #[serde(rename = "diskName")]
@@ -845,11 +700,7 @@ pub struct ContourDeploymentEnvoyExtraVolumesCephfs {
     pub read_only: Option<bool>,
     /// secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
     pub secret_file: Option<String>,
     /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
@@ -922,11 +773,7 @@ pub struct ContourDeploymentEnvoyExtraVolumesConfigMap {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items if unspecified, each key-value pair in the Data field of the referenced
     /// ConfigMap will be projected into the volume as a file whose name is the
@@ -985,11 +832,7 @@ pub struct ContourDeploymentEnvoyExtraVolumesCsi {
     /// NodePublishVolume and NodeUnpublishVolume calls.
     /// This field is optional, and  may be empty if no secret is required. If the
     /// secret object contains more than one secret, all secret references are passed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePublishSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
     pub node_publish_secret_ref: Option<ContourDeploymentEnvoyExtraVolumesCsiNodePublishSecretRef>,
     /// readOnly specifies a read-only configuration for the volume.
     /// Defaults to false (read/write).
@@ -997,11 +840,7 @@ pub struct ContourDeploymentEnvoyExtraVolumesCsi {
     pub read_only: Option<bool>,
     /// volumeAttributes stores driver-specific properties that are passed to the CSI
     /// driver. Consult your driver's documentation for supported values.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
@@ -1032,11 +871,7 @@ pub struct ContourDeploymentEnvoyExtraVolumesDownwardApi {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// Items is a list of downward API volume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1061,24 +896,15 @@ pub struct ContourDeploymentEnvoyExtraVolumesDownwardApiItems {
     pub path: String,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<ContourDeploymentEnvoyExtraVolumesDownwardApiItemsResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ContourDeploymentEnvoyExtraVolumesDownwardApiItemsResourceFieldRef>,
 }
 
 /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ContourDeploymentEnvoyExtraVolumesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -1090,11 +916,7 @@ pub struct ContourDeploymentEnvoyExtraVolumesDownwardApiItemsFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ContourDeploymentEnvoyExtraVolumesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1163,13 +985,8 @@ pub struct ContourDeploymentEnvoyExtraVolumesEphemeral {
     /// This field is read-only and no changes will be made by Kubernetes
     /// to the PVC after it has been created.
     /// Required, must not be nil.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimTemplate"
-    )]
-    pub volume_claim_template:
-        Option<ContourDeploymentEnvoyExtraVolumesEphemeralVolumeClaimTemplate>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
+    pub volume_claim_template: Option<ContourDeploymentEnvoyExtraVolumesEphemeralVolumeClaimTemplate>,
 }
 
 /// Will be used to create a stand-alone PVC to provision the volume.
@@ -1208,7 +1025,8 @@ pub struct ContourDeploymentEnvoyExtraVolumesEphemeralVolumeClaimTemplate {
 /// when creating it. No other fields are allowed and will be rejected during
 /// validation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ContourDeploymentEnvoyExtraVolumesEphemeralVolumeClaimTemplateMetadata {}
+pub struct ContourDeploymentEnvoyExtraVolumesEphemeralVolumeClaimTemplateMetadata {
+}
 
 /// The specification for the PersistentVolumeClaim. The entire content is
 /// copied unchanged into the PVC that gets created from this
@@ -1218,11 +1036,7 @@ pub struct ContourDeploymentEnvoyExtraVolumesEphemeralVolumeClaimTemplateMetadat
 pub struct ContourDeploymentEnvoyExtraVolumesEphemeralVolumeClaimTemplateSpec {
     /// accessModes contains the desired access modes the volume should have.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// dataSource field can be used to specify either:
     /// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
@@ -1232,13 +1046,8 @@ pub struct ContourDeploymentEnvoyExtraVolumesEphemeralVolumeClaimTemplateSpec {
     /// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
     /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
     /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSource"
-    )]
-    pub data_source:
-        Option<ContourDeploymentEnvoyExtraVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
+    pub data_source: Option<ContourDeploymentEnvoyExtraVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
     /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
     /// volume is desired. This may be any object from a non-empty API group (non
     /// core object) or a PersistentVolumeClaim object.
@@ -1262,32 +1071,21 @@ pub struct ContourDeploymentEnvoyExtraVolumesEphemeralVolumeClaimTemplateSpec {
     ///   in any namespaces.
     /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
     /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSourceRef"
-    )]
-    pub data_source_ref:
-        Option<ContourDeploymentEnvoyExtraVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
+    pub data_source_ref: Option<ContourDeploymentEnvoyExtraVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
     /// resources represents the minimum resources the volume should have.
     /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
     /// that are lower than previous value but must still be higher than capacity recorded in the
     /// status field of the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources:
-        Option<ContourDeploymentEnvoyExtraVolumesEphemeralVolumeClaimTemplateSpecResources>,
+    pub resources: Option<ContourDeploymentEnvoyExtraVolumesEphemeralVolumeClaimTemplateSpecResources>,
     /// selector is a label query over volumes to consider for binding.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub selector:
-        Option<ContourDeploymentEnvoyExtraVolumesEphemeralVolumeClaimTemplateSpecSelector>,
+    pub selector: Option<ContourDeploymentEnvoyExtraVolumesEphemeralVolumeClaimTemplateSpecSelector>,
     /// storageClassName is the name of the StorageClass required by the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
     /// If specified, the CSI driver will create or update the volume with the attributes defined
@@ -1301,26 +1099,14 @@ pub struct ContourDeploymentEnvoyExtraVolumesEphemeralVolumeClaimTemplateSpec {
     /// exists.
     /// More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
     /// (Beta) Using this field requires the VolumeAttributesClass feature gate to be enabled (off by default).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributesClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
     /// Value of Filesystem is implied when not included in claim spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     /// volumeName is the binding reference to the PersistentVolume backing this claim.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -1421,8 +1207,7 @@ pub struct ContourDeploymentEnvoyExtraVolumesEphemeralVolumeClaimTemplateSpecSel
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ContourDeploymentEnvoyExtraVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions
-{
+pub struct ContourDeploymentEnvoyExtraVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1452,11 +1237,7 @@ pub struct ContourDeploymentEnvoyExtraVolumesFc {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// targetWWNs is Optional: FC target worldwide names (WWNs)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetWWNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
     pub target_ww_ns: Option<Vec<String>>,
     /// wwids Optional: FC volume world wide identifiers (wwids)
     /// Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
@@ -1512,18 +1293,10 @@ pub struct ContourDeploymentEnvoyExtraVolumesFlexVolumeSecretRef {
 pub struct ContourDeploymentEnvoyExtraVolumesFlocker {
     /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
     /// should be considered as deprecated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
     pub dataset_name: Option<String>,
     /// datasetUUID is the UUID of the dataset. This is unique identifier of a Flocker dataset
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetUUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
     pub dataset_uuid: Option<String>,
 }
 
@@ -1629,11 +1402,7 @@ pub struct ContourDeploymentEnvoyExtraVolumesImage {
     /// Never: the kubelet never pulls the reference and only uses a local image or artifact. Container creation will fail if the reference isn't present.
     /// IfNotPresent: the kubelet pulls if the reference isn't already present on disk. Container creation will fail if the reference isn't present and the pull fails.
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pullPolicy")]
     pub pull_policy: Option<String>,
     /// Required: Image or artifact reference to be used.
     /// Behaves in the same way as pod.spec.containers[*].image.
@@ -1651,18 +1420,10 @@ pub struct ContourDeploymentEnvoyExtraVolumesImage {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ContourDeploymentEnvoyExtraVolumesIscsi {
     /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthDiscovery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
     /// chapAuthSession defines whether support iSCSI Session CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthSession"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
     pub chap_auth_session: Option<bool>,
     /// fsType is the filesystem type of the volume that you want to mount.
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
@@ -1673,21 +1434,13 @@ pub struct ContourDeploymentEnvoyExtraVolumesIscsi {
     /// initiatorName is the custom iSCSI Initiator Name.
     /// If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface
     /// <target portal>:<volume name> will be created for the connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initiatorName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
     pub initiator_name: Option<String>,
     /// iqn is the target iSCSI Qualified Name.
     pub iqn: String,
     /// iscsiInterface is the interface Name that uses an iSCSI transport.
     /// Defaults to 'default' (tcp).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "iscsiInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
     pub iscsi_interface: Option<String>,
     /// lun represents iSCSI Target Lun number.
     pub lun: i32,
@@ -1791,11 +1544,7 @@ pub struct ContourDeploymentEnvoyExtraVolumesProjected {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// sources is the list of volume projections. Each entry in this list
     /// handles one source.
@@ -1817,34 +1566,20 @@ pub struct ContourDeploymentEnvoyExtraVolumesProjectedSources {
     /// comments and block headers are stripped.  Certificates are deduplicated.
     /// The ordering of certificates within the file is arbitrary, and Kubelet
     /// may change the order over time.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterTrustBundle"
-    )]
-    pub cluster_trust_bundle:
-        Option<ContourDeploymentEnvoyExtraVolumesProjectedSourcesClusterTrustBundle>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<ContourDeploymentEnvoyExtraVolumesProjectedSourcesClusterTrustBundle>,
     /// configMap information about the configMap data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<ContourDeploymentEnvoyExtraVolumesProjectedSourcesConfigMap>,
     /// downwardAPI information about the downwardAPI data to project
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<ContourDeploymentEnvoyExtraVolumesProjectedSourcesDownwardApi>,
     /// secret information about the secret data to project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<ContourDeploymentEnvoyExtraVolumesProjectedSourcesSecret>,
     /// serviceAccountToken is information about the serviceAccountToken data to project
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountToken"
-    )]
-    pub service_account_token:
-        Option<ContourDeploymentEnvoyExtraVolumesProjectedSourcesServiceAccountToken>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
+    pub service_account_token: Option<ContourDeploymentEnvoyExtraVolumesProjectedSourcesServiceAccountToken>,
 }
 
 /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
@@ -1863,13 +1598,8 @@ pub struct ContourDeploymentEnvoyExtraVolumesProjectedSourcesClusterTrustBundle 
     /// effect if signerName is set.  Mutually-exclusive with name.  If unset,
     /// interpreted as "match nothing".  If set but empty, interpreted as "match
     /// everything".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector:
-        Option<ContourDeploymentEnvoyExtraVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<ContourDeploymentEnvoyExtraVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
     /// Select a single ClusterTrustBundle by object name.  Mutually-exclusive
     /// with signerName and labelSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1886,11 +1616,7 @@ pub struct ContourDeploymentEnvoyExtraVolumesProjectedSourcesClusterTrustBundle 
     /// Select all ClusterTrustBundles that match this signer name.
     /// Mutually-exclusive with name.  The contents of all selected
     /// ClusterTrustBundles will be unified and deduplicated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "signerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
     pub signer_name: Option<String>,
 }
 
@@ -1913,8 +1639,7 @@ pub struct ContourDeploymentEnvoyExtraVolumesProjectedSourcesClusterTrustBundleL
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ContourDeploymentEnvoyExtraVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions
-{
+pub struct ContourDeploymentEnvoyExtraVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1985,8 +1710,7 @@ pub struct ContourDeploymentEnvoyExtraVolumesProjectedSourcesDownwardApi {
 pub struct ContourDeploymentEnvoyExtraVolumesProjectedSourcesDownwardApiItems {
     /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<ContourDeploymentEnvoyExtraVolumesProjectedSourcesDownwardApiItemsFieldRef>,
+    pub field_ref: Option<ContourDeploymentEnvoyExtraVolumesProjectedSourcesDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
     /// between 0000 and 0777 or a decimal value between 0 and 511.
     /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
@@ -1999,24 +1723,15 @@ pub struct ContourDeploymentEnvoyExtraVolumesProjectedSourcesDownwardApiItems {
     pub path: String,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<ContourDeploymentEnvoyExtraVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ContourDeploymentEnvoyExtraVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
 }
 
 /// Required: Selects a field of the pod: only annotations, labels, name, namespace and uid are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ContourDeploymentEnvoyExtraVolumesProjectedSourcesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -2028,11 +1743,7 @@ pub struct ContourDeploymentEnvoyExtraVolumesProjectedSourcesDownwardApiItemsFie
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ContourDeploymentEnvoyExtraVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2100,11 +1811,7 @@ pub struct ContourDeploymentEnvoyExtraVolumesProjectedSourcesServiceAccountToken
     /// start trying to rotate the token if the token is older than 80 percent of
     /// its time to live or if the token is older than 24 hours.Defaults to 1 hour
     /// and must be at least 10 minutes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
     /// path is the path relative to the mount point of the file to project the
     /// token into.
@@ -2209,11 +1916,7 @@ pub struct ContourDeploymentEnvoyExtraVolumesScaleIo {
     /// gateway is the host address of the ScaleIO API Gateway.
     pub gateway: String,
     /// protectionDomain is the name of the ScaleIO Protection Domain for the configured storage.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protectionDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
     pub protection_domain: Option<String>,
     /// readOnly Defaults to false (read/write). ReadOnly here will force
     /// the ReadOnly setting in VolumeMounts.
@@ -2224,36 +1927,20 @@ pub struct ContourDeploymentEnvoyExtraVolumesScaleIo {
     #[serde(rename = "secretRef")]
     pub secret_ref: ContourDeploymentEnvoyExtraVolumesScaleIoSecretRef,
     /// sslEnabled Flag enable/disable SSL communication with Gateway, default false
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
     /// storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned.
     /// Default is ThinProvisioned.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
     pub storage_mode: Option<String>,
     /// storagePool is the ScaleIO Storage Pool associated with the protection domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
     pub storage_pool: Option<String>,
     /// system is the name of the storage system as configured in ScaleIO.
     pub system: String,
     /// volumeName is the name of a volume already created in the ScaleIO system
     /// that is associated with this volume source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -2281,11 +1968,7 @@ pub struct ContourDeploymentEnvoyExtraVolumesSecret {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items If unspecified, each key-value pair in the Data field of the referenced
     /// Secret will be projected into the volume as a file whose name is the
@@ -2301,11 +1984,7 @@ pub struct ContourDeploymentEnvoyExtraVolumesSecret {
     pub optional: Option<bool>,
     /// secretName is the name of the secret in the pod's namespace to use.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -2347,11 +2026,7 @@ pub struct ContourDeploymentEnvoyExtraVolumesStorageos {
     pub secret_ref: Option<ContourDeploymentEnvoyExtraVolumesStorageosSecretRef>,
     /// volumeName is the human-readable name of the StorageOS volume.  Volume
     /// names are only unique within a namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
     /// volumeNamespace specifies the scope of the volume within StorageOS.  If no
     /// namespace is specified then the Pod's namespace will be used.  This allows the
@@ -2359,11 +2034,7 @@ pub struct ContourDeploymentEnvoyExtraVolumesStorageos {
     /// Set VolumeName to any name to override the default behaviour.
     /// Set to "default" if you are not using namespaces within StorageOS.
     /// Namespaces that do not pre-exist within StorageOS will be created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
     pub volume_namespace: Option<String>,
 }
 
@@ -2389,18 +2060,10 @@ pub struct ContourDeploymentEnvoyExtraVolumesVsphereVolume {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// storagePolicyID is the storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
     pub storage_policy_id: Option<String>,
     /// storagePolicyName is the storage Policy Based Management (SPBM) profile name.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
     pub storage_policy_name: Option<String>,
     /// volumePath is the path that identifies vSphere volume vmdk
     #[serde(rename = "volumePath")]
@@ -2414,11 +2077,7 @@ pub struct ContourDeploymentEnvoyNetworkPublishing {
     /// receive on one of the Service's "externally-facing" addresses (NodePorts, ExternalIPs,
     /// and LoadBalancer IPs).
     /// If unset, defaults to "Local".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalTrafficPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
     pub external_traffic_policy: Option<String>,
     /// IPFamilyPolicy represents the dual-stack-ness requested or required by
     /// this Service. If there is no value provided, then this field will be set
@@ -2426,19 +2085,11 @@ pub struct ContourDeploymentEnvoyNetworkPublishing {
     /// "PreferDualStack" (two IP families on dual-stack configured clusters or
     /// a single IP family on single-stack clusters), or "RequireDualStack"
     /// (two IP families on dual-stack configured clusters, otherwise fail).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipFamilyPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipFamilyPolicy")]
     pub ip_family_policy: Option<String>,
     /// ServiceAnnotations is the annotations to add to
     /// the provisioned Envoy service.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAnnotations"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAnnotations")]
     pub service_annotations: Option<BTreeMap<String, String>>,
     /// NetworkPublishingType is the type of publishing strategy to use. Valid values are:
     /// * LoadBalancerService
@@ -2473,11 +2124,7 @@ pub struct ContourDeploymentEnvoyNodePlacement {
     /// to run on a node, the node must have each of the indicated key-value pairs
     /// as labels (it can have additional labels as well).
     /// If unset, the pod(s) will be scheduled to any available node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Tolerations work with taints to ensure that pods are not scheduled
     /// onto inappropriate nodes. One or more taints are applied to a node; this
@@ -2512,11 +2159,7 @@ pub struct ContourDeploymentEnvoyNodePlacementTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -2573,11 +2216,7 @@ pub struct ContourDeploymentRuntimeSettings {
     pub debug: Option<ContourDeploymentRuntimeSettingsDebug>,
     /// EnableExternalNameService allows processing of ExternalNameServices
     /// Contour's default is false for security reasons.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableExternalNameService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableExternalNameService")]
     pub enable_external_name_service: Option<bool>,
     /// Envoy contains parameters for Envoy as well
     /// as how to optionally configure a managed Envoy fleet.
@@ -2588,11 +2227,7 @@ pub struct ContourDeploymentRuntimeSettings {
     /// useEndpointSlices - Configures contour to fetch endpoint data
     /// from k8s endpoint slices. defaults to true,
     /// If false then reads endpoint data from the k8s endpoints.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "featureFlags"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "featureFlags")]
     pub feature_flags: Option<Vec<String>>,
     /// Gateway contains parameters for the gateway-api Gateway that Contour
     /// is configured to serve traffic.
@@ -2600,11 +2235,7 @@ pub struct ContourDeploymentRuntimeSettings {
     pub gateway: Option<ContourDeploymentRuntimeSettingsGateway>,
     /// GlobalExternalAuthorization allows envoys external authorization filter
     /// to be enabled for all virtual hosts.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "globalExtAuth"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "globalExtAuth")]
     pub global_ext_auth: Option<ContourDeploymentRuntimeSettingsGlobalExtAuth>,
     /// Health defines the endpoints Contour uses to serve health checks.
     /// Contour's default is { address: "0.0.0.0", port: 8000 }.
@@ -2625,11 +2256,7 @@ pub struct ContourDeploymentRuntimeSettings {
     pub policy: Option<ContourDeploymentRuntimeSettingsPolicy>,
     /// RateLimitService optionally holds properties of the Rate Limit Service
     /// to be used for global rate limiting.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rateLimitService"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rateLimitService")]
     pub rate_limit_service: Option<ContourDeploymentRuntimeSettingsRateLimitService>,
     /// Tracing defines properties for exporting trace data to OpenTelemetry.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2661,11 +2288,7 @@ pub struct ContourDeploymentRuntimeSettingsEnvoy {
     /// secret containing the client certificate and private key
     /// to be used when establishing TLS connection to upstream
     /// cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificate")]
     pub client_certificate: Option<ContourDeploymentRuntimeSettingsEnvoyClientCertificate>,
     /// Cluster holds various configurable Envoy cluster values that can
     /// be set in the config file.
@@ -2677,11 +2300,7 @@ pub struct ContourDeploymentRuntimeSettingsEnvoy {
     /// "HTTP/1.1" and "HTTP/2".
     /// Values: `HTTP/1.1`, `HTTP/2` (default: both).
     /// Other values will produce an error.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultHTTPVersions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultHTTPVersions")]
     pub default_http_versions: Option<Vec<String>>,
     /// Health defines the endpoint Envoy uses to serve health checks.
     /// Contour's default is { address: "0.0.0.0", port: 8002 }.
@@ -2734,11 +2353,7 @@ pub struct ContourDeploymentRuntimeSettingsEnvoyClientCertificate {
 pub struct ContourDeploymentRuntimeSettingsEnvoyCluster {
     /// GlobalCircuitBreakerDefaults specifies default circuit breaker budget across all services.
     /// If defined, this will be used as the default for all services.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "circuitBreakers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "circuitBreakers")]
     pub circuit_breakers: Option<ContourDeploymentRuntimeSettingsEnvoyClusterCircuitBreakers>,
     /// DNSLookupFamily defines how external names are looked up
     /// When configured as V4, the DNS resolver will only perform a lookup
@@ -2755,37 +2370,21 @@ pub struct ContourDeploymentRuntimeSettingsEnvoyCluster {
     /// for more information.
     /// Values: `auto` (default), `v4`, `v6`, `all`.
     /// Other values will produce an error.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dnsLookupFamily"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsLookupFamily")]
     pub dns_lookup_family: Option<String>,
     /// Defines the maximum requests for upstream connections. If not specified, there is no limit.
     /// see https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/core/v3/protocol.proto#envoy-v3-api-msg-config-core-v3-httpprotocoloptions
     /// for more information.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRequestsPerConnection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRequestsPerConnection")]
     pub max_requests_per_connection: Option<i32>,
     /// Defines the soft limit on size of the cluster’s new connection read and write buffers in bytes.
     /// If unspecified, an implementation defined default is applied (1MiB).
     /// see https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/cluster/v3/cluster.proto#envoy-v3-api-field-config-cluster-v3-cluster-per-connection-buffer-limit-bytes
     /// for more information.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "per-connection-buffer-limit-bytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "per-connection-buffer-limit-bytes")]
     pub per_connection_buffer_limit_bytes: Option<i32>,
     /// UpstreamTLS contains the TLS policy parameters for upstream connections
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "upstreamTLS"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "upstreamTLS")]
     pub upstream_tls: Option<ContourDeploymentRuntimeSettingsEnvoyClusterUpstreamTls>,
 }
 
@@ -2794,40 +2393,20 @@ pub struct ContourDeploymentRuntimeSettingsEnvoyCluster {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ContourDeploymentRuntimeSettingsEnvoyClusterCircuitBreakers {
     /// The maximum number of connections that a single Envoy instance allows to the Kubernetes Service; defaults to 1024.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConnections"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConnections")]
     pub max_connections: Option<i32>,
     /// The maximum number of pending requests that a single Envoy instance allows to the Kubernetes Service; defaults to 1024.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxPendingRequests"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxPendingRequests")]
     pub max_pending_requests: Option<i32>,
     /// The maximum parallel requests a single Envoy instance allows to the Kubernetes Service; defaults to 1024
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRequests"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRequests")]
     pub max_requests: Option<i32>,
     /// The maximum number of parallel retries a single Envoy instance allows to the Kubernetes Service; defaults to 3.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
     pub max_retries: Option<i32>,
     /// PerHostMaxConnections is the maximum number of connections
     /// that Envoy will allow to each individual host in a cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "perHostMaxConnections"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "perHostMaxConnections")]
     pub per_host_max_connections: Option<i32>,
 }
 
@@ -2864,31 +2443,19 @@ pub struct ContourDeploymentRuntimeSettingsEnvoyClusterUpstreamTls {
     /// Contour recommends leaving this undefined unless you are sure you must.
     /// See: https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/transport_sockets/tls/v3/common.proto#extensions-transport-sockets-tls-v3-tlsparameters
     /// Note: This list is a superset of what is valid for stock Envoy builds and those using BoringSSL FIPS.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cipherSuites"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cipherSuites")]
     pub cipher_suites: Option<Vec<String>>,
     /// MaximumProtocolVersion is the maximum TLS version this vhost should
     /// negotiate.
     /// Values: `1.2`, `1.3`(default).
     /// Other values will produce an error.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maximumProtocolVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumProtocolVersion")]
     pub maximum_protocol_version: Option<String>,
     /// MinimumProtocolVersion is the minimum TLS version this vhost should
     /// negotiate.
     /// Values: `1.2` (default), `1.3`.
     /// Other values will produce an error.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumProtocolVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumProtocolVersion")]
     pub minimum_protocol_version: Option<String>,
 }
 
@@ -2942,11 +2509,7 @@ pub struct ContourDeploymentRuntimeSettingsEnvoyListener {
     /// for more information.
     /// Values: (empty string): use the default ConnectionBalancer, `exact`: use the Exact ConnectionBalancer.
     /// Other values will produce an error.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionBalancer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionBalancer")]
     pub connection_balancer: Option<String>,
     /// DisableAllowChunkedLength disables the RFC-compliant Envoy behavior to
     /// strip the "Content-Length" header if "Transfer-Encoding: chunked" is
@@ -2955,20 +2518,12 @@ pub struct ContourDeploymentRuntimeSettingsEnvoyListener {
     /// are encountered.
     /// See: https://github.com/projectcontour/contour/issues/3221
     /// Contour's default is false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableAllowChunkedLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableAllowChunkedLength")]
     pub disable_allow_chunked_length: Option<bool>,
     /// DisableMergeSlashes disables Envoy's non-standard merge_slashes path transformation option
     /// which strips duplicate slashes from request URL paths.
     /// Contour's default is false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableMergeSlashes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableMergeSlashes")]
     pub disable_merge_slashes: Option<bool>,
     /// Defines the value for SETTINGS_MAX_CONCURRENT_STREAMS Envoy will advertise in the
     /// SETTINGS frame in HTTP/2 connections and the limit for concurrent streams allowed
@@ -2976,49 +2531,29 @@ pub struct ContourDeploymentRuntimeSettingsEnvoyListener {
     /// than 100 but this field can be used to bound resource usage by HTTP/2 connections
     /// and mitigate attacks like CVE-2023-44487. The default value when this is not set is
     /// unlimited.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpMaxConcurrentStreams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpMaxConcurrentStreams")]
     pub http_max_concurrent_streams: Option<i32>,
     /// Defines the limit on number of active connections to a listener. The limit is applied
     /// per listener. The default value when this is not set is unlimited.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConnectionsPerListener"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConnectionsPerListener")]
     pub max_connections_per_listener: Option<i32>,
     /// Defines the maximum requests for downstream connections. If not specified, there is no limit.
     /// see https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/core/v3/protocol.proto#envoy-v3-api-msg-config-core-v3-httpprotocoloptions
     /// for more information.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRequestsPerConnection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRequestsPerConnection")]
     pub max_requests_per_connection: Option<i32>,
     /// Defines the limit on number of HTTP requests that Envoy will process from a single
     /// connection in a single I/O cycle. Requests over this limit are processed in subsequent
     /// I/O cycles. Can be used as a mitigation for CVE-2023-44487 when abusive traffic is
     /// detected. Configures the http.max_requests_per_io_cycle Envoy runtime setting. The default
     /// value when this is not set is no limit.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRequestsPerIOCycle"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRequestsPerIOCycle")]
     pub max_requests_per_io_cycle: Option<i32>,
     /// Defines the soft limit on size of the listener’s new connection read and write buffers in bytes.
     /// If unspecified, an implementation defined default is applied (1MiB).
     /// see https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/listener/v3/listener.proto#envoy-v3-api-field-config-listener-v3-listener-per-connection-buffer-limit-bytes
     /// for more information.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "per-connection-buffer-limit-bytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "per-connection-buffer-limit-bytes")]
     pub per_connection_buffer_limit_bytes: Option<i32>,
     /// Defines the action to be applied to the Server header on the response path.
     /// When configured as overwrite, overwrites any Server header with "envoy".
@@ -3027,30 +2562,18 @@ pub struct ContourDeploymentRuntimeSettingsEnvoyListener {
     /// Values: `overwrite` (default), `append_if_absent`, `pass_through`
     /// Other values will produce an error.
     /// Contour's default is overwrite.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverHeaderTransformation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverHeaderTransformation")]
     pub server_header_transformation: Option<String>,
     /// SocketOptions defines configurable socket options for the listeners.
     /// Single set of options are applied to all listeners.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "socketOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "socketOptions")]
     pub socket_options: Option<ContourDeploymentRuntimeSettingsEnvoyListenerSocketOptions>,
     /// TLS holds various configurable Envoy TLS listener values.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tls: Option<ContourDeploymentRuntimeSettingsEnvoyListenerTls>,
     /// Use PROXY protocol for all listeners.
     /// Contour's default is false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useProxyProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useProxyProtocol")]
     pub use_proxy_protocol: Option<bool>,
 }
 
@@ -3066,11 +2589,7 @@ pub struct ContourDeploymentRuntimeSettingsEnvoyListenerSocketOptions {
     /// Defines the value for IPv6 Traffic Class field (including 6 bit DSCP field) for IP packets originating from the Envoy listeners.
     /// Single value is applied to all listeners.
     /// If listeners are bound to IPv4-only addresses, setting this option will cause an error.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trafficClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trafficClass")]
     pub traffic_class: Option<i32>,
 }
 
@@ -3107,31 +2626,19 @@ pub struct ContourDeploymentRuntimeSettingsEnvoyListenerTls {
     /// Contour recommends leaving this undefined unless you are sure you must.
     /// See: https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/transport_sockets/tls/v3/common.proto#extensions-transport-sockets-tls-v3-tlsparameters
     /// Note: This list is a superset of what is valid for stock Envoy builds and those using BoringSSL FIPS.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cipherSuites"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cipherSuites")]
     pub cipher_suites: Option<Vec<String>>,
     /// MaximumProtocolVersion is the maximum TLS version this vhost should
     /// negotiate.
     /// Values: `1.2`, `1.3`(default).
     /// Other values will produce an error.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maximumProtocolVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maximumProtocolVersion")]
     pub maximum_protocol_version: Option<String>,
     /// MinimumProtocolVersion is the minimum TLS version this vhost should
     /// negotiate.
     /// Values: `1.2` (default), `1.3`.
     /// Other values will produce an error.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumProtocolVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumProtocolVersion")]
     pub minimum_protocol_version: Option<String>,
 }
 
@@ -3141,36 +2648,20 @@ pub struct ContourDeploymentRuntimeSettingsEnvoyLogging {
     /// AccessLogFormat sets the global access log format.
     /// Values: `envoy` (default), `json`.
     /// Other values will produce an error.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessLogFormat"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessLogFormat")]
     pub access_log_format: Option<String>,
     /// AccessLogFormatString sets the access log format when format is set to `envoy`.
     /// When empty, Envoy's default format is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessLogFormatString"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessLogFormatString")]
     pub access_log_format_string: Option<String>,
     /// AccessLogJSONFields sets the fields that JSON logging will
     /// output when AccessLogFormat is json.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessLogJSONFields"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessLogJSONFields")]
     pub access_log_json_fields: Option<Vec<String>>,
     /// AccessLogLevel sets the verbosity level of the access log.
     /// Values: `info` (default, all requests are logged), `error` (all non-success requests, i.e. 300+ response code, are logged), `critical` (all 5xx requests are logged) and `disabled`.
     /// Other values will produce an error.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessLogLevel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessLogLevel")]
     pub access_log_level: Option<String>,
 }
 
@@ -3219,11 +2710,7 @@ pub struct ContourDeploymentRuntimeSettingsEnvoyNetwork {
     /// See https://www.envoyproxy.io/docs/envoy/v1.17.0/api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto?highlight=xff_num_trusted_hops
     /// for more information.
     /// Contour's default is 0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "numTrustedHops"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numTrustedHops")]
     pub num_trusted_hops: Option<i32>,
 }
 
@@ -3243,22 +2730,14 @@ pub struct ContourDeploymentRuntimeSettingsEnvoyTimeouts {
     /// If not set, a default value of 2 seconds will be used.
     /// See https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/cluster/v3/cluster.proto#envoy-v3-api-field-config-cluster-v3-cluster-connect-timeout
     /// for more information.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeout")]
     pub connect_timeout: Option<String>,
     /// ConnectionIdleTimeout defines how long the proxy should wait while there are
     /// no active requests (for HTTP/1.1) or streams (for HTTP/2) before terminating
     /// an HTTP connection. Set to "infinity" to disable the timeout entirely.
     /// See https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/core/v3/protocol.proto#envoy-v3-api-field-config-core-v3-httpprotocoloptions-idle-timeout
     /// for more information.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionIdleTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionIdleTimeout")]
     pub connection_idle_timeout: Option<String>,
     /// ConnectionShutdownGracePeriod defines how long the proxy will wait between sending an
     /// initial GOAWAY frame and a second, final GOAWAY frame when terminating an HTTP/2 connection.
@@ -3266,11 +2745,7 @@ pub struct ContourDeploymentRuntimeSettingsEnvoyTimeouts {
     /// GOAWAY frame has been sent, the proxy will refuse new streams.
     /// See https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-drain-timeout
     /// for more information.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionShutdownGracePeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionShutdownGracePeriod")]
     pub connection_shutdown_grace_period: Option<String>,
     /// DelayedCloseTimeout defines how long envoy will wait, once connection
     /// close processing has been initiated, for the downstream peer to close
@@ -3279,11 +2754,7 @@ pub struct ContourDeploymentRuntimeSettingsEnvoyTimeouts {
     /// in Envoy. Leaving it unset will result in the Envoy default value being used.
     /// See https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-delayed-close-timeout
     /// for more information.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "delayedCloseTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "delayedCloseTimeout")]
     pub delayed_close_timeout: Option<String>,
     /// MaxConnectionDuration defines the maximum period of time after an HTTP connection
     /// has been established from the client to the proxy before it is closed by the proxy,
@@ -3291,22 +2762,14 @@ pub struct ContourDeploymentRuntimeSettingsEnvoyTimeouts {
     /// no max duration.
     /// See https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/core/v3/protocol.proto#envoy-v3-api-field-config-core-v3-httpprotocoloptions-max-connection-duration
     /// for more information.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConnectionDuration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConnectionDuration")]
     pub max_connection_duration: Option<String>,
     /// RequestTimeout sets the client request timeout globally for Contour. Note that
     /// this is a timeout for the entire request, not an idle timeout. Omit or set to
     /// "infinity" to disable the timeout entirely.
     /// See https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-request-timeout
     /// for more information.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestTimeout")]
     pub request_timeout: Option<String>,
     /// StreamIdleTimeout defines how long the proxy should wait while there is no
     /// request activity (for HTTP/1.1) or stream activity (for HTTP/2) before
@@ -3314,11 +2777,7 @@ pub struct ContourDeploymentRuntimeSettingsEnvoyTimeouts {
     /// timeout entirely.
     /// See https://www.envoyproxy.io/docs/envoy/latest/api-v3/extensions/filters/network/http_connection_manager/v3/http_connection_manager.proto#envoy-v3-api-field-extensions-filters-network-http-connection-manager-v3-httpconnectionmanager-stream-idle-timeout
     /// for more information.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "streamIdleTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "streamIdleTimeout")]
     pub stream_idle_timeout: Option<String>,
 }
 
@@ -3346,18 +2805,10 @@ pub struct ContourDeploymentRuntimeSettingsGatewayGatewayRef {
 pub struct ContourDeploymentRuntimeSettingsGlobalExtAuth {
     /// AuthPolicy sets a default authorization policy for client requests.
     /// This policy will be used unless overridden by individual routes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authPolicy")]
     pub auth_policy: Option<ContourDeploymentRuntimeSettingsGlobalExtAuthAuthPolicy>,
     /// ExtensionServiceRef specifies the extension resource that will authorize client requests.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "extensionRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "extensionRef")]
     pub extension_ref: Option<ContourDeploymentRuntimeSettingsGlobalExtAuthExtensionRef>,
     /// If FailOpen is true, the client request is forwarded to the upstream service
     /// even if the authorization server fails to respond. This field should not be
@@ -3369,18 +2820,10 @@ pub struct ContourDeploymentRuntimeSettingsGlobalExtAuth {
     /// Timeout durations are expressed in the Go [Duration format](https://godoc.org/time#ParseDuration).
     /// Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
     /// The string "infinity" is also a valid input and specifies no timeout.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseTimeout")]
     pub response_timeout: Option<String>,
     /// WithRequestBody specifies configuration for sending the client request's body to authorization server.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withRequestBody"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withRequestBody")]
     pub with_request_body: Option<ContourDeploymentRuntimeSettingsGlobalExtAuthWithRequestBody>,
 }
 
@@ -3406,11 +2849,7 @@ pub struct ContourDeploymentRuntimeSettingsGlobalExtAuthAuthPolicy {
 pub struct ContourDeploymentRuntimeSettingsGlobalExtAuthExtensionRef {
     /// API version of the referent.
     /// If this field is not specified, the default "projectcontour.io/v1alpha1" will be used
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
@@ -3427,25 +2866,13 @@ pub struct ContourDeploymentRuntimeSettingsGlobalExtAuthExtensionRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ContourDeploymentRuntimeSettingsGlobalExtAuthWithRequestBody {
     /// If AllowPartialMessage is true, then Envoy will buffer the body until MaxRequestBytes are reached.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPartialMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPartialMessage")]
     pub allow_partial_message: Option<bool>,
     /// MaxRequestBytes sets the maximum size of message body ExtAuthz filter will hold in-memory.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRequestBytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRequestBytes")]
     pub max_request_bytes: Option<i32>,
     /// If PackAsBytes is true, the body sent to Authorization Server is in raw bytes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "packAsBytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "packAsBytes")]
     pub pack_as_bytes: Option<bool>,
 }
 
@@ -3467,26 +2894,14 @@ pub struct ContourDeploymentRuntimeSettingsHttpproxy {
     /// DisablePermitInsecure disables the use of the
     /// permitInsecure field in HTTPProxy.
     /// Contour's default is false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disablePermitInsecure"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disablePermitInsecure")]
     pub disable_permit_insecure: Option<bool>,
     /// FallbackCertificate defines the namespace/name of the Kubernetes secret to
     /// use as fallback when a non-SNI request is received.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fallbackCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fallbackCertificate")]
     pub fallback_certificate: Option<ContourDeploymentRuntimeSettingsHttpproxyFallbackCertificate>,
     /// Restrict Contour to searching these namespaces for root ingress routes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rootNamespaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rootNamespaces")]
     pub root_namespaces: Option<Vec<String>>,
 }
 
@@ -3502,18 +2917,10 @@ pub struct ContourDeploymentRuntimeSettingsHttpproxyFallbackCertificate {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ContourDeploymentRuntimeSettingsIngress {
     /// Ingress Class Names Contour should use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "classNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "classNames")]
     pub class_names: Option<Vec<String>>,
     /// Address to set in Ingress object status.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "statusAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "statusAddress")]
     pub status_address: Option<String>,
 }
 
@@ -3553,25 +2960,13 @@ pub struct ContourDeploymentRuntimeSettingsMetricsTls {
 pub struct ContourDeploymentRuntimeSettingsPolicy {
     /// ApplyToIngress determines if the Policies will apply to ingress objects
     /// Contour's default is false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "applyToIngress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "applyToIngress")]
     pub apply_to_ingress: Option<bool>,
     /// RequestHeadersPolicy defines the request headers set/removed on all routes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestHeaders")]
     pub request_headers: Option<ContourDeploymentRuntimeSettingsPolicyRequestHeaders>,
     /// ResponseHeadersPolicy defines the response headers set/removed on all routes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "responseHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "responseHeaders")]
     pub response_headers: Option<ContourDeploymentRuntimeSettingsPolicyResponseHeaders>,
 }
 
@@ -3599,34 +2994,21 @@ pub struct ContourDeploymentRuntimeSettingsPolicyResponseHeaders {
 pub struct ContourDeploymentRuntimeSettingsRateLimitService {
     /// DefaultGlobalRateLimitPolicy allows setting a default global rate limit policy for every HTTPProxy.
     /// HTTPProxy can overwrite this configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultGlobalRateLimitPolicy"
-    )]
-    pub default_global_rate_limit_policy:
-        Option<ContourDeploymentRuntimeSettingsRateLimitServiceDefaultGlobalRateLimitPolicy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultGlobalRateLimitPolicy")]
+    pub default_global_rate_limit_policy: Option<ContourDeploymentRuntimeSettingsRateLimitServiceDefaultGlobalRateLimitPolicy>,
     /// Domain is passed to the Rate Limit Service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub domain: Option<String>,
     /// EnableResourceExhaustedCode enables translating error code 429 to
     /// grpc code RESOURCE_EXHAUSTED. When disabled it's translated to UNAVAILABLE
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableResourceExhaustedCode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableResourceExhaustedCode")]
     pub enable_resource_exhausted_code: Option<bool>,
     /// EnableXRateLimitHeaders defines whether to include the X-RateLimit
     /// headers X-RateLimit-Limit, X-RateLimit-Remaining, and X-RateLimit-Reset
     /// (as defined by the IETF Internet-Draft linked below), on responses
     /// to clients when the Rate Limit Service is consulted for a request.
     /// ref. https://tools.ietf.org/id/draft-polli-ratelimit-headers-03.html
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableXRateLimitHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableXRateLimitHeaders")]
     pub enable_x_rate_limit_headers: Option<bool>,
     /// ExtensionService identifies the extension service defining the RLS.
     #[serde(rename = "extensionService")]
@@ -3646,11 +3028,7 @@ pub struct ContourDeploymentRuntimeSettingsRateLimitServiceDefaultGlobalRateLimi
     /// be generated and sent to the rate limit service. Each
     /// descriptor contains 1+ key-value pair entries.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub descriptors: Option<
-        Vec<
-            ContourDeploymentRuntimeSettingsRateLimitServiceDefaultGlobalRateLimitPolicyDescriptors,
-        >,
-    >,
+    pub descriptors: Option<Vec<ContourDeploymentRuntimeSettingsRateLimitServiceDefaultGlobalRateLimitPolicyDescriptors>>,
     /// Disabled configures the HTTPProxy to not use
     /// the default global rate limit policy defined by the Contour configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3689,8 +3067,7 @@ pub struct ContourDeploymentRuntimeSettingsRateLimitServiceDefaultGlobalRateLimi
 
 /// GenericKey defines a descriptor entry with a static key and value.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ContourDeploymentRuntimeSettingsRateLimitServiceDefaultGlobalRateLimitPolicyDescriptorsEntriesGenericKey
-{
+pub struct ContourDeploymentRuntimeSettingsRateLimitServiceDefaultGlobalRateLimitPolicyDescriptorsEntriesGenericKey {
     /// Key defines the key of the descriptor entry. If not set, the
     /// key is set to "generic_key".
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3702,15 +3079,14 @@ pub struct ContourDeploymentRuntimeSettingsRateLimitServiceDefaultGlobalRateLimi
 /// RemoteAddress defines a descriptor entry with a key of "remote_address"
 /// and a value equal to the client's IP address (from x-forwarded-for).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ContourDeploymentRuntimeSettingsRateLimitServiceDefaultGlobalRateLimitPolicyDescriptorsEntriesRemoteAddress
-{}
+pub struct ContourDeploymentRuntimeSettingsRateLimitServiceDefaultGlobalRateLimitPolicyDescriptorsEntriesRemoteAddress {
+}
 
 /// RequestHeader defines a descriptor entry that's populated only if
 /// a given header is present on the request. The descriptor key is static,
 /// and the descriptor value is equal to the value of the header.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ContourDeploymentRuntimeSettingsRateLimitServiceDefaultGlobalRateLimitPolicyDescriptorsEntriesRequestHeader
-{
+pub struct ContourDeploymentRuntimeSettingsRateLimitServiceDefaultGlobalRateLimitPolicyDescriptorsEntriesRequestHeader {
     /// DescriptorKey defines the key to use on the descriptor entry.
     #[serde(rename = "descriptorKey")]
     pub descriptor_key: String,
@@ -3745,8 +3121,7 @@ pub struct ContourDeploymentRuntimeSettingsRateLimitServiceDefaultGlobalRateLimi
 /// TreatMissingAsEmpty.
 /// IgnoreCase has no effect for Regex.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ContourDeploymentRuntimeSettingsRateLimitServiceDefaultGlobalRateLimitPolicyDescriptorsEntriesRequestHeaderValueMatchHeaders
-{
+pub struct ContourDeploymentRuntimeSettingsRateLimitServiceDefaultGlobalRateLimitPolicyDescriptorsEntriesRequestHeaderValueMatchHeaders {
     /// Contains specifies a substring that must be present in
     /// the header value.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3756,11 +3131,7 @@ pub struct ContourDeploymentRuntimeSettingsRateLimitServiceDefaultGlobalRateLimi
     pub exact: Option<String>,
     /// IgnoreCase specifies that string matching should be case insensitive.
     /// Note that this has no effect on the Regex parameter.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ignoreCase"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ignoreCase")]
     pub ignore_case: Option<bool>,
     /// Name is the name of the header to match against. Name is required.
     /// Header names are case insensitive.
@@ -3792,11 +3163,7 @@ pub struct ContourDeploymentRuntimeSettingsRateLimitServiceDefaultGlobalRateLimi
     /// does not exist, this header value will be treated as empty. Defaults to false.
     /// Unlike the underlying Envoy implementation this is **only** supported for
     /// negative matches (e.g. NotContains, NotExact).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "treatMissingAsEmpty"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "treatMissingAsEmpty")]
     pub treat_missing_as_empty: Option<bool>,
 }
 
@@ -3811,11 +3178,7 @@ pub struct ContourDeploymentRuntimeSettingsRateLimitServiceExtensionService {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ContourDeploymentRuntimeSettingsTracing {
     /// CustomTags defines a list of custom tags with unique tag name.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customTags"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customTags")]
     pub custom_tags: Option<Vec<ContourDeploymentRuntimeSettingsTracingCustomTags>>,
     /// ExtensionService identifies the extension service defining the otel-collector.
     #[serde(rename = "extensionService")]
@@ -3824,36 +3187,20 @@ pub struct ContourDeploymentRuntimeSettingsTracing {
     /// If it is true, contour will add the pod name and namespace to the span of the trace.
     /// the default is true.
     /// Note: The Envoy pods MUST have the HOSTNAME and CONTOUR_NAMESPACE environment variables set for this to work properly.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includePodDetail"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includePodDetail")]
     pub include_pod_detail: Option<bool>,
     /// MaxPathTagLength defines maximum length of the request path
     /// to extract and include in the HttpUrl tag.
     /// contour's default is 256.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxPathTagLength"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxPathTagLength")]
     pub max_path_tag_length: Option<i32>,
     /// OverallSampling defines the sampling rate of trace data.
     /// contour's default is 100.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "overallSampling"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "overallSampling")]
     pub overall_sampling: Option<String>,
     /// ServiceName defines the name for the service.
     /// contour's default is contour.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceName")]
     pub service_name: Option<String>,
 }
 
@@ -3868,11 +3215,7 @@ pub struct ContourDeploymentRuntimeSettingsTracingCustomTags {
     /// RequestHeaderName indicates which request header
     /// the label value is obtained from.
     /// Precisely one of Literal, RequestHeaderName must be set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requestHeaderName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requestHeaderName")]
     pub request_header_name: Option<String>,
     /// TagName is the unique name of the custom tag.
     #[serde(rename = "tagName")]
@@ -3935,3 +3278,4 @@ pub struct ContourDeploymentStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

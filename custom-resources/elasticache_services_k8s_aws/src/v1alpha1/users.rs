@@ -4,24 +4,19 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "elasticache.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "User",
-    plural = "users"
-)]
+#[kube(group = "elasticache.services.k8s.aws", version = "v1alpha1", kind = "User", plural = "users")]
 #[kube(namespaced)]
 #[kube(status = "UserStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct UserSpec {
     /// Access permissions string used for this user.
     #[serde(rename = "accessString")]
@@ -29,11 +24,7 @@ pub struct UserSpec {
     /// The current supported value is Redis.
     pub engine: String,
     /// Indicates a password is not required for this user.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "noPasswordRequired"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "noPasswordRequired")]
     pub no_password_required: Option<bool>,
     /// Passwords used for this user. You can create up to two passwords for each
     /// user.
@@ -85,11 +76,7 @@ pub struct UserStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<UserStatusAckResourceMetadata>,
     /// Denotes whether the user requires a password to authenticate.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -101,35 +88,19 @@ pub struct UserStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// Access permissions string used for this user.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expandedAccessString"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expandedAccessString")]
     pub expanded_access_string: Option<String>,
     /// Access permissions string used for this user.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastRequestedAccessString"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastRequestedAccessString")]
     pub last_requested_access_string: Option<String>,
     /// The minimum engine version required, which is Redis 6.0
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumEngineVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumEngineVersion")]
     pub minimum_engine_version: Option<String>,
     /// Indicates the user status. Can be "active", "modifying" or "deleting".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
     /// Returns a list of the user group IDs the user belongs to.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userGroupIDs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userGroupIDs")]
     pub user_group_i_ds: Option<Vec<String>>,
 }
 
@@ -159,12 +130,9 @@ pub struct UserStatusAckResourceMetadata {
 /// Denotes whether the user requires a password to authenticate.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UserStatusAuthentication {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "passwordCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "passwordCount")]
     pub password_count: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type_")]
     pub r#type: Option<String>,
 }
+

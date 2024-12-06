@@ -4,40 +4,27 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// DatasetSpec defines the desired state of Dataset
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "data.fluid.io",
-    version = "v1alpha1",
-    kind = "Dataset",
-    plural = "datasets"
-)]
+#[kube(group = "data.fluid.io", version = "v1alpha1", kind = "Dataset", plural = "datasets")]
 #[kube(namespaced)]
 #[kube(status = "DatasetStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DatasetSpec {
     /// AccessModes contains all ways the volume backing the PVC can be mounted
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// DataRestoreLocation is the location to load data of dataset  been backuped
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataRestoreLocation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataRestoreLocation")]
     pub data_restore_location: Option<DatasetDataRestoreLocation>,
     /// Mount Points to be mounted on cache runtime. <br>
     /// This field can be empty because some runtimes don't need to mount external storage (e.g.
@@ -46,11 +33,7 @@ pub struct DatasetSpec {
     pub mounts: Option<Vec<DatasetMounts>>,
     /// NodeAffinity defines constraints that limit what nodes this dataset can be cached to.
     /// This field influences the scheduling of pods that use the cached dataset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<DatasetNodeAffinity>,
     /// The owner of the dataset
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -63,18 +46,10 @@ pub struct DatasetSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub runtimes: Option<Vec<DatasetRuntimes>>,
     /// SharedEncryptOptions is the encryptOption to all mount
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sharedEncryptOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sharedEncryptOptions")]
     pub shared_encrypt_options: Option<Vec<DatasetSharedEncryptOptions>>,
     /// SharedOptions is the options to all mount
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sharedOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sharedOptions")]
     pub shared_options: Option<BTreeMap<String, String>>,
     /// If specified, the pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -97,11 +72,7 @@ pub struct DatasetDataRestoreLocation {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatasetMounts {
     /// The secret information
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "encryptOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptOptions")]
     pub encrypt_options: Option<Vec<DatasetMountsEncryptOptions>>,
     /// MountPoint is the mount point of source.
     #[serde(rename = "mountPoint")]
@@ -139,11 +110,7 @@ pub struct DatasetMountsEncryptOptions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatasetMountsEncryptOptionsValueFrom {
     /// The encryptInfo obtained from secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatasetMountsEncryptOptionsValueFromSecretKeyRef>,
 }
 
@@ -180,19 +147,10 @@ pub struct DatasetNodeAffinityRequired {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatasetNodeAffinityRequiredNodeSelectorTerms {
     /// A list of node selector requirements by node's labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<DatasetNodeAffinityRequiredNodeSelectorTermsMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<DatasetNodeAffinityRequiredNodeSelectorTermsMatchExpressions>>,
     /// A list of node selector requirements by node's fields.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchFields"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFields")]
     pub match_fields: Option<Vec<DatasetNodeAffinityRequiredNodeSelectorTermsMatchFields>>,
 }
 
@@ -261,11 +219,7 @@ pub struct DatasetRuntimes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub category: Option<String>,
     /// Runtime master replicas
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "masterReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "masterReplicas")]
     pub master_replicas: Option<i32>,
     /// Name of the runtime object
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -291,11 +245,7 @@ pub struct DatasetSharedEncryptOptions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatasetSharedEncryptOptionsValueFrom {
     /// The encryptInfo obtained from secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatasetSharedEncryptOptionsValueFromSecretKeyRef>,
 }
 
@@ -331,11 +281,7 @@ pub struct DatasetTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -347,38 +293,22 @@ pub struct DatasetTolerations {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatasetStatus {
     /// CacheStatus represents the total resources of the dataset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheStates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheStates")]
     pub cache_states: Option<BTreeMap<String, String>>,
     /// Conditions is an array of current observed conditions.
     pub conditions: Vec<Condition>,
     /// DataBackupRef specifies the running Backup job that targets this Dataset.
     /// This is mainly used as a lock to prevent concurrent DataBackup jobs.
     /// Deprecated, use OperationRef instead
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataBackupRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataBackupRef")]
     pub data_backup_ref: Option<String>,
     /// DataLoadRef specifies the running DataLoad job that targets this Dataset.
     /// This is mainly used as a lock to prevent concurrent DataLoad jobs.
     /// Deprecated, use OperationRef instead
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataLoadRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataLoadRef")]
     pub data_load_ref: Option<String>,
     /// DatasetRef specifies the datasets namespaced name mounting this Dataset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetRef")]
     pub dataset_ref: Option<Vec<String>>,
     /// FileNum represents the file numbers of the dataset
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileNum")]
@@ -391,11 +321,7 @@ pub struct DatasetStatus {
     pub mounts: Option<Vec<DatasetStatusMounts>>,
     /// OperationRef specifies the Operation that targets this Dataset.
     /// This is mainly used as a lock to prevent concurrent same Operation jobs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "operationRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "operationRef")]
     pub operation_ref: Option<BTreeMap<String, String>>,
     /// Dataset Phase. One of the four phases: `Pending`, `Bound`, `NotBound` and `Failed`
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -415,11 +341,7 @@ pub struct DatasetStatusHcfs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
     /// Underlayer HCFS Compatible Version
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "underlayerFileSystemVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "underlayerFileSystemVersion")]
     pub underlayer_file_system_version: Option<String>,
 }
 
@@ -428,11 +350,7 @@ pub struct DatasetStatusHcfs {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatasetStatusMounts {
     /// The secret information
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "encryptOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptOptions")]
     pub encrypt_options: Option<Vec<DatasetStatusMountsEncryptOptions>>,
     /// MountPoint is the mount point of source.
     #[serde(rename = "mountPoint")]
@@ -470,11 +388,7 @@ pub struct DatasetStatusMountsEncryptOptions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DatasetStatusMountsEncryptOptionsValueFrom {
     /// The encryptInfo obtained from secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<DatasetStatusMountsEncryptOptionsValueFromSecretKeyRef>,
 }
 
@@ -495,11 +409,7 @@ pub struct DatasetStatusRuntimes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub category: Option<String>,
     /// Runtime master replicas
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "masterReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "masterReplicas")]
     pub master_replicas: Option<i32>,
     /// Name of the runtime object
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -511,3 +421,4 @@ pub struct DatasetStatusRuntimes {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
 }
+

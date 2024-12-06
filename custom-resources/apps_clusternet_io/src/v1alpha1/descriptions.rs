@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// DescriptionSpec defines the spec of Description
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "apps.clusternet.io",
-    version = "v1alpha1",
-    kind = "Description",
-    plural = "descriptions"
-)]
+#[kube(group = "apps.clusternet.io", version = "v1alpha1", kind = "Description", plural = "descriptions")]
 #[kube(namespaced)]
 #[kube(status = "DescriptionStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct DescriptionSpec {
     /// ChartRaw is the underlying serialization of all helm chart objects.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "chartRaw")]
@@ -55,11 +50,7 @@ pub enum DescriptionDeployer {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DescriptionStatus {
     /// ManifestStatuses contains a list of running statuses of manifests in DescriptionSpec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "manifestStatuses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "manifestStatuses")]
     pub manifest_statuses: Option<Vec<DescriptionStatusManifestStatuses>>,
     /// Phase denotes the phase of Description
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -84,11 +75,7 @@ pub struct DescriptionStatusManifestStatuses {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// ObservedStatus reflects observed status of current feed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedStatus")]
     pub observed_status: Option<BTreeMap<String, serde_json::Value>>,
 }
 
@@ -104,3 +91,4 @@ pub enum DescriptionStatusPhase {
     Superseded,
     Unknown,
 }
+

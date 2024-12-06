@@ -5,32 +5,23 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// APUserSigSpec defines the desired state of APUserSig
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "appprotect.f5.com",
-    version = "v1beta1",
-    kind = "APUserSig",
-    plural = "apusersigs"
-)]
+#[kube(group = "appprotect.f5.com", version = "v1beta1", kind = "APUserSig", plural = "apusersigs")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct APUserSigSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub properties: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub signatures: Option<Vec<APUserSigSignatures>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "softwareVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "softwareVersion")]
     pub software_version: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tag: Option<String>,
@@ -40,11 +31,7 @@ pub struct APUserSigSpec {
 pub struct APUserSigSignatures {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub accuracy: Option<APUserSigSignaturesAccuracy>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "attackType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "attackType")]
     pub attack_type: Option<APUserSigSignaturesAttackType>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
@@ -56,11 +43,7 @@ pub struct APUserSigSignatures {
     pub risk: Option<APUserSigSignaturesRisk>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub rule: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "signatureType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signatureType")]
     pub signature_type: Option<APUserSigSignaturesSignatureType>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub systems: Option<Vec<APUserSigSignaturesSystems>>,
@@ -125,3 +108,4 @@ pub struct APUserSigSignaturesSystems {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
+

@@ -5,22 +5,17 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// AWSDatacenterConfigSpec defines the desired state of AWSDatacenterConfig.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "anywhere.eks.amazonaws.com",
-    version = "v1alpha1",
-    kind = "AWSDatacenterConfig",
-    plural = "awsdatacenterconfigs"
-)]
+#[kube(group = "anywhere.eks.amazonaws.com", version = "v1alpha1", kind = "AWSDatacenterConfig", plural = "awsdatacenterconfigs")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct AWSDatacenterConfigSpec {
     #[serde(rename = "amiID")]
     pub ami_id: String,
@@ -29,4 +24,6 @@ pub struct AWSDatacenterConfigSpec {
 
 /// AWSDatacenterConfigStatus defines the observed state of AWSDatacenterConfig.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AWSDatacenterConfigStatus {}
+pub struct AWSDatacenterConfigStatus {
+}
+

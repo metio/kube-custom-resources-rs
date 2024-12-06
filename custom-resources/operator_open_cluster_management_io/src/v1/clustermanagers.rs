@@ -4,98 +4,53 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Spec represents a desired deployment configuration of controllers that govern registration and work distribution for attached Klusterlets.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "operator.open-cluster-management.io",
-    version = "v1",
-    kind = "ClusterManager",
-    plural = "clustermanagers"
-)]
+#[kube(group = "operator.open-cluster-management.io", version = "v1", kind = "ClusterManager", plural = "clustermanagers")]
 #[kube(status = "ClusterManagerStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterManagerSpec {
     /// AddOnManagerConfiguration contains the configuration of addon manager
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "addOnManagerConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "addOnManagerConfiguration")]
     pub add_on_manager_configuration: Option<ClusterManagerAddOnManagerConfiguration>,
     /// AddOnManagerImagePullSpec represents the desired image configuration of addon manager controller/webhook installed on hub.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "addOnManagerImagePullSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "addOnManagerImagePullSpec")]
     pub add_on_manager_image_pull_spec: Option<String>,
     /// DeployOption contains the options of deploying a cluster-manager
     /// Default mode is used if DeployOption is not set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deployOption"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deployOption")]
     pub deploy_option: Option<ClusterManagerDeployOption>,
     /// NodePlacement enables explicit control over the scheduling of the deployed pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePlacement"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePlacement")]
     pub node_placement: Option<ClusterManagerNodePlacement>,
     /// PlacementImagePullSpec represents the desired image configuration of placement controller/webhook installed on hub.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "placementImagePullSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "placementImagePullSpec")]
     pub placement_image_pull_spec: Option<String>,
     /// RegistrationConfiguration contains the configuration of registration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "registrationConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "registrationConfiguration")]
     pub registration_configuration: Option<ClusterManagerRegistrationConfiguration>,
     /// RegistrationImagePullSpec represents the desired image of registration controller/webhook installed on hub.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "registrationImagePullSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "registrationImagePullSpec")]
     pub registration_image_pull_spec: Option<String>,
     /// ResourceRequirement specify QoS classes of deployments managed by clustermanager.
     /// It applies to all the containers in the deployments.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceRequirement"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceRequirement")]
     pub resource_requirement: Option<ClusterManagerResourceRequirement>,
     /// WorkConfiguration contains the configuration of work
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workConfiguration")]
     pub work_configuration: Option<ClusterManagerWorkConfiguration>,
     /// WorkImagePullSpec represents the desired image configuration of work controller/webhook installed on hub.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workImagePullSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workImagePullSpec")]
     pub work_image_pull_spec: Option<String>,
 }
 
@@ -109,11 +64,7 @@ pub struct ClusterManagerAddOnManagerConfiguration {
     ///   2. If featuregate/Foo exists and is false by default. It is now possible to set featuregate/Foo=[false|true]
     ///   3. If featuregate/Foo exists and is true by default. If a cluster-admin upgrading from 1 to 2 wants to continue having featuregate/Foo=false,
     ///  	he can set featuregate/Foo=false before upgrading. Let's say the cluster-admin wants featuregate/Foo=false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "featureGates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "featureGates")]
     pub feature_gates: Option<Vec<ClusterManagerAddOnManagerConfigurationFeatureGates>>,
 }
 
@@ -154,21 +105,11 @@ pub struct ClusterManagerDeployOption {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterManagerDeployOptionHosted {
     /// RegistrationWebhookConfiguration represents the customized webhook-server configuration of registration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "registrationWebhookConfiguration"
-    )]
-    pub registration_webhook_configuration:
-        Option<ClusterManagerDeployOptionHostedRegistrationWebhookConfiguration>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "registrationWebhookConfiguration")]
+    pub registration_webhook_configuration: Option<ClusterManagerDeployOptionHostedRegistrationWebhookConfiguration>,
     /// WorkWebhookConfiguration represents the customized webhook-server configuration of work.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workWebhookConfiguration"
-    )]
-    pub work_webhook_configuration:
-        Option<ClusterManagerDeployOptionHostedWorkWebhookConfiguration>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workWebhookConfiguration")]
+    pub work_webhook_configuration: Option<ClusterManagerDeployOptionHostedWorkWebhookConfiguration>,
 }
 
 /// RegistrationWebhookConfiguration represents the customized webhook-server configuration of registration.
@@ -207,11 +148,7 @@ pub enum ClusterManagerDeployOptionMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterManagerNodePlacement {
     /// NodeSelector defines which Nodes the Pods are scheduled on. The default is an empty list.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Tolerations are attached by pods to tolerate any taint that matches
     /// the triple <key,value,effect> using the matching operator <operator>.
@@ -242,11 +179,7 @@ pub struct ClusterManagerNodePlacementTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -261,11 +194,7 @@ pub struct ClusterManagerRegistrationConfiguration {
     /// bootstrap-hub-kubeconfig matches to the users, the cluster created by the bootstrap-hub-kubeconfig will
     /// be auto-registered into the hub cluster. This takes effect only when ManagedClusterAutoApproval feature gate
     /// is enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "autoApproveUsers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "autoApproveUsers")]
     pub auto_approve_users: Option<Vec<String>>,
     /// FeatureGates represents the list of feature gates for registration
     /// If it is set empty, default feature gates will be used.
@@ -274,11 +203,7 @@ pub struct ClusterManagerRegistrationConfiguration {
     ///   2. If featuregate/Foo exists and is false by default. It is now possible to set featuregate/Foo=[false|true]
     ///   3. If featuregate/Foo exists and is true by default. If a cluster-admin upgrading from 1 to 2 wants to continue having featuregate/Foo=false,
     ///  	he can set featuregate/Foo=false before upgrading. Let's say the cluster-admin wants featuregate/Foo=false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "featureGates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "featureGates")]
     pub feature_gates: Option<Vec<ClusterManagerRegistrationConfigurationFeatureGates>>,
 }
 
@@ -304,11 +229,7 @@ pub enum ClusterManagerRegistrationConfigurationFeatureGatesMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterManagerResourceRequirement {
     /// ResourceRequirements defines resource requests and limits when Type is ResourceQosClassResourceRequirement
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceRequirements"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceRequirements")]
     pub resource_requirements: Option<ClusterManagerResourceRequirementResourceRequirements>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<ClusterManagerResourceRequirementType>,
@@ -319,12 +240,12 @@ pub struct ClusterManagerResourceRequirement {
 pub struct ClusterManagerResourceRequirementResourceRequirements {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ClusterManagerResourceRequirementResourceRequirementsClaims>>,
@@ -368,11 +289,7 @@ pub struct ClusterManagerWorkConfiguration {
     ///   2. If featuregate/Foo exists and is false by default. It is now possible to set featuregate/Foo=[false|true]
     ///   3. If featuregate/Foo exists and is true by default. If a cluster-admin upgrading from 1 to 2 wants to continue having featuregate/Foo=false,
     ///  	he can set featuregate/Foo=false before upgrading. Let's say the cluster-admin wants featuregate/Foo=false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "featureGates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "featureGates")]
     pub feature_gates: Option<Vec<ClusterManagerWorkConfigurationFeatureGates>>,
     /// WorkDriver represents the type of work driver. Possible values are "kube", "mqtt", or "grpc".
     /// If not provided, the default value is "kube".
@@ -381,14 +298,10 @@ pub struct ClusterManagerWorkConfiguration {
     /// in the namespace where the cluster manager is running, adhering to the following structure:
     /// config.yaml: |
     ///   <driver-config-in-yaml>
-    ///
-    ///
+    /// 
+    /// 
     /// For detailed driver configuration, please refer to the sdk-go documentation: https://github.com/open-cluster-management-io/sdk-go/blob/main/pkg/cloudevents/README.md#supported-protocols-and-drivers
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workDriver"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workDriver")]
     pub work_driver: Option<ClusterManagerWorkConfigurationWorkDriver>,
 }
 
@@ -436,18 +349,10 @@ pub struct ClusterManagerStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub generations: Option<Vec<ClusterManagerStatusGenerations>>,
     /// ObservedGeneration is the last generation change you've dealt with
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// RelatedResources are used to track the resources that are related to this ClusterManager.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "relatedResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "relatedResources")]
     pub related_resources: Option<Vec<ClusterManagerStatusRelatedResources>>,
 }
 
@@ -459,11 +364,7 @@ pub struct ClusterManagerStatusGenerations {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub group: Option<String>,
     /// lastGeneration is the last generation of the resource that controller applies
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastGeneration")]
     pub last_generation: Option<i64>,
     /// name is the name of the resource that you're tracking
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -498,3 +399,4 @@ pub struct ClusterManagerStatusRelatedResources {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<String>,
 }
+

@@ -5,23 +5,18 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// HCPAuthSpec defines the desired state of HCPAuth
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "secrets.hashicorp.com",
-    version = "v1beta1",
-    kind = "HCPAuth",
-    plural = "hcpauths"
-)]
+#[kube(group = "secrets.hashicorp.com", version = "v1beta1", kind = "HCPAuth", plural = "hcpauths")]
 #[kube(namespaced)]
 #[kube(status = "HCPAuthStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct HCPAuthSpec {
     /// AllowedNamespaces Kubernetes Namespaces which are allow-listed for use with this AuthMethod.
     /// This field allows administrators to customize which Kubernetes namespaces are authorized to
@@ -32,11 +27,7 @@ pub struct HCPAuthSpec {
     /// []{"a", "b"} - list of namespaces.
     /// unset - disallow all namespaces except the Operator's the HCPAuthMethod's namespace, this
     /// is the default behavior.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowedNamespaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowedNamespaces")]
     pub allowed_namespaces: Option<Vec<String>>,
     /// Method to use when authenticating to Vault.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -50,11 +41,7 @@ pub struct HCPAuthSpec {
     /// ServicePrincipal provides the necessary configuration for authenticating to
     /// HCP using a service principal. For security reasons, only project-level
     /// service principals should ever be used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "servicePrincipal"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "servicePrincipal")]
     pub service_principal: Option<HCPAuthServicePrincipal>,
 }
 
@@ -88,3 +75,4 @@ pub struct HCPAuthStatus {
     /// Valid auth mechanism.
     pub valid: bool,
 }
+

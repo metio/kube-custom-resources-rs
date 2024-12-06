@@ -5,47 +5,30 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "logging.banzaicloud.io",
-    version = "v1beta1",
-    kind = "SyslogNGClusterOutput",
-    plural = "syslogngclusteroutputs"
-)]
+#[kube(group = "logging.banzaicloud.io", version = "v1beta1", kind = "SyslogNGClusterOutput", plural = "syslogngclusteroutputs")]
 #[kube(namespaced)]
 #[kube(status = "SyslogNGClusterOutputStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SyslogNGClusterOutputSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub elasticsearch: Option<SyslogNGClusterOutputElasticsearch>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "elasticsearch-datastream"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "elasticsearch-datastream")]
     pub elasticsearch_datastream: Option<SyslogNGClusterOutputElasticsearchDatastream>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enabledNamespaces"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enabledNamespaces")]
     pub enabled_namespaces: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub file: Option<SyslogNGClusterOutputFile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<SyslogNGClusterOutputHttp>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loggingRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loggingRef")]
     pub logging_ref: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub loggly: Option<SyslogNGClusterOutputLoggly>,
@@ -69,17 +52,9 @@ pub struct SyslogNGClusterOutputSpec {
     pub s3: Option<SyslogNGClusterOutputS3>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub splunk_hec_event: Option<SyslogNGClusterOutputSplunkHecEvent>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sumologic-http"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sumologic-http")]
     pub sumologic_http: Option<SyslogNGClusterOutputSumologicHttp>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sumologic-syslog"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sumologic-syslog")]
     pub sumologic_syslog: Option<SyslogNGClusterOutputSumologicSyslog>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub syslog: Option<SyslogNGClusterOutputSyslog>,
@@ -87,37 +62,17 @@ pub struct SyslogNGClusterOutputSpec {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputElasticsearch {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batch-bytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batch-bytes")]
     pub batch_bytes: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batch-lines"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batch-lines")]
     pub batch_lines: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batch-timeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batch-timeout")]
     pub batch_timeout: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub body: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "body-prefix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "body-prefix")]
     pub body_prefix: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "body-suffix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "body-suffix")]
     pub body_suffix: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom_id: Option<String>,
@@ -129,11 +84,7 @@ pub struct SyslogNGClusterOutputElasticsearch {
     pub headers: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub index: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "log-fifo-size"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "log-fifo-size")]
     pub log_fifo_size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub logstash_prefix: Option<String>,
@@ -147,11 +98,7 @@ pub struct SyslogNGClusterOutputElasticsearch {
     pub password: Option<SyslogNGClusterOutputElasticsearchPassword>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub persist_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "response-action"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "response-action")]
     pub response_action: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retries: Option<i64>,
@@ -169,11 +116,7 @@ pub struct SyslogNGClusterOutputElasticsearch {
     pub url: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "user-agent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "user-agent")]
     pub user_agent: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub workers: Option<i64>,
@@ -207,11 +150,7 @@ pub struct SyslogNGClusterOutputElasticsearchPassword {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputElasticsearchPasswordMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputElasticsearchPasswordMountFromSecretKeyRef>,
 }
 
@@ -226,11 +165,7 @@ pub struct SyslogNGClusterOutputElasticsearchPasswordMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputElasticsearchPasswordValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputElasticsearchPasswordValueFromSecretKeyRef>,
 }
 
@@ -251,11 +186,7 @@ pub struct SyslogNGClusterOutputElasticsearchTls {
     pub ca_file: Option<SyslogNGClusterOutputElasticsearchTlsCaFile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert_file: Option<SyslogNGClusterOutputElasticsearchTlsCertFile>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cipher-suite"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cipher-suite")]
     pub cipher_suite: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key_file: Option<SyslogNGClusterOutputElasticsearchTlsKeyFile>,
@@ -263,11 +194,7 @@ pub struct SyslogNGClusterOutputElasticsearchTls {
     pub peer_verify: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssl_version: Option<SyslogNGClusterOutputElasticsearchTlsSslVersion>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "use-system-cert-store"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "use-system-cert-store")]
     pub use_system_cert_store: Option<bool>,
 }
 
@@ -283,11 +210,7 @@ pub struct SyslogNGClusterOutputElasticsearchTlsCaDir {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputElasticsearchTlsCaDirMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputElasticsearchTlsCaDirMountFromSecretKeyRef>,
 }
 
@@ -302,11 +225,7 @@ pub struct SyslogNGClusterOutputElasticsearchTlsCaDirMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputElasticsearchTlsCaDirValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputElasticsearchTlsCaDirValueFromSecretKeyRef>,
 }
 
@@ -331,11 +250,7 @@ pub struct SyslogNGClusterOutputElasticsearchTlsCaFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputElasticsearchTlsCaFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputElasticsearchTlsCaFileMountFromSecretKeyRef>,
 }
 
@@ -350,11 +265,7 @@ pub struct SyslogNGClusterOutputElasticsearchTlsCaFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputElasticsearchTlsCaFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputElasticsearchTlsCaFileValueFromSecretKeyRef>,
 }
 
@@ -379,11 +290,7 @@ pub struct SyslogNGClusterOutputElasticsearchTlsCertFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputElasticsearchTlsCertFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputElasticsearchTlsCertFileMountFromSecretKeyRef>,
 }
 
@@ -398,11 +305,7 @@ pub struct SyslogNGClusterOutputElasticsearchTlsCertFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputElasticsearchTlsCertFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputElasticsearchTlsCertFileValueFromSecretKeyRef>,
 }
 
@@ -427,11 +330,7 @@ pub struct SyslogNGClusterOutputElasticsearchTlsKeyFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputElasticsearchTlsKeyFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputElasticsearchTlsKeyFileMountFromSecretKeyRef>,
 }
 
@@ -446,11 +345,7 @@ pub struct SyslogNGClusterOutputElasticsearchTlsKeyFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputElasticsearchTlsKeyFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputElasticsearchTlsKeyFileValueFromSecretKeyRef>,
 }
 
@@ -481,37 +376,17 @@ pub enum SyslogNGClusterOutputElasticsearchTlsSslVersion {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputElasticsearchDatastream {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batch-bytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batch-bytes")]
     pub batch_bytes: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batch-lines"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batch-lines")]
     pub batch_lines: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batch-timeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batch-timeout")]
     pub batch_timeout: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub body: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "body-prefix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "body-prefix")]
     pub body_prefix: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "body-suffix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "body-suffix")]
     pub body_suffix: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub delimiter: Option<String>,
@@ -519,11 +394,7 @@ pub struct SyslogNGClusterOutputElasticsearchDatastream {
     pub disk_buffer: Option<SyslogNGClusterOutputElasticsearchDatastreamDiskBuffer>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "log-fifo-size"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "log-fifo-size")]
     pub log_fifo_size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub method: Option<String>,
@@ -533,11 +404,7 @@ pub struct SyslogNGClusterOutputElasticsearchDatastream {
     pub persist_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub record: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "response-action"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "response-action")]
     pub response_action: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retries: Option<i64>,
@@ -551,11 +418,7 @@ pub struct SyslogNGClusterOutputElasticsearchDatastream {
     pub url: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "user-agent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "user-agent")]
     pub user_agent: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub workers: Option<i64>,
@@ -589,13 +452,8 @@ pub struct SyslogNGClusterOutputElasticsearchDatastreamPassword {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputElasticsearchDatastreamPasswordMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<SyslogNGClusterOutputElasticsearchDatastreamPasswordMountFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<SyslogNGClusterOutputElasticsearchDatastreamPasswordMountFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -609,13 +467,8 @@ pub struct SyslogNGClusterOutputElasticsearchDatastreamPasswordMountFromSecretKe
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputElasticsearchDatastreamPasswordValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<SyslogNGClusterOutputElasticsearchDatastreamPasswordValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<SyslogNGClusterOutputElasticsearchDatastreamPasswordValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -635,11 +488,7 @@ pub struct SyslogNGClusterOutputElasticsearchDatastreamTls {
     pub ca_file: Option<SyslogNGClusterOutputElasticsearchDatastreamTlsCaFile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert_file: Option<SyslogNGClusterOutputElasticsearchDatastreamTlsCertFile>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cipher-suite"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cipher-suite")]
     pub cipher_suite: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key_file: Option<SyslogNGClusterOutputElasticsearchDatastreamTlsKeyFile>,
@@ -647,11 +496,7 @@ pub struct SyslogNGClusterOutputElasticsearchDatastreamTls {
     pub peer_verify: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssl_version: Option<SyslogNGClusterOutputElasticsearchDatastreamTlsSslVersion>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "use-system-cert-store"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "use-system-cert-store")]
     pub use_system_cert_store: Option<bool>,
 }
 
@@ -667,13 +512,8 @@ pub struct SyslogNGClusterOutputElasticsearchDatastreamTlsCaDir {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputElasticsearchDatastreamTlsCaDirMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<SyslogNGClusterOutputElasticsearchDatastreamTlsCaDirMountFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<SyslogNGClusterOutputElasticsearchDatastreamTlsCaDirMountFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -687,13 +527,8 @@ pub struct SyslogNGClusterOutputElasticsearchDatastreamTlsCaDirMountFromSecretKe
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputElasticsearchDatastreamTlsCaDirValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<SyslogNGClusterOutputElasticsearchDatastreamTlsCaDirValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<SyslogNGClusterOutputElasticsearchDatastreamTlsCaDirValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -717,13 +552,8 @@ pub struct SyslogNGClusterOutputElasticsearchDatastreamTlsCaFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputElasticsearchDatastreamTlsCaFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<SyslogNGClusterOutputElasticsearchDatastreamTlsCaFileMountFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<SyslogNGClusterOutputElasticsearchDatastreamTlsCaFileMountFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -737,13 +567,8 @@ pub struct SyslogNGClusterOutputElasticsearchDatastreamTlsCaFileMountFromSecretK
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputElasticsearchDatastreamTlsCaFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<SyslogNGClusterOutputElasticsearchDatastreamTlsCaFileValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<SyslogNGClusterOutputElasticsearchDatastreamTlsCaFileValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -767,13 +592,8 @@ pub struct SyslogNGClusterOutputElasticsearchDatastreamTlsCertFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputElasticsearchDatastreamTlsCertFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<SyslogNGClusterOutputElasticsearchDatastreamTlsCertFileMountFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<SyslogNGClusterOutputElasticsearchDatastreamTlsCertFileMountFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -787,13 +607,8 @@ pub struct SyslogNGClusterOutputElasticsearchDatastreamTlsCertFileMountFromSecre
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputElasticsearchDatastreamTlsCertFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<SyslogNGClusterOutputElasticsearchDatastreamTlsCertFileValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<SyslogNGClusterOutputElasticsearchDatastreamTlsCertFileValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -817,13 +632,8 @@ pub struct SyslogNGClusterOutputElasticsearchDatastreamTlsKeyFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputElasticsearchDatastreamTlsKeyFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<SyslogNGClusterOutputElasticsearchDatastreamTlsKeyFileMountFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<SyslogNGClusterOutputElasticsearchDatastreamTlsKeyFileMountFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -837,13 +647,8 @@ pub struct SyslogNGClusterOutputElasticsearchDatastreamTlsKeyFileMountFromSecret
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputElasticsearchDatastreamTlsKeyFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<SyslogNGClusterOutputElasticsearchDatastreamTlsKeyFileValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<SyslogNGClusterOutputElasticsearchDatastreamTlsKeyFileValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -908,37 +713,17 @@ pub struct SyslogNGClusterOutputFileDiskBuffer {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputHttp {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batch-bytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batch-bytes")]
     pub batch_bytes: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batch-lines"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batch-lines")]
     pub batch_lines: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batch-timeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batch-timeout")]
     pub batch_timeout: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub body: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "body-prefix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "body-prefix")]
     pub body_prefix: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "body-suffix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "body-suffix")]
     pub body_suffix: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub delimiter: Option<String>,
@@ -946,11 +731,7 @@ pub struct SyslogNGClusterOutputHttp {
     pub disk_buffer: Option<SyslogNGClusterOutputHttpDiskBuffer>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "log-fifo-size"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "log-fifo-size")]
     pub log_fifo_size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub method: Option<String>,
@@ -958,11 +739,7 @@ pub struct SyslogNGClusterOutputHttp {
     pub password: Option<SyslogNGClusterOutputHttpPassword>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub persist_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "response-action"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "response-action")]
     pub response_action: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retries: Option<i64>,
@@ -976,11 +753,7 @@ pub struct SyslogNGClusterOutputHttp {
     pub url: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "user-agent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "user-agent")]
     pub user_agent: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub workers: Option<i64>,
@@ -1014,11 +787,7 @@ pub struct SyslogNGClusterOutputHttpPassword {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputHttpPasswordMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputHttpPasswordMountFromSecretKeyRef>,
 }
 
@@ -1033,11 +802,7 @@ pub struct SyslogNGClusterOutputHttpPasswordMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputHttpPasswordValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputHttpPasswordValueFromSecretKeyRef>,
 }
 
@@ -1058,11 +823,7 @@ pub struct SyslogNGClusterOutputHttpTls {
     pub ca_file: Option<SyslogNGClusterOutputHttpTlsCaFile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert_file: Option<SyslogNGClusterOutputHttpTlsCertFile>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cipher-suite"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cipher-suite")]
     pub cipher_suite: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key_file: Option<SyslogNGClusterOutputHttpTlsKeyFile>,
@@ -1070,11 +831,7 @@ pub struct SyslogNGClusterOutputHttpTls {
     pub peer_verify: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssl_version: Option<SyslogNGClusterOutputHttpTlsSslVersion>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "use-system-cert-store"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "use-system-cert-store")]
     pub use_system_cert_store: Option<bool>,
 }
 
@@ -1090,11 +847,7 @@ pub struct SyslogNGClusterOutputHttpTlsCaDir {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputHttpTlsCaDirMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputHttpTlsCaDirMountFromSecretKeyRef>,
 }
 
@@ -1109,11 +862,7 @@ pub struct SyslogNGClusterOutputHttpTlsCaDirMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputHttpTlsCaDirValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputHttpTlsCaDirValueFromSecretKeyRef>,
 }
 
@@ -1138,11 +887,7 @@ pub struct SyslogNGClusterOutputHttpTlsCaFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputHttpTlsCaFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputHttpTlsCaFileMountFromSecretKeyRef>,
 }
 
@@ -1157,11 +902,7 @@ pub struct SyslogNGClusterOutputHttpTlsCaFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputHttpTlsCaFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputHttpTlsCaFileValueFromSecretKeyRef>,
 }
 
@@ -1186,11 +927,7 @@ pub struct SyslogNGClusterOutputHttpTlsCertFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputHttpTlsCertFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputHttpTlsCertFileMountFromSecretKeyRef>,
 }
 
@@ -1205,11 +942,7 @@ pub struct SyslogNGClusterOutputHttpTlsCertFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputHttpTlsCertFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputHttpTlsCertFileValueFromSecretKeyRef>,
 }
 
@@ -1234,11 +967,7 @@ pub struct SyslogNGClusterOutputHttpTlsKeyFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputHttpTlsKeyFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputHttpTlsKeyFileMountFromSecretKeyRef>,
 }
 
@@ -1253,11 +982,7 @@ pub struct SyslogNGClusterOutputHttpTlsKeyFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputHttpTlsKeyFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputHttpTlsKeyFileValueFromSecretKeyRef>,
 }
 
@@ -1345,11 +1070,7 @@ pub struct SyslogNGClusterOutputLogglyTls {
     pub ca_file: Option<SyslogNGClusterOutputLogglyTlsCaFile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert_file: Option<SyslogNGClusterOutputLogglyTlsCertFile>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cipher-suite"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cipher-suite")]
     pub cipher_suite: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key_file: Option<SyslogNGClusterOutputLogglyTlsKeyFile>,
@@ -1357,11 +1078,7 @@ pub struct SyslogNGClusterOutputLogglyTls {
     pub peer_verify: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssl_version: Option<SyslogNGClusterOutputLogglyTlsSslVersion>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "use-system-cert-store"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "use-system-cert-store")]
     pub use_system_cert_store: Option<bool>,
 }
 
@@ -1377,11 +1094,7 @@ pub struct SyslogNGClusterOutputLogglyTlsCaDir {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputLogglyTlsCaDirMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputLogglyTlsCaDirMountFromSecretKeyRef>,
 }
 
@@ -1396,11 +1109,7 @@ pub struct SyslogNGClusterOutputLogglyTlsCaDirMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputLogglyTlsCaDirValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputLogglyTlsCaDirValueFromSecretKeyRef>,
 }
 
@@ -1425,11 +1134,7 @@ pub struct SyslogNGClusterOutputLogglyTlsCaFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputLogglyTlsCaFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputLogglyTlsCaFileMountFromSecretKeyRef>,
 }
 
@@ -1444,11 +1149,7 @@ pub struct SyslogNGClusterOutputLogglyTlsCaFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputLogglyTlsCaFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputLogglyTlsCaFileValueFromSecretKeyRef>,
 }
 
@@ -1473,11 +1174,7 @@ pub struct SyslogNGClusterOutputLogglyTlsCertFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputLogglyTlsCertFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputLogglyTlsCertFileMountFromSecretKeyRef>,
 }
 
@@ -1492,11 +1189,7 @@ pub struct SyslogNGClusterOutputLogglyTlsCertFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputLogglyTlsCertFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputLogglyTlsCertFileValueFromSecretKeyRef>,
 }
 
@@ -1521,11 +1214,7 @@ pub struct SyslogNGClusterOutputLogglyTlsKeyFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputLogglyTlsKeyFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputLogglyTlsKeyFileMountFromSecretKeyRef>,
 }
 
@@ -1540,11 +1229,7 @@ pub struct SyslogNGClusterOutputLogglyTlsKeyFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputLogglyTlsKeyFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputLogglyTlsKeyFileValueFromSecretKeyRef>,
 }
 
@@ -1585,11 +1270,7 @@ pub struct SyslogNGClusterOutputLogglyToken {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputLogglyTokenMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputLogglyTokenMountFromSecretKeyRef>,
 }
 
@@ -1604,11 +1285,7 @@ pub struct SyslogNGClusterOutputLogglyTokenMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputLogglyTokenValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputLogglyTokenValueFromSecretKeyRef>,
 }
 
@@ -1679,11 +1356,7 @@ pub struct SyslogNGClusterOutputLogscaleToken {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputLogscaleTokenMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputLogscaleTokenMountFromSecretKeyRef>,
 }
 
@@ -1698,11 +1371,7 @@ pub struct SyslogNGClusterOutputLogscaleTokenMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputLogscaleTokenValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputLogscaleTokenValueFromSecretKeyRef>,
 }
 
@@ -1727,11 +1396,7 @@ pub struct SyslogNGClusterOutputLogscaleUrl {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputLogscaleUrlMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputLogscaleUrlMountFromSecretKeyRef>,
 }
 
@@ -1746,11 +1411,7 @@ pub struct SyslogNGClusterOutputLogscaleUrlMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputLogscaleUrlValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputLogscaleUrlValueFromSecretKeyRef>,
 }
 
@@ -1767,27 +1428,15 @@ pub struct SyslogNGClusterOutputLogscaleUrlValueFromSecretKeyRef {
 pub struct SyslogNGClusterOutputLoki {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auth: Option<SyslogNGClusterOutputLokiAuth>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batch-lines"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batch-lines")]
     pub batch_lines: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batch-timeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batch-timeout")]
     pub batch_timeout: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disk_buffer: Option<SyslogNGClusterOutputLokiDiskBuffer>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub labels: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "log-fifo-size"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "log-fifo-size")]
     pub log_fifo_size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub persist_name: Option<String>,
@@ -1818,20 +1467,18 @@ pub struct SyslogNGClusterOutputLokiAuth {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SyslogNGClusterOutputLokiAuthAdc {}
+pub struct SyslogNGClusterOutputLokiAuthAdc {
+}
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputLokiAuthAlts {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "target-service-accounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "target-service-accounts")]
     pub target_service_accounts: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SyslogNGClusterOutputLokiAuthInsecure {}
+pub struct SyslogNGClusterOutputLokiAuthInsecure {
+}
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputLokiAuthTls {
@@ -1855,11 +1502,7 @@ pub struct SyslogNGClusterOutputLokiAuthTlsCaFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputLokiAuthTlsCaFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputLokiAuthTlsCaFileMountFromSecretKeyRef>,
 }
 
@@ -1874,11 +1517,7 @@ pub struct SyslogNGClusterOutputLokiAuthTlsCaFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputLokiAuthTlsCaFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputLokiAuthTlsCaFileValueFromSecretKeyRef>,
 }
 
@@ -1903,11 +1542,7 @@ pub struct SyslogNGClusterOutputLokiAuthTlsCertFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputLokiAuthTlsCertFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputLokiAuthTlsCertFileMountFromSecretKeyRef>,
 }
 
@@ -1922,11 +1557,7 @@ pub struct SyslogNGClusterOutputLokiAuthTlsCertFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputLokiAuthTlsCertFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputLokiAuthTlsCertFileValueFromSecretKeyRef>,
 }
 
@@ -1951,11 +1582,7 @@ pub struct SyslogNGClusterOutputLokiAuthTlsKeyFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputLokiAuthTlsKeyFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputLokiAuthTlsKeyFileMountFromSecretKeyRef>,
 }
 
@@ -1970,11 +1597,7 @@ pub struct SyslogNGClusterOutputLokiAuthTlsKeyFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputLokiAuthTlsKeyFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputLokiAuthTlsKeyFileValueFromSecretKeyRef>,
 }
 
@@ -2015,23 +1638,11 @@ pub enum SyslogNGClusterOutputLokiTimestamp {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputMongodb {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batch-bytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batch-bytes")]
     pub batch_bytes: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batch-lines"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batch-lines")]
     pub batch_lines: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batch-timeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batch-timeout")]
     pub batch_timeout: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub bulk: Option<bool>,
@@ -2044,11 +1655,7 @@ pub struct SyslogNGClusterOutputMongodb {
     pub dir: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub disk_buffer: Option<SyslogNGClusterOutputMongodbDiskBuffer>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "log-fifo-size"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "log-fifo-size")]
     pub log_fifo_size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub persist_name: Option<String>,
@@ -2092,11 +1699,7 @@ pub struct SyslogNGClusterOutputMongodbUri {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputMongodbUriMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputMongodbUriMountFromSecretKeyRef>,
 }
 
@@ -2111,11 +1714,7 @@ pub struct SyslogNGClusterOutputMongodbUriMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputMongodbUriValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputMongodbUriValueFromSecretKeyRef>,
 }
 
@@ -2154,11 +1753,7 @@ pub enum SyslogNGClusterOutputMongodbWriteConcern {
 pub struct SyslogNGClusterOutputMqtt {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub address: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fallback-topic"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fallback-topic")]
     pub fallback_topic: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub qos: Option<i64>,
@@ -2170,37 +1765,17 @@ pub struct SyslogNGClusterOutputMqtt {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputOpenobserve {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batch-bytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batch-bytes")]
     pub batch_bytes: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batch-lines"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batch-lines")]
     pub batch_lines: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batch-timeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batch-timeout")]
     pub batch_timeout: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub body: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "body-prefix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "body-prefix")]
     pub body_prefix: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "body-suffix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "body-suffix")]
     pub body_suffix: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub delimiter: Option<String>,
@@ -2208,11 +1783,7 @@ pub struct SyslogNGClusterOutputOpenobserve {
     pub disk_buffer: Option<SyslogNGClusterOutputOpenobserveDiskBuffer>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "log-fifo-size"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "log-fifo-size")]
     pub log_fifo_size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub method: Option<String>,
@@ -2226,11 +1797,7 @@ pub struct SyslogNGClusterOutputOpenobserve {
     pub port: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub record: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "response-action"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "response-action")]
     pub response_action: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retries: Option<i64>,
@@ -2246,11 +1813,7 @@ pub struct SyslogNGClusterOutputOpenobserve {
     pub url: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "user-agent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "user-agent")]
     pub user_agent: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub workers: Option<i64>,
@@ -2284,11 +1847,7 @@ pub struct SyslogNGClusterOutputOpenobservePassword {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputOpenobservePasswordMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputOpenobservePasswordMountFromSecretKeyRef>,
 }
 
@@ -2303,11 +1862,7 @@ pub struct SyslogNGClusterOutputOpenobservePasswordMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputOpenobservePasswordValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputOpenobservePasswordValueFromSecretKeyRef>,
 }
 
@@ -2328,11 +1883,7 @@ pub struct SyslogNGClusterOutputOpenobserveTls {
     pub ca_file: Option<SyslogNGClusterOutputOpenobserveTlsCaFile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert_file: Option<SyslogNGClusterOutputOpenobserveTlsCertFile>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cipher-suite"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cipher-suite")]
     pub cipher_suite: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key_file: Option<SyslogNGClusterOutputOpenobserveTlsKeyFile>,
@@ -2340,11 +1891,7 @@ pub struct SyslogNGClusterOutputOpenobserveTls {
     pub peer_verify: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssl_version: Option<SyslogNGClusterOutputOpenobserveTlsSslVersion>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "use-system-cert-store"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "use-system-cert-store")]
     pub use_system_cert_store: Option<bool>,
 }
 
@@ -2360,11 +1907,7 @@ pub struct SyslogNGClusterOutputOpenobserveTlsCaDir {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputOpenobserveTlsCaDirMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputOpenobserveTlsCaDirMountFromSecretKeyRef>,
 }
 
@@ -2379,11 +1922,7 @@ pub struct SyslogNGClusterOutputOpenobserveTlsCaDirMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputOpenobserveTlsCaDirValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputOpenobserveTlsCaDirValueFromSecretKeyRef>,
 }
 
@@ -2408,11 +1947,7 @@ pub struct SyslogNGClusterOutputOpenobserveTlsCaFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputOpenobserveTlsCaFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputOpenobserveTlsCaFileMountFromSecretKeyRef>,
 }
 
@@ -2427,11 +1962,7 @@ pub struct SyslogNGClusterOutputOpenobserveTlsCaFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputOpenobserveTlsCaFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputOpenobserveTlsCaFileValueFromSecretKeyRef>,
 }
 
@@ -2456,11 +1987,7 @@ pub struct SyslogNGClusterOutputOpenobserveTlsCertFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputOpenobserveTlsCertFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputOpenobserveTlsCertFileMountFromSecretKeyRef>,
 }
 
@@ -2475,11 +2002,7 @@ pub struct SyslogNGClusterOutputOpenobserveTlsCertFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputOpenobserveTlsCertFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputOpenobserveTlsCertFileValueFromSecretKeyRef>,
 }
 
@@ -2504,11 +2027,7 @@ pub struct SyslogNGClusterOutputOpenobserveTlsKeyFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputOpenobserveTlsKeyFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputOpenobserveTlsKeyFileMountFromSecretKeyRef>,
 }
 
@@ -2523,11 +2042,7 @@ pub struct SyslogNGClusterOutputOpenobserveTlsKeyFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputOpenobserveTlsKeyFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputOpenobserveTlsKeyFileValueFromSecretKeyRef>,
 }
 
@@ -2560,23 +2075,11 @@ pub enum SyslogNGClusterOutputOpenobserveTlsSslVersion {
 pub struct SyslogNGClusterOutputOpentelemetry {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auth: Option<SyslogNGClusterOutputOpentelemetryAuth>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batch-bytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batch-bytes")]
     pub batch_bytes: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batch-lines"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batch-lines")]
     pub batch_lines: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batch-timeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batch-timeout")]
     pub batch_timeout: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub channel_args: Option<BTreeMap<String, String>>,
@@ -2600,20 +2103,18 @@ pub struct SyslogNGClusterOutputOpentelemetryAuth {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SyslogNGClusterOutputOpentelemetryAuthAdc {}
+pub struct SyslogNGClusterOutputOpentelemetryAuthAdc {
+}
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputOpentelemetryAuthAlts {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "target-service-accounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "target-service-accounts")]
     pub target_service_accounts: Option<Vec<String>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct SyslogNGClusterOutputOpentelemetryAuthInsecure {}
+pub struct SyslogNGClusterOutputOpentelemetryAuthInsecure {
+}
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputOpentelemetryAuthTls {
@@ -2637,13 +2138,8 @@ pub struct SyslogNGClusterOutputOpentelemetryAuthTlsCaFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputOpentelemetryAuthTlsCaFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<SyslogNGClusterOutputOpentelemetryAuthTlsCaFileMountFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<SyslogNGClusterOutputOpentelemetryAuthTlsCaFileMountFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2657,13 +2153,8 @@ pub struct SyslogNGClusterOutputOpentelemetryAuthTlsCaFileMountFromSecretKeyRef 
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputOpentelemetryAuthTlsCaFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<SyslogNGClusterOutputOpentelemetryAuthTlsCaFileValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<SyslogNGClusterOutputOpentelemetryAuthTlsCaFileValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2687,13 +2178,8 @@ pub struct SyslogNGClusterOutputOpentelemetryAuthTlsCertFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputOpentelemetryAuthTlsCertFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<SyslogNGClusterOutputOpentelemetryAuthTlsCertFileMountFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<SyslogNGClusterOutputOpentelemetryAuthTlsCertFileMountFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2707,13 +2193,8 @@ pub struct SyslogNGClusterOutputOpentelemetryAuthTlsCertFileMountFromSecretKeyRe
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputOpentelemetryAuthTlsCertFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<SyslogNGClusterOutputOpentelemetryAuthTlsCertFileValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<SyslogNGClusterOutputOpentelemetryAuthTlsCertFileValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2737,13 +2218,8 @@ pub struct SyslogNGClusterOutputOpentelemetryAuthTlsKeyFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputOpentelemetryAuthTlsKeyFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<SyslogNGClusterOutputOpentelemetryAuthTlsKeyFileMountFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<SyslogNGClusterOutputOpentelemetryAuthTlsKeyFileMountFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2757,13 +2233,8 @@ pub struct SyslogNGClusterOutputOpentelemetryAuthTlsKeyFileMountFromSecretKeyRef
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputOpentelemetryAuthTlsKeyFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<SyslogNGClusterOutputOpentelemetryAuthTlsKeyFileValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<SyslogNGClusterOutputOpentelemetryAuthTlsKeyFileValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -2795,23 +2266,11 @@ pub struct SyslogNGClusterOutputOpentelemetryDiskBuffer {
 pub struct SyslogNGClusterOutputRedis {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub auth: Option<SyslogNGClusterOutputRedisAuth>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batch-bytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batch-bytes")]
     pub batch_bytes: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batch-lines"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batch-lines")]
     pub batch_lines: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batch-timeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batch-timeout")]
     pub batch_timeout: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub command: Option<SyslogNGClusterOutputRedisCommand>,
@@ -2821,11 +2280,7 @@ pub struct SyslogNGClusterOutputRedis {
     pub disk_buffer: Option<SyslogNGClusterOutputRedisDiskBuffer>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "log-fifo-size"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "log-fifo-size")]
     pub log_fifo_size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub persist_name: Option<String>,
@@ -2835,11 +2290,7 @@ pub struct SyslogNGClusterOutputRedis {
     pub retries: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub throttle: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "time-reopen"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "time-reopen")]
     pub time_reopen: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub workers: Option<i64>,
@@ -2857,11 +2308,7 @@ pub struct SyslogNGClusterOutputRedisAuth {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputRedisAuthMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputRedisAuthMountFromSecretKeyRef>,
 }
 
@@ -2876,11 +2323,7 @@ pub struct SyslogNGClusterOutputRedisAuthMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputRedisAuthValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputRedisAuthValueFromSecretKeyRef>,
 }
 
@@ -2895,11 +2338,7 @@ pub struct SyslogNGClusterOutputRedisAuthValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputRedisCommand {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "string-list"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "string-list")]
     pub string_list: Option<Vec<String>>,
 }
 
@@ -2937,11 +2376,7 @@ pub struct SyslogNGClusterOutputS3 {
     pub disk_buffer: Option<SyslogNGClusterOutputS3DiskBuffer>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flush_grace_period: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "log-fifo-size"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "log-fifo-size")]
     pub log_fifo_size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub max_object_size: Option<i64>,
@@ -2983,11 +2418,7 @@ pub struct SyslogNGClusterOutputS3AccessKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputS3AccessKeyMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputS3AccessKeyMountFromSecretKeyRef>,
 }
 
@@ -3002,11 +2433,7 @@ pub struct SyslogNGClusterOutputS3AccessKeyMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputS3AccessKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputS3AccessKeyValueFromSecretKeyRef>,
 }
 
@@ -3047,11 +2474,7 @@ pub struct SyslogNGClusterOutputS3SecretKey {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputS3SecretKeyMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputS3SecretKeyMountFromSecretKeyRef>,
 }
 
@@ -3066,11 +2489,7 @@ pub struct SyslogNGClusterOutputS3SecretKeyMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputS3SecretKeyValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputS3SecretKeyValueFromSecretKeyRef>,
 }
 
@@ -3085,37 +2504,17 @@ pub struct SyslogNGClusterOutputS3SecretKeyValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSplunkHecEvent {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batch-bytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batch-bytes")]
     pub batch_bytes: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batch-lines"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batch-lines")]
     pub batch_lines: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batch-timeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batch-timeout")]
     pub batch_timeout: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub body: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "body-prefix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "body-prefix")]
     pub body_prefix: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "body-suffix"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "body-suffix")]
     pub body_suffix: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub content_type: Option<String>,
@@ -3143,11 +2542,7 @@ pub struct SyslogNGClusterOutputSplunkHecEvent {
     pub host: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub index: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "log-fifo-size"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "log-fifo-size")]
     pub log_fifo_size: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub method: Option<String>,
@@ -3155,11 +2550,7 @@ pub struct SyslogNGClusterOutputSplunkHecEvent {
     pub password: Option<SyslogNGClusterOutputSplunkHecEventPassword>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub persist_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "response-action"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "response-action")]
     pub response_action: Option<BTreeMap<String, String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retries: Option<i64>,
@@ -3181,11 +2572,7 @@ pub struct SyslogNGClusterOutputSplunkHecEvent {
     pub url: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "user-agent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "user-agent")]
     pub user_agent: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub workers: Option<i64>,
@@ -3219,11 +2606,7 @@ pub struct SyslogNGClusterOutputSplunkHecEventPassword {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSplunkHecEventPasswordMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSplunkHecEventPasswordMountFromSecretKeyRef>,
 }
 
@@ -3238,11 +2621,7 @@ pub struct SyslogNGClusterOutputSplunkHecEventPasswordMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSplunkHecEventPasswordValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSplunkHecEventPasswordValueFromSecretKeyRef>,
 }
 
@@ -3263,11 +2642,7 @@ pub struct SyslogNGClusterOutputSplunkHecEventTls {
     pub ca_file: Option<SyslogNGClusterOutputSplunkHecEventTlsCaFile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert_file: Option<SyslogNGClusterOutputSplunkHecEventTlsCertFile>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cipher-suite"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cipher-suite")]
     pub cipher_suite: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key_file: Option<SyslogNGClusterOutputSplunkHecEventTlsKeyFile>,
@@ -3275,11 +2650,7 @@ pub struct SyslogNGClusterOutputSplunkHecEventTls {
     pub peer_verify: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssl_version: Option<SyslogNGClusterOutputSplunkHecEventTlsSslVersion>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "use-system-cert-store"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "use-system-cert-store")]
     pub use_system_cert_store: Option<bool>,
 }
 
@@ -3295,11 +2666,7 @@ pub struct SyslogNGClusterOutputSplunkHecEventTlsCaDir {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSplunkHecEventTlsCaDirMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSplunkHecEventTlsCaDirMountFromSecretKeyRef>,
 }
 
@@ -3314,11 +2681,7 @@ pub struct SyslogNGClusterOutputSplunkHecEventTlsCaDirMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSplunkHecEventTlsCaDirValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSplunkHecEventTlsCaDirValueFromSecretKeyRef>,
 }
 
@@ -3343,11 +2706,7 @@ pub struct SyslogNGClusterOutputSplunkHecEventTlsCaFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSplunkHecEventTlsCaFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSplunkHecEventTlsCaFileMountFromSecretKeyRef>,
 }
 
@@ -3362,11 +2721,7 @@ pub struct SyslogNGClusterOutputSplunkHecEventTlsCaFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSplunkHecEventTlsCaFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSplunkHecEventTlsCaFileValueFromSecretKeyRef>,
 }
 
@@ -3391,11 +2746,7 @@ pub struct SyslogNGClusterOutputSplunkHecEventTlsCertFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSplunkHecEventTlsCertFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSplunkHecEventTlsCertFileMountFromSecretKeyRef>,
 }
 
@@ -3410,11 +2761,7 @@ pub struct SyslogNGClusterOutputSplunkHecEventTlsCertFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSplunkHecEventTlsCertFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSplunkHecEventTlsCertFileValueFromSecretKeyRef>,
 }
 
@@ -3439,11 +2786,7 @@ pub struct SyslogNGClusterOutputSplunkHecEventTlsKeyFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSplunkHecEventTlsKeyFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSplunkHecEventTlsKeyFileMountFromSecretKeyRef>,
 }
 
@@ -3458,11 +2801,7 @@ pub struct SyslogNGClusterOutputSplunkHecEventTlsKeyFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSplunkHecEventTlsKeyFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSplunkHecEventTlsKeyFileValueFromSecretKeyRef>,
 }
 
@@ -3503,11 +2842,7 @@ pub struct SyslogNGClusterOutputSplunkHecEventToken {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSplunkHecEventTokenMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSplunkHecEventTokenMountFromSecretKeyRef>,
 }
 
@@ -3522,11 +2857,7 @@ pub struct SyslogNGClusterOutputSplunkHecEventTokenMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSplunkHecEventTokenValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSplunkHecEventTokenValueFromSecretKeyRef>,
 }
 
@@ -3541,23 +2872,11 @@ pub struct SyslogNGClusterOutputSplunkHecEventTokenValueFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSumologicHttp {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batch-bytes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batch-bytes")]
     pub batch_bytes: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batch-lines"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batch-lines")]
     pub batch_lines: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "batch-timeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "batch-timeout")]
     pub batch_timeout: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub body: Option<String>,
@@ -3591,11 +2910,7 @@ pub struct SyslogNGClusterOutputSumologicHttpCollector {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSumologicHttpCollectorMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSumologicHttpCollectorMountFromSecretKeyRef>,
 }
 
@@ -3610,11 +2925,7 @@ pub struct SyslogNGClusterOutputSumologicHttpCollectorMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSumologicHttpCollectorValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSumologicHttpCollectorValueFromSecretKeyRef>,
 }
 
@@ -3651,11 +2962,7 @@ pub struct SyslogNGClusterOutputSumologicHttpTls {
     pub ca_file: Option<SyslogNGClusterOutputSumologicHttpTlsCaFile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert_file: Option<SyslogNGClusterOutputSumologicHttpTlsCertFile>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cipher-suite"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cipher-suite")]
     pub cipher_suite: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key_file: Option<SyslogNGClusterOutputSumologicHttpTlsKeyFile>,
@@ -3663,11 +2970,7 @@ pub struct SyslogNGClusterOutputSumologicHttpTls {
     pub peer_verify: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssl_version: Option<SyslogNGClusterOutputSumologicHttpTlsSslVersion>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "use-system-cert-store"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "use-system-cert-store")]
     pub use_system_cert_store: Option<bool>,
 }
 
@@ -3683,11 +2986,7 @@ pub struct SyslogNGClusterOutputSumologicHttpTlsCaDir {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSumologicHttpTlsCaDirMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSumologicHttpTlsCaDirMountFromSecretKeyRef>,
 }
 
@@ -3702,11 +3001,7 @@ pub struct SyslogNGClusterOutputSumologicHttpTlsCaDirMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSumologicHttpTlsCaDirValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSumologicHttpTlsCaDirValueFromSecretKeyRef>,
 }
 
@@ -3731,11 +3026,7 @@ pub struct SyslogNGClusterOutputSumologicHttpTlsCaFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSumologicHttpTlsCaFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSumologicHttpTlsCaFileMountFromSecretKeyRef>,
 }
 
@@ -3750,11 +3041,7 @@ pub struct SyslogNGClusterOutputSumologicHttpTlsCaFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSumologicHttpTlsCaFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSumologicHttpTlsCaFileValueFromSecretKeyRef>,
 }
 
@@ -3779,11 +3066,7 @@ pub struct SyslogNGClusterOutputSumologicHttpTlsCertFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSumologicHttpTlsCertFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSumologicHttpTlsCertFileMountFromSecretKeyRef>,
 }
 
@@ -3798,11 +3081,7 @@ pub struct SyslogNGClusterOutputSumologicHttpTlsCertFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSumologicHttpTlsCertFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSumologicHttpTlsCertFileValueFromSecretKeyRef>,
 }
 
@@ -3827,11 +3106,7 @@ pub struct SyslogNGClusterOutputSumologicHttpTlsKeyFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSumologicHttpTlsKeyFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSumologicHttpTlsKeyFileMountFromSecretKeyRef>,
 }
 
@@ -3846,11 +3121,7 @@ pub struct SyslogNGClusterOutputSumologicHttpTlsKeyFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSumologicHttpTlsKeyFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSumologicHttpTlsKeyFileValueFromSecretKeyRef>,
 }
 
@@ -3891,11 +3162,7 @@ pub struct SyslogNGClusterOutputSumologicHttpUrl {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSumologicHttpUrlMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSumologicHttpUrlMountFromSecretKeyRef>,
 }
 
@@ -3910,11 +3177,7 @@ pub struct SyslogNGClusterOutputSumologicHttpUrlMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSumologicHttpUrlValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSumologicHttpUrlValueFromSecretKeyRef>,
 }
 
@@ -3969,11 +3232,7 @@ pub struct SyslogNGClusterOutputSumologicSyslogTls {
     pub ca_file: Option<SyslogNGClusterOutputSumologicSyslogTlsCaFile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert_file: Option<SyslogNGClusterOutputSumologicSyslogTlsCertFile>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cipher-suite"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cipher-suite")]
     pub cipher_suite: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key_file: Option<SyslogNGClusterOutputSumologicSyslogTlsKeyFile>,
@@ -3981,11 +3240,7 @@ pub struct SyslogNGClusterOutputSumologicSyslogTls {
     pub peer_verify: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssl_version: Option<SyslogNGClusterOutputSumologicSyslogTlsSslVersion>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "use-system-cert-store"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "use-system-cert-store")]
     pub use_system_cert_store: Option<bool>,
 }
 
@@ -4001,11 +3256,7 @@ pub struct SyslogNGClusterOutputSumologicSyslogTlsCaDir {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSumologicSyslogTlsCaDirMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSumologicSyslogTlsCaDirMountFromSecretKeyRef>,
 }
 
@@ -4020,11 +3271,7 @@ pub struct SyslogNGClusterOutputSumologicSyslogTlsCaDirMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSumologicSyslogTlsCaDirValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSumologicSyslogTlsCaDirValueFromSecretKeyRef>,
 }
 
@@ -4049,11 +3296,7 @@ pub struct SyslogNGClusterOutputSumologicSyslogTlsCaFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSumologicSyslogTlsCaFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSumologicSyslogTlsCaFileMountFromSecretKeyRef>,
 }
 
@@ -4068,11 +3311,7 @@ pub struct SyslogNGClusterOutputSumologicSyslogTlsCaFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSumologicSyslogTlsCaFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSumologicSyslogTlsCaFileValueFromSecretKeyRef>,
 }
 
@@ -4097,13 +3336,8 @@ pub struct SyslogNGClusterOutputSumologicSyslogTlsCertFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSumologicSyslogTlsCertFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<SyslogNGClusterOutputSumologicSyslogTlsCertFileMountFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<SyslogNGClusterOutputSumologicSyslogTlsCertFileMountFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4117,13 +3351,8 @@ pub struct SyslogNGClusterOutputSumologicSyslogTlsCertFileMountFromSecretKeyRef 
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSumologicSyslogTlsCertFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref:
-        Option<SyslogNGClusterOutputSumologicSyslogTlsCertFileValueFromSecretKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<SyslogNGClusterOutputSumologicSyslogTlsCertFileValueFromSecretKeyRef>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -4147,11 +3376,7 @@ pub struct SyslogNGClusterOutputSumologicSyslogTlsKeyFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSumologicSyslogTlsKeyFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSumologicSyslogTlsKeyFileMountFromSecretKeyRef>,
 }
 
@@ -4166,11 +3391,7 @@ pub struct SyslogNGClusterOutputSumologicSyslogTlsKeyFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSumologicSyslogTlsKeyFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSumologicSyslogTlsKeyFileValueFromSecretKeyRef>,
 }
 
@@ -4255,11 +3476,7 @@ pub struct SyslogNGClusterOutputSyslogTls {
     pub ca_file: Option<SyslogNGClusterOutputSyslogTlsCaFile>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert_file: Option<SyslogNGClusterOutputSyslogTlsCertFile>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cipher-suite"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cipher-suite")]
     pub cipher_suite: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub key_file: Option<SyslogNGClusterOutputSyslogTlsKeyFile>,
@@ -4267,11 +3484,7 @@ pub struct SyslogNGClusterOutputSyslogTls {
     pub peer_verify: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub ssl_version: Option<SyslogNGClusterOutputSyslogTlsSslVersion>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "use-system-cert-store"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "use-system-cert-store")]
     pub use_system_cert_store: Option<bool>,
 }
 
@@ -4287,11 +3500,7 @@ pub struct SyslogNGClusterOutputSyslogTlsCaDir {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSyslogTlsCaDirMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSyslogTlsCaDirMountFromSecretKeyRef>,
 }
 
@@ -4306,11 +3515,7 @@ pub struct SyslogNGClusterOutputSyslogTlsCaDirMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSyslogTlsCaDirValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSyslogTlsCaDirValueFromSecretKeyRef>,
 }
 
@@ -4335,11 +3540,7 @@ pub struct SyslogNGClusterOutputSyslogTlsCaFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSyslogTlsCaFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSyslogTlsCaFileMountFromSecretKeyRef>,
 }
 
@@ -4354,11 +3555,7 @@ pub struct SyslogNGClusterOutputSyslogTlsCaFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSyslogTlsCaFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSyslogTlsCaFileValueFromSecretKeyRef>,
 }
 
@@ -4383,11 +3580,7 @@ pub struct SyslogNGClusterOutputSyslogTlsCertFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSyslogTlsCertFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSyslogTlsCertFileMountFromSecretKeyRef>,
 }
 
@@ -4402,11 +3595,7 @@ pub struct SyslogNGClusterOutputSyslogTlsCertFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSyslogTlsCertFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSyslogTlsCertFileValueFromSecretKeyRef>,
 }
 
@@ -4431,11 +3620,7 @@ pub struct SyslogNGClusterOutputSyslogTlsKeyFile {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSyslogTlsKeyFileMountFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSyslogTlsKeyFileMountFromSecretKeyRef>,
 }
 
@@ -4450,11 +3635,7 @@ pub struct SyslogNGClusterOutputSyslogTlsKeyFileMountFromSecretKeyRef {
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct SyslogNGClusterOutputSyslogTlsKeyFileValueFrom {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<SyslogNGClusterOutputSyslogTlsKeyFileValueFromSecretKeyRef>,
 }
 
@@ -4489,10 +3670,7 @@ pub struct SyslogNGClusterOutputStatus {
     pub active: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub problems: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "problemsCount"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "problemsCount")]
     pub problems_count: Option<i64>,
 }
+

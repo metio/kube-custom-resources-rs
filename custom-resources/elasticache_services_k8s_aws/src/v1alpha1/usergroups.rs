@@ -4,24 +4,19 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "elasticache.services.k8s.aws",
-    version = "v1alpha1",
-    kind = "UserGroup",
-    plural = "usergroups"
-)]
+#[kube(group = "elasticache.services.k8s.aws", version = "v1alpha1", kind = "UserGroup", plural = "usergroups")]
 #[kube(namespaced)]
 #[kube(status = "UserGroupStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct UserGroupSpec {
     /// The current supported value is Redis.
     pub engine: String,
@@ -57,11 +52,7 @@ pub struct UserGroupStatus {
     /// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
     /// that is used to contain resource sync state, account ownership,
     /// constructed ARN for the resource
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ackResourceMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ackResourceMetadata")]
     pub ack_resource_metadata: Option<UserGroupStatusAckResourceMetadata>,
     /// All CRS managed by ACK have a common `Status.Conditions` member that
     /// contains a collection of `ackv1alpha1.Condition` objects that describe
@@ -70,25 +61,13 @@ pub struct UserGroupStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// The minimum engine version required, which is Redis 6.0
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumEngineVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumEngineVersion")]
     pub minimum_engine_version: Option<String>,
     /// A list of updates being applied to the user group.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pendingChanges"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pendingChanges")]
     pub pending_changes: Option<UserGroupStatusPendingChanges>,
     /// A list of replication groups that the user group can access.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replicationGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replicationGroups")]
     pub replication_groups: Option<Vec<String>>,
     /// Indicates user group status. Can be "creating", "active", "modifying", "deleting".
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -121,16 +100,9 @@ pub struct UserGroupStatusAckResourceMetadata {
 /// A list of updates being applied to the user group.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct UserGroupStatusPendingChanges {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userIDsToAdd"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userIDsToAdd")]
     pub user_i_ds_to_add: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "userIDsToRemove"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "userIDsToRemove")]
     pub user_i_ds_to_remove: Option<Vec<String>>,
 }
+

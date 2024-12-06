@@ -5,7 +5,7 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
@@ -136,17 +136,12 @@ pub struct SopsSecretSopsPgp {
 
 /// SopsSecret Spec definition
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "isindir.github.com",
-    version = "v1alpha2",
-    kind = "SopsSecret",
-    plural = "sopssecrets"
-)]
+#[kube(group = "isindir.github.com", version = "v1alpha2", kind = "SopsSecret", plural = "sopssecrets")]
 #[kube(namespaced)]
 #[kube(status = "SopsSecretStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct SopsSecretSpec {
     /// Secrets template is a list of definitions to create Kubernetes Secrets
     #[serde(rename = "secretTemplates")]
@@ -182,3 +177,4 @@ pub struct SopsSecretStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
 }
+

@@ -5,7 +5,7 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
@@ -13,17 +13,12 @@ use self::prelude::*;
 /// VMAlertmanagerConfigSpec defines configuration for VMAlertmanagerConfig
 /// it must reference only locally defined objects
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "operator.victoriametrics.com",
-    version = "v1beta1",
-    kind = "VMAlertmanagerConfig",
-    plural = "vmalertmanagerconfigs"
-)]
+#[kube(group = "operator.victoriametrics.com", version = "v1beta1", kind = "VMAlertmanagerConfig", plural = "vmalertmanagerconfigs")]
 #[kube(namespaced)]
 #[kube(status = "VMAlertmanagerConfigStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct VMAlertmanagerConfigSpec {
     /// InhibitRules will only apply for alerts matching
     /// the resource's namespace.
@@ -141,8 +136,7 @@ pub struct VMAlertmanagerConfigReceiversDiscordConfigsHttpConfig {
     /// The secret's key that contains the bearer token
     /// It must be at them same namespace as CRD
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub bearer_token_secret:
-        Option<VMAlertmanagerConfigReceiversDiscordConfigsHttpConfigBearerTokenSecret>,
+    pub bearer_token_secret: Option<VMAlertmanagerConfigReceiversDiscordConfigsHttpConfigBearerTokenSecret>,
     /// OAuth2 client credentials used to fetch a token for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<VMAlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2>,
@@ -160,14 +154,9 @@ pub struct VMAlertmanagerConfigReceiversDiscordConfigsHttpConfig {
 pub struct VMAlertmanagerConfigReceiversDiscordConfigsHttpConfigAuthorization {
     /// Reference to the secret with value for authorization
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub credentials:
-        Option<VMAlertmanagerConfigReceiversDiscordConfigsHttpConfigAuthorizationCredentials>,
+    pub credentials: Option<VMAlertmanagerConfigReceiversDiscordConfigsHttpConfigAuthorizationCredentials>,
     /// File with value for authorization
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialsFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsFile")]
     pub credentials_file: Option<String>,
     /// Type of authorization, default to bearer
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -269,8 +258,7 @@ pub struct VMAlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2 {
     pub client_id: VMAlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ClientId,
     /// The secret containing the OAuth2 client secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub client_secret:
-        Option<VMAlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ClientSecret>,
+    pub client_secret: Option<VMAlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ClientSecret>,
     /// ClientSecretFile defines path for client secret file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_secret_file: Option<String>,
@@ -289,8 +277,7 @@ pub struct VMAlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2 {
 pub struct VMAlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<VMAlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ClientIdConfigMap>,
+    pub config_map: Option<VMAlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ClientIdConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VMAlertmanagerConfigReceiversDiscordConfigsHttpConfigOauth2ClientIdSecret>,
@@ -363,11 +350,7 @@ pub struct VMAlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
@@ -376,11 +359,7 @@ pub struct VMAlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VMAlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigKeySecret>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -389,8 +368,7 @@ pub struct VMAlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfig {
 pub struct VMAlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCa {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<VMAlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCaConfigMap>,
+    pub config_map: Option<VMAlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCaConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VMAlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCaSecret>,
@@ -435,8 +413,7 @@ pub struct VMAlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCaSecre
 pub struct VMAlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCert {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<VMAlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCertConfigMap>,
+    pub config_map: Option<VMAlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCertConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VMAlertmanagerConfigReceiversDiscordConfigsHttpConfigTlsConfigCertSecret>,
@@ -615,11 +592,7 @@ pub struct VMAlertmanagerConfigReceiversEmailConfigsTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
@@ -628,11 +601,7 @@ pub struct VMAlertmanagerConfigReceiversEmailConfigsTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VMAlertmanagerConfigReceiversEmailConfigsTlsConfigKeySecret>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -784,8 +753,7 @@ pub struct VMAlertmanagerConfigReceiversMsteamsConfigsHttpConfig {
     /// The secret's key that contains the bearer token
     /// It must be at them same namespace as CRD
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub bearer_token_secret:
-        Option<VMAlertmanagerConfigReceiversMsteamsConfigsHttpConfigBearerTokenSecret>,
+    pub bearer_token_secret: Option<VMAlertmanagerConfigReceiversMsteamsConfigsHttpConfigBearerTokenSecret>,
     /// OAuth2 client credentials used to fetch a token for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<VMAlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2>,
@@ -803,14 +771,9 @@ pub struct VMAlertmanagerConfigReceiversMsteamsConfigsHttpConfig {
 pub struct VMAlertmanagerConfigReceiversMsteamsConfigsHttpConfigAuthorization {
     /// Reference to the secret with value for authorization
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub credentials:
-        Option<VMAlertmanagerConfigReceiversMsteamsConfigsHttpConfigAuthorizationCredentials>,
+    pub credentials: Option<VMAlertmanagerConfigReceiversMsteamsConfigsHttpConfigAuthorizationCredentials>,
     /// File with value for authorization
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialsFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsFile")]
     pub credentials_file: Option<String>,
     /// Type of authorization, default to bearer
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -912,8 +875,7 @@ pub struct VMAlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2 {
     pub client_id: VMAlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ClientId,
     /// The secret containing the OAuth2 client secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub client_secret:
-        Option<VMAlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ClientSecret>,
+    pub client_secret: Option<VMAlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ClientSecret>,
     /// ClientSecretFile defines path for client secret file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_secret_file: Option<String>,
@@ -932,8 +894,7 @@ pub struct VMAlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2 {
 pub struct VMAlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<VMAlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ClientIdConfigMap>,
+    pub config_map: Option<VMAlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ClientIdConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VMAlertmanagerConfigReceiversMsteamsConfigsHttpConfigOauth2ClientIdSecret>,
@@ -1006,11 +967,7 @@ pub struct VMAlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
@@ -1019,11 +976,7 @@ pub struct VMAlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VMAlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigKeySecret>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -1032,8 +985,7 @@ pub struct VMAlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfig {
 pub struct VMAlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCa {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<VMAlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCaConfigMap>,
+    pub config_map: Option<VMAlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCaConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VMAlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCaSecret>,
@@ -1078,8 +1030,7 @@ pub struct VMAlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCaSecre
 pub struct VMAlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCert {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<VMAlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCertConfigMap>,
+    pub config_map: Option<VMAlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCertConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VMAlertmanagerConfigReceiversMsteamsConfigsHttpConfigTlsConfigCertSecret>,
@@ -1629,8 +1580,7 @@ pub struct VMAlertmanagerConfigReceiversSnsConfigsHttpConfig {
     /// The secret's key that contains the bearer token
     /// It must be at them same namespace as CRD
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub bearer_token_secret:
-        Option<VMAlertmanagerConfigReceiversSnsConfigsHttpConfigBearerTokenSecret>,
+    pub bearer_token_secret: Option<VMAlertmanagerConfigReceiversSnsConfigsHttpConfigBearerTokenSecret>,
     /// OAuth2 client credentials used to fetch a token for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<VMAlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2>,
@@ -1648,14 +1598,9 @@ pub struct VMAlertmanagerConfigReceiversSnsConfigsHttpConfig {
 pub struct VMAlertmanagerConfigReceiversSnsConfigsHttpConfigAuthorization {
     /// Reference to the secret with value for authorization
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub credentials:
-        Option<VMAlertmanagerConfigReceiversSnsConfigsHttpConfigAuthorizationCredentials>,
+    pub credentials: Option<VMAlertmanagerConfigReceiversSnsConfigsHttpConfigAuthorizationCredentials>,
     /// File with value for authorization
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialsFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsFile")]
     pub credentials_file: Option<String>,
     /// Type of authorization, default to bearer
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -1776,8 +1721,7 @@ pub struct VMAlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2 {
 pub struct VMAlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<VMAlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2ClientIdConfigMap>,
+    pub config_map: Option<VMAlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2ClientIdConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VMAlertmanagerConfigReceiversSnsConfigsHttpConfigOauth2ClientIdSecret>,
@@ -1850,11 +1794,7 @@ pub struct VMAlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
@@ -1863,11 +1803,7 @@ pub struct VMAlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VMAlertmanagerConfigReceiversSnsConfigsHttpConfigTlsConfigKeySecret>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -2157,8 +2093,7 @@ pub struct VMAlertmanagerConfigReceiversVictoropsConfigsHttpConfig {
     /// The secret's key that contains the bearer token
     /// It must be at them same namespace as CRD
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub bearer_token_secret:
-        Option<VMAlertmanagerConfigReceiversVictoropsConfigsHttpConfigBearerTokenSecret>,
+    pub bearer_token_secret: Option<VMAlertmanagerConfigReceiversVictoropsConfigsHttpConfigBearerTokenSecret>,
     /// OAuth2 client credentials used to fetch a token for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<VMAlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2>,
@@ -2176,14 +2111,9 @@ pub struct VMAlertmanagerConfigReceiversVictoropsConfigsHttpConfig {
 pub struct VMAlertmanagerConfigReceiversVictoropsConfigsHttpConfigAuthorization {
     /// Reference to the secret with value for authorization
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub credentials:
-        Option<VMAlertmanagerConfigReceiversVictoropsConfigsHttpConfigAuthorizationCredentials>,
+    pub credentials: Option<VMAlertmanagerConfigReceiversVictoropsConfigsHttpConfigAuthorizationCredentials>,
     /// File with value for authorization
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialsFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsFile")]
     pub credentials_file: Option<String>,
     /// Type of authorization, default to bearer
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -2285,8 +2215,7 @@ pub struct VMAlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2 {
     pub client_id: VMAlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ClientId,
     /// The secret containing the OAuth2 client secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub client_secret:
-        Option<VMAlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ClientSecret>,
+    pub client_secret: Option<VMAlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ClientSecret>,
     /// ClientSecretFile defines path for client secret file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_secret_file: Option<String>,
@@ -2305,8 +2234,7 @@ pub struct VMAlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2 {
 pub struct VMAlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<VMAlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ClientIdConfigMap>,
+    pub config_map: Option<VMAlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ClientIdConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VMAlertmanagerConfigReceiversVictoropsConfigsHttpConfigOauth2ClientIdSecret>,
@@ -2379,25 +2307,16 @@ pub struct VMAlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
     pub key_file: Option<String>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
-    pub key_secret:
-        Option<VMAlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigKeySecret>,
+    pub key_secret: Option<VMAlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigKeySecret>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -2406,8 +2325,7 @@ pub struct VMAlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfig {
 pub struct VMAlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCa {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<VMAlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCaConfigMap>,
+    pub config_map: Option<VMAlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCaConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VMAlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCaSecret>,
@@ -2452,8 +2370,7 @@ pub struct VMAlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCaSec
 pub struct VMAlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCert {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<VMAlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCertConfigMap>,
+    pub config_map: Option<VMAlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCertConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VMAlertmanagerConfigReceiversVictoropsConfigsHttpConfigTlsConfigCertSecret>,
@@ -2544,8 +2461,7 @@ pub struct VMAlertmanagerConfigReceiversWebexConfigsHttpConfig {
     /// The secret's key that contains the bearer token
     /// It must be at them same namespace as CRD
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub bearer_token_secret:
-        Option<VMAlertmanagerConfigReceiversWebexConfigsHttpConfigBearerTokenSecret>,
+    pub bearer_token_secret: Option<VMAlertmanagerConfigReceiversWebexConfigsHttpConfigBearerTokenSecret>,
     /// OAuth2 client credentials used to fetch a token for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<VMAlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2>,
@@ -2563,14 +2479,9 @@ pub struct VMAlertmanagerConfigReceiversWebexConfigsHttpConfig {
 pub struct VMAlertmanagerConfigReceiversWebexConfigsHttpConfigAuthorization {
     /// Reference to the secret with value for authorization
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub credentials:
-        Option<VMAlertmanagerConfigReceiversWebexConfigsHttpConfigAuthorizationCredentials>,
+    pub credentials: Option<VMAlertmanagerConfigReceiversWebexConfigsHttpConfigAuthorizationCredentials>,
     /// File with value for authorization
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialsFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsFile")]
     pub credentials_file: Option<String>,
     /// Type of authorization, default to bearer
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -2672,8 +2583,7 @@ pub struct VMAlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2 {
     pub client_id: VMAlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ClientId,
     /// The secret containing the OAuth2 client secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub client_secret:
-        Option<VMAlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ClientSecret>,
+    pub client_secret: Option<VMAlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ClientSecret>,
     /// ClientSecretFile defines path for client secret file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_secret_file: Option<String>,
@@ -2692,8 +2602,7 @@ pub struct VMAlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2 {
 pub struct VMAlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<VMAlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ClientIdConfigMap>,
+    pub config_map: Option<VMAlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ClientIdConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VMAlertmanagerConfigReceiversWebexConfigsHttpConfigOauth2ClientIdSecret>,
@@ -2766,11 +2675,7 @@ pub struct VMAlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
@@ -2779,11 +2684,7 @@ pub struct VMAlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VMAlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigKeySecret>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -2837,8 +2738,7 @@ pub struct VMAlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigCaSecret 
 pub struct VMAlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigCert {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<VMAlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigCertConfigMap>,
+    pub config_map: Option<VMAlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigCertConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VMAlertmanagerConfigReceiversWebexConfigsHttpConfigTlsConfigCertSecret>,
@@ -3011,8 +2911,7 @@ pub struct VMAlertmanagerConfigReceiversWechatConfigsHttpConfig {
     /// The secret's key that contains the bearer token
     /// It must be at them same namespace as CRD
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub bearer_token_secret:
-        Option<VMAlertmanagerConfigReceiversWechatConfigsHttpConfigBearerTokenSecret>,
+    pub bearer_token_secret: Option<VMAlertmanagerConfigReceiversWechatConfigsHttpConfigBearerTokenSecret>,
     /// OAuth2 client credentials used to fetch a token for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<VMAlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2>,
@@ -3030,14 +2929,9 @@ pub struct VMAlertmanagerConfigReceiversWechatConfigsHttpConfig {
 pub struct VMAlertmanagerConfigReceiversWechatConfigsHttpConfigAuthorization {
     /// Reference to the secret with value for authorization
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub credentials:
-        Option<VMAlertmanagerConfigReceiversWechatConfigsHttpConfigAuthorizationCredentials>,
+    pub credentials: Option<VMAlertmanagerConfigReceiversWechatConfigsHttpConfigAuthorizationCredentials>,
     /// File with value for authorization
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialsFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsFile")]
     pub credentials_file: Option<String>,
     /// Type of authorization, default to bearer
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -3139,8 +3033,7 @@ pub struct VMAlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2 {
     pub client_id: VMAlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ClientId,
     /// The secret containing the OAuth2 client secret
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub client_secret:
-        Option<VMAlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ClientSecret>,
+    pub client_secret: Option<VMAlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ClientSecret>,
     /// ClientSecretFile defines path for client secret file.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub client_secret_file: Option<String>,
@@ -3159,8 +3052,7 @@ pub struct VMAlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2 {
 pub struct VMAlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ClientId {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<VMAlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ClientIdConfigMap>,
+    pub config_map: Option<VMAlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ClientIdConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VMAlertmanagerConfigReceiversWechatConfigsHttpConfigOauth2ClientIdSecret>,
@@ -3233,11 +3125,7 @@ pub struct VMAlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "certFile")]
     pub cert_file: Option<String>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Path to the client key file in the container for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keyFile")]
@@ -3246,11 +3134,7 @@ pub struct VMAlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<VMAlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigKeySecret>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -3259,8 +3143,7 @@ pub struct VMAlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfig {
 pub struct VMAlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCa {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<VMAlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCaConfigMap>,
+    pub config_map: Option<VMAlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCaConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VMAlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCaSecret>,
@@ -3305,8 +3188,7 @@ pub struct VMAlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCaSecret
 pub struct VMAlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCert {
     /// ConfigMap containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<VMAlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCertConfigMap>,
+    pub config_map: Option<VMAlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCertConfigMap>,
     /// Secret containing data to use for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<VMAlertmanagerConfigReceiversWechatConfigsHttpConfigTlsConfigCertSecret>,
@@ -3449,27 +3331,16 @@ pub struct VMAlertmanagerConfigTimeIntervalsTimeIntervalsTimes {
 /// VMAlertmanagerConfigStatus defines the observed state of VMAlertmanagerConfig
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct VMAlertmanagerConfigStatus {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastErrorParentAlertmanagerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastErrorParentAlertmanagerName")]
     pub last_error_parent_alertmanager_name: Option<String>,
     /// LastSyncError contains error message for unsuccessful config generation
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastSyncError"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSyncError")]
     pub last_sync_error: Option<String>,
     /// LastSyncErrorTimestamp defines time when error occured
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastSyncErrorTimestamp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastSyncErrorTimestamp")]
     pub last_sync_error_timestamp: Option<i64>,
     /// Status defines CRD processing status
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub status: Option<String>,
 }
+

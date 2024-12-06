@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Configuration affecting load balancing, outlier detection, etc. See more details at: https://istio.io/docs/reference/config/networking/destination-rule.html
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "networking.istio.io",
-    version = "v1",
-    kind = "DestinationRule",
-    plural = "destinationrules"
-)]
+#[kube(group = "networking.istio.io", version = "v1", kind = "DestinationRule", plural = "destinationrules")]
 #[kube(namespaced)]
 #[kube(status = "DestinationRuleStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct DestinationRuleSpec {
     /// A list of namespaces to which this destination rule is exported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "exportTo")]
@@ -35,18 +30,10 @@ pub struct DestinationRuleSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub subsets: Option<Vec<DestinationRuleSubsets>>,
     /// Traffic policies to apply (load balancing policy, connection pool sizes, outlier detection).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trafficPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trafficPolicy")]
     pub traffic_policy: Option<DestinationRuleTrafficPolicy>,
     /// Criteria used to select the specific set of pods/VMs on which this `DestinationRule` configuration should be applied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workloadSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workloadSelector")]
     pub workload_selector: Option<DestinationRuleWorkloadSelector>,
 }
 
@@ -58,49 +45,25 @@ pub struct DestinationRuleSubsets {
     /// Name of the subset.
     pub name: String,
     /// Traffic policies that apply to this subset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trafficPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trafficPolicy")]
     pub traffic_policy: Option<DestinationRuleSubsetsTrafficPolicy>,
 }
 
 /// Traffic policies that apply to this subset.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleSubsetsTrafficPolicy {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionPool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionPool")]
     pub connection_pool: Option<DestinationRuleSubsetsTrafficPolicyConnectionPool>,
     /// Settings controlling the load balancer algorithms.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancer")]
     pub load_balancer: Option<DestinationRuleSubsetsTrafficPolicyLoadBalancer>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "outlierDetection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "outlierDetection")]
     pub outlier_detection: Option<DestinationRuleSubsetsTrafficPolicyOutlierDetection>,
     /// Traffic policies specific to individual ports.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portLevelSettings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portLevelSettings")]
     pub port_level_settings: Option<Vec<DestinationRuleSubsetsTrafficPolicyPortLevelSettings>>,
     /// The upstream PROXY protocol settings.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyProtocol")]
     pub proxy_protocol: Option<DestinationRuleSubsetsTrafficPolicyProxyProtocol>,
     /// TLS related settings for connections to the upstream service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -124,63 +87,30 @@ pub struct DestinationRuleSubsetsTrafficPolicyConnectionPool {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleSubsetsTrafficPolicyConnectionPoolHttp {
     /// Specify if http1.1 connection should be upgraded to http2 for the associated destination.
-    ///
+    /// 
     /// Valid Options: DEFAULT, DO_NOT_UPGRADE, UPGRADE
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "h2UpgradePolicy"
-    )]
-    pub h2_upgrade_policy:
-        Option<DestinationRuleSubsetsTrafficPolicyConnectionPoolHttpH2UpgradePolicy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "h2UpgradePolicy")]
+    pub h2_upgrade_policy: Option<DestinationRuleSubsetsTrafficPolicyConnectionPoolHttpH2UpgradePolicy>,
     /// Maximum number of requests that will be queued while waiting for a ready connection pool connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "http1MaxPendingRequests"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "http1MaxPendingRequests")]
     pub http1_max_pending_requests: Option<i32>,
     /// Maximum number of active requests to a destination.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "http2MaxRequests"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "http2MaxRequests")]
     pub http2_max_requests: Option<i32>,
     /// The idle timeout for upstream connection pool connections.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "idleTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleTimeout")]
     pub idle_timeout: Option<String>,
     /// The maximum number of concurrent streams allowed for a peer on one HTTP/2 connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConcurrentStreams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConcurrentStreams")]
     pub max_concurrent_streams: Option<i32>,
     /// Maximum number of requests per connection to a backend.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRequestsPerConnection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRequestsPerConnection")]
     pub max_requests_per_connection: Option<i32>,
     /// Maximum number of retries that can be outstanding to all hosts in a cluster at a given time.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
     pub max_retries: Option<i32>,
     /// If set to true, client protocol will be preserved while initiating connection to backend.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useClientProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useClientProtocol")]
     pub use_client_protocol: Option<bool>,
 }
 
@@ -199,39 +129,19 @@ pub enum DestinationRuleSubsetsTrafficPolicyConnectionPoolHttpH2UpgradePolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleSubsetsTrafficPolicyConnectionPoolTcp {
     /// TCP connection timeout.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeout")]
     pub connect_timeout: Option<String>,
     /// The idle timeout for TCP connections.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "idleTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleTimeout")]
     pub idle_timeout: Option<String>,
     /// The maximum duration of a connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConnectionDuration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConnectionDuration")]
     pub max_connection_duration: Option<String>,
     /// Maximum number of HTTP1 /TCP connections to a destination host.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConnections"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConnections")]
     pub max_connections: Option<i32>,
     /// If set then set SO_KEEPALIVE on the socket to enable TCP Keepalives.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tcpKeepalive"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpKeepalive")]
     pub tcp_keepalive: Option<DestinationRuleSubsetsTrafficPolicyConnectionPoolTcpTcpKeepalive>,
 }
 
@@ -252,76 +162,42 @@ pub struct DestinationRuleSubsetsTrafficPolicyConnectionPoolTcpTcpKeepalive {
 /// Settings controlling the load balancer algorithms.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleSubsetsTrafficPolicyLoadBalancer {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consistentHash"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consistentHash")]
     pub consistent_hash: Option<DestinationRuleSubsetsTrafficPolicyLoadBalancerConsistentHash>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localityLbSetting"
-    )]
-    pub locality_lb_setting:
-        Option<DestinationRuleSubsetsTrafficPolicyLoadBalancerLocalityLbSetting>,
-    ///
-    ///
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localityLbSetting")]
+    pub locality_lb_setting: Option<DestinationRuleSubsetsTrafficPolicyLoadBalancerLocalityLbSetting>,
+    /// 
+    /// 
     /// Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub simple: Option<DestinationRuleSubsetsTrafficPolicyLoadBalancerSimple>,
     /// Represents the warmup duration of Service.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "warmupDurationSecs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "warmupDurationSecs")]
     pub warmup_duration_secs: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleSubsetsTrafficPolicyLoadBalancerConsistentHash {
     /// Hash based on HTTP cookie.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpCookie"
-    )]
-    pub http_cookie:
-        Option<DestinationRuleSubsetsTrafficPolicyLoadBalancerConsistentHashHttpCookie>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpCookie")]
+    pub http_cookie: Option<DestinationRuleSubsetsTrafficPolicyLoadBalancerConsistentHashHttpCookie>,
     /// Hash based on a specific HTTP header.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaderName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaderName")]
     pub http_header_name: Option<String>,
     /// Hash based on a specific HTTP query parameter.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpQueryParameterName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpQueryParameterName")]
     pub http_query_parameter_name: Option<String>,
     /// The Maglev load balancer implements consistent hashing to backend hosts.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub maglev: Option<DestinationRuleSubsetsTrafficPolicyLoadBalancerConsistentHashMaglev>,
     /// Deprecated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumRingSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumRingSize")]
     pub minimum_ring_size: Option<i64>,
     /// The ring/modulo hash load balancer implements consistent hashing to backend hosts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ringHash")]
     pub ring_hash: Option<DestinationRuleSubsetsTrafficPolicyLoadBalancerConsistentHashRingHash>,
     /// Hash based on the source IP address.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useSourceIp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useSourceIp")]
     pub use_source_ip: Option<bool>,
 }
 
@@ -350,11 +226,7 @@ pub struct DestinationRuleSubsetsTrafficPolicyLoadBalancerConsistentHashMaglev {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleSubsetsTrafficPolicyLoadBalancerConsistentHashRingHash {
     /// The minimum number of virtual nodes to use for the hash ring.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumRingSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumRingSize")]
     pub minimum_ring_size: Option<i64>,
 }
 
@@ -362,21 +234,15 @@ pub struct DestinationRuleSubsetsTrafficPolicyLoadBalancerConsistentHashRingHash
 pub struct DestinationRuleSubsetsTrafficPolicyLoadBalancerLocalityLbSetting {
     /// Optional: only one of distribute, failover or failoverPriority can be set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub distribute:
-        Option<Vec<DestinationRuleSubsetsTrafficPolicyLoadBalancerLocalityLbSettingDistribute>>,
+    pub distribute: Option<Vec<DestinationRuleSubsetsTrafficPolicyLoadBalancerLocalityLbSettingDistribute>>,
     /// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// Optional: only one of distribute, failover or failoverPriority can be set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub failover:
-        Option<Vec<DestinationRuleSubsetsTrafficPolicyLoadBalancerLocalityLbSettingFailover>>,
+    pub failover: Option<Vec<DestinationRuleSubsetsTrafficPolicyLoadBalancerLocalityLbSettingFailover>>,
     /// failoverPriority is an ordered list of labels used to sort endpoints to do priority based load balancing.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failoverPriority"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failoverPriority")]
     pub failover_priority: Option<Vec<String>>,
 }
 
@@ -420,87 +286,42 @@ pub enum DestinationRuleSubsetsTrafficPolicyLoadBalancerSimple {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleSubsetsTrafficPolicyOutlierDetection {
     /// Minimum ejection duration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "baseEjectionTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseEjectionTime")]
     pub base_ejection_time: Option<String>,
     /// Number of 5xx errors before a host is ejected from the connection pool.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consecutive5xxErrors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consecutive5xxErrors")]
     pub consecutive5xx_errors: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consecutiveErrors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consecutiveErrors")]
     pub consecutive_errors: Option<i32>,
     /// Number of gateway errors before a host is ejected from the connection pool.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consecutiveGatewayErrors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consecutiveGatewayErrors")]
     pub consecutive_gateway_errors: Option<i64>,
     /// The number of consecutive locally originated failures before ejection occurs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consecutiveLocalOriginFailures"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consecutiveLocalOriginFailures")]
     pub consecutive_local_origin_failures: Option<i64>,
     /// Time interval between ejection sweep analysis.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
     /// Maximum % of hosts in the load balancing pool for the upstream service that can be ejected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxEjectionPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxEjectionPercent")]
     pub max_ejection_percent: Option<i32>,
     /// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minHealthPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minHealthPercent")]
     pub min_health_percent: Option<i32>,
     /// Determines whether to distinguish local origin failures from external errors.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "splitExternalLocalOriginErrors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "splitExternalLocalOriginErrors")]
     pub split_external_local_origin_errors: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleSubsetsTrafficPolicyPortLevelSettings {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionPool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionPool")]
     pub connection_pool: Option<DestinationRuleSubsetsTrafficPolicyPortLevelSettingsConnectionPool>,
     /// Settings controlling the load balancer algorithms.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancer")]
     pub load_balancer: Option<DestinationRuleSubsetsTrafficPolicyPortLevelSettingsLoadBalancer>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "outlierDetection"
-    )]
-    pub outlier_detection:
-        Option<DestinationRuleSubsetsTrafficPolicyPortLevelSettingsOutlierDetection>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "outlierDetection")]
+    pub outlier_detection: Option<DestinationRuleSubsetsTrafficPolicyPortLevelSettingsOutlierDetection>,
     /// Specifies the number of a port on the destination service on which this policy is being applied.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<DestinationRuleSubsetsTrafficPolicyPortLevelSettingsPort>,
@@ -523,64 +344,30 @@ pub struct DestinationRuleSubsetsTrafficPolicyPortLevelSettingsConnectionPool {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleSubsetsTrafficPolicyPortLevelSettingsConnectionPoolHttp {
     /// Specify if http1.1 connection should be upgraded to http2 for the associated destination.
-    ///
+    /// 
     /// Valid Options: DEFAULT, DO_NOT_UPGRADE, UPGRADE
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "h2UpgradePolicy"
-    )]
-    pub h2_upgrade_policy: Option<
-        DestinationRuleSubsetsTrafficPolicyPortLevelSettingsConnectionPoolHttpH2UpgradePolicy,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "h2UpgradePolicy")]
+    pub h2_upgrade_policy: Option<DestinationRuleSubsetsTrafficPolicyPortLevelSettingsConnectionPoolHttpH2UpgradePolicy>,
     /// Maximum number of requests that will be queued while waiting for a ready connection pool connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "http1MaxPendingRequests"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "http1MaxPendingRequests")]
     pub http1_max_pending_requests: Option<i32>,
     /// Maximum number of active requests to a destination.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "http2MaxRequests"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "http2MaxRequests")]
     pub http2_max_requests: Option<i32>,
     /// The idle timeout for upstream connection pool connections.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "idleTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleTimeout")]
     pub idle_timeout: Option<String>,
     /// The maximum number of concurrent streams allowed for a peer on one HTTP/2 connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConcurrentStreams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConcurrentStreams")]
     pub max_concurrent_streams: Option<i32>,
     /// Maximum number of requests per connection to a backend.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRequestsPerConnection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRequestsPerConnection")]
     pub max_requests_per_connection: Option<i32>,
     /// Maximum number of retries that can be outstanding to all hosts in a cluster at a given time.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
     pub max_retries: Option<i32>,
     /// If set to true, client protocol will be preserved while initiating connection to backend.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useClientProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useClientProtocol")]
     pub use_client_protocol: Option<bool>,
 }
 
@@ -599,41 +386,20 @@ pub enum DestinationRuleSubsetsTrafficPolicyPortLevelSettingsConnectionPoolHttpH
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleSubsetsTrafficPolicyPortLevelSettingsConnectionPoolTcp {
     /// TCP connection timeout.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeout")]
     pub connect_timeout: Option<String>,
     /// The idle timeout for TCP connections.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "idleTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleTimeout")]
     pub idle_timeout: Option<String>,
     /// The maximum duration of a connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConnectionDuration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConnectionDuration")]
     pub max_connection_duration: Option<String>,
     /// Maximum number of HTTP1 /TCP connections to a destination host.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConnections"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConnections")]
     pub max_connections: Option<i32>,
     /// If set then set SO_KEEPALIVE on the socket to enable TCP Keepalives.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tcpKeepalive"
-    )]
-    pub tcp_keepalive:
-        Option<DestinationRuleSubsetsTrafficPolicyPortLevelSettingsConnectionPoolTcpTcpKeepalive>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpKeepalive")]
+    pub tcp_keepalive: Option<DestinationRuleSubsetsTrafficPolicyPortLevelSettingsConnectionPoolTcpTcpKeepalive>,
 }
 
 /// If set then set SO_KEEPALIVE on the socket to enable TCP Keepalives.
@@ -653,89 +419,48 @@ pub struct DestinationRuleSubsetsTrafficPolicyPortLevelSettingsConnectionPoolTcp
 /// Settings controlling the load balancer algorithms.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleSubsetsTrafficPolicyPortLevelSettingsLoadBalancer {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consistentHash"
-    )]
-    pub consistent_hash:
-        Option<DestinationRuleSubsetsTrafficPolicyPortLevelSettingsLoadBalancerConsistentHash>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localityLbSetting"
-    )]
-    pub locality_lb_setting:
-        Option<DestinationRuleSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSetting>,
-    ///
-    ///
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consistentHash")]
+    pub consistent_hash: Option<DestinationRuleSubsetsTrafficPolicyPortLevelSettingsLoadBalancerConsistentHash>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localityLbSetting")]
+    pub locality_lb_setting: Option<DestinationRuleSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSetting>,
+    /// 
+    /// 
     /// Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub simple: Option<DestinationRuleSubsetsTrafficPolicyPortLevelSettingsLoadBalancerSimple>,
     /// Represents the warmup duration of Service.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "warmupDurationSecs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "warmupDurationSecs")]
     pub warmup_duration_secs: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleSubsetsTrafficPolicyPortLevelSettingsLoadBalancerConsistentHash {
     /// Hash based on HTTP cookie.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpCookie"
-    )]
-    pub http_cookie: Option<
-        DestinationRuleSubsetsTrafficPolicyPortLevelSettingsLoadBalancerConsistentHashHttpCookie,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpCookie")]
+    pub http_cookie: Option<DestinationRuleSubsetsTrafficPolicyPortLevelSettingsLoadBalancerConsistentHashHttpCookie>,
     /// Hash based on a specific HTTP header.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaderName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaderName")]
     pub http_header_name: Option<String>,
     /// Hash based on a specific HTTP query parameter.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpQueryParameterName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpQueryParameterName")]
     pub http_query_parameter_name: Option<String>,
     /// The Maglev load balancer implements consistent hashing to backend hosts.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub maglev: Option<
-        DestinationRuleSubsetsTrafficPolicyPortLevelSettingsLoadBalancerConsistentHashMaglev,
-    >,
+    pub maglev: Option<DestinationRuleSubsetsTrafficPolicyPortLevelSettingsLoadBalancerConsistentHashMaglev>,
     /// Deprecated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumRingSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumRingSize")]
     pub minimum_ring_size: Option<i64>,
     /// The ring/modulo hash load balancer implements consistent hashing to backend hosts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ringHash")]
-    pub ring_hash: Option<
-        DestinationRuleSubsetsTrafficPolicyPortLevelSettingsLoadBalancerConsistentHashRingHash,
-    >,
+    pub ring_hash: Option<DestinationRuleSubsetsTrafficPolicyPortLevelSettingsLoadBalancerConsistentHashRingHash>,
     /// Hash based on the source IP address.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useSourceIp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useSourceIp")]
     pub use_source_ip: Option<bool>,
 }
 
 /// Hash based on HTTP cookie.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct DestinationRuleSubsetsTrafficPolicyPortLevelSettingsLoadBalancerConsistentHashHttpCookie
-{
+pub struct DestinationRuleSubsetsTrafficPolicyPortLevelSettingsLoadBalancerConsistentHashHttpCookie {
     /// Name of the cookie.
     pub name: String,
     /// Path to set for the cookie.
@@ -758,11 +483,7 @@ pub struct DestinationRuleSubsetsTrafficPolicyPortLevelSettingsLoadBalancerConsi
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleSubsetsTrafficPolicyPortLevelSettingsLoadBalancerConsistentHashRingHash {
     /// The minimum number of virtual nodes to use for the hash ring.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumRingSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumRingSize")]
     pub minimum_ring_size: Option<i64>,
 }
 
@@ -783,8 +504,7 @@ pub struct DestinationRuleSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocal
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct DestinationRuleSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingDistribute
-{
+pub struct DestinationRuleSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingDistribute {
     /// Originating locality, '/' separated, e.g.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub from: Option<String>,
@@ -794,8 +514,7 @@ pub struct DestinationRuleSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocal
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct DestinationRuleSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingFailover
-{
+pub struct DestinationRuleSubsetsTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingFailover {
     /// Originating region.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub from: Option<String>,
@@ -824,62 +543,30 @@ pub enum DestinationRuleSubsetsTrafficPolicyPortLevelSettingsLoadBalancerSimple 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleSubsetsTrafficPolicyPortLevelSettingsOutlierDetection {
     /// Minimum ejection duration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "baseEjectionTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseEjectionTime")]
     pub base_ejection_time: Option<String>,
     /// Number of 5xx errors before a host is ejected from the connection pool.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consecutive5xxErrors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consecutive5xxErrors")]
     pub consecutive5xx_errors: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consecutiveErrors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consecutiveErrors")]
     pub consecutive_errors: Option<i32>,
     /// Number of gateway errors before a host is ejected from the connection pool.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consecutiveGatewayErrors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consecutiveGatewayErrors")]
     pub consecutive_gateway_errors: Option<i64>,
     /// The number of consecutive locally originated failures before ejection occurs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consecutiveLocalOriginFailures"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consecutiveLocalOriginFailures")]
     pub consecutive_local_origin_failures: Option<i64>,
     /// Time interval between ejection sweep analysis.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
     /// Maximum % of hosts in the load balancing pool for the upstream service that can be ejected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxEjectionPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxEjectionPercent")]
     pub max_ejection_percent: Option<i32>,
     /// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minHealthPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minHealthPercent")]
     pub min_health_percent: Option<i32>,
     /// Determines whether to distinguish local origin failures from external errors.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "splitExternalLocalOriginErrors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "splitExternalLocalOriginErrors")]
     pub split_external_local_origin_errors: Option<bool>,
 }
 
@@ -894,57 +581,33 @@ pub struct DestinationRuleSubsetsTrafficPolicyPortLevelSettingsPort {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleSubsetsTrafficPolicyPortLevelSettingsTls {
     /// OPTIONAL: The path to the file containing certificate authority certificates to use in verifying a presented server certificate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertificates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificates")]
     pub ca_certificates: Option<String>,
     /// OPTIONAL: The path to the file containing the certificate revocation list (CRL) to use in verifying a presented server certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCrl")]
     pub ca_crl: Option<String>,
     /// REQUIRED if mode is `MUTUAL`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificate")]
     pub client_certificate: Option<String>,
     /// The name of the secret that holds the TLS certs for the client including the CA certificates.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialName")]
     pub credential_name: Option<String>,
     /// `insecureSkipVerify` specifies whether the proxy should skip verifying the CA signature and SAN for the server certificate corresponding to the host.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Indicates whether connections to this port should be secured using TLS.
-    ///
+    /// 
     /// Valid Options: DISABLE, SIMPLE, MUTUAL, ISTIO_MUTUAL
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<DestinationRuleSubsetsTrafficPolicyPortLevelSettingsTlsMode>,
     /// REQUIRED if mode is `MUTUAL`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<String>,
     /// SNI string to present to the server during TLS handshake.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sni: Option<String>,
     /// A list of alternate names to verify the subject identity in the certificate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subjectAltNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectAltNames")]
     pub subject_alt_names: Option<Vec<String>>,
 }
 
@@ -965,7 +628,7 @@ pub enum DestinationRuleSubsetsTrafficPolicyPortLevelSettingsTlsMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleSubsetsTrafficPolicyProxyProtocol {
     /// The PROXY protocol version to use.
-    ///
+    /// 
     /// Valid Options: V1, V2
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<DestinationRuleSubsetsTrafficPolicyProxyProtocolVersion>,
@@ -982,57 +645,33 @@ pub enum DestinationRuleSubsetsTrafficPolicyProxyProtocolVersion {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleSubsetsTrafficPolicyTls {
     /// OPTIONAL: The path to the file containing certificate authority certificates to use in verifying a presented server certificate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertificates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificates")]
     pub ca_certificates: Option<String>,
     /// OPTIONAL: The path to the file containing the certificate revocation list (CRL) to use in verifying a presented server certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCrl")]
     pub ca_crl: Option<String>,
     /// REQUIRED if mode is `MUTUAL`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificate")]
     pub client_certificate: Option<String>,
     /// The name of the secret that holds the TLS certs for the client including the CA certificates.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialName")]
     pub credential_name: Option<String>,
     /// `insecureSkipVerify` specifies whether the proxy should skip verifying the CA signature and SAN for the server certificate corresponding to the host.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Indicates whether connections to this port should be secured using TLS.
-    ///
+    /// 
     /// Valid Options: DISABLE, SIMPLE, MUTUAL, ISTIO_MUTUAL
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<DestinationRuleSubsetsTrafficPolicyTlsMode>,
     /// REQUIRED if mode is `MUTUAL`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<String>,
     /// SNI string to present to the server during TLS handshake.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sni: Option<String>,
     /// A list of alternate names to verify the subject identity in the certificate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subjectAltNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectAltNames")]
     pub subject_alt_names: Option<Vec<String>>,
 }
 
@@ -1066,38 +705,18 @@ pub struct DestinationRuleSubsetsTrafficPolicyTunnel {
 /// Traffic policies to apply (load balancing policy, connection pool sizes, outlier detection).
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleTrafficPolicy {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionPool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionPool")]
     pub connection_pool: Option<DestinationRuleTrafficPolicyConnectionPool>,
     /// Settings controlling the load balancer algorithms.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancer")]
     pub load_balancer: Option<DestinationRuleTrafficPolicyLoadBalancer>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "outlierDetection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "outlierDetection")]
     pub outlier_detection: Option<DestinationRuleTrafficPolicyOutlierDetection>,
     /// Traffic policies specific to individual ports.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portLevelSettings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portLevelSettings")]
     pub port_level_settings: Option<Vec<DestinationRuleTrafficPolicyPortLevelSettings>>,
     /// The upstream PROXY protocol settings.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyProtocol")]
     pub proxy_protocol: Option<DestinationRuleTrafficPolicyProxyProtocol>,
     /// TLS related settings for connections to the upstream service.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1121,62 +740,30 @@ pub struct DestinationRuleTrafficPolicyConnectionPool {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleTrafficPolicyConnectionPoolHttp {
     /// Specify if http1.1 connection should be upgraded to http2 for the associated destination.
-    ///
+    /// 
     /// Valid Options: DEFAULT, DO_NOT_UPGRADE, UPGRADE
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "h2UpgradePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "h2UpgradePolicy")]
     pub h2_upgrade_policy: Option<DestinationRuleTrafficPolicyConnectionPoolHttpH2UpgradePolicy>,
     /// Maximum number of requests that will be queued while waiting for a ready connection pool connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "http1MaxPendingRequests"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "http1MaxPendingRequests")]
     pub http1_max_pending_requests: Option<i32>,
     /// Maximum number of active requests to a destination.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "http2MaxRequests"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "http2MaxRequests")]
     pub http2_max_requests: Option<i32>,
     /// The idle timeout for upstream connection pool connections.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "idleTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleTimeout")]
     pub idle_timeout: Option<String>,
     /// The maximum number of concurrent streams allowed for a peer on one HTTP/2 connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConcurrentStreams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConcurrentStreams")]
     pub max_concurrent_streams: Option<i32>,
     /// Maximum number of requests per connection to a backend.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRequestsPerConnection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRequestsPerConnection")]
     pub max_requests_per_connection: Option<i32>,
     /// Maximum number of retries that can be outstanding to all hosts in a cluster at a given time.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
     pub max_retries: Option<i32>,
     /// If set to true, client protocol will be preserved while initiating connection to backend.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useClientProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useClientProtocol")]
     pub use_client_protocol: Option<bool>,
 }
 
@@ -1195,39 +782,19 @@ pub enum DestinationRuleTrafficPolicyConnectionPoolHttpH2UpgradePolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleTrafficPolicyConnectionPoolTcp {
     /// TCP connection timeout.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeout")]
     pub connect_timeout: Option<String>,
     /// The idle timeout for TCP connections.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "idleTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleTimeout")]
     pub idle_timeout: Option<String>,
     /// The maximum duration of a connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConnectionDuration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConnectionDuration")]
     pub max_connection_duration: Option<String>,
     /// Maximum number of HTTP1 /TCP connections to a destination host.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConnections"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConnections")]
     pub max_connections: Option<i32>,
     /// If set then set SO_KEEPALIVE on the socket to enable TCP Keepalives.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tcpKeepalive"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpKeepalive")]
     pub tcp_keepalive: Option<DestinationRuleTrafficPolicyConnectionPoolTcpTcpKeepalive>,
 }
 
@@ -1248,74 +815,42 @@ pub struct DestinationRuleTrafficPolicyConnectionPoolTcpTcpKeepalive {
 /// Settings controlling the load balancer algorithms.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleTrafficPolicyLoadBalancer {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consistentHash"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consistentHash")]
     pub consistent_hash: Option<DestinationRuleTrafficPolicyLoadBalancerConsistentHash>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localityLbSetting"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localityLbSetting")]
     pub locality_lb_setting: Option<DestinationRuleTrafficPolicyLoadBalancerLocalityLbSetting>,
-    ///
-    ///
+    /// 
+    /// 
     /// Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub simple: Option<DestinationRuleTrafficPolicyLoadBalancerSimple>,
     /// Represents the warmup duration of Service.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "warmupDurationSecs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "warmupDurationSecs")]
     pub warmup_duration_secs: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleTrafficPolicyLoadBalancerConsistentHash {
     /// Hash based on HTTP cookie.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpCookie"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpCookie")]
     pub http_cookie: Option<DestinationRuleTrafficPolicyLoadBalancerConsistentHashHttpCookie>,
     /// Hash based on a specific HTTP header.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaderName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaderName")]
     pub http_header_name: Option<String>,
     /// Hash based on a specific HTTP query parameter.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpQueryParameterName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpQueryParameterName")]
     pub http_query_parameter_name: Option<String>,
     /// The Maglev load balancer implements consistent hashing to backend hosts.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub maglev: Option<DestinationRuleTrafficPolicyLoadBalancerConsistentHashMaglev>,
     /// Deprecated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumRingSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumRingSize")]
     pub minimum_ring_size: Option<i64>,
     /// The ring/modulo hash load balancer implements consistent hashing to backend hosts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ringHash")]
     pub ring_hash: Option<DestinationRuleTrafficPolicyLoadBalancerConsistentHashRingHash>,
     /// Hash based on the source IP address.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useSourceIp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useSourceIp")]
     pub use_source_ip: Option<bool>,
 }
 
@@ -1344,11 +879,7 @@ pub struct DestinationRuleTrafficPolicyLoadBalancerConsistentHashMaglev {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleTrafficPolicyLoadBalancerConsistentHashRingHash {
     /// The minimum number of virtual nodes to use for the hash ring.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumRingSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumRingSize")]
     pub minimum_ring_size: Option<i64>,
 }
 
@@ -1356,8 +887,7 @@ pub struct DestinationRuleTrafficPolicyLoadBalancerConsistentHashRingHash {
 pub struct DestinationRuleTrafficPolicyLoadBalancerLocalityLbSetting {
     /// Optional: only one of distribute, failover or failoverPriority can be set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub distribute:
-        Option<Vec<DestinationRuleTrafficPolicyLoadBalancerLocalityLbSettingDistribute>>,
+    pub distribute: Option<Vec<DestinationRuleTrafficPolicyLoadBalancerLocalityLbSettingDistribute>>,
     /// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
@@ -1365,11 +895,7 @@ pub struct DestinationRuleTrafficPolicyLoadBalancerLocalityLbSetting {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub failover: Option<Vec<DestinationRuleTrafficPolicyLoadBalancerLocalityLbSettingFailover>>,
     /// failoverPriority is an ordered list of labels used to sort endpoints to do priority based load balancing.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failoverPriority"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failoverPriority")]
     pub failover_priority: Option<Vec<String>>,
 }
 
@@ -1413,85 +939,41 @@ pub enum DestinationRuleTrafficPolicyLoadBalancerSimple {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleTrafficPolicyOutlierDetection {
     /// Minimum ejection duration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "baseEjectionTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseEjectionTime")]
     pub base_ejection_time: Option<String>,
     /// Number of 5xx errors before a host is ejected from the connection pool.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consecutive5xxErrors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consecutive5xxErrors")]
     pub consecutive5xx_errors: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consecutiveErrors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consecutiveErrors")]
     pub consecutive_errors: Option<i32>,
     /// Number of gateway errors before a host is ejected from the connection pool.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consecutiveGatewayErrors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consecutiveGatewayErrors")]
     pub consecutive_gateway_errors: Option<i64>,
     /// The number of consecutive locally originated failures before ejection occurs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consecutiveLocalOriginFailures"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consecutiveLocalOriginFailures")]
     pub consecutive_local_origin_failures: Option<i64>,
     /// Time interval between ejection sweep analysis.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
     /// Maximum % of hosts in the load balancing pool for the upstream service that can be ejected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxEjectionPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxEjectionPercent")]
     pub max_ejection_percent: Option<i32>,
     /// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minHealthPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minHealthPercent")]
     pub min_health_percent: Option<i32>,
     /// Determines whether to distinguish local origin failures from external errors.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "splitExternalLocalOriginErrors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "splitExternalLocalOriginErrors")]
     pub split_external_local_origin_errors: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleTrafficPolicyPortLevelSettings {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectionPool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectionPool")]
     pub connection_pool: Option<DestinationRuleTrafficPolicyPortLevelSettingsConnectionPool>,
     /// Settings controlling the load balancer algorithms.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancer")]
     pub load_balancer: Option<DestinationRuleTrafficPolicyPortLevelSettingsLoadBalancer>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "outlierDetection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "outlierDetection")]
     pub outlier_detection: Option<DestinationRuleTrafficPolicyPortLevelSettingsOutlierDetection>,
     /// Specifies the number of a port on the destination service on which this policy is being applied.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1515,63 +997,30 @@ pub struct DestinationRuleTrafficPolicyPortLevelSettingsConnectionPool {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleTrafficPolicyPortLevelSettingsConnectionPoolHttp {
     /// Specify if http1.1 connection should be upgraded to http2 for the associated destination.
-    ///
+    /// 
     /// Valid Options: DEFAULT, DO_NOT_UPGRADE, UPGRADE
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "h2UpgradePolicy"
-    )]
-    pub h2_upgrade_policy:
-        Option<DestinationRuleTrafficPolicyPortLevelSettingsConnectionPoolHttpH2UpgradePolicy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "h2UpgradePolicy")]
+    pub h2_upgrade_policy: Option<DestinationRuleTrafficPolicyPortLevelSettingsConnectionPoolHttpH2UpgradePolicy>,
     /// Maximum number of requests that will be queued while waiting for a ready connection pool connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "http1MaxPendingRequests"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "http1MaxPendingRequests")]
     pub http1_max_pending_requests: Option<i32>,
     /// Maximum number of active requests to a destination.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "http2MaxRequests"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "http2MaxRequests")]
     pub http2_max_requests: Option<i32>,
     /// The idle timeout for upstream connection pool connections.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "idleTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleTimeout")]
     pub idle_timeout: Option<String>,
     /// The maximum number of concurrent streams allowed for a peer on one HTTP/2 connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConcurrentStreams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConcurrentStreams")]
     pub max_concurrent_streams: Option<i32>,
     /// Maximum number of requests per connection to a backend.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRequestsPerConnection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRequestsPerConnection")]
     pub max_requests_per_connection: Option<i32>,
     /// Maximum number of retries that can be outstanding to all hosts in a cluster at a given time.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetries")]
     pub max_retries: Option<i32>,
     /// If set to true, client protocol will be preserved while initiating connection to backend.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useClientProtocol"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useClientProtocol")]
     pub use_client_protocol: Option<bool>,
 }
 
@@ -1590,41 +1039,20 @@ pub enum DestinationRuleTrafficPolicyPortLevelSettingsConnectionPoolHttpH2Upgrad
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleTrafficPolicyPortLevelSettingsConnectionPoolTcp {
     /// TCP connection timeout.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "connectTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "connectTimeout")]
     pub connect_timeout: Option<String>,
     /// The idle timeout for TCP connections.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "idleTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "idleTimeout")]
     pub idle_timeout: Option<String>,
     /// The maximum duration of a connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConnectionDuration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConnectionDuration")]
     pub max_connection_duration: Option<String>,
     /// Maximum number of HTTP1 /TCP connections to a destination host.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConnections"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConnections")]
     pub max_connections: Option<i32>,
     /// If set then set SO_KEEPALIVE on the socket to enable TCP Keepalives.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tcpKeepalive"
-    )]
-    pub tcp_keepalive:
-        Option<DestinationRuleTrafficPolicyPortLevelSettingsConnectionPoolTcpTcpKeepalive>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpKeepalive")]
+    pub tcp_keepalive: Option<DestinationRuleTrafficPolicyPortLevelSettingsConnectionPoolTcpTcpKeepalive>,
 }
 
 /// If set then set SO_KEEPALIVE on the socket to enable TCP Keepalives.
@@ -1644,79 +1072,42 @@ pub struct DestinationRuleTrafficPolicyPortLevelSettingsConnectionPoolTcpTcpKeep
 /// Settings controlling the load balancer algorithms.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleTrafficPolicyPortLevelSettingsLoadBalancer {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consistentHash"
-    )]
-    pub consistent_hash:
-        Option<DestinationRuleTrafficPolicyPortLevelSettingsLoadBalancerConsistentHash>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localityLbSetting"
-    )]
-    pub locality_lb_setting:
-        Option<DestinationRuleTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSetting>,
-    ///
-    ///
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consistentHash")]
+    pub consistent_hash: Option<DestinationRuleTrafficPolicyPortLevelSettingsLoadBalancerConsistentHash>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localityLbSetting")]
+    pub locality_lb_setting: Option<DestinationRuleTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSetting>,
+    /// 
+    /// 
     /// Valid Options: LEAST_CONN, RANDOM, PASSTHROUGH, ROUND_ROBIN, LEAST_REQUEST
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub simple: Option<DestinationRuleTrafficPolicyPortLevelSettingsLoadBalancerSimple>,
     /// Represents the warmup duration of Service.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "warmupDurationSecs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "warmupDurationSecs")]
     pub warmup_duration_secs: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleTrafficPolicyPortLevelSettingsLoadBalancerConsistentHash {
     /// Hash based on HTTP cookie.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpCookie"
-    )]
-    pub http_cookie:
-        Option<DestinationRuleTrafficPolicyPortLevelSettingsLoadBalancerConsistentHashHttpCookie>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpCookie")]
+    pub http_cookie: Option<DestinationRuleTrafficPolicyPortLevelSettingsLoadBalancerConsistentHashHttpCookie>,
     /// Hash based on a specific HTTP header.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaderName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaderName")]
     pub http_header_name: Option<String>,
     /// Hash based on a specific HTTP query parameter.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpQueryParameterName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpQueryParameterName")]
     pub http_query_parameter_name: Option<String>,
     /// The Maglev load balancer implements consistent hashing to backend hosts.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub maglev:
-        Option<DestinationRuleTrafficPolicyPortLevelSettingsLoadBalancerConsistentHashMaglev>,
+    pub maglev: Option<DestinationRuleTrafficPolicyPortLevelSettingsLoadBalancerConsistentHashMaglev>,
     /// Deprecated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumRingSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumRingSize")]
     pub minimum_ring_size: Option<i64>,
     /// The ring/modulo hash load balancer implements consistent hashing to backend hosts.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ringHash")]
-    pub ring_hash:
-        Option<DestinationRuleTrafficPolicyPortLevelSettingsLoadBalancerConsistentHashRingHash>,
+    pub ring_hash: Option<DestinationRuleTrafficPolicyPortLevelSettingsLoadBalancerConsistentHashRingHash>,
     /// Hash based on the source IP address.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "useSourceIp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "useSourceIp")]
     pub use_source_ip: Option<bool>,
 }
 
@@ -1745,11 +1136,7 @@ pub struct DestinationRuleTrafficPolicyPortLevelSettingsLoadBalancerConsistentHa
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleTrafficPolicyPortLevelSettingsLoadBalancerConsistentHashRingHash {
     /// The minimum number of virtual nodes to use for the hash ring.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumRingSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumRingSize")]
     pub minimum_ring_size: Option<i64>,
 }
 
@@ -1757,23 +1144,15 @@ pub struct DestinationRuleTrafficPolicyPortLevelSettingsLoadBalancerConsistentHa
 pub struct DestinationRuleTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSetting {
     /// Optional: only one of distribute, failover or failoverPriority can be set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub distribute: Option<
-        Vec<DestinationRuleTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingDistribute>,
-    >,
+    pub distribute: Option<Vec<DestinationRuleTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingDistribute>>,
     /// enable locality load balancing, this is DestinationRule-level and will override mesh wide settings in entirety.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub enabled: Option<bool>,
     /// Optional: only one of distribute, failover or failoverPriority can be set.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub failover: Option<
-        Vec<DestinationRuleTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingFailover>,
-    >,
+    pub failover: Option<Vec<DestinationRuleTrafficPolicyPortLevelSettingsLoadBalancerLocalityLbSettingFailover>>,
     /// failoverPriority is an ordered list of labels used to sort endpoints to do priority based load balancing.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failoverPriority"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failoverPriority")]
     pub failover_priority: Option<Vec<String>>,
 }
 
@@ -1817,62 +1196,30 @@ pub enum DestinationRuleTrafficPolicyPortLevelSettingsLoadBalancerSimple {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleTrafficPolicyPortLevelSettingsOutlierDetection {
     /// Minimum ejection duration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "baseEjectionTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "baseEjectionTime")]
     pub base_ejection_time: Option<String>,
     /// Number of 5xx errors before a host is ejected from the connection pool.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consecutive5xxErrors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consecutive5xxErrors")]
     pub consecutive5xx_errors: Option<i64>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consecutiveErrors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consecutiveErrors")]
     pub consecutive_errors: Option<i32>,
     /// Number of gateway errors before a host is ejected from the connection pool.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consecutiveGatewayErrors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consecutiveGatewayErrors")]
     pub consecutive_gateway_errors: Option<i64>,
     /// The number of consecutive locally originated failures before ejection occurs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consecutiveLocalOriginFailures"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consecutiveLocalOriginFailures")]
     pub consecutive_local_origin_failures: Option<i64>,
     /// Time interval between ejection sweep analysis.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interval: Option<String>,
     /// Maximum % of hosts in the load balancing pool for the upstream service that can be ejected.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxEjectionPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxEjectionPercent")]
     pub max_ejection_percent: Option<i32>,
     /// Outlier detection will be enabled as long as the associated load balancing pool has at least min_health_percent hosts in healthy mode.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minHealthPercent"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minHealthPercent")]
     pub min_health_percent: Option<i32>,
     /// Determines whether to distinguish local origin failures from external errors.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "splitExternalLocalOriginErrors"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "splitExternalLocalOriginErrors")]
     pub split_external_local_origin_errors: Option<bool>,
 }
 
@@ -1887,57 +1234,33 @@ pub struct DestinationRuleTrafficPolicyPortLevelSettingsPort {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleTrafficPolicyPortLevelSettingsTls {
     /// OPTIONAL: The path to the file containing certificate authority certificates to use in verifying a presented server certificate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertificates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificates")]
     pub ca_certificates: Option<String>,
     /// OPTIONAL: The path to the file containing the certificate revocation list (CRL) to use in verifying a presented server certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCrl")]
     pub ca_crl: Option<String>,
     /// REQUIRED if mode is `MUTUAL`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificate")]
     pub client_certificate: Option<String>,
     /// The name of the secret that holds the TLS certs for the client including the CA certificates.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialName")]
     pub credential_name: Option<String>,
     /// `insecureSkipVerify` specifies whether the proxy should skip verifying the CA signature and SAN for the server certificate corresponding to the host.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Indicates whether connections to this port should be secured using TLS.
-    ///
+    /// 
     /// Valid Options: DISABLE, SIMPLE, MUTUAL, ISTIO_MUTUAL
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<DestinationRuleTrafficPolicyPortLevelSettingsTlsMode>,
     /// REQUIRED if mode is `MUTUAL`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<String>,
     /// SNI string to present to the server during TLS handshake.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sni: Option<String>,
     /// A list of alternate names to verify the subject identity in the certificate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subjectAltNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectAltNames")]
     pub subject_alt_names: Option<Vec<String>>,
 }
 
@@ -1958,7 +1281,7 @@ pub enum DestinationRuleTrafficPolicyPortLevelSettingsTlsMode {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleTrafficPolicyProxyProtocol {
     /// The PROXY protocol version to use.
-    ///
+    /// 
     /// Valid Options: V1, V2
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub version: Option<DestinationRuleTrafficPolicyProxyProtocolVersion>,
@@ -1975,57 +1298,33 @@ pub enum DestinationRuleTrafficPolicyProxyProtocolVersion {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleTrafficPolicyTls {
     /// OPTIONAL: The path to the file containing certificate authority certificates to use in verifying a presented server certificate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertificates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertificates")]
     pub ca_certificates: Option<String>,
     /// OPTIONAL: The path to the file containing the certificate revocation list (CRL) to use in verifying a presented server certificate.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCrl")]
     pub ca_crl: Option<String>,
     /// REQUIRED if mode is `MUTUAL`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertificate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertificate")]
     pub client_certificate: Option<String>,
     /// The name of the secret that holds the TLS certs for the client including the CA certificates.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialName")]
     pub credential_name: Option<String>,
     /// `insecureSkipVerify` specifies whether the proxy should skip verifying the CA signature and SAN for the server certificate corresponding to the host.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Indicates whether connections to this port should be secured using TLS.
-    ///
+    /// 
     /// Valid Options: DISABLE, SIMPLE, MUTUAL, ISTIO_MUTUAL
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<DestinationRuleTrafficPolicyTlsMode>,
     /// REQUIRED if mode is `MUTUAL`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "privateKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "privateKey")]
     pub private_key: Option<String>,
     /// SNI string to present to the server during TLS handshake.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub sni: Option<String>,
     /// A list of alternate names to verify the subject identity in the certificate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subjectAltNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subjectAltNames")]
     pub subject_alt_names: Option<Vec<String>>,
 }
 
@@ -2060,11 +1359,7 @@ pub struct DestinationRuleTrafficPolicyTunnel {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleWorkloadSelector {
     /// One or more labels that indicate a specific set of pods/VMs on which a policy should be applied.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -2074,32 +1369,20 @@ pub struct DestinationRuleStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// Resource Generation to which the Reconciled Condition refers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<IntOrString>,
     /// Includes any errors or warnings detected by Istio's analyzers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "validationMessages"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationMessages")]
     pub validation_messages: Option<Vec<DestinationRuleStatusValidationMessages>>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct DestinationRuleStatusValidationMessages {
     /// A url pointing to the Istio documentation for this specific error type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "documentationUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "documentationUrl")]
     pub documentation_url: Option<String>,
     /// Represents how severe a message is.
-    ///
+    /// 
     /// Valid Options: UNKNOWN, ERROR, WARNING, INFO
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub level: Option<DestinationRuleStatusValidationMessagesLevel>,
@@ -2128,3 +1411,4 @@ pub struct DestinationRuleStatusValidationMessagesType {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
+

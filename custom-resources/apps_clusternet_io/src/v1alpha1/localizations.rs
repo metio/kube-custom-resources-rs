@@ -5,32 +5,23 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// LocalizationSpec defines the desired state of Localization
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "apps.clusternet.io",
-    version = "v1alpha1",
-    kind = "Localization",
-    plural = "localizations"
-)]
+#[kube(group = "apps.clusternet.io", version = "v1alpha1", kind = "Localization", plural = "localizations")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct LocalizationSpec {
     /// Feed holds references to the objects the Localization applies to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub feed: Option<LocalizationFeed>,
     /// OverridePolicy specifies the override policy for this Localization.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "overridePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "overridePolicy")]
     pub override_policy: Option<LocalizationOverridePolicy>,
     /// Overrides holds all the OverrideConfig.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -73,11 +64,7 @@ pub struct LocalizationOverrides {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// OverrideChart indicates whether the override value for the HelmChart CR.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "overrideChart"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "overrideChart")]
     pub override_chart: Option<bool>,
     /// Type specifies the override type for override value.
     #[serde(rename = "type")]
@@ -94,3 +81,4 @@ pub enum LocalizationOverridesType {
     JsonPatch,
     MergePatch,
 }
+

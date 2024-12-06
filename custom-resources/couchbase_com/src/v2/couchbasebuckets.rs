@@ -5,7 +5,7 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
@@ -13,16 +13,11 @@ use self::prelude::*;
 /// CouchbaseBucketSpec is the specification for a Couchbase bucket resource, and
 /// allows the bucket to be customized.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "couchbase.com",
-    version = "v2",
-    kind = "CouchbaseBucket",
-    plural = "couchbasebuckets"
-)]
+#[kube(group = "couchbase.com", version = "v2", kind = "CouchbaseBucket", plural = "couchbasebuckets")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CouchbaseBucketSpec {
     /// CompressionMode defines how Couchbase server handles document compression.  When
     /// off, documents are stored in memory, and transferred to the client uncompressed.
@@ -31,58 +26,34 @@ pub struct CouchbaseBucketSpec {
     /// in memory and when transferred to the client.  This field must be "off", "passive"
     /// or "active", defaulting to "passive".  Be aware "off" in YAML 1.2 is a boolean, so
     /// must be quoted as a string in configuration files.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "compressionMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "compressionMode")]
     pub compression_mode: Option<CouchbaseBucketCompressionMode>,
     /// ConflictResolution defines how XDCR handles concurrent write conflicts.  Sequence number
     /// based resolution selects the document with the highest sequence number as the most recent.
     /// Timestamp based resolution selects the document that was written to most recently as the
     /// most recent.  This field must be "seqno" (sequence based), or "lww" (timestamp based),
     /// defaulting to "seqno".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "conflictResolution"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "conflictResolution")]
     pub conflict_resolution: Option<CouchbaseBucketConflictResolution>,
     /// EnableFlush defines whether a client can delete all documents in a bucket.
     /// This field defaults to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableFlush"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableFlush")]
     pub enable_flush: Option<bool>,
     /// EnableIndexReplica defines whether indexes for this bucket are replicated.
     /// This field defaults to false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableIndexReplica"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableIndexReplica")]
     pub enable_index_replica: Option<bool>,
     /// EvictionPolicy controls how Couchbase handles memory exhaustion.  Value only eviction
     /// flushes documents to disk but maintains document metadata in memory in order to improve
     /// query performance.  Full eviction removes all data from memory after the document is
     /// flushed to disk.  This field must be "valueOnly" or "fullEviction", defaulting to
     /// "valueOnly".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "evictionPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "evictionPolicy")]
     pub eviction_policy: Option<CouchbaseBucketEvictionPolicy>,
     /// IOPriority controls how many threads a bucket has, per pod, to process reads and writes.
     /// This field must be "low" or "high", defaulting to "low".  Modification of this field will
     /// cause a temporary service disruption as threads are restarted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ioPriority"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ioPriority")]
     pub io_priority: Option<CouchbaseBucketIoPriority>,
     /// MaxTTL defines how long a document is permitted to exist for, without
     /// modification, until it is automatically deleted.  This is a default and maximum
@@ -100,11 +71,7 @@ pub struct CouchbaseBucketSpec {
     /// memory quota is defined per Couchbase pod running the data service.  This field defaults
     /// to, and must be greater than or equal to 100Mi.  More info:
     /// https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#resource-units-in-kubernetes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "memoryQuota"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "memoryQuota")]
     pub memory_quota: Option<String>,
     /// MiniumumDurability defines how durable a document write is by default, and can
     /// be made more durable by the client.  This feature enables ACID transactions.
@@ -118,11 +85,7 @@ pub struct CouchbaseBucketSpec {
     /// the document is replicated and persisted to disk on at least half of the pods running
     /// the data service in the cluster.  This field must be either "none", "majority",
     /// "majorityAndPersistActive" or "persistToMajority", defaulting to "none".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minimumDurability"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minimumDurability")]
     pub minimum_durability: Option<CouchbaseBucketMinimumDurability>,
     /// Name is the name of the bucket within Couchbase server.  By default the Operator
     /// will use the `metadata.name` field to define the bucket name.  The `metadata.name`
@@ -154,11 +117,7 @@ pub struct CouchbaseBucketSpec {
     /// StorageBackend to be assigned to and used by the bucket. Only valid for Couchbase Server 7.0.0 onward.
     /// Two different backend storage mechanisms can be used - "couchstore" or "magma", defaulting to "couchstore".
     /// Note: "magma" is only valid for Couchbase Server 7.1.0 onward.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageBackend"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageBackend")]
     pub storage_backend: Option<CouchbaseBucketStorageBackend>,
 }
 
@@ -272,20 +231,12 @@ pub enum CouchbaseBucketScopesResourcesKind {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CouchbaseBucketScopesSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<CouchbaseBucketScopesSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -315,3 +266,4 @@ pub enum CouchbaseBucketStorageBackend {
     #[serde(rename = "magma")]
     Magma,
 }
+

@@ -4,40 +4,27 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ProductSpec defines the desired state of Product
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "capabilities.3scale.net",
-    version = "v1beta1",
-    kind = "Product",
-    plural = "products"
-)]
+#[kube(group = "capabilities.3scale.net", version = "v1beta1", kind = "Product", plural = "products")]
 #[kube(namespaced)]
 #[kube(status = "ProductStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ProductSpec {
     /// Application Plans Map: system_name -> Application Plan Spec
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "applicationPlans"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "applicationPlans")]
     pub application_plans: Option<BTreeMap<String, ProductApplicationPlans>>,
     /// Backend usage will be a map of Map: system_name -> BackendUsageSpec Having system_name as the index, the structure ensures one backend is not used multiple times.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backendUsages"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backendUsages")]
     pub backend_usages: Option<BTreeMap<String, ProductBackendUsages>>,
     /// Deployment defined 3scale product deployment mode
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -46,11 +33,7 @@ pub struct ProductSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// Mapping Rules Array: MappingRule Spec
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mappingRules"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mappingRules")]
     pub mapping_rules: Option<Vec<ProductMappingRules>>,
     /// Methods Map: system_name -> MethodSpec system_name attr is unique for all metrics AND methods In other words, if metric's system_name is A, there is no metric or method with system_name A.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -64,18 +47,10 @@ pub struct ProductSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub policies: Option<Vec<ProductPolicies>>,
     /// ProviderAccountRef references account provider credentials
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "providerAccountRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerAccountRef")]
     pub provider_account_ref: Option<ProductProviderAccountRef>,
     /// SystemName identifies uniquely the product within the account provider Default value will be sanitized Name
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "systemName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "systemName")]
     pub system_name: Option<String>,
 }
 
@@ -83,11 +58,7 @@ pub struct ProductSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProductApplicationPlans {
     /// Set whether or not applications can be created on demand or if approval is required from you before they are activated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appsRequireApproval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appsRequireApproval")]
     pub apps_require_approval: Option<bool>,
     /// Cost per Month (USD)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "costMonth")]
@@ -98,11 +69,7 @@ pub struct ProductApplicationPlans {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// Pricing Rules
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pricingRules"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pricingRules")]
     pub pricing_rules: Option<Vec<ProductApplicationPlansPricingRules>>,
     /// Controls whether the application plan is published. If not specified it is hidden by default
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -111,11 +78,7 @@ pub struct ProductApplicationPlans {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "setupFee")]
     pub setup_fee: Option<String>,
     /// Trial Period (days)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trialPeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trialPeriod")]
     pub trial_period: Option<i64>,
 }
 
@@ -198,18 +161,10 @@ pub struct ProductBackendUsages {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProductDeployment {
     /// ApicastHostedSpec defines the desired state of Product Apicast Hosted
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apicastHosted"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apicastHosted")]
     pub apicast_hosted: Option<ProductDeploymentApicastHosted>,
     /// ApicastSelfManagedSpec defines the desired state of Product Apicast Self Managed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apicastSelfManaged"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apicastSelfManaged")]
     pub apicast_self_managed: Option<ProductDeploymentApicastSelfManaged>,
 }
 
@@ -225,11 +180,7 @@ pub struct ProductDeploymentApicastHosted {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProductDeploymentApicastHostedAuthentication {
     /// AppKeyAppIDAuthenticationSpec defines the desired state of AppKey&AppId Authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appKeyAppID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appKeyAppID")]
     pub app_key_app_id: Option<ProductDeploymentApicastHostedAuthenticationAppKeyAppId>,
     /// OIDCSpec defines the desired configuration of OpenID Connect Authentication
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -252,13 +203,8 @@ pub struct ProductDeploymentApicastHostedAuthenticationAppKeyAppId {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ProductDeploymentApicastHostedAuthenticationAppKeyAppIdCredentials>,
     /// GatewayResponseSpec defines the desired gateway response configuration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gatewayResponse"
-    )]
-    pub gateway_response:
-        Option<ProductDeploymentApicastHostedAuthenticationAppKeyAppIdGatewayResponse>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gatewayResponse")]
+    pub gateway_response: Option<ProductDeploymentApicastHostedAuthenticationAppKeyAppIdGatewayResponse>,
     /// SecuritySpec defines the desired state of Authentication Security
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub security: Option<ProductDeploymentApicastHostedAuthenticationAppKeyAppIdSecurity>,
@@ -279,88 +225,40 @@ pub enum ProductDeploymentApicastHostedAuthenticationAppKeyAppIdCredentials {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProductDeploymentApicastHostedAuthenticationAppKeyAppIdGatewayResponse {
     /// ErrorAuthFailed specifies the response body when authentication fails
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorAuthFailed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorAuthFailed")]
     pub error_auth_failed: Option<String>,
     /// ErrorAuthMissing specifies the response body when authentication is missing
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorAuthMissing"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorAuthMissing")]
     pub error_auth_missing: Option<String>,
     /// ErrorHeadersAuthFailed specifies the Content-Type header when authentication fails
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorHeadersAuthFailed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorHeadersAuthFailed")]
     pub error_headers_auth_failed: Option<String>,
     /// ErrorHeadersAuthMissing specifies the Content-Type header when authentication is missing
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorHeadersAuthMissing"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorHeadersAuthMissing")]
     pub error_headers_auth_missing: Option<String>,
     /// ErrorHeadersLimitsExceeded specifies the Content-Type header when usage limit exceeded
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorHeadersLimitsExceeded"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorHeadersLimitsExceeded")]
     pub error_headers_limits_exceeded: Option<String>,
     /// ErrorHeadersNoMatch specifies the Content-Type header when no match error
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorHeadersNoMatch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorHeadersNoMatch")]
     pub error_headers_no_match: Option<String>,
     /// ErrorLimitsExceeded specifies the response body when usage limit exceeded
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorLimitsExceeded"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorLimitsExceeded")]
     pub error_limits_exceeded: Option<String>,
     /// ErrorNoMatch specifies the response body when no match error
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorNoMatch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorNoMatch")]
     pub error_no_match: Option<String>,
     /// ErrorStatusAuthFailed specifies the response code when authentication fails
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorStatusAuthFailed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorStatusAuthFailed")]
     pub error_status_auth_failed: Option<i32>,
     /// ErrorStatusAuthMissing specifies the response code when authentication is missing
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorStatusAuthMissing"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorStatusAuthMissing")]
     pub error_status_auth_missing: Option<i32>,
     /// ErrorStatusLimitsExceeded specifies the response code when usage limit exceeded
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorStatusLimitsExceeded"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorStatusLimitsExceeded")]
     pub error_status_limits_exceeded: Option<i32>,
     /// ErrorStatusNoMatch specifies the response code when no match error
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorStatusNoMatch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorStatusNoMatch")]
     pub error_status_no_match: Option<i32>,
 }
 
@@ -368,18 +266,10 @@ pub struct ProductDeploymentApicastHostedAuthenticationAppKeyAppIdGatewayRespons
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProductDeploymentApicastHostedAuthenticationAppKeyAppIdSecurity {
     /// HostHeader Lets you define a custom Host request header. This is needed if your API backend only accepts traffic from a specific host.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostHeader"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostHeader")]
     pub host_header: Option<String>,
     /// SecretToken Enables you to block any direct developer requests to your API backend; each 3scale API gateway call to your API backend contains a request header called X-3scale-proxy-secret-token. The value of this header can be set by you here. It's up to you ensure your backend only allows calls with this secret header.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretToken")]
     pub secret_token: Option<String>,
 }
 
@@ -387,56 +277,29 @@ pub struct ProductDeploymentApicastHostedAuthenticationAppKeyAppIdSecurity {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ProductDeploymentApicastHostedAuthenticationOidc {
     /// AuthenticationFlow specifies OAuth2.0 authorization grant type
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authenticationFlow"
-    )]
-    pub authentication_flow:
-        Option<ProductDeploymentApicastHostedAuthenticationOidcAuthenticationFlow>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authenticationFlow")]
+    pub authentication_flow: Option<ProductDeploymentApicastHostedAuthenticationOidcAuthenticationFlow>,
     /// Credentials Location available options: headers: As HTTP Headers query: As query parameters (GET) or body parameters (POST/PUT/DELETE) authorization: As HTTP Basic Authentication
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ProductDeploymentApicastHostedAuthenticationOidcCredentials>,
     /// GatewayResponseSpec defines the desired gateway response configuration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gatewayResponse"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gatewayResponse")]
     pub gateway_response: Option<ProductDeploymentApicastHostedAuthenticationOidcGatewayResponse>,
     /// Issuer is the OIDC issuer
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "issuerEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "issuerEndpoint")]
     pub issuer_endpoint: Option<String>,
     /// IssuerEndpointRef  is the reference to OIDC issuer Secret that contains IssuerEndpoint
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "issuerEndpointRef"
-    )]
-    pub issuer_endpoint_ref:
-        Option<ProductDeploymentApicastHostedAuthenticationOidcIssuerEndpointRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "issuerEndpointRef")]
+    pub issuer_endpoint_ref: Option<ProductDeploymentApicastHostedAuthenticationOidcIssuerEndpointRef>,
     /// IssuerType is the type of the OIDC issuer
     #[serde(rename = "issuerType")]
     pub issuer_type: ProductDeploymentApicastHostedAuthenticationOidcIssuerType,
     /// JwtClaimWithClientID is the JSON Web Token (JWT) Claim with ClientID that contains the clientID. Defaults to 'azp'.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jwtClaimWithClientID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jwtClaimWithClientID")]
     pub jwt_claim_with_client_id: Option<String>,
     /// JwtClaimWithClientIDType sets to process the ClientID Token Claim value as a string or as a liquid template.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jwtClaimWithClientIDType"
-    )]
-    pub jwt_claim_with_client_id_type:
-        Option<ProductDeploymentApicastHostedAuthenticationOidcJwtClaimWithClientIdType>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jwtClaimWithClientIDType")]
+    pub jwt_claim_with_client_id_type: Option<ProductDeploymentApicastHostedAuthenticationOidcJwtClaimWithClientIdType>,
     /// SecuritySpec defines the desired state of Authentication Security
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub security: Option<ProductDeploymentApicastHostedAuthenticationOidcSecurity>,
@@ -471,88 +334,40 @@ pub enum ProductDeploymentApicastHostedAuthenticationOidcCredentials {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProductDeploymentApicastHostedAuthenticationOidcGatewayResponse {
     /// ErrorAuthFailed specifies the response body when authentication fails
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorAuthFailed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorAuthFailed")]
     pub error_auth_failed: Option<String>,
     /// ErrorAuthMissing specifies the response body when authentication is missing
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorAuthMissing"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorAuthMissing")]
     pub error_auth_missing: Option<String>,
     /// ErrorHeadersAuthFailed specifies the Content-Type header when authentication fails
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorHeadersAuthFailed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorHeadersAuthFailed")]
     pub error_headers_auth_failed: Option<String>,
     /// ErrorHeadersAuthMissing specifies the Content-Type header when authentication is missing
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorHeadersAuthMissing"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorHeadersAuthMissing")]
     pub error_headers_auth_missing: Option<String>,
     /// ErrorHeadersLimitsExceeded specifies the Content-Type header when usage limit exceeded
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorHeadersLimitsExceeded"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorHeadersLimitsExceeded")]
     pub error_headers_limits_exceeded: Option<String>,
     /// ErrorHeadersNoMatch specifies the Content-Type header when no match error
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorHeadersNoMatch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorHeadersNoMatch")]
     pub error_headers_no_match: Option<String>,
     /// ErrorLimitsExceeded specifies the response body when usage limit exceeded
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorLimitsExceeded"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorLimitsExceeded")]
     pub error_limits_exceeded: Option<String>,
     /// ErrorNoMatch specifies the response body when no match error
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorNoMatch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorNoMatch")]
     pub error_no_match: Option<String>,
     /// ErrorStatusAuthFailed specifies the response code when authentication fails
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorStatusAuthFailed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorStatusAuthFailed")]
     pub error_status_auth_failed: Option<i32>,
     /// ErrorStatusAuthMissing specifies the response code when authentication is missing
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorStatusAuthMissing"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorStatusAuthMissing")]
     pub error_status_auth_missing: Option<i32>,
     /// ErrorStatusLimitsExceeded specifies the response code when usage limit exceeded
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorStatusLimitsExceeded"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorStatusLimitsExceeded")]
     pub error_status_limits_exceeded: Option<i32>,
     /// ErrorStatusNoMatch specifies the response code when no match error
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorStatusNoMatch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorStatusNoMatch")]
     pub error_status_no_match: Option<i32>,
 }
 
@@ -589,41 +404,24 @@ pub enum ProductDeploymentApicastHostedAuthenticationOidcJwtClaimWithClientIdTyp
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProductDeploymentApicastHostedAuthenticationOidcSecurity {
     /// HostHeader Lets you define a custom Host request header. This is needed if your API backend only accepts traffic from a specific host.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostHeader"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostHeader")]
     pub host_header: Option<String>,
     /// SecretToken Enables you to block any direct developer requests to your API backend; each 3scale API gateway call to your API backend contains a request header called X-3scale-proxy-secret-token. The value of this header can be set by you here. It's up to you ensure your backend only allows calls with this secret header.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretToken")]
     pub secret_token: Option<String>,
 }
 
 /// UserKeyAuthenticationSpec defines the desired state of User Key Authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProductDeploymentApicastHostedAuthenticationUserkey {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authUserKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authUserKey")]
     pub auth_user_key: Option<String>,
     /// Credentials Location available options: headers: As HTTP Headers query: As query parameters (GET) or body parameters (POST/PUT/DELETE) authorization: As HTTP Basic Authentication
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ProductDeploymentApicastHostedAuthenticationUserkeyCredentials>,
     /// GatewayResponseSpec defines the desired gateway response configuration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gatewayResponse"
-    )]
-    pub gateway_response:
-        Option<ProductDeploymentApicastHostedAuthenticationUserkeyGatewayResponse>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gatewayResponse")]
+    pub gateway_response: Option<ProductDeploymentApicastHostedAuthenticationUserkeyGatewayResponse>,
     /// SecuritySpec defines the desired state of Authentication Security
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub security: Option<ProductDeploymentApicastHostedAuthenticationUserkeySecurity>,
@@ -644,88 +442,40 @@ pub enum ProductDeploymentApicastHostedAuthenticationUserkeyCredentials {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProductDeploymentApicastHostedAuthenticationUserkeyGatewayResponse {
     /// ErrorAuthFailed specifies the response body when authentication fails
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorAuthFailed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorAuthFailed")]
     pub error_auth_failed: Option<String>,
     /// ErrorAuthMissing specifies the response body when authentication is missing
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorAuthMissing"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorAuthMissing")]
     pub error_auth_missing: Option<String>,
     /// ErrorHeadersAuthFailed specifies the Content-Type header when authentication fails
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorHeadersAuthFailed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorHeadersAuthFailed")]
     pub error_headers_auth_failed: Option<String>,
     /// ErrorHeadersAuthMissing specifies the Content-Type header when authentication is missing
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorHeadersAuthMissing"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorHeadersAuthMissing")]
     pub error_headers_auth_missing: Option<String>,
     /// ErrorHeadersLimitsExceeded specifies the Content-Type header when usage limit exceeded
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorHeadersLimitsExceeded"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorHeadersLimitsExceeded")]
     pub error_headers_limits_exceeded: Option<String>,
     /// ErrorHeadersNoMatch specifies the Content-Type header when no match error
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorHeadersNoMatch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorHeadersNoMatch")]
     pub error_headers_no_match: Option<String>,
     /// ErrorLimitsExceeded specifies the response body when usage limit exceeded
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorLimitsExceeded"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorLimitsExceeded")]
     pub error_limits_exceeded: Option<String>,
     /// ErrorNoMatch specifies the response body when no match error
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorNoMatch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorNoMatch")]
     pub error_no_match: Option<String>,
     /// ErrorStatusAuthFailed specifies the response code when authentication fails
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorStatusAuthFailed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorStatusAuthFailed")]
     pub error_status_auth_failed: Option<i32>,
     /// ErrorStatusAuthMissing specifies the response code when authentication is missing
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorStatusAuthMissing"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorStatusAuthMissing")]
     pub error_status_auth_missing: Option<i32>,
     /// ErrorStatusLimitsExceeded specifies the response code when usage limit exceeded
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorStatusLimitsExceeded"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorStatusLimitsExceeded")]
     pub error_status_limits_exceeded: Option<i32>,
     /// ErrorStatusNoMatch specifies the response code when no match error
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorStatusNoMatch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorStatusNoMatch")]
     pub error_status_no_match: Option<i32>,
 }
 
@@ -733,18 +483,10 @@ pub struct ProductDeploymentApicastHostedAuthenticationUserkeyGatewayResponse {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProductDeploymentApicastHostedAuthenticationUserkeySecurity {
     /// HostHeader Lets you define a custom Host request header. This is needed if your API backend only accepts traffic from a specific host.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostHeader"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostHeader")]
     pub host_header: Option<String>,
     /// SecretToken Enables you to block any direct developer requests to your API backend; each 3scale API gateway call to your API backend contains a request header called X-3scale-proxy-secret-token. The value of this header can be set by you here. It's up to you ensure your backend only allows calls with this secret header.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretToken")]
     pub secret_token: Option<String>,
 }
 
@@ -754,17 +496,9 @@ pub struct ProductDeploymentApicastSelfManaged {
     /// AuthenticationSpec defines the desired state of Product Authentication
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authentication: Option<ProductDeploymentApicastSelfManagedAuthentication>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "productionPublicBaseURL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "productionPublicBaseURL")]
     pub production_public_base_url: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "stagingPublicBaseURL"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "stagingPublicBaseURL")]
     pub staging_public_base_url: Option<String>,
 }
 
@@ -772,11 +506,7 @@ pub struct ProductDeploymentApicastSelfManaged {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProductDeploymentApicastSelfManagedAuthentication {
     /// AppKeyAppIDAuthenticationSpec defines the desired state of AppKey&AppId Authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "appKeyAppID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "appKeyAppID")]
     pub app_key_app_id: Option<ProductDeploymentApicastSelfManagedAuthenticationAppKeyAppId>,
     /// OIDCSpec defines the desired configuration of OpenID Connect Authentication
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -797,16 +527,10 @@ pub struct ProductDeploymentApicastSelfManagedAuthenticationAppKeyAppId {
     pub app_key: Option<String>,
     /// CredentialsLoc available options: headers: As HTTP Headers query: As query parameters (GET) or body parameters (POST/PUT/DELETE) authorization: As HTTP Basic Authentication
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub credentials:
-        Option<ProductDeploymentApicastSelfManagedAuthenticationAppKeyAppIdCredentials>,
+    pub credentials: Option<ProductDeploymentApicastSelfManagedAuthenticationAppKeyAppIdCredentials>,
     /// GatewayResponseSpec defines the desired gateway response configuration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gatewayResponse"
-    )]
-    pub gateway_response:
-        Option<ProductDeploymentApicastSelfManagedAuthenticationAppKeyAppIdGatewayResponse>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gatewayResponse")]
+    pub gateway_response: Option<ProductDeploymentApicastSelfManagedAuthenticationAppKeyAppIdGatewayResponse>,
     /// SecuritySpec defines the desired state of Authentication Security
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub security: Option<ProductDeploymentApicastSelfManagedAuthenticationAppKeyAppIdSecurity>,
@@ -827,88 +551,40 @@ pub enum ProductDeploymentApicastSelfManagedAuthenticationAppKeyAppIdCredentials
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProductDeploymentApicastSelfManagedAuthenticationAppKeyAppIdGatewayResponse {
     /// ErrorAuthFailed specifies the response body when authentication fails
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorAuthFailed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorAuthFailed")]
     pub error_auth_failed: Option<String>,
     /// ErrorAuthMissing specifies the response body when authentication is missing
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorAuthMissing"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorAuthMissing")]
     pub error_auth_missing: Option<String>,
     /// ErrorHeadersAuthFailed specifies the Content-Type header when authentication fails
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorHeadersAuthFailed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorHeadersAuthFailed")]
     pub error_headers_auth_failed: Option<String>,
     /// ErrorHeadersAuthMissing specifies the Content-Type header when authentication is missing
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorHeadersAuthMissing"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorHeadersAuthMissing")]
     pub error_headers_auth_missing: Option<String>,
     /// ErrorHeadersLimitsExceeded specifies the Content-Type header when usage limit exceeded
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorHeadersLimitsExceeded"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorHeadersLimitsExceeded")]
     pub error_headers_limits_exceeded: Option<String>,
     /// ErrorHeadersNoMatch specifies the Content-Type header when no match error
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorHeadersNoMatch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorHeadersNoMatch")]
     pub error_headers_no_match: Option<String>,
     /// ErrorLimitsExceeded specifies the response body when usage limit exceeded
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorLimitsExceeded"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorLimitsExceeded")]
     pub error_limits_exceeded: Option<String>,
     /// ErrorNoMatch specifies the response body when no match error
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorNoMatch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorNoMatch")]
     pub error_no_match: Option<String>,
     /// ErrorStatusAuthFailed specifies the response code when authentication fails
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorStatusAuthFailed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorStatusAuthFailed")]
     pub error_status_auth_failed: Option<i32>,
     /// ErrorStatusAuthMissing specifies the response code when authentication is missing
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorStatusAuthMissing"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorStatusAuthMissing")]
     pub error_status_auth_missing: Option<i32>,
     /// ErrorStatusLimitsExceeded specifies the response code when usage limit exceeded
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorStatusLimitsExceeded"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorStatusLimitsExceeded")]
     pub error_status_limits_exceeded: Option<i32>,
     /// ErrorStatusNoMatch specifies the response code when no match error
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorStatusNoMatch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorStatusNoMatch")]
     pub error_status_no_match: Option<i32>,
 }
 
@@ -916,18 +592,10 @@ pub struct ProductDeploymentApicastSelfManagedAuthenticationAppKeyAppIdGatewayRe
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProductDeploymentApicastSelfManagedAuthenticationAppKeyAppIdSecurity {
     /// HostHeader Lets you define a custom Host request header. This is needed if your API backend only accepts traffic from a specific host.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostHeader"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostHeader")]
     pub host_header: Option<String>,
     /// SecretToken Enables you to block any direct developer requests to your API backend; each 3scale API gateway call to your API backend contains a request header called X-3scale-proxy-secret-token. The value of this header can be set by you here. It's up to you ensure your backend only allows calls with this secret header.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretToken")]
     pub secret_token: Option<String>,
 }
 
@@ -935,57 +603,29 @@ pub struct ProductDeploymentApicastSelfManagedAuthenticationAppKeyAppIdSecurity 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub struct ProductDeploymentApicastSelfManagedAuthenticationOidc {
     /// AuthenticationFlow specifies OAuth2.0 authorization grant type
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authenticationFlow"
-    )]
-    pub authentication_flow:
-        Option<ProductDeploymentApicastSelfManagedAuthenticationOidcAuthenticationFlow>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authenticationFlow")]
+    pub authentication_flow: Option<ProductDeploymentApicastSelfManagedAuthenticationOidcAuthenticationFlow>,
     /// Credentials Location available options: headers: As HTTP Headers query: As query parameters (GET) or body parameters (POST/PUT/DELETE) authorization: As HTTP Basic Authentication
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ProductDeploymentApicastSelfManagedAuthenticationOidcCredentials>,
     /// GatewayResponseSpec defines the desired gateway response configuration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gatewayResponse"
-    )]
-    pub gateway_response:
-        Option<ProductDeploymentApicastSelfManagedAuthenticationOidcGatewayResponse>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gatewayResponse")]
+    pub gateway_response: Option<ProductDeploymentApicastSelfManagedAuthenticationOidcGatewayResponse>,
     /// Issuer is the OIDC issuer
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "issuerEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "issuerEndpoint")]
     pub issuer_endpoint: Option<String>,
     /// IssuerEndpointRef  is the reference to OIDC issuer Secret that contains IssuerEndpoint
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "issuerEndpointRef"
-    )]
-    pub issuer_endpoint_ref:
-        Option<ProductDeploymentApicastSelfManagedAuthenticationOidcIssuerEndpointRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "issuerEndpointRef")]
+    pub issuer_endpoint_ref: Option<ProductDeploymentApicastSelfManagedAuthenticationOidcIssuerEndpointRef>,
     /// IssuerType is the type of the OIDC issuer
     #[serde(rename = "issuerType")]
     pub issuer_type: ProductDeploymentApicastSelfManagedAuthenticationOidcIssuerType,
     /// JwtClaimWithClientID is the JSON Web Token (JWT) Claim with ClientID that contains the clientID. Defaults to 'azp'.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jwtClaimWithClientID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jwtClaimWithClientID")]
     pub jwt_claim_with_client_id: Option<String>,
     /// JwtClaimWithClientIDType sets to process the ClientID Token Claim value as a string or as a liquid template.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "jwtClaimWithClientIDType"
-    )]
-    pub jwt_claim_with_client_id_type:
-        Option<ProductDeploymentApicastSelfManagedAuthenticationOidcJwtClaimWithClientIdType>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "jwtClaimWithClientIDType")]
+    pub jwt_claim_with_client_id_type: Option<ProductDeploymentApicastSelfManagedAuthenticationOidcJwtClaimWithClientIdType>,
     /// SecuritySpec defines the desired state of Authentication Security
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub security: Option<ProductDeploymentApicastSelfManagedAuthenticationOidcSecurity>,
@@ -1020,88 +660,40 @@ pub enum ProductDeploymentApicastSelfManagedAuthenticationOidcCredentials {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProductDeploymentApicastSelfManagedAuthenticationOidcGatewayResponse {
     /// ErrorAuthFailed specifies the response body when authentication fails
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorAuthFailed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorAuthFailed")]
     pub error_auth_failed: Option<String>,
     /// ErrorAuthMissing specifies the response body when authentication is missing
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorAuthMissing"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorAuthMissing")]
     pub error_auth_missing: Option<String>,
     /// ErrorHeadersAuthFailed specifies the Content-Type header when authentication fails
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorHeadersAuthFailed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorHeadersAuthFailed")]
     pub error_headers_auth_failed: Option<String>,
     /// ErrorHeadersAuthMissing specifies the Content-Type header when authentication is missing
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorHeadersAuthMissing"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorHeadersAuthMissing")]
     pub error_headers_auth_missing: Option<String>,
     /// ErrorHeadersLimitsExceeded specifies the Content-Type header when usage limit exceeded
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorHeadersLimitsExceeded"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorHeadersLimitsExceeded")]
     pub error_headers_limits_exceeded: Option<String>,
     /// ErrorHeadersNoMatch specifies the Content-Type header when no match error
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorHeadersNoMatch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorHeadersNoMatch")]
     pub error_headers_no_match: Option<String>,
     /// ErrorLimitsExceeded specifies the response body when usage limit exceeded
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorLimitsExceeded"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorLimitsExceeded")]
     pub error_limits_exceeded: Option<String>,
     /// ErrorNoMatch specifies the response body when no match error
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorNoMatch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorNoMatch")]
     pub error_no_match: Option<String>,
     /// ErrorStatusAuthFailed specifies the response code when authentication fails
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorStatusAuthFailed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorStatusAuthFailed")]
     pub error_status_auth_failed: Option<i32>,
     /// ErrorStatusAuthMissing specifies the response code when authentication is missing
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorStatusAuthMissing"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorStatusAuthMissing")]
     pub error_status_auth_missing: Option<i32>,
     /// ErrorStatusLimitsExceeded specifies the response code when usage limit exceeded
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorStatusLimitsExceeded"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorStatusLimitsExceeded")]
     pub error_status_limits_exceeded: Option<i32>,
     /// ErrorStatusNoMatch specifies the response code when no match error
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorStatusNoMatch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorStatusNoMatch")]
     pub error_status_no_match: Option<i32>,
 }
 
@@ -1138,41 +730,24 @@ pub enum ProductDeploymentApicastSelfManagedAuthenticationOidcJwtClaimWithClient
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProductDeploymentApicastSelfManagedAuthenticationOidcSecurity {
     /// HostHeader Lets you define a custom Host request header. This is needed if your API backend only accepts traffic from a specific host.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostHeader"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostHeader")]
     pub host_header: Option<String>,
     /// SecretToken Enables you to block any direct developer requests to your API backend; each 3scale API gateway call to your API backend contains a request header called X-3scale-proxy-secret-token. The value of this header can be set by you here. It's up to you ensure your backend only allows calls with this secret header.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretToken")]
     pub secret_token: Option<String>,
 }
 
 /// UserKeyAuthenticationSpec defines the desired state of User Key Authentication
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProductDeploymentApicastSelfManagedAuthenticationUserkey {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authUserKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authUserKey")]
     pub auth_user_key: Option<String>,
     /// Credentials Location available options: headers: As HTTP Headers query: As query parameters (GET) or body parameters (POST/PUT/DELETE) authorization: As HTTP Basic Authentication
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ProductDeploymentApicastSelfManagedAuthenticationUserkeyCredentials>,
     /// GatewayResponseSpec defines the desired gateway response configuration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gatewayResponse"
-    )]
-    pub gateway_response:
-        Option<ProductDeploymentApicastSelfManagedAuthenticationUserkeyGatewayResponse>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gatewayResponse")]
+    pub gateway_response: Option<ProductDeploymentApicastSelfManagedAuthenticationUserkeyGatewayResponse>,
     /// SecuritySpec defines the desired state of Authentication Security
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub security: Option<ProductDeploymentApicastSelfManagedAuthenticationUserkeySecurity>,
@@ -1193,88 +768,40 @@ pub enum ProductDeploymentApicastSelfManagedAuthenticationUserkeyCredentials {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProductDeploymentApicastSelfManagedAuthenticationUserkeyGatewayResponse {
     /// ErrorAuthFailed specifies the response body when authentication fails
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorAuthFailed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorAuthFailed")]
     pub error_auth_failed: Option<String>,
     /// ErrorAuthMissing specifies the response body when authentication is missing
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorAuthMissing"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorAuthMissing")]
     pub error_auth_missing: Option<String>,
     /// ErrorHeadersAuthFailed specifies the Content-Type header when authentication fails
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorHeadersAuthFailed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorHeadersAuthFailed")]
     pub error_headers_auth_failed: Option<String>,
     /// ErrorHeadersAuthMissing specifies the Content-Type header when authentication is missing
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorHeadersAuthMissing"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorHeadersAuthMissing")]
     pub error_headers_auth_missing: Option<String>,
     /// ErrorHeadersLimitsExceeded specifies the Content-Type header when usage limit exceeded
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorHeadersLimitsExceeded"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorHeadersLimitsExceeded")]
     pub error_headers_limits_exceeded: Option<String>,
     /// ErrorHeadersNoMatch specifies the Content-Type header when no match error
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorHeadersNoMatch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorHeadersNoMatch")]
     pub error_headers_no_match: Option<String>,
     /// ErrorLimitsExceeded specifies the response body when usage limit exceeded
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorLimitsExceeded"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorLimitsExceeded")]
     pub error_limits_exceeded: Option<String>,
     /// ErrorNoMatch specifies the response body when no match error
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorNoMatch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorNoMatch")]
     pub error_no_match: Option<String>,
     /// ErrorStatusAuthFailed specifies the response code when authentication fails
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorStatusAuthFailed"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorStatusAuthFailed")]
     pub error_status_auth_failed: Option<i32>,
     /// ErrorStatusAuthMissing specifies the response code when authentication is missing
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorStatusAuthMissing"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorStatusAuthMissing")]
     pub error_status_auth_missing: Option<i32>,
     /// ErrorStatusLimitsExceeded specifies the response code when usage limit exceeded
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorStatusLimitsExceeded"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorStatusLimitsExceeded")]
     pub error_status_limits_exceeded: Option<i32>,
     /// ErrorStatusNoMatch specifies the response code when no match error
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "errorStatusNoMatch"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "errorStatusNoMatch")]
     pub error_status_no_match: Option<i32>,
 }
 
@@ -1282,18 +809,10 @@ pub struct ProductDeploymentApicastSelfManagedAuthenticationUserkeyGatewayRespon
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ProductDeploymentApicastSelfManagedAuthenticationUserkeySecurity {
     /// HostHeader Lets you define a custom Host request header. This is needed if your API backend only accepts traffic from a specific host.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostHeader"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostHeader")]
     pub host_header: Option<String>,
     /// SecretToken Enables you to block any direct developer requests to your API backend; each 3scale API gateway call to your API backend contains a request header called X-3scale-proxy-secret-token. The value of this header can be set by you here. It's up to you ensure your backend only allows calls with this secret header.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretToken")]
     pub secret_token: Option<String>,
 }
 
@@ -1338,11 +857,7 @@ pub enum ProductMappingRulesHttpMethod {
 pub struct ProductMethods {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "friendlyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "friendlyName")]
     pub friendly_name: Option<String>,
 }
 
@@ -1351,11 +866,7 @@ pub struct ProductMethods {
 pub struct ProductMetrics {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "friendlyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "friendlyName")]
     pub friendly_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub unit: Option<String>,
@@ -1368,11 +879,7 @@ pub struct ProductPolicies {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configuration: Option<BTreeMap<String, serde_json::Value>>,
     /// ConfigurationRef Secret reference containing policy configuration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configurationRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configurationRef")]
     pub configuration_ref: Option<ProductPoliciesConfigurationRef>,
     /// Enabled defines activation state
     pub enabled: bool,
@@ -1408,21 +915,14 @@ pub struct ProductStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// ObservedGeneration reflects the generation of the most recently observed Product Spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "productId")]
     pub product_id: Option<i64>,
     /// 3scale control plane host
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "providerAccountHost"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerAccountHost")]
     pub provider_account_host: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+

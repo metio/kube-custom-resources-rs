@@ -5,30 +5,21 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
 }
 use self::prelude::*;
 
 /// ExitNodeProvisioner is a custom resource that represents a Chisel exit node provisioner on a cloud provider.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "chisel-operator.io",
-    version = "v1",
-    kind = "ExitNodeProvisioner",
-    plural = "exitnodeprovisioners"
-)]
+#[kube(group = "chisel-operator.io", version = "v1", kind = "ExitNodeProvisioner", plural = "exitnodeprovisioners")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ExitNodeProvisionerSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "AWS")]
     pub aws: Option<ExitNodeProvisionerAws>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "DigitalOcean"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "DigitalOcean")]
     pub digital_ocean: Option<ExitNodeProvisionerDigitalOcean>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "Linode")]
     pub linode: Option<ExitNodeProvisionerLinode>,
@@ -73,3 +64,4 @@ pub struct ExitNodeProvisionerLinode {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub size: Option<String>,
 }
+

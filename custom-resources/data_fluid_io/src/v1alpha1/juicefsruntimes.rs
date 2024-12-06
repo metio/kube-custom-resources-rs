@@ -4,45 +4,32 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// JuiceFSRuntimeSpec defines the desired state of JuiceFSRuntime
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "data.fluid.io",
-    version = "v1alpha1",
-    kind = "JuiceFSRuntime",
-    plural = "juicefsruntimes"
-)]
+#[kube(group = "data.fluid.io", version = "v1alpha1", kind = "JuiceFSRuntime", plural = "juicefsruntimes")]
 #[kube(namespaced)]
 #[kube(status = "JuiceFSRuntimeStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct JuiceFSRuntimeSpec {
     /// CleanCachePolicy defines cleanCache Policy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cleanCachePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanCachePolicy")]
     pub clean_cache_policy: Option<JuiceFSRuntimeCleanCachePolicy>,
     /// Configs of JuiceFS
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub configs: Option<Vec<String>>,
     /// Disable monitoring for JuiceFS Runtime
     /// Prometheus is enabled by default
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disablePrometheus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disablePrometheus")]
     pub disable_prometheus: Option<bool>,
     /// Desired state for JuiceFS Fuse
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -54,21 +41,13 @@ pub struct JuiceFSRuntimeSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "jobWorker")]
     pub job_worker: Option<JuiceFSRuntimeJobWorker>,
     /// The version information that instructs fluid to orchestrate a particular version of JuiceFS.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "juicefsVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "juicefsVersion")]
     pub juicefs_version: Option<JuiceFSRuntimeJuicefsVersion>,
     /// The component spec of JuiceFS master
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub master: Option<JuiceFSRuntimeMaster>,
     /// PodMetadata defines labels and annotations that will be propagated to JuiceFs's pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMetadata")]
     pub pod_metadata: Option<JuiceFSRuntimePodMetadata>,
     /// The replicas of the worker, need to be specified
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -97,20 +76,12 @@ pub struct JuiceFSRuntimeCleanCachePolicy {
     /// The grace period is the duration in seconds after the processes running in the pod are sent
     /// a termination signal and the time when the processes are forcibly halted with timeout command.
     /// Set this value longer than the expected cleanup time for your process.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracePeriodSeconds")]
     pub grace_period_seconds: Option<i32>,
     /// Optional max retry Attempts when cleanCache function returns an error after execution, runtime attempts
     /// to run it three more times by default. With Maximum Retry Attempts, you can customize the maximum number
     /// of retries. This gives you the option to continue processing retries.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRetryAttempts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetryAttempts")]
     pub max_retry_attempts: Option<i32>,
 }
 
@@ -122,11 +93,7 @@ pub struct JuiceFSRuntimeFuse {
     /// OnDemand cleans fuse pod once th fuse pod on some node is not needed
     /// OnRuntimeDeleted cleans fuse pod only when the cache runtime is deleted
     /// Defaults to OnDemand
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cleanPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanPolicy")]
     pub clean_policy: Option<String>,
     /// Environment variables that will be used by JuiceFS Fuse
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -135,49 +102,29 @@ pub struct JuiceFSRuntimeFuse {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// One of the three policies: `Always`, `IfNotPresent`, `Never`
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Image for JuiceFS fuse
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageTag")]
     pub image_tag: Option<String>,
     /// Whether to use hostnetwork or not
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkMode")]
     pub network_mode: Option<JuiceFSRuntimeFuseNetworkMode>,
     /// NodeSelector is a selector which must be true for the fuse client to fit on a node,
     /// this option only effect when global is enabled
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Options mount options that fuse pod will use
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub options: Option<BTreeMap<String, String>>,
     /// PodMetadata defines labels and annotations that will be propagated to JuiceFs's pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMetadata")]
     pub pod_metadata: Option<JuiceFSRuntimeFusePodMetadata>,
     /// Resources that will be requested by JuiceFS Fuse.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<JuiceFSRuntimeFuseResources>,
     /// VolumeMounts specifies the volumes listed in ".spec.volumes" to mount into runtime component's filesystem.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<JuiceFSRuntimeFuseVolumeMounts>>,
 }
 
@@ -206,11 +153,7 @@ pub struct JuiceFSRuntimeFuseEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JuiceFSRuntimeFuseEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<JuiceFSRuntimeFuseEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -218,18 +161,10 @@ pub struct JuiceFSRuntimeFuseEnvValueFrom {
     pub field_ref: Option<JuiceFSRuntimeFuseEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<JuiceFSRuntimeFuseEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<JuiceFSRuntimeFuseEnvValueFromSecretKeyRef>,
 }
 
@@ -253,11 +188,7 @@ pub struct JuiceFSRuntimeFuseEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JuiceFSRuntimeFuseEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -269,11 +200,7 @@ pub struct JuiceFSRuntimeFuseEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JuiceFSRuntimeFuseEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -322,12 +249,12 @@ pub struct JuiceFSRuntimeFusePodMetadata {
 pub struct JuiceFSRuntimeFuseResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<JuiceFSRuntimeFuseResourcesClaims>>,
@@ -363,11 +290,7 @@ pub struct JuiceFSRuntimeFuseVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -383,11 +306,7 @@ pub struct JuiceFSRuntimeFuseVolumeMounts {
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -401,11 +320,7 @@ pub struct JuiceFSRuntimeInitUsers {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// One of the three policies: `Always`, `IfNotPresent`, `Never`
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Image Tag for initialize the users for runtime(e.g. 2.3.0-SNAPSHOT)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageTag")]
@@ -426,12 +341,12 @@ pub struct JuiceFSRuntimeInitUsers {
 pub struct JuiceFSRuntimeInitUsersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<JuiceFSRuntimeInitUsersResourcesClaims>>,
@@ -466,28 +381,16 @@ pub struct JuiceFSRuntimeJobWorker {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<JuiceFSRuntimeJobWorkerEnv>>,
     /// Whether to use hostnetwork or not
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkMode")]
     pub network_mode: Option<JuiceFSRuntimeJobWorkerNetworkMode>,
     /// NodeSelector is a selector
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Options
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub options: Option<BTreeMap<String, String>>,
     /// PodMetadata defines labels and annotations that will be propagated to JuiceFs's pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMetadata")]
     pub pod_metadata: Option<JuiceFSRuntimeJobWorkerPodMetadata>,
     /// Ports used by JuiceFS
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -501,11 +404,7 @@ pub struct JuiceFSRuntimeJobWorker {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<JuiceFSRuntimeJobWorkerResources>,
     /// VolumeMounts specifies the volumes listed in ".spec.volumes" to mount into runtime component's filesystem.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<JuiceFSRuntimeJobWorkerVolumeMounts>>,
 }
 
@@ -534,11 +433,7 @@ pub struct JuiceFSRuntimeJobWorkerEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JuiceFSRuntimeJobWorkerEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<JuiceFSRuntimeJobWorkerEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -546,18 +441,10 @@ pub struct JuiceFSRuntimeJobWorkerEnvValueFrom {
     pub field_ref: Option<JuiceFSRuntimeJobWorkerEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<JuiceFSRuntimeJobWorkerEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<JuiceFSRuntimeJobWorkerEnvValueFromSecretKeyRef>,
 }
 
@@ -581,11 +468,7 @@ pub struct JuiceFSRuntimeJobWorkerEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JuiceFSRuntimeJobWorkerEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -597,11 +480,7 @@ pub struct JuiceFSRuntimeJobWorkerEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JuiceFSRuntimeJobWorkerEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -677,12 +556,12 @@ pub struct JuiceFSRuntimeJobWorkerPorts {
 pub struct JuiceFSRuntimeJobWorkerResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<JuiceFSRuntimeJobWorkerResourcesClaims>>,
@@ -718,11 +597,7 @@ pub struct JuiceFSRuntimeJobWorkerVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -738,11 +613,7 @@ pub struct JuiceFSRuntimeJobWorkerVolumeMounts {
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -753,11 +624,7 @@ pub struct JuiceFSRuntimeJuicefsVersion {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// One of the three policies: `Always`, `IfNotPresent`, `Never`
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Image tag (e.g. 2.3.0-SNAPSHOT)
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageTag")]
@@ -774,28 +641,16 @@ pub struct JuiceFSRuntimeMaster {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<JuiceFSRuntimeMasterEnv>>,
     /// Whether to use hostnetwork or not
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkMode")]
     pub network_mode: Option<JuiceFSRuntimeMasterNetworkMode>,
     /// NodeSelector is a selector
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Options
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub options: Option<BTreeMap<String, String>>,
     /// PodMetadata defines labels and annotations that will be propagated to JuiceFs's pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMetadata")]
     pub pod_metadata: Option<JuiceFSRuntimeMasterPodMetadata>,
     /// Ports used by JuiceFS
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -809,11 +664,7 @@ pub struct JuiceFSRuntimeMaster {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<JuiceFSRuntimeMasterResources>,
     /// VolumeMounts specifies the volumes listed in ".spec.volumes" to mount into runtime component's filesystem.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<JuiceFSRuntimeMasterVolumeMounts>>,
 }
 
@@ -842,11 +693,7 @@ pub struct JuiceFSRuntimeMasterEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JuiceFSRuntimeMasterEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<JuiceFSRuntimeMasterEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -854,18 +701,10 @@ pub struct JuiceFSRuntimeMasterEnvValueFrom {
     pub field_ref: Option<JuiceFSRuntimeMasterEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<JuiceFSRuntimeMasterEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<JuiceFSRuntimeMasterEnvValueFromSecretKeyRef>,
 }
 
@@ -889,11 +728,7 @@ pub struct JuiceFSRuntimeMasterEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JuiceFSRuntimeMasterEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -905,11 +740,7 @@ pub struct JuiceFSRuntimeMasterEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JuiceFSRuntimeMasterEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -985,12 +816,12 @@ pub struct JuiceFSRuntimeMasterPorts {
 pub struct JuiceFSRuntimeMasterResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<JuiceFSRuntimeMasterResourcesClaims>>,
@@ -1026,11 +857,7 @@ pub struct JuiceFSRuntimeMasterVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -1046,11 +873,7 @@ pub struct JuiceFSRuntimeMasterVolumeMounts {
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -1117,19 +940,11 @@ pub struct JuiceFSRuntimeTieredstoreLevels {
     pub quota_list: Option<String>,
     /// VolumeSource is the volume source of the tier. It follows the form of corev1.VolumeSource.
     /// For now, users should only specify VolumeSource when VolumeType is set to emptyDir.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeSource")]
     pub volume_source: Option<JuiceFSRuntimeTieredstoreLevelsVolumeSource>,
     /// VolumeType is the volume type of the tier. Should be one of the three types: `hostPath`, `emptyDir` and `volumeTemplate`.
     /// If not set, defaults to hostPath.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeType"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeType")]
     pub volume_type: Option<JuiceFSRuntimeTieredstoreLevelsVolumeType>,
 }
 
@@ -1152,13 +967,8 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSource {
     /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsElasticBlockStore"
-    )]
-    pub aws_elastic_block_store:
-        Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceAwsElasticBlockStore>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
+    pub aws_elastic_block_store: Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
     pub azure_disk: Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceAzureDisk>,
@@ -1179,11 +989,7 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSource {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceCsi>,
     /// downwardAPI represents downward API about the pod that should populate this volume
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceDownwardApi>,
     /// emptyDir represents a temporary directory that shares a pod's lifetime.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
@@ -1192,8 +998,8 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSource {
     /// ephemeral represents a volume that is handled by a cluster storage driver.
     /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
     /// and deleted when the pod is removed.
-    ///
-    ///
+    /// 
+    /// 
     /// Use this if:
     /// a) the volume is only needed while the pod runs,
     /// b) features of normal volumes like restoring from snapshot or capacity
@@ -1203,18 +1009,18 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSource {
     ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
     ///    information on the connection between this volume type
     ///    and PersistentVolumeClaim).
-    ///
-    ///
+    /// 
+    /// 
     /// Use PersistentVolumeClaim or one of the vendor-specific
     /// APIs for volumes that persist for longer than the lifecycle
     /// of an individual pod.
-    ///
-    ///
+    /// 
+    /// 
     /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
     /// be used that way - see the documentation of the driver for
     /// more information.
-    ///
-    ///
+    /// 
+    /// 
     /// A pod can use both types of ephemeral volumes and
     /// persistent volumes at the same time.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1224,11 +1030,7 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSource {
     pub fc: Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceFc>,
     /// flexVolume represents a generic volume resource that is
     /// provisioned/attached using an exec based plugin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flexVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceFlexVolume>,
     /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1236,11 +1038,7 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSource {
     /// gcePersistentDisk represents a GCE Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gcePersistentDisk"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
     pub gce_persistent_disk: Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceGcePersistentDisk>,
     /// gitRepo represents a git repository at a particular revision.
     /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
@@ -1274,27 +1072,13 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSource {
     /// persistentVolumeClaimVolumeSource represents a reference to a
     /// PersistentVolumeClaim in the same namespace.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
-    pub persistent_volume_claim:
-        Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourcePersistentVolumeClaim>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
+    pub persistent_volume_claim: Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourcePersistentVolumeClaim>,
     /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "photonPersistentDisk"
-    )]
-    pub photon_persistent_disk:
-        Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourcePhotonPersistentDisk>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
+    pub photon_persistent_disk: Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourcePhotonPersistentDisk>,
     /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portworxVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
     pub portworx_volume: Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourcePortworxVolume>,
     /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1317,11 +1101,7 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSource {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storageos: Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceStorageos>,
     /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vsphereVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
     pub vsphere_volume: Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceVsphereVolume>,
 }
 
@@ -1357,11 +1137,7 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceAwsElasticBlockStore {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceAzureDisk {
     /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachingMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
     pub caching_mode: Option<String>,
     /// diskName is the Name of the data disk in the blob storage
     #[serde(rename = "diskName")]
@@ -1414,11 +1190,7 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceCephfs {
     pub read_only: Option<bool>,
     /// secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
     pub secret_file: Option<String>,
     /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
@@ -1487,11 +1259,7 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceConfigMap {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items if unspecified, each key-value pair in the Data field of the referenced
     /// ConfigMap will be projected into the volume as a file whose name is the
@@ -1548,24 +1316,15 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceCsi {
     /// NodePublishVolume and NodeUnpublishVolume calls.
     /// This field is optional, and  may be empty if no secret is required. If the
     /// secret object contains more than one secret, all secret references are passed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePublishSecretRef"
-    )]
-    pub node_publish_secret_ref:
-        Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceCsiNodePublishSecretRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
+    pub node_publish_secret_ref: Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceCsiNodePublishSecretRef>,
     /// readOnly specifies a read-only configuration for the volume.
     /// Defaults to false (read/write).
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// volumeAttributes stores driver-specific properties that are passed to the CSI
     /// driver. Consult your driver's documentation for supported values.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
@@ -1594,11 +1353,7 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceDownwardApi {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// Items is a list of downward API volume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1623,24 +1378,15 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceDownwardApiItems {
     pub path: String,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceDownwardApiItemsResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceDownwardApiItemsResourceFieldRef>,
 }
 
 /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -1652,11 +1398,7 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceDownwardApiItemsFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1688,8 +1430,8 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceEmptyDir {
 /// ephemeral represents a volume that is handled by a cluster storage driver.
 /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
 /// and deleted when the pod is removed.
-///
-///
+/// 
+/// 
 /// Use this if:
 /// a) the volume is only needed while the pod runs,
 /// b) features of normal volumes like restoring from snapshot or capacity
@@ -1699,18 +1441,18 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceEmptyDir {
 ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
 ///    information on the connection between this volume type
 ///    and PersistentVolumeClaim).
-///
-///
+/// 
+/// 
 /// Use PersistentVolumeClaim or one of the vendor-specific
 /// APIs for volumes that persist for longer than the lifecycle
 /// of an individual pod.
-///
-///
+/// 
+/// 
 /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
 /// be used that way - see the documentation of the driver for
 /// more information.
-///
-///
+/// 
+/// 
 /// A pod can use both types of ephemeral volumes and
 /// persistent volumes at the same time.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -1722,8 +1464,8 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceEphemeral {
     /// `<volume name>` is the name from the `PodSpec.Volumes` array
     /// entry. Pod validation will reject the pod if the concatenated name
     /// is not valid for a PVC (for example, too long).
-    ///
-    ///
+    /// 
+    /// 
     /// An existing PVC with that name that is not owned by the pod
     /// will *not* be used for the pod to avoid using an unrelated
     /// volume by mistake. Starting the pod is then blocked until
@@ -1732,20 +1474,15 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceEphemeral {
     /// owner reference to the pod once the pod exists. Normally
     /// this should not be necessary, but it may be useful when
     /// manually reconstructing a broken cluster.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is read-only and no changes will be made by Kubernetes
     /// to the PVC after it has been created.
-    ///
-    ///
+    /// 
+    /// 
     /// Required, must not be nil.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimTemplate"
-    )]
-    pub volume_claim_template:
-        Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplate>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
+    pub volume_claim_template: Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplate>,
 }
 
 /// Will be used to create a stand-alone PVC to provision the volume.
@@ -1755,8 +1492,8 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceEphemeral {
 /// `<volume name>` is the name from the `PodSpec.Volumes` array
 /// entry. Pod validation will reject the pod if the concatenated name
 /// is not valid for a PVC (for example, too long).
-///
-///
+/// 
+/// 
 /// An existing PVC with that name that is not owned by the pod
 /// will *not* be used for the pod to avoid using an unrelated
 /// volume by mistake. Starting the pod is then blocked until
@@ -1765,12 +1502,12 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceEphemeral {
 /// owner reference to the pod once the pod exists. Normally
 /// this should not be necessary, but it may be useful when
 /// manually reconstructing a broken cluster.
-///
-///
+/// 
+/// 
 /// This field is read-only and no changes will be made by Kubernetes
 /// to the PVC after it has been created.
-///
-///
+/// 
+/// 
 /// Required, must not be nil.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplate {
@@ -1778,8 +1515,7 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTempla
     /// when creating it. No other fields are allowed and will be rejected during
     /// validation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub metadata:
-        Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateMetadata>,
+    pub metadata: Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateMetadata>,
     /// The specification for the PersistentVolumeClaim. The entire content is
     /// copied unchanged into the PVC that gets created from this
     /// template. The same fields as in a PersistentVolumeClaim
@@ -1791,7 +1527,8 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTempla
 /// when creating it. No other fields are allowed and will be rejected during
 /// validation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateMetadata {}
+pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateMetadata {
+}
 
 /// The specification for the PersistentVolumeClaim. The entire content is
 /// copied unchanged into the PVC that gets created from this
@@ -1801,11 +1538,7 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTempla
 pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpec {
     /// accessModes contains the desired access modes the volume should have.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// dataSource field can be used to specify either:
     /// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
@@ -1815,14 +1548,8 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTempla
     /// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
     /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
     /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSource"
-    )]
-    pub data_source: Option<
-        JuiceFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecDataSource,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
+    pub data_source: Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecDataSource>,
     /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
     /// volume is desired. This may be any object from a non-empty API group (non
     /// core object) or a PersistentVolumeClaim object.
@@ -1846,34 +1573,21 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTempla
     ///   in any namespaces.
     /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
     /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSourceRef"
-    )]
-    pub data_source_ref: Option<
-        JuiceFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecDataSourceRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
+    pub data_source_ref: Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecDataSourceRef>,
     /// resources represents the minimum resources the volume should have.
     /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
     /// that are lower than previous value but must still be higher than capacity recorded in the
     /// status field of the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#resources
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub resources: Option<
-        JuiceFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecResources,
-    >,
+    pub resources: Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecResources>,
     /// selector is a label query over volumes to consider for binding.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub selector:
-        Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecSelector>,
+    pub selector: Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecSelector>,
     /// storageClassName is the name of the StorageClass required by the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
     /// If specified, the CSI driver will create or update the volume with the attributes defined
@@ -1887,26 +1601,14 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTempla
     /// exists.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
     /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributesClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
     /// Value of Filesystem is implied when not included in claim spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     /// volumeName is the binding reference to the PersistentVolume backing this claim.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -1955,8 +1657,7 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTempla
 /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
 /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecDataSourceRef
-{
+pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecDataSourceRef {
     /// APIGroup is the group for the resource being referenced.
     /// If APIGroup is not specified, the specified Kind must be in the core API group.
     /// For any other third-party types, APIGroup is required.
@@ -2008,8 +1709,7 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTempla
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions
-{
+pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2040,11 +1740,7 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceFc {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// targetWWNs is Optional: FC target worldwide names (WWNs)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetWWNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
     pub target_ww_ns: Option<Vec<String>>,
     /// wwids Optional: FC volume world wide identifiers (wwids)
     /// Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
@@ -2098,18 +1794,10 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceFlexVolumeSecretRef {
 pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceFlocker {
     /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
     /// should be considered as deprecated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
     pub dataset_name: Option<String>,
     /// datasetUUID is the UUID of the dataset. This is unique identifier of a Flocker dataset
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetUUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
     pub dataset_uuid: Option<String>,
 }
 
@@ -2206,18 +1894,10 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceHostPath {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceIscsi {
     /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthDiscovery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
     /// chapAuthSession defines whether support iSCSI Session CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthSession"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
     pub chap_auth_session: Option<bool>,
     /// fsType is the filesystem type of the volume that you want to mount.
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
@@ -2229,21 +1909,13 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceIscsi {
     /// initiatorName is the custom iSCSI Initiator Name.
     /// If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface
     /// <target portal>:<volume name> will be created for the connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initiatorName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
     pub initiator_name: Option<String>,
     /// iqn is the target iSCSI Qualified Name.
     pub iqn: String,
     /// iscsiInterface is the interface Name that uses an iSCSI transport.
     /// Defaults to 'default' (tcp).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "iscsiInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
     pub iscsi_interface: Option<String>,
     /// lun represents iSCSI Target Lun number.
     pub lun: i32,
@@ -2345,11 +2017,7 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjected {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// sources is the list of volume projections
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2361,62 +2029,47 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjected {
 pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSources {
     /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
     /// of ClusterTrustBundle objects in an auto-updating file.
-    ///
-    ///
+    /// 
+    /// 
     /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// ClusterTrustBundle objects can either be selected by name, or by the
     /// combination of signer name and a label selector.
-    ///
-    ///
+    /// 
+    /// 
     /// Kubelet performs aggressive normalization of the PEM contents written
     /// into the pod filesystem.  Esoteric PEM features such as inter-block
     /// comments and block headers are stripped.  Certificates are deduplicated.
     /// The ordering of certificates within the file is arbitrary, and Kubelet
     /// may change the order over time.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterTrustBundle"
-    )]
-    pub cluster_trust_bundle:
-        Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesClusterTrustBundle>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
+    pub cluster_trust_bundle: Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesClusterTrustBundle>,
     /// configMap information about the configMap data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesConfigMap>,
     /// downwardAPI information about the downwardAPI data to project
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
-    pub downward_api:
-        Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardApi>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
+    pub downward_api: Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardApi>,
     /// secret information about the secret data to project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesSecret>,
     /// serviceAccountToken is information about the serviceAccountToken data to project
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountToken"
-    )]
-    pub service_account_token:
-        Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesServiceAccountToken>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
+    pub service_account_token: Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesServiceAccountToken>,
 }
 
 /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
 /// of ClusterTrustBundle objects in an auto-updating file.
-///
-///
+/// 
+/// 
 /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-///
-///
+/// 
+/// 
 /// ClusterTrustBundle objects can either be selected by name, or by the
 /// combination of signer name and a label selector.
-///
-///
+/// 
+/// 
 /// Kubelet performs aggressive normalization of the PEM contents written
 /// into the pod filesystem.  Esoteric PEM features such as inter-block
 /// comments and block headers are stripped.  Certificates are deduplicated.
@@ -2428,14 +2081,8 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesClusterTru
     /// effect if signerName is set.  Mutually-exclusive with name.  If unset,
     /// interpreted as "match nothing".  If set but empty, interpreted as "match
     /// everything".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector: Option<
-        JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesClusterTrustBundleLabelSelector,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesClusterTrustBundleLabelSelector>,
     /// Select a single ClusterTrustBundle by object name.  Mutually-exclusive
     /// with signerName and labelSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2452,11 +2099,7 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesClusterTru
     /// Select all ClusterTrustBundles that match this signer name.
     /// Mutually-exclusive with name.  The contents of all selected
     /// ClusterTrustBundles will be unified and deduplicated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "signerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
     pub signer_name: Option<String>,
 }
 
@@ -2479,8 +2122,7 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesClusterTru
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions
-{
+pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2505,8 +2147,7 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesConfigMap 
     /// the volume setup will error unless it is marked optional. Paths must be
     /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesConfigMapItems>>,
+    pub items: Option<Vec<JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesConfigMapItems>>,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -2542,8 +2183,7 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesConfigMapI
 pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardApi {
     /// Items is a list of DownwardAPIVolume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardApiItems>>,
+    pub items: Option<Vec<JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardApiItems>>,
 }
 
 /// DownwardAPIVolumeFile represents information to create the file containing the pod field
@@ -2551,8 +2191,7 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardAp
 pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardApiItems {
     /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardApiItemsFieldRef>,
+    pub field_ref: Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardApiItemsFieldRef>,
     /// Optional: mode bits used to set permissions on this file, must be an octal value
     /// between 0000 and 0777 or a decimal value between 0 and 511.
     /// YAML accepts both octal and decimal values, JSON requires decimal values for mode bits.
@@ -2565,25 +2204,15 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardAp
     pub path: String,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef>,
 }
 
 /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -2593,14 +2222,9 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardAp
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef
-{
+pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2666,11 +2290,7 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceProjectedSourcesServiceAcc
     /// start trying to rotate the token if the token is older than 80 percent of
     /// its time to live or if the token is older than 24 hours.Defaults to 1 hour
     /// and must be at least 10 minutes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
     /// path is the path relative to the mount point of the file to project the
     /// token into.
@@ -2774,11 +2394,7 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceScaleIo {
     /// gateway is the host address of the ScaleIO API Gateway.
     pub gateway: String,
     /// protectionDomain is the name of the ScaleIO Protection Domain for the configured storage.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protectionDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
     pub protection_domain: Option<String>,
     /// readOnly Defaults to false (read/write). ReadOnly here will force
     /// the ReadOnly setting in VolumeMounts.
@@ -2789,36 +2405,20 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceScaleIo {
     #[serde(rename = "secretRef")]
     pub secret_ref: JuiceFSRuntimeTieredstoreLevelsVolumeSourceScaleIoSecretRef,
     /// sslEnabled Flag enable/disable SSL communication with Gateway, default false
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
     /// storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned.
     /// Default is ThinProvisioned.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
     pub storage_mode: Option<String>,
     /// storagePool is the ScaleIO Storage Pool associated with the protection domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
     pub storage_pool: Option<String>,
     /// system is the name of the storage system as configured in ScaleIO.
     pub system: String,
     /// volumeName is the name of a volume already created in the ScaleIO system
     /// that is associated with this volume source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -2844,11 +2444,7 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceSecret {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items If unspecified, each key-value pair in the Data field of the referenced
     /// Secret will be projected into the volume as a file whose name is the
@@ -2864,11 +2460,7 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceSecret {
     pub optional: Option<bool>,
     /// secretName is the name of the secret in the pod's namespace to use.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -2910,11 +2502,7 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceStorageos {
     pub secret_ref: Option<JuiceFSRuntimeTieredstoreLevelsVolumeSourceStorageosSecretRef>,
     /// volumeName is the human-readable name of the StorageOS volume.  Volume
     /// names are only unique within a namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
     /// volumeNamespace specifies the scope of the volume within StorageOS.  If no
     /// namespace is specified then the Pod's namespace will be used.  This allows the
@@ -2922,11 +2510,7 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceStorageos {
     /// Set VolumeName to any name to override the default behaviour.
     /// Set to "default" if you are not using namespaces within StorageOS.
     /// Namespaces that do not pre-exist within StorageOS will be created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
     pub volume_namespace: Option<String>,
 }
 
@@ -2950,18 +2534,10 @@ pub struct JuiceFSRuntimeTieredstoreLevelsVolumeSourceVsphereVolume {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// storagePolicyID is the storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
     pub storage_policy_id: Option<String>,
     /// storagePolicyName is the storage Policy Based Management (SPBM) profile name.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
     pub storage_policy_name: Option<String>,
     /// volumePath is the path that identifies vSphere volume vmdk
     #[serde(rename = "volumePath")]
@@ -2984,11 +2560,7 @@ pub struct JuiceFSRuntimeVolumes {
     /// awsElasticBlockStore represents an AWS Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#awselasticblockstore
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "awsElasticBlockStore"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "awsElasticBlockStore")]
     pub aws_elastic_block_store: Option<JuiceFSRuntimeVolumesAwsElasticBlockStore>,
     /// azureDisk represents an Azure Data Disk mount on the host and bind mount to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureDisk")]
@@ -3010,11 +2582,7 @@ pub struct JuiceFSRuntimeVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub csi: Option<JuiceFSRuntimeVolumesCsi>,
     /// downwardAPI represents downward API about the pod that should populate this volume
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<JuiceFSRuntimeVolumesDownwardApi>,
     /// emptyDir represents a temporary directory that shares a pod's lifetime.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
@@ -3023,8 +2591,8 @@ pub struct JuiceFSRuntimeVolumes {
     /// ephemeral represents a volume that is handled by a cluster storage driver.
     /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
     /// and deleted when the pod is removed.
-    ///
-    ///
+    /// 
+    /// 
     /// Use this if:
     /// a) the volume is only needed while the pod runs,
     /// b) features of normal volumes like restoring from snapshot or capacity
@@ -3034,18 +2602,18 @@ pub struct JuiceFSRuntimeVolumes {
     ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
     ///    information on the connection between this volume type
     ///    and PersistentVolumeClaim).
-    ///
-    ///
+    /// 
+    /// 
     /// Use PersistentVolumeClaim or one of the vendor-specific
     /// APIs for volumes that persist for longer than the lifecycle
     /// of an individual pod.
-    ///
-    ///
+    /// 
+    /// 
     /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
     /// be used that way - see the documentation of the driver for
     /// more information.
-    ///
-    ///
+    /// 
+    /// 
     /// A pod can use both types of ephemeral volumes and
     /// persistent volumes at the same time.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3055,11 +2623,7 @@ pub struct JuiceFSRuntimeVolumes {
     pub fc: Option<JuiceFSRuntimeVolumesFc>,
     /// flexVolume represents a generic volume resource that is
     /// provisioned/attached using an exec based plugin.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "flexVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "flexVolume")]
     pub flex_volume: Option<JuiceFSRuntimeVolumesFlexVolume>,
     /// flocker represents a Flocker volume attached to a kubelet's host machine. This depends on the Flocker control service being running
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3067,11 +2631,7 @@ pub struct JuiceFSRuntimeVolumes {
     /// gcePersistentDisk represents a GCE Disk resource that is attached to a
     /// kubelet's host machine and then exposed to the pod.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#gcepersistentdisk
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gcePersistentDisk"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gcePersistentDisk")]
     pub gce_persistent_disk: Option<JuiceFSRuntimeVolumesGcePersistentDisk>,
     /// gitRepo represents a git repository at a particular revision.
     /// DEPRECATED: GitRepo is deprecated. To provision a container with a git repo, mount an
@@ -3109,25 +2669,13 @@ pub struct JuiceFSRuntimeVolumes {
     /// persistentVolumeClaimVolumeSource represents a reference to a
     /// PersistentVolumeClaim in the same namespace.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#persistentvolumeclaims
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolumeClaim"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolumeClaim")]
     pub persistent_volume_claim: Option<JuiceFSRuntimeVolumesPersistentVolumeClaim>,
     /// photonPersistentDisk represents a PhotonController persistent disk attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "photonPersistentDisk"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "photonPersistentDisk")]
     pub photon_persistent_disk: Option<JuiceFSRuntimeVolumesPhotonPersistentDisk>,
     /// portworxVolume represents a portworx volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "portworxVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "portworxVolume")]
     pub portworx_volume: Option<JuiceFSRuntimeVolumesPortworxVolume>,
     /// projected items for all in one resources secrets, configmaps, and downward API
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3150,11 +2698,7 @@ pub struct JuiceFSRuntimeVolumes {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storageos: Option<JuiceFSRuntimeVolumesStorageos>,
     /// vsphereVolume represents a vSphere volume attached and mounted on kubelets host machine
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vsphereVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vsphereVolume")]
     pub vsphere_volume: Option<JuiceFSRuntimeVolumesVsphereVolume>,
 }
 
@@ -3190,11 +2734,7 @@ pub struct JuiceFSRuntimeVolumesAwsElasticBlockStore {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JuiceFSRuntimeVolumesAzureDisk {
     /// cachingMode is the Host Caching mode: None, Read Only, Read Write.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cachingMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cachingMode")]
     pub caching_mode: Option<String>,
     /// diskName is the Name of the data disk in the blob storage
     #[serde(rename = "diskName")]
@@ -3247,11 +2787,7 @@ pub struct JuiceFSRuntimeVolumesCephfs {
     pub read_only: Option<bool>,
     /// secretFile is Optional: SecretFile is the path to key ring for User, default is /etc/ceph/user.secret
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretFile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretFile")]
     pub secret_file: Option<String>,
     /// secretRef is Optional: SecretRef is reference to the authentication secret for User, default is empty.
     /// More info: https://examples.k8s.io/volumes/cephfs/README.md#how-to-use-it
@@ -3320,11 +2856,7 @@ pub struct JuiceFSRuntimeVolumesConfigMap {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items if unspecified, each key-value pair in the Data field of the referenced
     /// ConfigMap will be projected into the volume as a file whose name is the
@@ -3381,11 +2913,7 @@ pub struct JuiceFSRuntimeVolumesCsi {
     /// NodePublishVolume and NodeUnpublishVolume calls.
     /// This field is optional, and  may be empty if no secret is required. If the
     /// secret object contains more than one secret, all secret references are passed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodePublishSecretRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodePublishSecretRef")]
     pub node_publish_secret_ref: Option<JuiceFSRuntimeVolumesCsiNodePublishSecretRef>,
     /// readOnly specifies a read-only configuration for the volume.
     /// Defaults to false (read/write).
@@ -3393,11 +2921,7 @@ pub struct JuiceFSRuntimeVolumesCsi {
     pub read_only: Option<bool>,
     /// volumeAttributes stores driver-specific properties that are passed to the CSI
     /// driver. Consult your driver's documentation for supported values.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributes")]
     pub volume_attributes: Option<BTreeMap<String, String>>,
 }
 
@@ -3426,11 +2950,7 @@ pub struct JuiceFSRuntimeVolumesDownwardApi {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// Items is a list of downward API volume file
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3455,11 +2975,7 @@ pub struct JuiceFSRuntimeVolumesDownwardApiItems {
     pub path: String,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<JuiceFSRuntimeVolumesDownwardApiItemsResourceFieldRef>,
 }
 
@@ -3467,11 +2983,7 @@ pub struct JuiceFSRuntimeVolumesDownwardApiItems {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JuiceFSRuntimeVolumesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -3483,11 +2995,7 @@ pub struct JuiceFSRuntimeVolumesDownwardApiItemsFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JuiceFSRuntimeVolumesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3519,8 +3027,8 @@ pub struct JuiceFSRuntimeVolumesEmptyDir {
 /// ephemeral represents a volume that is handled by a cluster storage driver.
 /// The volume's lifecycle is tied to the pod that defines it - it will be created before the pod starts,
 /// and deleted when the pod is removed.
-///
-///
+/// 
+/// 
 /// Use this if:
 /// a) the volume is only needed while the pod runs,
 /// b) features of normal volumes like restoring from snapshot or capacity
@@ -3530,18 +3038,18 @@ pub struct JuiceFSRuntimeVolumesEmptyDir {
 ///    a PersistentVolumeClaim (see EphemeralVolumeSource for more
 ///    information on the connection between this volume type
 ///    and PersistentVolumeClaim).
-///
-///
+/// 
+/// 
 /// Use PersistentVolumeClaim or one of the vendor-specific
 /// APIs for volumes that persist for longer than the lifecycle
 /// of an individual pod.
-///
-///
+/// 
+/// 
 /// Use CSI for light-weight local ephemeral volumes if the CSI driver is meant to
 /// be used that way - see the documentation of the driver for
 /// more information.
-///
-///
+/// 
+/// 
 /// A pod can use both types of ephemeral volumes and
 /// persistent volumes at the same time.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3553,8 +3061,8 @@ pub struct JuiceFSRuntimeVolumesEphemeral {
     /// `<volume name>` is the name from the `PodSpec.Volumes` array
     /// entry. Pod validation will reject the pod if the concatenated name
     /// is not valid for a PVC (for example, too long).
-    ///
-    ///
+    /// 
+    /// 
     /// An existing PVC with that name that is not owned by the pod
     /// will *not* be used for the pod to avoid using an unrelated
     /// volume by mistake. Starting the pod is then blocked until
@@ -3563,18 +3071,14 @@ pub struct JuiceFSRuntimeVolumesEphemeral {
     /// owner reference to the pod once the pod exists. Normally
     /// this should not be necessary, but it may be useful when
     /// manually reconstructing a broken cluster.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is read-only and no changes will be made by Kubernetes
     /// to the PVC after it has been created.
-    ///
-    ///
+    /// 
+    /// 
     /// Required, must not be nil.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeClaimTemplate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeClaimTemplate")]
     pub volume_claim_template: Option<JuiceFSRuntimeVolumesEphemeralVolumeClaimTemplate>,
 }
 
@@ -3585,8 +3089,8 @@ pub struct JuiceFSRuntimeVolumesEphemeral {
 /// `<volume name>` is the name from the `PodSpec.Volumes` array
 /// entry. Pod validation will reject the pod if the concatenated name
 /// is not valid for a PVC (for example, too long).
-///
-///
+/// 
+/// 
 /// An existing PVC with that name that is not owned by the pod
 /// will *not* be used for the pod to avoid using an unrelated
 /// volume by mistake. Starting the pod is then blocked until
@@ -3595,12 +3099,12 @@ pub struct JuiceFSRuntimeVolumesEphemeral {
 /// owner reference to the pod once the pod exists. Normally
 /// this should not be necessary, but it may be useful when
 /// manually reconstructing a broken cluster.
-///
-///
+/// 
+/// 
 /// This field is read-only and no changes will be made by Kubernetes
 /// to the PVC after it has been created.
-///
-///
+/// 
+/// 
 /// Required, must not be nil.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JuiceFSRuntimeVolumesEphemeralVolumeClaimTemplate {
@@ -3620,7 +3124,8 @@ pub struct JuiceFSRuntimeVolumesEphemeralVolumeClaimTemplate {
 /// when creating it. No other fields are allowed and will be rejected during
 /// validation.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct JuiceFSRuntimeVolumesEphemeralVolumeClaimTemplateMetadata {}
+pub struct JuiceFSRuntimeVolumesEphemeralVolumeClaimTemplateMetadata {
+}
 
 /// The specification for the PersistentVolumeClaim. The entire content is
 /// copied unchanged into the PVC that gets created from this
@@ -3630,11 +3135,7 @@ pub struct JuiceFSRuntimeVolumesEphemeralVolumeClaimTemplateMetadata {}
 pub struct JuiceFSRuntimeVolumesEphemeralVolumeClaimTemplateSpec {
     /// accessModes contains the desired access modes the volume should have.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#access-modes-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     /// dataSource field can be used to specify either:
     /// * An existing VolumeSnapshot object (snapshot.storage.k8s.io/VolumeSnapshot)
@@ -3644,11 +3145,7 @@ pub struct JuiceFSRuntimeVolumesEphemeralVolumeClaimTemplateSpec {
     /// When the AnyVolumeDataSource feature gate is enabled, dataSource contents will be copied to dataSourceRef,
     /// and dataSourceRef contents will be copied to dataSource when dataSourceRef.namespace is not specified.
     /// If the namespace is specified, then dataSourceRef will not be copied to dataSource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSource")]
     pub data_source: Option<JuiceFSRuntimeVolumesEphemeralVolumeClaimTemplateSpecDataSource>,
     /// dataSourceRef specifies the object from which to populate the volume with data, if a non-empty
     /// volume is desired. This may be any object from a non-empty API group (non
@@ -3673,11 +3170,7 @@ pub struct JuiceFSRuntimeVolumesEphemeralVolumeClaimTemplateSpec {
     ///   in any namespaces.
     /// (Beta) Using this field requires the AnyVolumeDataSource feature gate to be enabled.
     /// (Alpha) Using the namespace field of dataSourceRef requires the CrossNamespaceVolumeDataSource feature gate to be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSourceRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSourceRef")]
     pub data_source_ref: Option<JuiceFSRuntimeVolumesEphemeralVolumeClaimTemplateSpecDataSourceRef>,
     /// resources represents the minimum resources the volume should have.
     /// If RecoverVolumeExpansionFailure feature is enabled users are allowed to specify resource requirements
@@ -3691,11 +3184,7 @@ pub struct JuiceFSRuntimeVolumesEphemeralVolumeClaimTemplateSpec {
     pub selector: Option<JuiceFSRuntimeVolumesEphemeralVolumeClaimTemplateSpecSelector>,
     /// storageClassName is the name of the StorageClass required by the claim.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#class-1
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
     /// volumeAttributesClassName may be used to set the VolumeAttributesClass used by this claim.
     /// If specified, the CSI driver will create or update the volume with the attributes defined
@@ -3709,26 +3198,14 @@ pub struct JuiceFSRuntimeVolumesEphemeralVolumeClaimTemplateSpec {
     /// exists.
     /// More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
     /// (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeAttributesClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeAttributesClassName")]
     pub volume_attributes_class_name: Option<String>,
     /// volumeMode defines what type of volume is required by the claim.
     /// Value of Filesystem is implied when not included in claim spec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMode")]
     pub volume_mode: Option<String>,
     /// volumeName is the binding reference to the PersistentVolume backing this claim.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -3817,21 +3294,12 @@ pub struct JuiceFSRuntimeVolumesEphemeralVolumeClaimTemplateSpecResources {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JuiceFSRuntimeVolumesEphemeralVolumeClaimTemplateSpecSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<JuiceFSRuntimeVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<JuiceFSRuntimeVolumesEphemeralVolumeClaimTemplateSpecSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -3869,11 +3337,7 @@ pub struct JuiceFSRuntimeVolumesFc {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
     /// targetWWNs is Optional: FC target worldwide names (WWNs)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetWWNs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetWWNs")]
     pub target_ww_ns: Option<Vec<String>>,
     /// wwids Optional: FC volume world wide identifiers (wwids)
     /// Either wwids or combination of targetWWNs and lun must be set, but not both simultaneously.
@@ -3927,18 +3391,10 @@ pub struct JuiceFSRuntimeVolumesFlexVolumeSecretRef {
 pub struct JuiceFSRuntimeVolumesFlocker {
     /// datasetName is Name of the dataset stored as metadata -> name on the dataset for Flocker
     /// should be considered as deprecated
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetName")]
     pub dataset_name: Option<String>,
     /// datasetUUID is the UUID of the dataset. This is unique identifier of a Flocker dataset
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "datasetUUID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "datasetUUID")]
     pub dataset_uuid: Option<String>,
 }
 
@@ -4035,18 +3491,10 @@ pub struct JuiceFSRuntimeVolumesHostPath {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JuiceFSRuntimeVolumesIscsi {
     /// chapAuthDiscovery defines whether support iSCSI Discovery CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthDiscovery"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthDiscovery")]
     pub chap_auth_discovery: Option<bool>,
     /// chapAuthSession defines whether support iSCSI Session CHAP authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "chapAuthSession"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "chapAuthSession")]
     pub chap_auth_session: Option<bool>,
     /// fsType is the filesystem type of the volume that you want to mount.
     /// Tip: Ensure that the filesystem type is supported by the host operating system.
@@ -4058,21 +3506,13 @@ pub struct JuiceFSRuntimeVolumesIscsi {
     /// initiatorName is the custom iSCSI Initiator Name.
     /// If initiatorName is specified with iscsiInterface simultaneously, new iSCSI interface
     /// <target portal>:<volume name> will be created for the connection.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initiatorName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initiatorName")]
     pub initiator_name: Option<String>,
     /// iqn is the target iSCSI Qualified Name.
     pub iqn: String,
     /// iscsiInterface is the interface Name that uses an iSCSI transport.
     /// Defaults to 'default' (tcp).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "iscsiInterface"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "iscsiInterface")]
     pub iscsi_interface: Option<String>,
     /// lun represents iSCSI Target Lun number.
     pub lun: i32,
@@ -4174,11 +3614,7 @@ pub struct JuiceFSRuntimeVolumesProjected {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// sources is the list of volume projections
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4190,59 +3626,47 @@ pub struct JuiceFSRuntimeVolumesProjected {
 pub struct JuiceFSRuntimeVolumesProjectedSources {
     /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
     /// of ClusterTrustBundle objects in an auto-updating file.
-    ///
-    ///
+    /// 
+    /// 
     /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// ClusterTrustBundle objects can either be selected by name, or by the
     /// combination of signer name and a label selector.
-    ///
-    ///
+    /// 
+    /// 
     /// Kubelet performs aggressive normalization of the PEM contents written
     /// into the pod filesystem.  Esoteric PEM features such as inter-block
     /// comments and block headers are stripped.  Certificates are deduplicated.
     /// The ordering of certificates within the file is arbitrary, and Kubelet
     /// may change the order over time.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterTrustBundle"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterTrustBundle")]
     pub cluster_trust_bundle: Option<JuiceFSRuntimeVolumesProjectedSourcesClusterTrustBundle>,
     /// configMap information about the configMap data to project
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
     pub config_map: Option<JuiceFSRuntimeVolumesProjectedSourcesConfigMap>,
     /// downwardAPI information about the downwardAPI data to project
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "downwardAPI"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "downwardAPI")]
     pub downward_api: Option<JuiceFSRuntimeVolumesProjectedSourcesDownwardApi>,
     /// secret information about the secret data to project
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub secret: Option<JuiceFSRuntimeVolumesProjectedSourcesSecret>,
     /// serviceAccountToken is information about the serviceAccountToken data to project
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountToken")]
     pub service_account_token: Option<JuiceFSRuntimeVolumesProjectedSourcesServiceAccountToken>,
 }
 
 /// ClusterTrustBundle allows a pod to access the `.spec.trustBundle` field
 /// of ClusterTrustBundle objects in an auto-updating file.
-///
-///
+/// 
+/// 
 /// Alpha, gated by the ClusterTrustBundleProjection feature gate.
-///
-///
+/// 
+/// 
 /// ClusterTrustBundle objects can either be selected by name, or by the
 /// combination of signer name and a label selector.
-///
-///
+/// 
+/// 
 /// Kubelet performs aggressive normalization of the PEM contents written
 /// into the pod filesystem.  Esoteric PEM features such as inter-block
 /// comments and block headers are stripped.  Certificates are deduplicated.
@@ -4254,13 +3678,8 @@ pub struct JuiceFSRuntimeVolumesProjectedSourcesClusterTrustBundle {
     /// effect if signerName is set.  Mutually-exclusive with name.  If unset,
     /// interpreted as "match nothing".  If set but empty, interpreted as "match
     /// everything".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelSelector"
-    )]
-    pub label_selector:
-        Option<JuiceFSRuntimeVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelSelector")]
+    pub label_selector: Option<JuiceFSRuntimeVolumesProjectedSourcesClusterTrustBundleLabelSelector>,
     /// Select a single ClusterTrustBundle by object name.  Mutually-exclusive
     /// with signerName and labelSelector.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4277,11 +3696,7 @@ pub struct JuiceFSRuntimeVolumesProjectedSourcesClusterTrustBundle {
     /// Select all ClusterTrustBundles that match this signer name.
     /// Mutually-exclusive with name.  The contents of all selected
     /// ClusterTrustBundles will be unified and deduplicated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "signerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "signerName")]
     pub signer_name: Option<String>,
 }
 
@@ -4292,22 +3707,12 @@ pub struct JuiceFSRuntimeVolumesProjectedSourcesClusterTrustBundle {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JuiceFSRuntimeVolumesProjectedSourcesClusterTrustBundleLabelSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions: Option<
-        Vec<JuiceFSRuntimeVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<JuiceFSRuntimeVolumesProjectedSourcesClusterTrustBundleLabelSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -4396,24 +3801,15 @@ pub struct JuiceFSRuntimeVolumesProjectedSourcesDownwardApiItems {
     pub path: String,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, requests.cpu and requests.memory) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<JuiceFSRuntimeVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<JuiceFSRuntimeVolumesProjectedSourcesDownwardApiItemsResourceFieldRef>,
 }
 
 /// Required: Selects a field of the pod: only annotations, labels, name and namespace are supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JuiceFSRuntimeVolumesProjectedSourcesDownwardApiItemsFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -4425,11 +3821,7 @@ pub struct JuiceFSRuntimeVolumesProjectedSourcesDownwardApiItemsFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JuiceFSRuntimeVolumesProjectedSourcesDownwardApiItemsResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4495,11 +3887,7 @@ pub struct JuiceFSRuntimeVolumesProjectedSourcesServiceAccountToken {
     /// start trying to rotate the token if the token is older than 80 percent of
     /// its time to live or if the token is older than 24 hours.Defaults to 1 hour
     /// and must be at least 10 minutes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "expirationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "expirationSeconds")]
     pub expiration_seconds: Option<i64>,
     /// path is the path relative to the mount point of the file to project the
     /// token into.
@@ -4603,11 +3991,7 @@ pub struct JuiceFSRuntimeVolumesScaleIo {
     /// gateway is the host address of the ScaleIO API Gateway.
     pub gateway: String,
     /// protectionDomain is the name of the ScaleIO Protection Domain for the configured storage.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "protectionDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "protectionDomain")]
     pub protection_domain: Option<String>,
     /// readOnly Defaults to false (read/write). ReadOnly here will force
     /// the ReadOnly setting in VolumeMounts.
@@ -4618,36 +4002,20 @@ pub struct JuiceFSRuntimeVolumesScaleIo {
     #[serde(rename = "secretRef")]
     pub secret_ref: JuiceFSRuntimeVolumesScaleIoSecretRef,
     /// sslEnabled Flag enable/disable SSL communication with Gateway, default false
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sslEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sslEnabled")]
     pub ssl_enabled: Option<bool>,
     /// storageMode indicates whether the storage for a volume should be ThickProvisioned or ThinProvisioned.
     /// Default is ThinProvisioned.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageMode")]
     pub storage_mode: Option<String>,
     /// storagePool is the ScaleIO Storage Pool associated with the protection domain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePool"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePool")]
     pub storage_pool: Option<String>,
     /// system is the name of the storage system as configured in ScaleIO.
     pub system: String,
     /// volumeName is the name of a volume already created in the ScaleIO system
     /// that is associated with this volume source.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
 }
 
@@ -4673,11 +4041,7 @@ pub struct JuiceFSRuntimeVolumesSecret {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items If unspecified, each key-value pair in the Data field of the referenced
     /// Secret will be projected into the volume as a file whose name is the
@@ -4693,11 +4057,7 @@ pub struct JuiceFSRuntimeVolumesSecret {
     pub optional: Option<bool>,
     /// secretName is the name of the secret in the pod's namespace to use.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -4739,11 +4099,7 @@ pub struct JuiceFSRuntimeVolumesStorageos {
     pub secret_ref: Option<JuiceFSRuntimeVolumesStorageosSecretRef>,
     /// volumeName is the human-readable name of the StorageOS volume.  Volume
     /// names are only unique within a namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeName")]
     pub volume_name: Option<String>,
     /// volumeNamespace specifies the scope of the volume within StorageOS.  If no
     /// namespace is specified then the Pod's namespace will be used.  This allows the
@@ -4751,11 +4107,7 @@ pub struct JuiceFSRuntimeVolumesStorageos {
     /// Set VolumeName to any name to override the default behaviour.
     /// Set to "default" if you are not using namespaces within StorageOS.
     /// Namespaces that do not pre-exist within StorageOS will be created.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeNamespace")]
     pub volume_namespace: Option<String>,
 }
 
@@ -4779,18 +4131,10 @@ pub struct JuiceFSRuntimeVolumesVsphereVolume {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsType")]
     pub fs_type: Option<String>,
     /// storagePolicyID is the storage Policy Based Management (SPBM) profile ID associated with the StoragePolicyName.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyID")]
     pub storage_policy_id: Option<String>,
     /// storagePolicyName is the storage Policy Based Management (SPBM) profile name.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storagePolicyName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storagePolicyName")]
     pub storage_policy_name: Option<String>,
     /// volumePath is the path that identifies vSphere volume vmdk
     #[serde(rename = "volumePath")]
@@ -4807,28 +4151,16 @@ pub struct JuiceFSRuntimeWorker {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub env: Option<Vec<JuiceFSRuntimeWorkerEnv>>,
     /// Whether to use hostnetwork or not
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkMode")]
     pub network_mode: Option<JuiceFSRuntimeWorkerNetworkMode>,
     /// NodeSelector is a selector
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Options
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub options: Option<BTreeMap<String, String>>,
     /// PodMetadata defines labels and annotations that will be propagated to JuiceFs's pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podMetadata")]
     pub pod_metadata: Option<JuiceFSRuntimeWorkerPodMetadata>,
     /// Ports used by JuiceFS
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4842,11 +4174,7 @@ pub struct JuiceFSRuntimeWorker {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<JuiceFSRuntimeWorkerResources>,
     /// VolumeMounts specifies the volumes listed in ".spec.volumes" to mount into runtime component's filesystem.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<JuiceFSRuntimeWorkerVolumeMounts>>,
 }
 
@@ -4875,11 +4203,7 @@ pub struct JuiceFSRuntimeWorkerEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JuiceFSRuntimeWorkerEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<JuiceFSRuntimeWorkerEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -4887,18 +4211,10 @@ pub struct JuiceFSRuntimeWorkerEnvValueFrom {
     pub field_ref: Option<JuiceFSRuntimeWorkerEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<JuiceFSRuntimeWorkerEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<JuiceFSRuntimeWorkerEnvValueFromSecretKeyRef>,
 }
 
@@ -4922,11 +4238,7 @@ pub struct JuiceFSRuntimeWorkerEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JuiceFSRuntimeWorkerEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -4938,11 +4250,7 @@ pub struct JuiceFSRuntimeWorkerEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JuiceFSRuntimeWorkerEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5018,12 +4326,12 @@ pub struct JuiceFSRuntimeWorkerPorts {
 pub struct JuiceFSRuntimeWorkerResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<JuiceFSRuntimeWorkerResourcesClaims>>,
@@ -5059,11 +4367,7 @@ pub struct JuiceFSRuntimeWorkerVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -5079,11 +4383,7 @@ pub struct JuiceFSRuntimeWorkerVolumeMounts {
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -5091,25 +4391,13 @@ pub struct JuiceFSRuntimeWorkerVolumeMounts {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JuiceFSRuntimeStatus {
     /// APIGatewayStatus represents rest api gateway status
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiGateway"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiGateway")]
     pub api_gateway: Option<JuiceFSRuntimeStatusApiGateway>,
     /// CacheAffinity represents the runtime worker pods node affinity including node selector
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheAffinity")]
     pub cache_affinity: Option<JuiceFSRuntimeStatusCacheAffinity>,
     /// CacheStatus represents the total resources of the dataset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheStates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheStates")]
     pub cache_states: Option<BTreeMap<String, String>>,
     /// Represents the latest available observations of a ddc runtime's current state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5141,11 +4429,7 @@ pub struct JuiceFSRuntimeStatus {
     /// The number of nodes that should be running the
     /// runtime Fuse pod and have one or more of the runtime Fuse pod running and
     /// available (ready for at least spec.minReadySeconds)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fuseNumberAvailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fuseNumberAvailable")]
     pub fuse_number_available: Option<i32>,
     /// The number of nodes that should be running the runtime Fuse pod and have one
     /// or more of the runtime Fuse pod running and ready.
@@ -5154,21 +4438,13 @@ pub struct JuiceFSRuntimeStatus {
     /// The number of nodes that should be running the
     /// runtime fuse pod and have none of the runtime fuse pod running and available
     /// (ready for at least spec.minReadySeconds)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fuseNumberUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fuseNumberUnavailable")]
     pub fuse_number_unavailable: Option<i32>,
     /// FusePhase is the Fuse running phase
     #[serde(rename = "fusePhase")]
     pub fuse_phase: String,
     /// Reason for the condition's last transition.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fuseReason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fuseReason")]
     pub fuse_reason: Option<String>,
     /// The number of nodes that should be running the runtime worker pod and have zero
     /// or more of the runtime master pod running and ready.
@@ -5178,11 +4454,7 @@ pub struct JuiceFSRuntimeStatus {
     #[serde(rename = "masterPhase")]
     pub master_phase: String,
     /// Reason for Master's condition transition
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "masterReason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "masterReason")]
     pub master_reason: Option<String>,
     /// MountTime represents time last mount happened
     /// if Mounttime is earlier than master starting time, remount will be required
@@ -5195,11 +4467,7 @@ pub struct JuiceFSRuntimeStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<String>,
     /// Duration tell user how much time was spent to setup the runtime
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "setupDuration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "setupDuration")]
     pub setup_duration: Option<String>,
     /// config map used to set configurations
     #[serde(rename = "valueFile")]
@@ -5207,11 +4475,7 @@ pub struct JuiceFSRuntimeStatus {
     /// The number of nodes that should be running the
     /// runtime worker pod and have one or more of the runtime worker pod running and
     /// available (ready for at least spec.minReadySeconds)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workerNumberAvailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workerNumberAvailable")]
     pub worker_number_available: Option<i32>,
     /// The number of nodes that should be running the runtime worker pod and have one
     /// or more of the runtime worker pod running and ready.
@@ -5220,21 +4484,13 @@ pub struct JuiceFSRuntimeStatus {
     /// The number of nodes that should be running the
     /// runtime worker pod and have none of the runtime worker pod running and available
     /// (ready for at least spec.minReadySeconds)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workerNumberUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workerNumberUnavailable")]
     pub worker_number_unavailable: Option<i32>,
     /// WorkerPhase is the worker running phase
     #[serde(rename = "workerPhase")]
     pub worker_phase: String,
     /// Reason for Worker's condition transition
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workerReason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workerReason")]
     pub worker_reason: Option<String>,
 }
 
@@ -5258,26 +4514,15 @@ pub struct JuiceFSRuntimeStatusCacheAffinity {
     /// compute a sum by iterating through the elements of this field and adding
     /// "weight" to the sum if the node matches the corresponding matchExpressions; the
     /// node(s) with the highest sum are the most preferred.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "preferredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub preferred_during_scheduling_ignored_during_execution: Option<
-        Vec<JuiceFSRuntimeStatusCacheAffinityPreferredDuringSchedulingIgnoredDuringExecution>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "preferredDuringSchedulingIgnoredDuringExecution")]
+    pub preferred_during_scheduling_ignored_during_execution: Option<Vec<JuiceFSRuntimeStatusCacheAffinityPreferredDuringSchedulingIgnoredDuringExecution>>,
     /// If the affinity requirements specified by this field are not met at
     /// scheduling time, the pod will not be scheduled onto the node.
     /// If the affinity requirements specified by this field cease to be met
     /// at some point during pod execution (e.g. due to an update), the system
     /// may or may not try to eventually evict the pod from its node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "requiredDuringSchedulingIgnoredDuringExecution"
-    )]
-    pub required_during_scheduling_ignored_during_execution:
-        Option<JuiceFSRuntimeStatusCacheAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "requiredDuringSchedulingIgnoredDuringExecution")]
+    pub required_during_scheduling_ignored_during_execution: Option<JuiceFSRuntimeStatusCacheAffinityRequiredDuringSchedulingIgnoredDuringExecution>,
 }
 
 /// An empty preferred scheduling term matches all objects with implicit weight 0
@@ -5285,8 +4530,7 @@ pub struct JuiceFSRuntimeStatusCacheAffinity {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JuiceFSRuntimeStatusCacheAffinityPreferredDuringSchedulingIgnoredDuringExecution {
     /// A node selector term, associated with the corresponding weight.
-    pub preference:
-        JuiceFSRuntimeStatusCacheAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
+    pub preference: JuiceFSRuntimeStatusCacheAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreference,
     /// Weight associated with matching the corresponding nodeSelectorTerm, in the range 1-100.
     pub weight: i32,
 }
@@ -5305,8 +4549,7 @@ pub struct JuiceFSRuntimeStatusCacheAffinityPreferredDuringSchedulingIgnoredDuri
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct JuiceFSRuntimeStatusCacheAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct JuiceFSRuntimeStatusCacheAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -5324,8 +4567,7 @@ pub struct JuiceFSRuntimeStatusCacheAffinityPreferredDuringSchedulingIgnoredDuri
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct JuiceFSRuntimeStatusCacheAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct JuiceFSRuntimeStatusCacheAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -5368,8 +4610,7 @@ pub struct JuiceFSRuntimeStatusCacheAffinityRequiredDuringSchedulingIgnoredDurin
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct JuiceFSRuntimeStatusCacheAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct JuiceFSRuntimeStatusCacheAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -5387,8 +4628,7 @@ pub struct JuiceFSRuntimeStatusCacheAffinityRequiredDuringSchedulingIgnoredDurin
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct JuiceFSRuntimeStatusCacheAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct JuiceFSRuntimeStatusCacheAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -5408,11 +4648,7 @@ pub struct JuiceFSRuntimeStatusCacheAffinityRequiredDuringSchedulingIgnoredDurin
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JuiceFSRuntimeStatusMounts {
     /// The secret information
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "encryptOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "encryptOptions")]
     pub encrypt_options: Option<Vec<JuiceFSRuntimeStatusMountsEncryptOptions>>,
     /// MountPoint is the mount point of source.
     #[serde(rename = "mountPoint")]
@@ -5450,11 +4686,7 @@ pub struct JuiceFSRuntimeStatusMountsEncryptOptions {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct JuiceFSRuntimeStatusMountsEncryptOptionsValueFrom {
     /// The encryptInfo obtained from secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<JuiceFSRuntimeStatusMountsEncryptOptionsValueFromSecretKeyRef>,
 }
 
@@ -5467,3 +4699,4 @@ pub struct JuiceFSRuntimeStatusMountsEncryptOptionsValueFromSecretKeyRef {
     /// The name of required secret
     pub name: String,
 }
+

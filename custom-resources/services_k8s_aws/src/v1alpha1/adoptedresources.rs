@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// AdoptedResourceSpec defines the desired state of the AdoptedResource.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "services.k8s.aws",
-    version = "v1alpha1",
-    kind = "AdoptedResource",
-    plural = "adoptedresources"
-)]
+#[kube(group = "services.k8s.aws", version = "v1alpha1", kind = "AdoptedResource", plural = "adoptedresources")]
 #[kube(namespaced)]
 #[kube(status = "AdoptedResourceStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct AdoptedResourceSpec {
     /// AWSIdentifiers provide all unique ways to reference an AWS resource.
     pub aws: AdoptedResourceAws,
@@ -37,11 +32,7 @@ pub struct AdoptedResourceSpec {
 pub struct AdoptedResourceAws {
     /// AdditionalKeys represents any additional arbitrary identifiers used when
     /// describing the target resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalKeys"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalKeys")]
     pub additional_keys: Option<BTreeMap<String, String>>,
     /// ARN is the AWS Resource Name for the resource. It is a globally
     /// unique identifier.
@@ -64,10 +55,10 @@ pub struct AdoptedResourceKubernetes {
     /// It is not possible to use `metav1.ObjectMeta` inside spec, as the controller-gen
     /// automatically converts this to an arbitrary string-string map.
     /// https://github.com/kubernetes-sigs/controller-tools/issues/385
-    ///
+    /// 
     /// Active discussion about inclusion of this field in the spec is happening in this PR:
     /// https://github.com/kubernetes-sigs/controller-tools/pull/395
-    ///
+    /// 
     /// Until this is allowed, or if it never is, we will produce a subset of the object meta
     /// that contains only the fields which the user is allowed to modify in the metadata.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -79,10 +70,10 @@ pub struct AdoptedResourceKubernetes {
 /// It is not possible to use `metav1.ObjectMeta` inside spec, as the controller-gen
 /// automatically converts this to an arbitrary string-string map.
 /// https://github.com/kubernetes-sigs/controller-tools/issues/385
-///
+/// 
 /// Active discussion about inclusion of this field in the spec is happening in this PR:
 /// https://github.com/kubernetes-sigs/controller-tools/pull/395
-///
+/// 
 /// Until this is allowed, or if it never is, we will produce a subset of the object meta
 /// that contains only the fields which the user is allowed to modify in the metadata.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -100,19 +91,15 @@ pub struct AdoptedResourceKubernetesMetadata {
     /// The provided value has the same validation rules as the Name field,
     /// and may be truncated by the length of the suffix required to make the value
     /// unique on the server.
-    ///
+    /// 
     /// If this field is specified and the generated name exists, the server will
     /// NOT return a 409 - instead, it will either return 201 Created or 500 with Reason
     /// ServerTimeout indicating a unique name could not be found in the time allotted, and the client
     /// should retry (optionally after the time indicated in the Retry-After header).
-    ///
+    /// 
     /// Applied only if Name is not specified.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#idempotency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "generateName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateName")]
     pub generate_name: Option<String>,
     /// Map of string keys and values that can be used to organize and categorize
     /// (scope and select) objects. May match selectors of replication controllers
@@ -132,7 +119,7 @@ pub struct AdoptedResourceKubernetesMetadata {
     /// equivalent to the "default" namespace, but "default" is the canonical representation.
     /// Not all objects are required to be scoped to a namespace - the value of this field for
     /// those objects will be empty.
-    ///
+    /// 
     /// Must be a DNS_LABEL.
     /// Cannot be updated.
     /// More info: http://kubernetes.io/docs/user-guide/namespaces
@@ -142,11 +129,7 @@ pub struct AdoptedResourceKubernetesMetadata {
     /// been deleted, this object will be garbage collected. If this object is managed by a controller,
     /// then an entry in this list will point to this controller, with the controller field set to true.
     /// There cannot be more than one managing controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ownerReferences"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerReferences")]
     pub owner_references: Option<Vec<AdoptedResourceKubernetesMetadataOwnerReferences>>,
 }
 
@@ -166,11 +149,7 @@ pub struct AdoptedResourceKubernetesMetadataOwnerReferences {
     /// Defaults to false.
     /// To set this field, a user needs "delete" permission of the owner,
     /// otherwise 422 (Unprocessable Entity) will be returned.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "blockOwnerDeletion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockOwnerDeletion")]
     pub block_owner_deletion: Option<bool>,
     /// If true, this reference points to the managing controller.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -193,3 +172,4 @@ pub struct AdoptedResourceStatus {
     /// terminal states of the adopted resource CR and its target custom resource
     pub conditions: Vec<Condition>,
 }
+

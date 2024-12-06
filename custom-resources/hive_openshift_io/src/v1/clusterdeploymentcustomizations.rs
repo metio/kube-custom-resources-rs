@@ -4,32 +4,23 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ClusterDeploymentCustomizationSpec defines the desired state of ClusterDeploymentCustomization.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "hive.openshift.io",
-    version = "v1",
-    kind = "ClusterDeploymentCustomization",
-    plural = "clusterdeploymentcustomizations"
-)]
+#[kube(group = "hive.openshift.io", version = "v1", kind = "ClusterDeploymentCustomization", plural = "clusterdeploymentcustomizations")]
 #[kube(namespaced)]
 #[kube(status = "ClusterDeploymentCustomizationStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ClusterDeploymentCustomizationSpec {
     /// InstallConfigPatches is a list of patches to be applied to the install-config.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "installConfigPatches"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "installConfigPatches")]
     pub install_config_patches: Option<Vec<ClusterDeploymentCustomizationInstallConfigPatches>>,
 }
 
@@ -74,29 +65,17 @@ pub enum ClusterDeploymentCustomizationInstallConfigPatchesOp {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ClusterDeploymentCustomizationStatus {
     /// ClusterDeploymentRef is a reference to the cluster deployment that this customization is applied on.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterDeploymentRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterDeploymentRef")]
     pub cluster_deployment_ref: Option<ClusterDeploymentCustomizationStatusClusterDeploymentRef>,
     /// ClusterPoolRef is the name of the current cluster pool the CDC used at.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterPoolRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterPoolRef")]
     pub cluster_pool_ref: Option<ClusterDeploymentCustomizationStatusClusterPoolRef>,
     /// Conditions describes the state of the operator's reconciliation functionality.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
     /// LastAppliedConfiguration contains the last applied patches to the install-config.
     /// The information will retain for reference in case the customization is updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastAppliedConfiguration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastAppliedConfiguration")]
     pub last_applied_configuration: Option<String>,
 }
 
@@ -123,3 +102,4 @@ pub struct ClusterDeploymentCustomizationStatusClusterPoolRef {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
+

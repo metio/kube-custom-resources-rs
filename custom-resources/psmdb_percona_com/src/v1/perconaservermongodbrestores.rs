@@ -5,41 +5,24 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "psmdb.percona.com",
-    version = "v1",
-    kind = "PerconaServerMongoDBRestore",
-    plural = "perconaservermongodbrestores"
-)]
+#[kube(group = "psmdb.percona.com", version = "v1", kind = "PerconaServerMongoDBRestore", plural = "perconaservermongodbrestores")]
 #[kube(namespaced)]
 #[kube(status = "PerconaServerMongoDBRestoreStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PerconaServerMongoDBRestoreSpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupName")]
     pub backup_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "backupSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "backupSource")]
     pub backup_source: Option<PerconaServerMongoDBRestoreBackupSource>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clusterName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clusterName")]
     pub cluster_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pitr: Option<PerconaServerMongoDBRestorePitr>,
@@ -47,11 +30,7 @@ pub struct PerconaServerMongoDBRestoreSpec {
     pub replset: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selective: Option<PerconaServerMongoDBRestoreSelective>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageName")]
     pub storage_name: Option<String>,
 }
 
@@ -65,17 +44,9 @@ pub struct PerconaServerMongoDBRestoreBackupSource {
     pub destination: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub error: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastTransition"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastTransition")]
     pub last_transition: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "latestRestorableTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "latestRestorableTime")]
     pub latest_restorable_time: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pbmName")]
     pub pbm_name: Option<String>,
@@ -83,11 +54,7 @@ pub struct PerconaServerMongoDBRestoreBackupSource {
     pub pbm_pod: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pbmPods")]
     pub pbm_pods: Option<BTreeMap<String, String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "replsetNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "replsetNames")]
     pub replset_names: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub s3: Option<PerconaServerMongoDBRestoreBackupSourceS3>,
@@ -95,11 +62,7 @@ pub struct PerconaServerMongoDBRestoreBackupSource {
     pub start: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageName")]
     pub storage_name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -111,11 +74,7 @@ pub struct PerconaServerMongoDBRestoreBackupSourceAzure {
     pub container: Option<String>,
     #[serde(rename = "credentialsSecret")]
     pub credentials_secret: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointUrl")]
     pub endpoint_url: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
@@ -124,41 +83,17 @@ pub struct PerconaServerMongoDBRestoreBackupSourceAzure {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaServerMongoDBRestoreBackupSourceS3 {
     pub bucket: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "credentialsSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "credentialsSecret")]
     pub credentials_secret: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "debugLogLevels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "debugLogLevels")]
     pub debug_log_levels: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointUrl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointUrl")]
     pub endpoint_url: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "forcePathStyle"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "forcePathStyle")]
     pub force_path_style: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipTLSVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipTLSVerify")]
     pub insecure_skip_tls_verify: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUploadParts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUploadParts")]
     pub max_upload_parts: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub prefix: Option<String>,
@@ -166,46 +101,21 @@ pub struct PerconaServerMongoDBRestoreBackupSourceS3 {
     pub region: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub retryer: Option<PerconaServerMongoDBRestoreBackupSourceS3Retryer>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverSideEncryption"
-    )]
-    pub server_side_encryption:
-        Option<PerconaServerMongoDBRestoreBackupSourceS3ServerSideEncryption>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverSideEncryption")]
+    pub server_side_encryption: Option<PerconaServerMongoDBRestoreBackupSourceS3ServerSideEncryption>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClass")]
     pub storage_class: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "uploadPartSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "uploadPartSize")]
     pub upload_part_size: Option<i64>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct PerconaServerMongoDBRestoreBackupSourceS3Retryer {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxRetryDelay"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxRetryDelay")]
     pub max_retry_delay: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minRetryDelay"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minRetryDelay")]
     pub min_retry_delay: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "numMaxRetries"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "numMaxRetries")]
     pub num_max_retries: Option<i64>,
 }
 
@@ -213,23 +123,11 @@ pub struct PerconaServerMongoDBRestoreBackupSourceS3Retryer {
 pub struct PerconaServerMongoDBRestoreBackupSourceS3ServerSideEncryption {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "kmsKeyID")]
     pub kms_key_id: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sseAlgorithm"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sseAlgorithm")]
     pub sse_algorithm: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sseCustomerAlgorithm"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sseCustomerAlgorithm")]
     pub sse_customer_algorithm: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sseCustomerKey"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sseCustomerKey")]
     pub sse_customer_key: Option<String>,
 }
 
@@ -245,11 +143,7 @@ pub struct PerconaServerMongoDBRestorePitr {
 pub struct PerconaServerMongoDBRestoreSelective {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespaces: Option<Vec<String>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "withUsersAndRoles"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "withUsersAndRoles")]
     pub with_users_and_roles: Option<bool>,
 }
 
@@ -259,20 +153,13 @@ pub struct PerconaServerMongoDBRestoreStatus {
     pub completed: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub error: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastTransition"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastTransition")]
     pub last_transition: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pbmName")]
     pub pbm_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pitrTarget"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pitrTarget")]
     pub pitr_target: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+

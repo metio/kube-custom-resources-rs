@@ -4,46 +4,33 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// ControlPlaneProviderSpec defines the desired state of ControlPlaneProvider.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "operator.cluster.x-k8s.io",
-    version = "v1alpha2",
-    kind = "ControlPlaneProvider",
-    plural = "controlplaneproviders"
-)]
+#[kube(group = "operator.cluster.x-k8s.io", version = "v1alpha2", kind = "ControlPlaneProvider", plural = "controlplaneproviders")]
 #[kube(namespaced)]
 #[kube(status = "ControlPlaneProviderStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ControlPlaneProviderSpec {
     /// AdditionalDeployments is a map of additional deployments that the provider
     /// should manage. The key is the name of the deployment and the value is the
     /// DeploymentSpec.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalDeployments"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalDeployments")]
     pub additional_deployments: Option<BTreeMap<String, ControlPlaneProviderAdditionalDeployments>>,
     /// AdditionalManifests is reference to configmap that contains additional manifests that will be applied
     /// together with the provider components. The key for storing these manifests has to be `manifests`.
     /// The manifests are applied only once when a certain release is installed/upgraded. If namespace is not specified, the
     /// namespace of the provider will be used. There is no validation of the yaml content inside the configmap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalManifests"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalManifests")]
     pub additional_manifests: Option<ControlPlaneProviderAdditionalManifests>,
     /// ConfigSecret is the object with name and namespace of the Secret providing
     /// the configuration variables for the current provider instance, like e.g. credentials.
@@ -52,11 +39,7 @@ pub struct ControlPlaneProviderSpec {
     /// to be made, a new object can be created and the name should be updated.
     /// The contents should be in the form of key:value. This secret must be in
     /// the same namespace as the provider.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configSecret")]
     pub config_secret: Option<ControlPlaneProviderConfigSecret>,
     /// Deployment defines the properties that can be enabled on the deployment for the provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -66,11 +49,7 @@ pub struct ControlPlaneProviderSpec {
     /// embedded fetch configuration for the given kind and `ObjectMeta.Name`.
     /// For example, the infrastructure name `aws` will fetch artifacts from
     /// https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fetchConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fetchConfig")]
     pub fetch_config: Option<ControlPlaneProviderFetchConfig>,
     /// Manager defines the properties that can be enabled on the controller manager for the provider.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -80,11 +59,7 @@ pub struct ControlPlaneProviderSpec {
     /// The `kind` field must match the target object, and
     /// if `apiVersion` is specified it will only be applied to matching objects.
     /// This should be an inline yaml blob-string https://datatracker.ietf.org/doc/html/rfc7396
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "manifestPatches"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "manifestPatches")]
     pub manifest_patches: Option<Vec<String>>,
     /// Version indicates the provider version.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -114,31 +89,18 @@ pub struct ControlPlaneProviderAdditionalDeploymentsDeployment {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<ControlPlaneProviderAdditionalDeploymentsDeploymentContainers>>,
     /// List of image pull secrets specified in the Deployment
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
-    pub image_pull_secrets:
-        Option<Vec<ControlPlaneProviderAdditionalDeploymentsDeploymentImagePullSecrets>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
+    pub image_pull_secrets: Option<Vec<ControlPlaneProviderAdditionalDeploymentsDeploymentImagePullSecrets>>,
     /// NodeSelector is a selector which must be true for the pod to fit on a node.
     /// Selector which must match a node's labels for the pod to be scheduled on that node.
     /// More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Number of desired pods. This is a pointer to distinguish between explicit zero and not specified. Defaults to 1.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i64>,
     /// If specified, the pod's service account
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
     /// If specified, the pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -149,29 +111,14 @@ pub struct ControlPlaneProviderAdditionalDeploymentsDeployment {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
-    pub node_affinity:
-        Option<ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityNodeAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
+    pub node_affinity: Option<ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
-    pub pod_affinity:
-        Option<ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityPodAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
+    pub pod_affinity: Option<ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
-    pub pod_anti_affinity:
-        Option<ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityPodAntiAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityPodAntiAffinity>,
 }
 
 /// Describes node affinity scheduling rules for the pod.
@@ -221,8 +168,7 @@ pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityNodeAffini
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -240,8 +186,7 @@ pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityNodeAffini
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -284,8 +229,7 @@ pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityNodeAffini
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -303,8 +247,7 @@ pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityNodeAffini
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -423,8 +366,7 @@ pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityPodAffinit
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -458,8 +400,7 @@ pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityPodAffinit
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -546,8 +487,7 @@ pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityPodAffinit
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -581,8 +521,7 @@ pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityPodAffinit
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -700,8 +639,7 @@ pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityPodAntiAff
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -735,8 +673,7 @@ pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityPodAntiAff
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -823,8 +760,7 @@ pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityPodAntiAff
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -858,8 +794,7 @@ pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityPodAntiAff
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -920,52 +855,31 @@ pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentContainersEnv {
     pub value: Option<String>,
     /// Source for the environment variable's value. Cannot be used if value is not empty.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "valueFrom")]
-    pub value_from:
-        Option<ControlPlaneProviderAdditionalDeploymentsDeploymentContainersEnvValueFrom>,
+    pub value_from: Option<ControlPlaneProviderAdditionalDeploymentsDeploymentContainersEnvValueFrom>,
 }
 
 /// Source for the environment variable's value. Cannot be used if value is not empty.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentContainersEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref: Option<
-        ControlPlaneProviderAdditionalDeploymentsDeploymentContainersEnvValueFromConfigMapKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ControlPlaneProviderAdditionalDeploymentsDeploymentContainersEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
-    pub field_ref:
-        Option<ControlPlaneProviderAdditionalDeploymentsDeploymentContainersEnvValueFromFieldRef>,
+    pub field_ref: Option<ControlPlaneProviderAdditionalDeploymentsDeploymentContainersEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref: Option<
-        ControlPlaneProviderAdditionalDeploymentsDeploymentContainersEnvValueFromResourceFieldRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ControlPlaneProviderAdditionalDeploymentsDeploymentContainersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
-    pub secret_key_ref: Option<
-        ControlPlaneProviderAdditionalDeploymentsDeploymentContainersEnvValueFromSecretKeyRef,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
+    pub secret_key_ref: Option<ControlPlaneProviderAdditionalDeploymentsDeploymentContainersEnvValueFromSecretKeyRef>,
 }
 
 /// Selects a key of a ConfigMap.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentContainersEnvValueFromConfigMapKeyRef
-{
+pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentContainersEnvValueFromConfigMapKeyRef {
     /// The key to select.
     pub key: String,
     /// Name of the referent.
@@ -983,11 +897,7 @@ pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentContainersEnvValue
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -997,14 +907,9 @@ pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentContainersEnvValue
 /// Selects a resource of the container: only resources limits and requests
 /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentContainersEnvValueFromResourceFieldRef
-{
+pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1033,16 +938,15 @@ pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentContainersEnvValue
 pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub claims:
-        Option<Vec<ControlPlaneProviderAdditionalDeploymentsDeploymentContainersResourcesClaims>>,
+    pub claims: Option<Vec<ControlPlaneProviderAdditionalDeploymentsDeploymentContainersResourcesClaims>>,
     /// Limits describes the maximum amount of compute resources allowed.
     /// More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1097,11 +1001,7 @@ pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -1114,16 +1014,12 @@ pub struct ControlPlaneProviderAdditionalDeploymentsDeploymentTolerations {
 pub struct ControlPlaneProviderAdditionalDeploymentsManager {
     /// CacheNamespace if specified restricts the manager's cache to watch objects in
     /// the desired namespace Defaults to all namespaces
-    ///
-    ///
+    /// 
+    /// 
     /// Note: If a namespace is specified, controllers can still Watch for a
     /// cluster-scoped resource (e.g Node).  For namespaced resources the cache
     /// will only hold objects from the desired namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheNamespace")]
     pub cache_namespace: Option<String>,
     /// Controller contains global configuration options for controllers
     /// registered within this manager.
@@ -1132,40 +1028,24 @@ pub struct ControlPlaneProviderAdditionalDeploymentsManager {
     /// FeatureGates define provider specific feature flags that will be passed
     /// in as container args to the provider's controller manager.
     /// Controller Manager flag is --feature-gates.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "featureGates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "featureGates")]
     pub feature_gates: Option<BTreeMap<String, bool>>,
     /// GracefulShutdownTimeout is the duration given to runnable to stop before the manager actually returns on stop.
     /// To disable graceful shutdown, set to time.Duration(0)
     /// To use graceful shutdown without timeout, set to a negative duration, e.G. time.Duration(-1)
     /// The graceful shutdown is skipped for safety reasons in case the leader election lease is lost.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gracefulShutDown"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracefulShutDown")]
     pub graceful_shut_down: Option<String>,
     /// Health contains the controller health configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub health: Option<ControlPlaneProviderAdditionalDeploymentsManagerHealth>,
     /// LeaderElection is the LeaderElection config to be used when configuring
     /// the manager.Manager leader election
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "leaderElection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "leaderElection")]
     pub leader_election: Option<ControlPlaneProviderAdditionalDeploymentsManagerLeaderElection>,
     /// MaxConcurrentReconciles is the maximum number of concurrent Reconciles
     /// which can be run.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConcurrentReconciles"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConcurrentReconciles")]
     pub max_concurrent_reconciles: Option<i64>,
     /// Metrics contains thw controller metrics configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1173,11 +1053,7 @@ pub struct ControlPlaneProviderAdditionalDeploymentsManager {
     /// ProfilerAddress defines the bind address to expose the pprof profiler (e.g. localhost:6060).
     /// Default empty, meaning the profiler is disabled.
     /// Controller Manager flag is --profiler-address.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "profilerAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "profilerAddress")]
     pub profiler_address: Option<String>,
     /// SyncPeriod determines the minimum frequency at which watched resources are
     /// reconciled. A lower period will correct entropy more quickly, but reduce
@@ -1185,11 +1061,7 @@ pub struct ControlPlaneProviderAdditionalDeploymentsManager {
     /// value only if you know what you are doing. Defaults to 10 hours if unset.
     /// there will a 10 percent jitter between the SyncPeriod of all controllers
     /// so that all controllers will not send list requests simultaneously.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "syncPeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncPeriod")]
     pub sync_period: Option<String>,
     /// Verbosity set the logs verbosity. Defaults to 1.
     /// Controller Manager flag is --verbosity.
@@ -1206,36 +1078,24 @@ pub struct ControlPlaneProviderAdditionalDeploymentsManager {
 pub struct ControlPlaneProviderAdditionalDeploymentsManagerController {
     /// CacheSyncTimeout refers to the time limit set to wait for syncing caches.
     /// Defaults to 2 minutes if not set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheSyncTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheSyncTimeout")]
     pub cache_sync_timeout: Option<i64>,
     /// GroupKindConcurrency is a map from a Kind to the number of concurrent reconciliation
     /// allowed for that controller.
-    ///
-    ///
+    /// 
+    /// 
     /// When a controller is registered within this manager using the builder utilities,
     /// users have to specify the type the controller reconciles in the For(...) call.
     /// If the object's kind passed matches one of the keys in this map, the concurrency
     /// for that controller is set to the number specified.
-    ///
-    ///
+    /// 
+    /// 
     /// The key is expected to be consistent in form with GroupKind.String(),
     /// e.g. ReplicaSet in apps group (regardless of version) would be `ReplicaSet.apps`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "groupKindConcurrency"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupKindConcurrency")]
     pub group_kind_concurrency: Option<BTreeMap<String, i64>>,
     /// RecoverPanic indicates if panics should be recovered.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recoverPanic"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recoverPanic")]
     pub recover_panic: Option<bool>,
 }
 
@@ -1245,25 +1105,13 @@ pub struct ControlPlaneProviderAdditionalDeploymentsManagerHealth {
     /// HealthProbeBindAddress is the TCP address that the controller should bind to
     /// for serving health probes
     /// It can be set to "0" or "" to disable serving the health probe.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthProbeBindAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthProbeBindAddress")]
     pub health_probe_bind_address: Option<String>,
     /// LivenessEndpointName, defaults to "healthz"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessEndpointName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessEndpointName")]
     pub liveness_endpoint_name: Option<String>,
     /// ReadinessEndpointName, defaults to "readyz"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessEndpointName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessEndpointName")]
     pub readiness_endpoint_name: Option<String>,
 }
 
@@ -1315,11 +1163,7 @@ pub struct ControlPlaneProviderAdditionalDeploymentsManagerMetrics {
     /// BindAddress is the TCP address that the controller should bind to
     /// for serving prometheus metrics.
     /// It can be set to "0" to disable the metrics serving.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bindAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bindAddress")]
     pub bind_address: Option<String>,
 }
 
@@ -1381,30 +1225,18 @@ pub struct ControlPlaneProviderDeployment {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub containers: Option<Vec<ControlPlaneProviderDeploymentContainers>>,
     /// List of image pull secrets specified in the Deployment
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<ControlPlaneProviderDeploymentImagePullSecrets>>,
     /// NodeSelector is a selector which must be true for the pod to fit on a node.
     /// Selector which must match a node's labels for the pod to be scheduled on that node.
     /// More info: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Number of desired pods. This is a pointer to distinguish between explicit zero and not specified. Defaults to 1.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replicas: Option<i64>,
     /// If specified, the pod's service account
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serviceAccountName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serviceAccountName")]
     pub service_account_name: Option<String>,
     /// If specified, the pod's tolerations.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1415,25 +1247,13 @@ pub struct ControlPlaneProviderDeployment {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ControlPlaneProviderDeploymentAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<ControlPlaneProviderDeploymentAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<ControlPlaneProviderDeploymentAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<ControlPlaneProviderDeploymentAffinityPodAntiAffinity>,
 }
 
@@ -1484,8 +1304,7 @@ pub struct ControlPlaneProviderDeploymentAffinityNodeAffinityPreferredDuringSche
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ControlPlaneProviderDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct ControlPlaneProviderDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1503,8 +1322,7 @@ pub struct ControlPlaneProviderDeploymentAffinityNodeAffinityPreferredDuringSche
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ControlPlaneProviderDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct ControlPlaneProviderDeploymentAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1547,8 +1365,7 @@ pub struct ControlPlaneProviderDeploymentAffinityNodeAffinityRequiredDuringSched
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ControlPlaneProviderDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct ControlPlaneProviderDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1566,8 +1383,7 @@ pub struct ControlPlaneProviderDeploymentAffinityNodeAffinityRequiredDuringSched
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ControlPlaneProviderDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct ControlPlaneProviderDeploymentAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1686,8 +1502,7 @@ pub struct ControlPlaneProviderDeploymentAffinityPodAffinityPreferredDuringSched
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ControlPlaneProviderDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct ControlPlaneProviderDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1721,8 +1536,7 @@ pub struct ControlPlaneProviderDeploymentAffinityPodAffinityPreferredDuringSched
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ControlPlaneProviderDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct ControlPlaneProviderDeploymentAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1809,8 +1623,7 @@ pub struct ControlPlaneProviderDeploymentAffinityPodAffinityRequiredDuringSchedu
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ControlPlaneProviderDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct ControlPlaneProviderDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1844,8 +1657,7 @@ pub struct ControlPlaneProviderDeploymentAffinityPodAffinityRequiredDuringSchedu
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ControlPlaneProviderDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct ControlPlaneProviderDeploymentAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1963,8 +1775,7 @@ pub struct ControlPlaneProviderDeploymentAffinityPodAntiAffinityPreferredDuringS
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ControlPlaneProviderDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct ControlPlaneProviderDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1998,8 +1809,7 @@ pub struct ControlPlaneProviderDeploymentAffinityPodAntiAffinityPreferredDuringS
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ControlPlaneProviderDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct ControlPlaneProviderDeploymentAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2086,8 +1896,7 @@ pub struct ControlPlaneProviderDeploymentAffinityPodAntiAffinityRequiredDuringSc
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ControlPlaneProviderDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct ControlPlaneProviderDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2121,8 +1930,7 @@ pub struct ControlPlaneProviderDeploymentAffinityPodAntiAffinityRequiredDuringSc
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct ControlPlaneProviderDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct ControlPlaneProviderDeploymentAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -2190,32 +1998,18 @@ pub struct ControlPlaneProviderDeploymentContainersEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ControlPlaneProviderDeploymentContainersEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<ControlPlaneProviderDeploymentContainersEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<ControlPlaneProviderDeploymentContainersEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<ControlPlaneProviderDeploymentContainersEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<ControlPlaneProviderDeploymentContainersEnvValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<ControlPlaneProviderDeploymentContainersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<ControlPlaneProviderDeploymentContainersEnvValueFromSecretKeyRef>,
 }
 
@@ -2239,11 +2033,7 @@ pub struct ControlPlaneProviderDeploymentContainersEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ControlPlaneProviderDeploymentContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -2255,11 +2045,7 @@ pub struct ControlPlaneProviderDeploymentContainersEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ControlPlaneProviderDeploymentContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2288,12 +2074,12 @@ pub struct ControlPlaneProviderDeploymentContainersEnvValueFromSecretKeyRef {
 pub struct ControlPlaneProviderDeploymentContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<ControlPlaneProviderDeploymentContainersResourcesClaims>>,
@@ -2351,11 +2137,7 @@ pub struct ControlPlaneProviderDeploymentTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -2393,20 +2175,12 @@ pub struct ControlPlaneProviderFetchConfig {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ControlPlaneProviderFetchConfigSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<ControlPlaneProviderFetchConfigSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -2432,16 +2206,12 @@ pub struct ControlPlaneProviderFetchConfigSelectorMatchExpressions {
 pub struct ControlPlaneProviderManager {
     /// CacheNamespace if specified restricts the manager's cache to watch objects in
     /// the desired namespace Defaults to all namespaces
-    ///
-    ///
+    /// 
+    /// 
     /// Note: If a namespace is specified, controllers can still Watch for a
     /// cluster-scoped resource (e.g Node).  For namespaced resources the cache
     /// will only hold objects from the desired namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheNamespace")]
     pub cache_namespace: Option<String>,
     /// Controller contains global configuration options for controllers
     /// registered within this manager.
@@ -2450,40 +2220,24 @@ pub struct ControlPlaneProviderManager {
     /// FeatureGates define provider specific feature flags that will be passed
     /// in as container args to the provider's controller manager.
     /// Controller Manager flag is --feature-gates.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "featureGates"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "featureGates")]
     pub feature_gates: Option<BTreeMap<String, bool>>,
     /// GracefulShutdownTimeout is the duration given to runnable to stop before the manager actually returns on stop.
     /// To disable graceful shutdown, set to time.Duration(0)
     /// To use graceful shutdown without timeout, set to a negative duration, e.G. time.Duration(-1)
     /// The graceful shutdown is skipped for safety reasons in case the leader election lease is lost.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gracefulShutDown"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gracefulShutDown")]
     pub graceful_shut_down: Option<String>,
     /// Health contains the controller health configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub health: Option<ControlPlaneProviderManagerHealth>,
     /// LeaderElection is the LeaderElection config to be used when configuring
     /// the manager.Manager leader election
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "leaderElection"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "leaderElection")]
     pub leader_election: Option<ControlPlaneProviderManagerLeaderElection>,
     /// MaxConcurrentReconciles is the maximum number of concurrent Reconciles
     /// which can be run.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxConcurrentReconciles"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxConcurrentReconciles")]
     pub max_concurrent_reconciles: Option<i64>,
     /// Metrics contains thw controller metrics configuration
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2491,11 +2245,7 @@ pub struct ControlPlaneProviderManager {
     /// ProfilerAddress defines the bind address to expose the pprof profiler (e.g. localhost:6060).
     /// Default empty, meaning the profiler is disabled.
     /// Controller Manager flag is --profiler-address.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "profilerAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "profilerAddress")]
     pub profiler_address: Option<String>,
     /// SyncPeriod determines the minimum frequency at which watched resources are
     /// reconciled. A lower period will correct entropy more quickly, but reduce
@@ -2503,11 +2253,7 @@ pub struct ControlPlaneProviderManager {
     /// value only if you know what you are doing. Defaults to 10 hours if unset.
     /// there will a 10 percent jitter between the SyncPeriod of all controllers
     /// so that all controllers will not send list requests simultaneously.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "syncPeriod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "syncPeriod")]
     pub sync_period: Option<String>,
     /// Verbosity set the logs verbosity. Defaults to 1.
     /// Controller Manager flag is --verbosity.
@@ -2524,36 +2270,24 @@ pub struct ControlPlaneProviderManager {
 pub struct ControlPlaneProviderManagerController {
     /// CacheSyncTimeout refers to the time limit set to wait for syncing caches.
     /// Defaults to 2 minutes if not set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cacheSyncTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cacheSyncTimeout")]
     pub cache_sync_timeout: Option<i64>,
     /// GroupKindConcurrency is a map from a Kind to the number of concurrent reconciliation
     /// allowed for that controller.
-    ///
-    ///
+    /// 
+    /// 
     /// When a controller is registered within this manager using the builder utilities,
     /// users have to specify the type the controller reconciles in the For(...) call.
     /// If the object's kind passed matches one of the keys in this map, the concurrency
     /// for that controller is set to the number specified.
-    ///
-    ///
+    /// 
+    /// 
     /// The key is expected to be consistent in form with GroupKind.String(),
     /// e.g. ReplicaSet in apps group (regardless of version) would be `ReplicaSet.apps`.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "groupKindConcurrency"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "groupKindConcurrency")]
     pub group_kind_concurrency: Option<BTreeMap<String, i64>>,
     /// RecoverPanic indicates if panics should be recovered.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recoverPanic"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recoverPanic")]
     pub recover_panic: Option<bool>,
 }
 
@@ -2563,25 +2297,13 @@ pub struct ControlPlaneProviderManagerHealth {
     /// HealthProbeBindAddress is the TCP address that the controller should bind to
     /// for serving health probes
     /// It can be set to "0" or "" to disable serving the health probe.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "healthProbeBindAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "healthProbeBindAddress")]
     pub health_probe_bind_address: Option<String>,
     /// LivenessEndpointName, defaults to "healthz"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessEndpointName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessEndpointName")]
     pub liveness_endpoint_name: Option<String>,
     /// ReadinessEndpointName, defaults to "readyz"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessEndpointName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessEndpointName")]
     pub readiness_endpoint_name: Option<String>,
 }
 
@@ -2633,11 +2355,7 @@ pub struct ControlPlaneProviderManagerMetrics {
     /// BindAddress is the TCP address that the controller should bind to
     /// for serving prometheus metrics.
     /// It can be set to "0" to disable the metrics serving.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bindAddress"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bindAddress")]
     pub bind_address: Option<String>,
 }
 
@@ -2671,17 +2389,10 @@ pub struct ControlPlaneProviderStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub contract: Option<String>,
     /// InstalledVersion is the version of the provider that is installed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "installedVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "installedVersion")]
     pub installed_version: Option<String>,
     /// ObservedGeneration is the latest generation observed by the controller.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
 }
+

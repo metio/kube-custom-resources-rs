@@ -4,24 +4,19 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// BpfProgramSpec defines the desired state of BpfProgram
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "bpfman.io",
-    version = "v1alpha1",
-    kind = "BpfProgram",
-    plural = "bpfprograms"
-)]
+#[kube(group = "bpfman.io", version = "v1alpha1", kind = "BpfProgram", plural = "bpfprograms")]
 #[kube(status = "BpfProgramStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct BpfProgramSpec {
     /// Type specifies the bpf program type
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -35,3 +30,4 @@ pub struct BpfProgramStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub conditions: Option<Vec<Condition>>,
 }
+

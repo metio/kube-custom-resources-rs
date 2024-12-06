@@ -4,45 +4,32 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::api::core::v1::ObjectReference;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::api::core::v1::ObjectReference;
 }
 use self::prelude::*;
 
 /// MachineSetSpec defines the desired state of MachineSet.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "cluster.x-k8s.io",
-    version = "v1alpha3",
-    kind = "MachineSet",
-    plural = "machinesets"
-)]
+#[kube(group = "cluster.x-k8s.io", version = "v1alpha3", kind = "MachineSet", plural = "machinesets")]
 #[kube(namespaced)]
 #[kube(status = "MachineSetStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct MachineSetSpec {
     /// clusterName is the name of the Cluster this object belongs to.
     #[serde(rename = "clusterName")]
     pub cluster_name: String,
     /// deletePolicy defines the policy used to identify nodes to delete when downscaling.
     /// Defaults to "Random".  Valid values are "Random, "Newest", "Oldest"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "deletePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "deletePolicy")]
     pub delete_policy: Option<MachineSetDeletePolicy>,
     /// minReadySeconds is the minimum number of seconds for which a newly created machine should be ready.
     /// Defaults to 0 (machine will be considered available as soon as it is ready)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minReadySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minReadySeconds")]
     pub min_ready_seconds: Option<i32>,
     /// replicas is the number of desired replicas.
     /// This is a pointer to distinguish between explicit zero and unspecified.
@@ -76,20 +63,12 @@ pub enum MachineSetDeletePolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineSetSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
     pub match_expressions: Option<Vec<MachineSetSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -142,21 +121,17 @@ pub struct MachineSetTemplateMetadata {
     /// The provided value has the same validation rules as the Name field,
     /// and may be truncated by the length of the suffix required to make the value
     /// unique on the server.
-    ///
+    /// 
     /// If this field is specified and the generated name exists, the server will
     /// NOT return a 409 - instead, it will either return 201 Created or 500 with Reason
     /// ServerTimeout indicating a unique name could not be found in the time allotted, and the client
     /// should retry (optionally after the time indicated in the Retry-After header).
-    ///
+    /// 
     /// Applied only if Name is not specified.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#idempotency
-    ///
+    /// 
     /// Deprecated: This field has no function and is going to be removed in a next release.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "generateName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateName")]
     pub generate_name: Option<String>,
     /// Map of string keys and values that can be used to organize and categorize
     /// (scope and select) objects. May match selectors of replication controllers
@@ -170,7 +145,7 @@ pub struct MachineSetTemplateMetadata {
     /// definition.
     /// Cannot be updated.
     /// More info: http://kubernetes.io/docs/user-guide/identifiers#names
-    ///
+    /// 
     /// Deprecated: This field has no function and is going to be removed in a next release.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
@@ -178,11 +153,11 @@ pub struct MachineSetTemplateMetadata {
     /// equivalent to the "default" namespace, but "default" is the canonical representation.
     /// Not all objects are required to be scoped to a namespace - the value of this field for
     /// those objects will be empty.
-    ///
+    /// 
     /// Must be a DNS_LABEL.
     /// Cannot be updated.
     /// More info: http://kubernetes.io/docs/user-guide/namespaces
-    ///
+    /// 
     /// Deprecated: This field has no function and is going to be removed in a next release.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
@@ -190,13 +165,9 @@ pub struct MachineSetTemplateMetadata {
     /// been deleted, this object will be garbage collected. If this object is managed by a controller,
     /// then an entry in this list will point to this controller, with the controller field set to true.
     /// There cannot be more than one managing controller.
-    ///
+    /// 
     /// Deprecated: This field has no function and is going to be removed in a next release.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ownerReferences"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerReferences")]
     pub owner_references: Option<Vec<MachineSetTemplateMetadataOwnerReferences>>,
 }
 
@@ -216,11 +187,7 @@ pub struct MachineSetTemplateMetadataOwnerReferences {
     /// Defaults to false.
     /// To set this field, a user needs "delete" permission of the owner,
     /// otherwise 422 (Unprocessable Entity) will be returned.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "blockOwnerDeletion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockOwnerDeletion")]
     pub block_owner_deletion: Option<bool>,
     /// If true, this reference points to the managing controller.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -248,11 +215,7 @@ pub struct MachineSetTemplateSpec {
     pub cluster_name: String,
     /// failureDomain is the failure domain the machine will be created in.
     /// Must match a key in the FailureDomains map stored on the cluster object.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureDomain"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureDomain")]
     pub failure_domain: Option<String>,
     /// infrastructureRef is a required reference to a custom resource
     /// offered by an infrastructure provider.
@@ -261,11 +224,7 @@ pub struct MachineSetTemplateSpec {
     /// nodeDrainTimeout is the total amount of time that the controller will spend on draining a node.
     /// The default value is 0, meaning that the node can be drained without any time limitations.
     /// NOTE: NodeDrainTimeout is different from `kubectl drain --timeout`
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeDrainTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeDrainTimeout")]
     pub node_drain_timeout: Option<String>,
     /// providerID is the identification ID of the machine provided by the provider.
     /// This field must match the provider ID as seen on the node object corresponding to this machine.
@@ -277,11 +236,7 @@ pub struct MachineSetTemplateSpec {
     /// and then a comparison is done to find out unregistered machines and are marked for delete.
     /// This field will be set by the actuators and consumed by higher level entities like autoscaler that will
     /// be interfacing with cluster-api as generic provider.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "providerID"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "providerID")]
     pub provider_id: Option<String>,
     /// version defines the desired Kubernetes version.
     /// This field is meant to be optionally used by bootstrap providers.
@@ -301,17 +256,13 @@ pub struct MachineSetTemplateSpecBootstrap {
     pub config_ref: Option<ObjectReference>,
     /// data contains the bootstrap data, such as cloud-init details scripts.
     /// If nil, the Machine should remain in the Pending state.
-    ///
+    /// 
     /// Deprecated: Switch to DataSecretName.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub data: Option<String>,
     /// dataSecretName is the name of the secret that stores the bootstrap data script.
     /// If nil, the Machine should remain in the Pending state.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dataSecretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dataSecretName")]
     pub data_secret_name: Option<String>,
 }
 
@@ -322,11 +273,7 @@ pub struct MachineSetTemplateSpecBootstrap {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineSetTemplateSpecBootstrapConfigRef {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -351,11 +298,7 @@ pub struct MachineSetTemplateSpecBootstrapConfigRef {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -368,11 +311,7 @@ pub struct MachineSetTemplateSpecBootstrapConfigRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineSetTemplateSpecInfrastructureRef {
     /// API version of the referent.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// If referring to a piece of an object instead of an entire object, this string
     /// should contain a valid JSON/Go field access statement, such as desiredState.manifest.containers[2].
@@ -397,11 +336,7 @@ pub struct MachineSetTemplateSpecInfrastructureRef {
     pub namespace: Option<String>,
     /// Specific resourceVersion to which this reference is made, if any.
     /// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#concurrency-control-and-consistency
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceVersion")]
     pub resource_version: Option<String>,
     /// UID of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#uids
@@ -413,24 +348,16 @@ pub struct MachineSetTemplateSpecInfrastructureRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct MachineSetStatus {
     /// The number of available replicas (ready for at least minReadySeconds) for this MachineSet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availableReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availableReplicas")]
     pub available_replicas: Option<i32>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureMessage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureMessage")]
     pub failure_message: Option<String>,
     /// In the event that there is a terminal problem reconciling the
     /// replicas, both FailureReason and FailureMessage will be set. FailureReason
     /// will be populated with a succinct value suitable for machine
     /// interpretation, while FailureMessage will contain a more verbose
     /// string suitable for logging and human consumption.
-    ///
+    /// 
     /// These fields should not be set for transitive errors that a
     /// controller faces that are expected to be fixed automatically over
     /// time (like service outages), but instead indicate that something is
@@ -439,36 +366,20 @@ pub struct MachineSetStatus {
     /// of terminal errors would be invalid combinations of settings in the
     /// spec, values that are unsupported by the machine controller, or the
     /// responsible machine controller itself being critically misconfigured.
-    ///
+    /// 
     /// Any transient errors that occur during the reconciliation of Machines
     /// can be added as events to the MachineSet object and/or logged in the
     /// controller's output.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureReason"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureReason")]
     pub failure_reason: Option<String>,
     /// The number of replicas that have labels matching the labels of the machine template of the MachineSet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fullyLabeledReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fullyLabeledReplicas")]
     pub fully_labeled_replicas: Option<i32>,
     /// observedGeneration reflects the generation of the most recently observed MachineSet.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "observedGeneration"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "observedGeneration")]
     pub observed_generation: Option<i64>,
     /// The number of ready replicas for this MachineSet. A machine is considered ready when the node has been created and is "Ready".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readyReplicas"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readyReplicas")]
     pub ready_replicas: Option<i32>,
     /// replicas is the most recently observed number of replicas.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -479,3 +390,4 @@ pub struct MachineSetStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub selector: Option<String>,
 }
+

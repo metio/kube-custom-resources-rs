@@ -5,51 +5,27 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "objectbucket.io",
-    version = "v1alpha1",
-    kind = "ObjectBucketClaim",
-    plural = "objectbucketclaims"
-)]
+#[kube(group = "objectbucket.io", version = "v1alpha1", kind = "ObjectBucketClaim", plural = "objectbucketclaims")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ObjectBucketClaimSpec {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "additionalConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "additionalConfig")]
     pub additional_config: Option<BTreeMap<String, serde_json::Value>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "bucketName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "bucketName")]
     pub bucket_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "generateBucketName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "generateBucketName")]
     pub generate_bucket_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "objectBucketName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "objectBucketName")]
     pub object_bucket_name: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "storageClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "storageClassName")]
     pub storage_class_name: Option<String>,
 }
+

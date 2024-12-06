@@ -5,66 +5,41 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// Spec defines the behavior of a status check
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, PartialEq)]
-#[kube(
-    group = "chaos-mesh.org",
-    version = "v1alpha1",
-    kind = "StatusCheck",
-    plural = "statuschecks"
-)]
+#[kube(group = "chaos-mesh.org", version = "v1alpha1", kind = "StatusCheck", plural = "statuschecks")]
 #[kube(namespaced)]
 #[kube(status = "StatusCheckStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="PartialEq")]
 pub struct StatusCheckSpec {
     /// Duration defines the duration of the whole status check if the number of failed execution does not exceed the failure threshold. Duration is available to both `Synchronous` and `Continuous` mode. A duration string is a possibly signed sequence of decimal numbers, each with optional fraction and a unit suffix, such as "300ms", "-1.5h" or "2h45m". Valid time units are "ns", "us" (or "µs"), "ms", "s", "m", "h".
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub duration: Option<String>,
     /// FailureThreshold defines the minimum consecutive failure for the status check to be considered failed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub http: Option<StatusCheckHttp>,
     /// IntervalSeconds defines how often (in seconds) to perform an execution of status check.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "intervalSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "intervalSeconds")]
     pub interval_seconds: Option<i64>,
     /// Mode defines the execution mode of the status check. Support type: Synchronous / Continuous
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<StatusCheckMode>,
     /// RecordsHistoryLimit defines the number of record to retain.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "recordsHistoryLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "recordsHistoryLimit")]
     pub records_history_limit: Option<i64>,
     /// SuccessThreshold defines the minimum consecutive successes for the status check to be considered successful. SuccessThreshold only works for `Synchronous` mode.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i64>,
     /// TimeoutSeconds defines the number of seconds after which an execution of status check times out.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i64>,
     /// Type defines the specific status check type. Support type: HTTP
     #[serde(rename = "type")]
@@ -77,7 +52,7 @@ pub struct StatusCheckHttp {
     pub body: Option<String>,
     /// Criteria defines how to determine the result of the status check.
     pub criteria: StatusCheckHttpCriteria,
-    /// A Header represents the key-value pairs in an HTTP header.
+    /// A Header represents the key-value pairs in an HTTP header. 
     ///  The keys should be in canonical form, as returned by CanonicalHeaderKey.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub headers: Option<BTreeMap<String, String>>,
@@ -120,11 +95,7 @@ pub enum StatusCheckType {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct StatusCheckStatus {
     /// CompletionTime represents time when the status check was completed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "completionTime"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "completionTime")]
     pub completion_time: Option<String>,
     /// Conditions represents the latest available observations of a StatusCheck's current state.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -158,3 +129,4 @@ pub struct StatusCheckStatusRecords {
     #[serde(rename = "startTime")]
     pub start_time: String,
 }
+

@@ -4,27 +4,22 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// Specification of the desired behavior of the pod group.
 /// More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#spec-and-status
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "scheduling.volcano.sh",
-    version = "v1beta1",
-    kind = "PodGroup",
-    plural = "podgroups"
-)]
+#[kube(group = "scheduling.volcano.sh", version = "v1beta1", kind = "PodGroup", plural = "podgroups")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct PodGroupSpec {
     /// MinMember defines the minimal number of members/tasks to run the pod group;
     /// if there's not enough resources to start all tasks, the scheduler
@@ -34,20 +29,12 @@ pub struct PodGroupSpec {
     /// MinResources defines the minimal resource of members/tasks to run the pod group;
     /// if there's not enough resources to start all tasks, the scheduler
     /// will not start anyone.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minResources"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minResources")]
     pub min_resources: Option<BTreeMap<String, IntOrString>>,
     /// MinTaskMember defines the minimal number of pods to run each task in the pod group;
     /// if there's not enough resources to start each task, the scheduler
     /// will not start anyone.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minTaskMember"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minTaskMember")]
     pub min_task_member: Option<BTreeMap<String, i32>>,
     /// If specified, indicates the PodGroup's priority. "system-node-critical" and
     /// "system-cluster-critical" are two special keywords which indicate the
@@ -55,11 +42,7 @@ pub struct PodGroupSpec {
     /// name must be defined by creating a PriorityClass object with that name.
     /// If not specified, the PodGroup priority will be default or zero if there is no
     /// default.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "priorityClassName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "priorityClassName")]
     pub priority_class_name: Option<String>,
     /// Queue defines the queue to allocate resource for PodGroup; if queue does not exist,
     /// the PodGroup will not be scheduled. Defaults to `default` Queue with the lowest weight.
@@ -87,3 +70,4 @@ pub struct PodGroupStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub succeeded: Option<i32>,
 }
+

@@ -4,25 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// TigeraStatusSpec defines the desired state of TigeraStatus
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "operator.tigera.io",
-    version = "v1",
-    kind = "TigeraStatus",
-    plural = "tigerastatuses"
-)]
+#[kube(group = "operator.tigera.io", version = "v1", kind = "TigeraStatus", plural = "tigerastatuses")]
 #[kube(status = "TigeraStatusStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
-pub struct TigeraStatusSpec {}
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
+pub struct TigeraStatusSpec {
+}
 
 /// TigeraStatusStatus defines the observed state of TigeraStatus
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -31,3 +27,4 @@ pub struct TigeraStatusStatus {
     /// Available, Progressing, or Degraded.
     pub conditions: Vec<Condition>,
 }
+

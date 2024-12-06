@@ -5,33 +5,24 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// Spec defines the desired specification/configuration of the node.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "cilium.io",
-    version = "v2",
-    kind = "CiliumNode",
-    plural = "ciliumnodes"
-)]
+#[kube(group = "cilium.io", version = "v2", kind = "CiliumNode", plural = "ciliumnodes")]
 #[kube(status = "CiliumNodeStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CiliumNodeSpec {
     /// Addresses is the list of all node addresses.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub addresses: Option<Vec<CiliumNodeAddresses>>,
     /// AlibabaCloud is the AlibabaCloud IPAM specific configuration.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "alibaba-cloud"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "alibaba-cloud")]
     pub alibaba_cloud: Option<CiliumNodeAlibabaCloud>,
     /// Azure is the Azure IPAM specific configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -56,11 +47,7 @@ pub struct CiliumNodeSpec {
     /// node name which is typically the FQDN of the node. The InstanceID
     /// typically refers to the identifier used by the cloud provider or
     /// some other means of identification.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instance-id"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instance-id")]
     pub instance_id: Option<String>,
     /// IPAM is the address management specification. This section can be
     /// populated by a user or it can be automatically populated by an IPAM
@@ -88,52 +75,28 @@ pub struct CiliumNodeAddresses {
 pub struct CiliumNodeAlibabaCloud {
     /// AvailabilityZone is the availability zone to use when allocating
     /// ENIs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availability-zone"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availability-zone")]
     pub availability_zone: Option<String>,
     /// CIDRBlock is vpc ipv4 CIDR
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cidr-block"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cidr-block")]
     pub cidr_block: Option<String>,
     /// InstanceType is the ECS instance type, e.g. "ecs.g6.2xlarge"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instance-type"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instance-type")]
     pub instance_type: Option<String>,
     /// SecurityGroupTags is the list of tags to use when evaluating which
     /// security groups to use for the ENI.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "security-group-tags"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "security-group-tags")]
     pub security_group_tags: Option<BTreeMap<String, String>>,
     /// SecurityGroups is the list of security groups to attach to any ENI
     /// that is created and attached to the instance.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "security-groups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "security-groups")]
     pub security_groups: Option<Vec<String>>,
     /// VPCID is the VPC ID to use when allocating ENIs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpc-id")]
     pub vpc_id: Option<String>,
     /// VSwitchTags is the list of tags to use when evaluating which
     /// vSwitch to use for the ENI.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vswitch-tags"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vswitch-tags")]
     pub vswitch_tags: Option<BTreeMap<String, String>>,
     /// VSwitches is the ID of vSwitch available for ENI
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -145,11 +108,7 @@ pub struct CiliumNodeAlibabaCloud {
 pub struct CiliumNodeAzure {
     /// InterfaceName is the name of the interface the cilium-operator
     /// will use to allocate all the IPs on
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "interface-name"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "interface-name")]
     pub interface_name: Option<String>,
 }
 
@@ -167,64 +126,36 @@ pub struct CiliumNodeEncryption {
 pub struct CiliumNodeEni {
     /// AvailabilityZone is the availability zone to use when allocating
     /// ENIs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availability-zone"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availability-zone")]
     pub availability_zone: Option<String>,
     /// DeleteOnTermination defines that the ENI should be deleted when the
     /// associated instance is terminated. If the parameter is not set the
     /// default behavior is to delete the ENI on instance termination.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "delete-on-termination"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "delete-on-termination")]
     pub delete_on_termination: Option<bool>,
     /// DisablePrefixDelegation determines whether ENI prefix delegation should be
     /// disabled on this node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disable-prefix-delegation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disable-prefix-delegation")]
     pub disable_prefix_delegation: Option<bool>,
     /// ExcludeInterfaceTags is the list of tags to use when excluding ENIs for
     /// Cilium IP allocation. Any interface matching this set of tags will not
     /// be managed by Cilium.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "exclude-interface-tags"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "exclude-interface-tags")]
     pub exclude_interface_tags: Option<BTreeMap<String, String>>,
     /// FirstInterfaceIndex is the index of the first ENI to use for IP
     /// allocation, e.g. if the node has eth0, eth1, eth2 and
     /// FirstInterfaceIndex is set to 1, then only eth1 and eth2 will be
     /// used for IP allocation, eth0 will be ignored for PodIP allocation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "first-interface-index"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "first-interface-index")]
     pub first_interface_index: Option<i64>,
     /// InstanceID is the AWS InstanceId of the node. The InstanceID is used
     /// to retrieve AWS metadata for the node.
-    ///
+    /// 
     /// OBSOLETE: This field is obsolete, please use Spec.InstanceID
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instance-id"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instance-id")]
     pub instance_id: Option<String>,
     /// InstanceType is the AWS EC2 instance type, e.g. "m5.large"
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instance-type"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instance-type")]
     pub instance_type: Option<String>,
     /// MaxAboveWatermark is the maximum number of addresses to allocate
     /// beyond the addresses needed to reach the PreAllocate watermark.
@@ -232,86 +163,50 @@ pub struct CiliumNodeEni {
     /// allocate IPs, e.g. when a new ENI is allocated, as many secondary
     /// IPs as possible are allocated. Limiting the amount can help reduce
     /// waste of IPs.
-    ///
+    /// 
     /// OBSOLETE: This field is obsolete, please use Spec.IPAM.MaxAboveWatermark
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "max-above-watermark"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "max-above-watermark")]
     pub max_above_watermark: Option<i64>,
     /// MinAllocate is the minimum number of IPs that must be allocated when
     /// the node is first bootstrapped. It defines the minimum base socket
     /// of addresses that must be available. After reaching this watermark,
     /// the PreAllocate and MaxAboveWatermark logic takes over to continue
     /// allocating IPs.
-    ///
+    /// 
     /// OBSOLETE: This field is obsolete, please use Spec.IPAM.MinAllocate
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "min-allocate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "min-allocate")]
     pub min_allocate: Option<i64>,
     /// NodeSubnetID is the subnet of the primary ENI the instance was brought up
     /// with. It is used as a sensible default subnet to create ENIs in.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "node-subnet-id"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "node-subnet-id")]
     pub node_subnet_id: Option<String>,
     /// PreAllocate defines the number of IP addresses that must be
     /// available for allocation in the IPAMspec. It defines the buffer of
     /// addresses available immediately without requiring cilium-operator to
     /// get involved.
-    ///
+    /// 
     /// OBSOLETE: This field is obsolete, please use Spec.IPAM.PreAllocate
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pre-allocate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pre-allocate")]
     pub pre_allocate: Option<i64>,
     /// SecurityGroupTags is the list of tags to use when evaliating what
     /// AWS security groups to use for the ENI.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "security-group-tags"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "security-group-tags")]
     pub security_group_tags: Option<BTreeMap<String, String>>,
     /// SecurityGroups is the list of security groups to attach to any ENI
     /// that is created and attached to the instance.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "security-groups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "security-groups")]
     pub security_groups: Option<Vec<String>>,
     /// SubnetIDs is the list of subnet ids to use when evaluating what AWS
     /// subnets to use for ENI and IP allocation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subnet-ids"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnet-ids")]
     pub subnet_ids: Option<Vec<String>>,
     /// SubnetTags is the list of tags to use when evaluating what AWS
     /// subnets to use for ENI and IP allocation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subnet-tags"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subnet-tags")]
     pub subnet_tags: Option<BTreeMap<String, String>>,
     /// UsePrimaryAddress determines whether an ENI's primary address
     /// should be available for allocations on the node
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "use-primary-address"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "use-primary-address")]
     pub use_primary_address: Option<bool>,
     /// VpcID is the VPC ID to use when allocating ENIs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpc-id")]
@@ -355,32 +250,20 @@ pub struct CiliumNodeIpam {
     /// allocate IPs, e.g. when a new ENI is allocated, as many secondary
     /// IPs as possible are allocated. Limiting the amount can help reduce
     /// waste of IPs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "max-above-watermark"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "max-above-watermark")]
     pub max_above_watermark: Option<i64>,
     /// MaxAllocate is the maximum number of IPs that can be allocated to the
     /// node. When the current amount of allocated IPs will approach this value,
     /// the considered value for PreAllocate will decrease down to 0 in order to
     /// not attempt to allocate more addresses than defined.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "max-allocate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "max-allocate")]
     pub max_allocate: Option<i64>,
     /// MinAllocate is the minimum number of IPs that must be allocated when
     /// the node is first bootstrapped. It defines the minimum base socket
     /// of addresses that must be available. After reaching this watermark,
     /// the PreAllocate and MaxAboveWatermark logic takes over to continue
     /// allocating IPs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "min-allocate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "min-allocate")]
     pub min_allocate: Option<i64>,
     /// PodCIDRs is the list of CIDRs available to the node for allocation.
     /// When an IP is used, the IP will be added to Status.IPAM.Used
@@ -398,20 +281,12 @@ pub struct CiliumNodeIpam {
     /// available for allocation in the IPAMspec. It defines the buffer of
     /// addresses available immediately without requiring cilium-operator to
     /// get involved.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "pre-allocate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "pre-allocate")]
     pub pre_allocate: Option<i64>,
     /// StaticIPTags are used to determine the pool of IPs from which to
     /// attribute a static IP to the node. For example in AWS this is used to
     /// filter Elastic IP Addresses.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "static-ip-tags"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "static-ip-tags")]
     pub static_ip_tags: Option<BTreeMap<String, String>>,
 }
 
@@ -423,7 +298,7 @@ pub struct CiliumNodeIpamIpv6Pool {
     /// Owner is the owner of the IP. This field is set if the IP has been
     /// allocated. It will be set to the pod name or another identifier
     /// representing the usage of the IP
-    ///
+    /// 
     /// The owner field is left blank for an entry in Spec.IPAM.Pool and
     /// filled out as the IP is used and also added to Status.IPAM.Used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -443,7 +318,7 @@ pub struct CiliumNodeIpamPool {
     /// Owner is the owner of the IP. This field is set if the IP has been
     /// allocated. It will be set to the pod name or another identifier
     /// representing the usage of the IP
-    ///
+    /// 
     /// The owner field is left blank for an entry in Spec.IPAM.Pool and
     /// filled out as the IP is used and also added to Status.IPAM.Used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -501,19 +376,11 @@ pub struct CiliumNodeIpamPoolsRequested {
 pub struct CiliumNodeIpamPoolsRequestedNeeded {
     /// IPv4Addrs contains the number of requested IPv4 addresses out of a given
     /// pool
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipv4-addrs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipv4-addrs")]
     pub ipv4_addrs: Option<i64>,
     /// IPv6Addrs contains the number of requested IPv6 addresses out of a given
     /// pool
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ipv6-addrs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipv6-addrs")]
     pub ipv6_addrs: Option<i64>,
 }
 
@@ -522,11 +389,7 @@ pub struct CiliumNodeIpamPoolsRequestedNeeded {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumNodeStatus {
     /// AlibabaCloud is the AlibabaCloud specific status of the node.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "alibaba-cloud"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "alibaba-cloud")]
     pub alibaba_cloud: Option<CiliumNodeStatusAlibabaCloud>,
     /// Azure is the Azure specific status of the node.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -551,46 +414,22 @@ pub struct CiliumNodeStatusAlibabaCloud {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumNodeStatusAlibabaCloudEnis {
     /// InstanceID is the InstanceID using this ENI
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "instance-id"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "instance-id")]
     pub instance_id: Option<String>,
     /// MACAddress is the mac address of the ENI
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mac-address"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mac-address")]
     pub mac_address: Option<String>,
     /// NetworkInterfaceID is the ENI id
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "network-interface-id"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "network-interface-id")]
     pub network_interface_id: Option<String>,
     /// PrimaryIPAddress is the primary IP on ENI
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "primary-ip-address"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "primary-ip-address")]
     pub primary_ip_address: Option<String>,
     /// PrivateIPSets is the list of all IPs on the ENI, including PrimaryIPAddress
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "private-ipsets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "private-ipsets")]
     pub private_ipsets: Option<Vec<CiliumNodeStatusAlibabaCloudEnisPrivateIpsets>>,
     /// SecurityGroupIDs is the security group ids used by this ENI
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "security-groupids"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "security-groupids")]
     pub security_groupids: Option<Vec<String>>,
     /// Tags is the tags on this ENI
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -614,11 +453,7 @@ pub struct CiliumNodeStatusAlibabaCloudEnis {
 pub struct CiliumNodeStatusAlibabaCloudEnisPrivateIpsets {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub primary: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "private-ip-address"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "private-ip-address")]
     pub private_ip_address: Option<String>,
 }
 
@@ -632,11 +467,7 @@ pub struct CiliumNodeStatusAlibabaCloudEnisVpc {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipv6-cidr")]
     pub ipv6_cidr: Option<String>,
     /// SecondaryCIDRs is the list of Secondary CIDRs associated with the VPC
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secondary-cidrs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secondary-cidrs")]
     pub secondary_cidrs: Option<Vec<String>>,
     /// VPCID is the vpc to which the ENI belongs
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "vpc-id")]
@@ -653,11 +484,7 @@ pub struct CiliumNodeStatusAlibabaCloudEnisVswitch {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipv6-cidr")]
     pub ipv6_cidr: Option<String>,
     /// VSwitchID is the vSwitch to which the ENI belongs
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vswitch-id"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vswitch-id")]
     pub vswitch_id: Option<String>,
 }
 
@@ -673,7 +500,7 @@ pub struct CiliumNodeStatusAzure {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumNodeStatusAzureInterfaces {
     /// GatewayIP is the interface's subnet's default route
-    ///
+    /// 
     /// OBSOLETE: This field is obsolete, please use Gateway field instead.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "GatewayIP")]
     pub gateway_ip: Option<String>,
@@ -697,11 +524,7 @@ pub struct CiliumNodeStatusAzureInterfaces {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
     /// SecurityGroup is the security group associated with the interface
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "security-group"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "security-group")]
     pub security_group: Option<String>,
     /// State is the provisioning state
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -737,11 +560,7 @@ pub struct CiliumNodeStatusEniEnis {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub addresses: Option<Vec<String>>,
     /// AvailabilityZone is the availability zone of the ENI
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "availability-zone"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "availability-zone")]
     pub availability_zone: Option<String>,
     /// Description is the description field of the ENI
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -766,11 +585,7 @@ pub struct CiliumNodeStatusEniEnis {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "public-ip")]
     pub public_ip: Option<String>,
     /// SecurityGroups are the security groups associated with the ENI
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "security-groups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "security-groups")]
     pub security_groups: Option<Vec<String>>,
     /// Subnet is the subnet the ENI is associated with
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -805,11 +620,7 @@ pub struct CiliumNodeStatusEniEnisVpc {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub id: Option<String>,
     /// PrimaryCIDR is the primary CIDR of the VPC
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "primary-cidr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "primary-cidr")]
     pub primary_cidr: Option<String>,
 }
 
@@ -817,22 +628,14 @@ pub struct CiliumNodeStatusEniEnisVpc {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct CiliumNodeStatusIpam {
     /// AssignedStaticIP is the static IP assigned to the node (ex: public Elastic IP address in AWS)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "assigned-static-ip"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "assigned-static-ip")]
     pub assigned_static_ip: Option<String>,
     /// IPv6Used lists all IPv6 addresses out of Spec.IPAM.IPv6Pool which have been
     /// allocated and are in use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "ipv6-used")]
     pub ipv6_used: Option<BTreeMap<String, CiliumNodeStatusIpamIpv6Used>>,
     /// Operator is the Operator status of the node
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "operator-status"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "operator-status")]
     pub operator_status: Option<CiliumNodeStatusIpamOperatorStatus>,
     /// PodCIDRs lists the status of each pod CIDR allocated to this node.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "pod-cidrs")]
@@ -843,11 +646,7 @@ pub struct CiliumNodeStatusIpam {
     /// * ready-for-release  : Acknowledged as safe to release by agent
     /// * do-not-release     : IP already in use / not owned by the node. Set by agent
     /// * released           : IP successfully released. Set by operator
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "release-ips"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "release-ips")]
     pub release_ips: Option<BTreeMap<String, String>>,
     /// ReleaseIPv6s tracks the state for every IPv6 address considered for release.
     /// The value can be one of the following strings:
@@ -855,11 +654,7 @@ pub struct CiliumNodeStatusIpam {
     /// * ready-for-release  : Acknowledged as safe to release by agent
     /// * do-not-release     : IP already in use / not owned by the node. Set by agent
     /// * released           : IP successfully released. Set by operator
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "release-ipv6s"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "release-ipv6s")]
     pub release_ipv6s: Option<BTreeMap<String, String>>,
     /// Used lists all IPv4 addresses out of Spec.IPAM.Pool which have been allocated
     /// and are in use.
@@ -874,7 +669,7 @@ pub struct CiliumNodeStatusIpamIpv6Used {
     /// Owner is the owner of the IP. This field is set if the IP has been
     /// allocated. It will be set to the pod name or another identifier
     /// representing the usage of the IP
-    ///
+    /// 
     /// The owner field is left blank for an entry in Spec.IPAM.Pool and
     /// filled out as the IP is used and also added to Status.IPAM.Used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -920,7 +715,7 @@ pub struct CiliumNodeStatusIpamUsed {
     /// Owner is the owner of the IP. This field is set if the IP has been
     /// allocated. It will be set to the pod name or another identifier
     /// representing the usage of the IP
-    ///
+    /// 
     /// The owner field is left blank for an entry in Spec.IPAM.Pool and
     /// filled out as the IP is used and also added to Status.IPAM.Used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -931,3 +726,4 @@ pub struct CiliumNodeStatusIpamUsed {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resource: Option<String>,
 }
+

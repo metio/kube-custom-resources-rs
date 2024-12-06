@@ -4,89 +4,56 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// AerospikeClusterSpec defines the desired state of AerospikeCluster
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "asdb.aerospike.com",
-    version = "v1",
-    kind = "AerospikeCluster",
-    plural = "aerospikeclusters"
-)]
+#[kube(group = "asdb.aerospike.com", version = "v1", kind = "AerospikeCluster", plural = "aerospikeclusters")]
 #[kube(namespaced)]
 #[kube(status = "AerospikeClusterStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct AerospikeClusterSpec {
     /// Has the Aerospike roles and users definitions. Required if aerospike cluster security is enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "aerospikeAccessControl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "aerospikeAccessControl")]
     pub aerospike_access_control: Option<AerospikeClusterAerospikeAccessControl>,
     /// Sets config in aerospike.conf file. Other configs are taken as default
     #[serde(rename = "aerospikeConfig")]
     pub aerospike_config: BTreeMap<String, serde_json::Value>,
     /// AerospikeNetworkPolicy specifies how clients and tools access the Aerospike cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "aerospikeNetworkPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "aerospikeNetworkPolicy")]
     pub aerospike_network_policy: Option<AerospikeClusterAerospikeNetworkPolicy>,
     /// Disable the PodDisruptionBudget creation for the Aerospike cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disablePDB"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disablePDB")]
     pub disable_pdb: Option<bool>,
     /// EnableDynamicConfigUpdate enables dynamic config update flow of the operator.
     /// If enabled, operator will try to update the Aerospike config dynamically.
     /// In case of inconsistent state during dynamic config update, operator falls back to rolling restart.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableDynamicConfigUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableDynamicConfigUpdate")]
     pub enable_dynamic_config_update: Option<bool>,
     /// Aerospike server image
     pub image: String,
     /// K8sNodeBlockList is a list of Kubernetes nodes which are not used for Aerospike pods. Pods are not scheduled on
     /// these nodes. Pods are migrated from these nodes if already present. This is useful for the maintenance of
     /// Kubernetes nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "k8sNodeBlockList"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "k8sNodeBlockList")]
     pub k8s_node_block_list: Option<Vec<String>>,
     /// MaxUnavailable is the percentage/number of pods that can be allowed to go down or unavailable before application
     /// disruption. This value is used to create PodDisruptionBudget. Defaults to 1.
     /// Refer Aerospike documentation for more details.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
     /// Operations is a list of on-demand operations to be performed on the Aerospike cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operations: Option<Vec<AerospikeClusterOperations>>,
     /// Certificates to connect to Aerospike.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "operatorClientCert"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorClientCert")]
     pub operator_client_cert: Option<AerospikeClusterOperatorClientCert>,
     /// Paused flag is used to pause the reconciliation for the AerospikeCluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -96,26 +63,14 @@ pub struct AerospikeClusterSpec {
     pub pod_spec: Option<AerospikeClusterPodSpec>,
     /// RackConfig Configures the operator to deploy rack aware Aerospike cluster.
     /// Pods will be deployed in given racks based on given configuration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rackConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rackConfig")]
     pub rack_config: Option<AerospikeClusterRackConfig>,
     /// RosterNodeBlockList is a list of blocked nodeIDs from roster in a strong-consistency setup
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rosterNodeBlockList"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rosterNodeBlockList")]
     pub roster_node_block_list: Option<Vec<String>>,
     /// SeedsFinderServices creates additional Kubernetes service that allow
     /// clients to discover Aerospike cluster nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seedsFinderServices"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seedsFinderServices")]
     pub seeds_finder_services: Option<AerospikeClusterSeedsFinderServices>,
     /// Aerospike cluster size
     pub size: i32,
@@ -123,11 +78,7 @@ pub struct AerospikeClusterSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<AerospikeClusterStorage>,
     /// ValidationPolicy controls validation of the Aerospike cluster resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "validationPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationPolicy")]
     pub validation_policy: Option<AerospikeClusterValidationPolicy>,
 }
 
@@ -135,11 +86,7 @@ pub struct AerospikeClusterSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterAerospikeAccessControl {
     /// AerospikeClientAdminPolicy specify the aerospike client admin policy for access control operations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPolicy")]
     pub admin_policy: Option<AerospikeClusterAerospikeAccessControlAdminPolicy>,
     /// Roles is the set of roles to allow on the Aerospike cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -169,11 +116,7 @@ pub struct AerospikeClusterAerospikeAccessControlRoles {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub whitelist: Option<Vec<String>>,
     /// WriteQuota specifies permitted rate of write records for current role (the value is in RPS)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "writeQuota"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeQuota")]
     pub write_quota: Option<i32>,
 }
 
@@ -199,11 +142,7 @@ pub struct AerospikeClusterAerospikeNetworkPolicy {
     pub access: Option<AerospikeClusterAerospikeNetworkPolicyAccess>,
     /// AlternateAccessType is the type of network address to use for Aerospike alternate access address.
     /// Defaults to hostExternal.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "alternateAccess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "alternateAccess")]
     pub alternate_access: Option<AerospikeClusterAerospikeNetworkPolicyAlternateAccess>,
     /// CustomAccessNetworkNames is the list of the pod's network interfaces used for Aerospike access address.
     /// Each element in the list is specified with a namespace and the name of a NetworkAttachmentDefinition,
@@ -211,11 +150,7 @@ pub struct AerospikeClusterAerospikeNetworkPolicy {
     /// These elements must be defined in the pod annotation k8s.v1.cni.cncf.io/networks in order to assign
     /// network interfaces to the pod.
     /// Required with 'customInterface' access type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customAccessNetworkNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customAccessNetworkNames")]
     pub custom_access_network_names: Option<Vec<String>>,
     /// CustomAlternateAccessNetworkNames is the list of the pod's network interfaces used for Aerospike
     /// alternate access address.
@@ -224,11 +159,7 @@ pub struct AerospikeClusterAerospikeNetworkPolicy {
     /// These elements must be defined in the pod annotation k8s.v1.cni.cncf.io/networks in order to assign
     /// network interfaces to the pod.
     /// Required with 'customInterface' alternateAccess type
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customAlternateAccessNetworkNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customAlternateAccessNetworkNames")]
     pub custom_alternate_access_network_names: Option<Vec<String>>,
     /// CustomFabricNetworkNames is the list of the pod's network interfaces used for Aerospike fabric address.
     /// Each element in the list is specified with a namespace and the name of a NetworkAttachmentDefinition,
@@ -236,11 +167,7 @@ pub struct AerospikeClusterAerospikeNetworkPolicy {
     /// These elements must be defined in the pod annotation k8s.v1.cni.cncf.io/networks in order to assign
     /// network interfaces to the pod.
     /// Required with 'customInterface' fabric type
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customFabricNetworkNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customFabricNetworkNames")]
     pub custom_fabric_network_names: Option<Vec<String>>,
     /// CustomTLSAccessNetworkNames is the list of the pod's network interfaces used for Aerospike TLS access address.
     /// Each element in the list is specified with a namespace and the name of a NetworkAttachmentDefinition,
@@ -248,11 +175,7 @@ pub struct AerospikeClusterAerospikeNetworkPolicy {
     /// These elements must be defined in the pod annotation k8s.v1.cni.cncf.io/networks in order to assign
     /// network interfaces to the pod.
     /// Required with 'customInterface' tlsAccess type
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customTLSAccessNetworkNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customTLSAccessNetworkNames")]
     pub custom_tls_access_network_names: Option<Vec<String>>,
     /// CustomTLSAlternateAccessNetworkNames is the list of the pod's network interfaces used for Aerospike TLS
     /// alternate access address.
@@ -261,11 +184,7 @@ pub struct AerospikeClusterAerospikeNetworkPolicy {
     /// These elements must be defined in the pod annotation k8s.v1.cni.cncf.io/networks in order to assign
     /// network interfaces to the pod.
     /// Required with 'customInterface' tlsAlternateAccess type
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customTLSAlternateAccessNetworkNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customTLSAlternateAccessNetworkNames")]
     pub custom_tls_alternate_access_network_names: Option<Vec<String>>,
     /// CustomTLSFabricNetworkNames is the list of the pod's network interfaces used for Aerospike TLS fabric address.
     /// Each element in the list is specified with a namespace and the name of a NetworkAttachmentDefinition,
@@ -273,11 +192,7 @@ pub struct AerospikeClusterAerospikeNetworkPolicy {
     /// These elements must be defined in the pod annotation k8s.v1.cni.cncf.io/networks in order to assign network
     /// interfaces to the pod.
     /// Required with 'customInterface' tlsFabric type
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customTLSFabricNetworkNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customTLSFabricNetworkNames")]
     pub custom_tls_fabric_network_names: Option<Vec<String>>,
     /// FabricType is the type of network address to use for Aerospike fabric address.
     /// Defaults is empty meaning all interfaces 'any'.
@@ -289,11 +204,7 @@ pub struct AerospikeClusterAerospikeNetworkPolicy {
     pub tls_access: Option<AerospikeClusterAerospikeNetworkPolicyTlsAccess>,
     /// TLSAlternateAccessType is the type of network address to use for Aerospike TLS alternate access address.
     /// Defaults to hostExternal.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsAlternateAccess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsAlternateAccess")]
     pub tls_alternate_access: Option<AerospikeClusterAerospikeNetworkPolicyTlsAlternateAccess>,
     /// TLSFabricType is the type of network address to use for Aerospike TLS fabric address.
     /// Defaults is empty meaning all interfaces 'any'.
@@ -396,24 +307,12 @@ pub struct AerospikeClusterOperatorClientCert {
     /// AerospikeCertPathInOperatorSource contain configuration for certificates used by operator to connect to aerospike
     /// cluster.
     /// All paths are on operator's filesystem.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certPathInOperator"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certPathInOperator")]
     pub cert_path_in_operator: Option<AerospikeClusterOperatorClientCertCertPathInOperator>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretCertSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretCertSource")]
     pub secret_cert_source: Option<AerospikeClusterOperatorClientCertSecretCertSource>,
     /// If specified, this name will be added to tls-authenticate-client list by the operator
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsClientName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsClientName")]
     pub tls_client_name: Option<String>,
 }
 
@@ -422,59 +321,27 @@ pub struct AerospikeClusterOperatorClientCert {
 /// All paths are on operator's filesystem.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterOperatorClientCertCertPathInOperator {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertsPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertsPath")]
     pub ca_certs_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertPath")]
     pub client_cert_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientKeyPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientKeyPath")]
     pub client_key_path: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterOperatorClientCertSecretCertSource {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertsFilename"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertsFilename")]
     pub ca_certs_filename: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertsSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertsSource")]
     pub ca_certs_source: Option<AerospikeClusterOperatorClientCertSecretCertSourceCaCertsSource>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertFilename"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertFilename")]
     pub client_cert_filename: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientKeyFilename"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientKeyFilename")]
     pub client_key_filename: Option<String>,
     #[serde(rename = "secretName")]
     pub secret_name: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretNamespace")]
     pub secret_namespace: Option<String>,
 }
 
@@ -482,11 +349,7 @@ pub struct AerospikeClusterOperatorClientCertSecretCertSource {
 pub struct AerospikeClusterOperatorClientCertSecretCertSourceCaCertsSource {
     #[serde(rename = "secretName")]
     pub secret_name: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretNamespace")]
     pub secret_namespace: Option<String>,
 }
 
@@ -495,19 +358,11 @@ pub struct AerospikeClusterOperatorClientCertSecretCertSourceCaCertsSource {
 pub struct AerospikeClusterPodSpec {
     /// AerospikeContainerSpec configures the aerospike-server container
     /// created by the operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "aerospikeContainer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "aerospikeContainer")]
     pub aerospike_container: Option<AerospikeClusterPodSpecAerospikeContainer>,
     /// AerospikeInitContainerSpec configures the aerospike-init container
     /// created by the operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "aerospikeInitContainer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "aerospikeInitContainer")]
     pub aerospike_init_container: Option<AerospikeClusterPodSpecAerospikeInitContainer>,
     /// Affinity rules for pod placement.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -521,35 +376,19 @@ pub struct AerospikeClusterPodSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
     pub dns_policy: Option<String>,
     /// Effective value of the DNSPolicy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveDNSPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveDNSPolicy")]
     pub effective_dns_policy: Option<String>,
     /// HostNetwork enables host networking for the pod.
     /// To enable hostNetwork multiPodPerHost must be false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostNetwork"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
     pub host_network: Option<bool>,
     /// ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of
     /// the images used by this PodSpec.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#specifying-imagepullsecrets-on-a-pod
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<AerospikeClusterPodSpecImagePullSecrets>>,
     /// InitContainers to add to the pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<AerospikeClusterPodSpecInitContainers>>,
     /// MetaData to add to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -560,33 +399,21 @@ pub struct AerospikeClusterPodSpec {
     /// NodePort, as the name implies, opens a specific port on all the Kubernetes Nodes ,
     /// and any traffic that is sent to this port is forwarded to the service.
     /// Here service picks a random port in range (30000-32767), so these port should be open.
-    ///
-    ///
+    /// 
+    /// 
     /// If set false then only single pod can be created per Kubernetes Node.
     /// This will create Pods using hostPort setting.
     /// The container port will be exposed to the external network at <hostIP>:<hostPort>,
     /// where the hostIP is the IP address of the Kubernetes Node where the container is running and
     /// the hostPort is the port requested by the user.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "multiPodPerHost"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multiPodPerHost")]
     pub multi_pod_per_host: Option<bool>,
     /// NodeSelector constraints for this pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// SecurityContext holds pod-level security attributes and common container settings.
     /// Optional: Defaults to empty.  See type description for default values of each field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<AerospikeClusterPodSpecSecurityContext>,
     /// Sidecars to add to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -607,11 +434,7 @@ pub struct AerospikeClusterPodSpecAerospikeContainer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<AerospikeClusterPodSpecAerospikeContainerResources>,
     /// SecurityContext that will be added to aerospike-server container created by operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<AerospikeClusterPodSpecAerospikeContainerSecurityContext>,
 }
 
@@ -623,12 +446,12 @@ pub struct AerospikeClusterPodSpecAerospikeContainer {
 pub struct AerospikeClusterPodSpecAerospikeContainerResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<AerospikeClusterPodSpecAerospikeContainerResourcesClaims>>,
@@ -663,11 +486,7 @@ pub struct AerospikeClusterPodSpecAerospikeContainerSecurityContext {
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
@@ -690,22 +509,14 @@ pub struct AerospikeClusterPodSpecAerospikeContainerSecurityContext {
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -713,11 +524,7 @@ pub struct AerospikeClusterPodSpecAerospikeContainerSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -731,35 +538,20 @@ pub struct AerospikeClusterPodSpecAerospikeContainerSecurityContext {
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options:
-        Option<AerospikeClusterPodSpecAerospikeContainerSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<AerospikeClusterPodSpecAerospikeContainerSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile:
-        Option<AerospikeClusterPodSpecAerospikeContainerSecurityContextSeccompProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<AerospikeClusterPodSpecAerospikeContainerSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options:
-        Option<AerospikeClusterPodSpecAerospikeContainerSecurityContextWindowsOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<AerospikeClusterPodSpecAerospikeContainerSecurityContextWindowsOptions>,
 }
 
 /// The capabilities to add/drop when running containers.
@@ -806,16 +598,12 @@ pub struct AerospikeClusterPodSpecAerospikeContainerSecurityContextSeccompProfil
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -832,38 +620,22 @@ pub struct AerospikeClusterPodSpecAerospikeContainerSecurityContextWindowsOption
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -872,26 +644,14 @@ pub struct AerospikeClusterPodSpecAerospikeContainerSecurityContextWindowsOption
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterPodSpecAerospikeInitContainer {
     /// ImageNameAndTag is the name:tag of aerospike-init container image
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageNameAndTag"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageNameAndTag")]
     pub image_name_and_tag: Option<String>,
     /// ImageRegistry is the name of image registry for aerospike-init container image
     /// ImageRegistry, e.g. docker.io, redhat.access.com
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageRegistry"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistry")]
     pub image_registry: Option<String>,
     /// ImageRegistryNamespace is the name of namespace in registry for aerospike-init container image
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageRegistryNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistryNamespace")]
     pub image_registry_namespace: Option<String>,
     /// Define resources requests and limits for Aerospike init Container.
     /// Only Memory and Cpu resources can be given
@@ -899,11 +659,7 @@ pub struct AerospikeClusterPodSpecAerospikeInitContainer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<AerospikeClusterPodSpecAerospikeInitContainerResources>,
     /// SecurityContext that will be added to aerospike-init container created by operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<AerospikeClusterPodSpecAerospikeInitContainerSecurityContext>,
 }
 
@@ -914,12 +670,12 @@ pub struct AerospikeClusterPodSpecAerospikeInitContainer {
 pub struct AerospikeClusterPodSpecAerospikeInitContainerResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<AerospikeClusterPodSpecAerospikeInitContainerResourcesClaims>>,
@@ -954,18 +710,13 @@ pub struct AerospikeClusterPodSpecAerospikeInitContainerSecurityContext {
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub capabilities:
-        Option<AerospikeClusterPodSpecAerospikeInitContainerSecurityContextCapabilities>,
+    pub capabilities: Option<AerospikeClusterPodSpecAerospikeInitContainerSecurityContextCapabilities>,
     /// Run container in privileged mode.
     /// Processes in privileged containers are essentially equivalent to root on the host.
     /// Defaults to false.
@@ -982,22 +733,14 @@ pub struct AerospikeClusterPodSpecAerospikeInitContainerSecurityContext {
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -1005,11 +748,7 @@ pub struct AerospikeClusterPodSpecAerospikeInitContainerSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -1023,35 +762,20 @@ pub struct AerospikeClusterPodSpecAerospikeInitContainerSecurityContext {
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options:
-        Option<AerospikeClusterPodSpecAerospikeInitContainerSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<AerospikeClusterPodSpecAerospikeInitContainerSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile:
-        Option<AerospikeClusterPodSpecAerospikeInitContainerSecurityContextSeccompProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<AerospikeClusterPodSpecAerospikeInitContainerSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options:
-        Option<AerospikeClusterPodSpecAerospikeInitContainerSecurityContextWindowsOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<AerospikeClusterPodSpecAerospikeInitContainerSecurityContextWindowsOptions>,
 }
 
 /// The capabilities to add/drop when running containers.
@@ -1098,16 +822,12 @@ pub struct AerospikeClusterPodSpecAerospikeInitContainerSecurityContextSeccompPr
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -1124,38 +844,22 @@ pub struct AerospikeClusterPodSpecAerospikeInitContainerSecurityContextWindowsOp
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -1163,25 +867,13 @@ pub struct AerospikeClusterPodSpecAerospikeInitContainerSecurityContextWindowsOp
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterPodSpecAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<AerospikeClusterPodSpecAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<AerospikeClusterPodSpecAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<AerospikeClusterPodSpecAffinityPodAntiAffinity>,
 }
 
@@ -1232,8 +924,7 @@ pub struct AerospikeClusterPodSpecAffinityNodeAffinityPreferredDuringSchedulingI
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterPodSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct AerospikeClusterPodSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1251,8 +942,7 @@ pub struct AerospikeClusterPodSpecAffinityNodeAffinityPreferredDuringSchedulingI
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterPodSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct AerospikeClusterPodSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1295,8 +985,7 @@ pub struct AerospikeClusterPodSpecAffinityNodeAffinityRequiredDuringSchedulingIg
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterPodSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct AerospikeClusterPodSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1314,8 +1003,7 @@ pub struct AerospikeClusterPodSpecAffinityNodeAffinityRequiredDuringSchedulingIg
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterPodSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct AerospikeClusterPodSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -1434,8 +1122,7 @@ pub struct AerospikeClusterPodSpecAffinityPodAffinityPreferredDuringSchedulingIg
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterPodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct AerospikeClusterPodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1469,8 +1156,7 @@ pub struct AerospikeClusterPodSpecAffinityPodAffinityPreferredDuringSchedulingIg
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterPodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct AerospikeClusterPodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1557,8 +1243,7 @@ pub struct AerospikeClusterPodSpecAffinityPodAffinityRequiredDuringSchedulingIgn
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterPodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct AerospikeClusterPodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1592,8 +1277,7 @@ pub struct AerospikeClusterPodSpecAffinityPodAffinityRequiredDuringSchedulingIgn
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterPodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct AerospikeClusterPodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1711,8 +1395,7 @@ pub struct AerospikeClusterPodSpecAffinityPodAntiAffinityPreferredDuringScheduli
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterPodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct AerospikeClusterPodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1746,8 +1429,7 @@ pub struct AerospikeClusterPodSpecAffinityPodAntiAffinityPreferredDuringScheduli
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterPodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct AerospikeClusterPodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1834,8 +1516,7 @@ pub struct AerospikeClusterPodSpecAffinityPodAntiAffinityRequiredDuringSchedulin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterPodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct AerospikeClusterPodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1869,8 +1550,7 @@ pub struct AerospikeClusterPodSpecAffinityPodAntiAffinityRequiredDuringSchedulin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterPodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct AerospikeClusterPodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -1973,11 +1653,7 @@ pub struct AerospikeClusterPodSpecInitContainers {
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Actions that the management system should take in response to container lifecycle events.
     /// Cannot be updated.
@@ -1987,11 +1663,7 @@ pub struct AerospikeClusterPodSpecInitContainers {
     /// Container will be restarted if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<AerospikeClusterPodSpecInitContainersLivenessProbe>,
     /// Name of the container specified as a DNS_LABEL.
     /// Each container in a pod must have a unique name (DNS_LABEL).
@@ -2010,18 +1682,10 @@ pub struct AerospikeClusterPodSpecInitContainers {
     /// Container will be removed from service endpoints if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<AerospikeClusterPodSpecInitContainersReadinessProbe>,
     /// Resources resize policy for the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resizePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
     pub resize_policy: Option<Vec<AerospikeClusterPodSpecInitContainersResizePolicy>>,
     /// Compute Resources required by this container.
     /// Cannot be updated.
@@ -2043,20 +1707,12 @@ pub struct AerospikeClusterPodSpecInitContainers {
     /// container. Instead, the next init container starts immediately after this
     /// init container is started, or after any startupProbe has successfully
     /// completed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     /// SecurityContext defines the security options the container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<AerospikeClusterPodSpecInitContainersSecurityContext>,
     /// StartupProbe indicates that the Pod has successfully initialized.
     /// If specified, no other probes are executed until this completes successfully.
@@ -2065,11 +1721,7 @@ pub struct AerospikeClusterPodSpecInitContainers {
     /// when it might take a long time to load data or warm a cache, than during steady-state operation.
     /// This cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<AerospikeClusterPodSpecInitContainersStartupProbe>,
     /// Whether this container should allocate a buffer for stdin in the container runtime. If this
     /// is not set, reads from stdin in the container will always result in EOF.
@@ -2092,11 +1744,7 @@ pub struct AerospikeClusterPodSpecInitContainers {
     /// all containers will be limited to 12kb.
     /// Defaults to /dev/termination-log.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
     /// Indicate how the termination message should be populated. File will use the contents of
     /// terminationMessagePath to populate the container status message on both success and failure.
@@ -2105,40 +1753,24 @@ pub struct AerospikeClusterPodSpecInitContainers {
     /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
     /// Defaults to File.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
     /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
     /// volumeDevices is the list of block devices to be used by the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
     pub volume_devices: Option<Vec<AerospikeClusterPodSpecInitContainersVolumeDevices>>,
     /// Pod volumes to mount into the container's filesystem.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<AerospikeClusterPodSpecInitContainersVolumeMounts>>,
     /// Container's working directory.
     /// If not specified, the container runtime's default will be used, which
     /// might be configured in the container image.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -2167,32 +1799,18 @@ pub struct AerospikeClusterPodSpecInitContainersEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterPodSpecInitContainersEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<AerospikeClusterPodSpecInitContainersEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<AerospikeClusterPodSpecInitContainersEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<AerospikeClusterPodSpecInitContainersEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<AerospikeClusterPodSpecInitContainersEnvValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<AerospikeClusterPodSpecInitContainersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<AerospikeClusterPodSpecInitContainersEnvValueFromSecretKeyRef>,
 }
 
@@ -2216,11 +1834,7 @@ pub struct AerospikeClusterPodSpecInitContainersEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterPodSpecInitContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -2232,11 +1846,7 @@ pub struct AerospikeClusterPodSpecInitContainersEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterPodSpecInitContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2264,11 +1874,7 @@ pub struct AerospikeClusterPodSpecInitContainersEnvValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterPodSpecInitContainersEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<AerospikeClusterPodSpecInitContainersEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2369,13 +1975,8 @@ pub struct AerospikeClusterPodSpecInitContainersLifecyclePostStartHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<AerospikeClusterPodSpecInitContainersLifecyclePostStartHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<AerospikeClusterPodSpecInitContainersLifecyclePostStartHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -2467,13 +2068,8 @@ pub struct AerospikeClusterPodSpecInitContainersLifecyclePreStopHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<AerospikeClusterPodSpecInitContainersLifecyclePreStopHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<AerospikeClusterPodSpecInitContainersLifecyclePreStopHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -2529,11 +2125,7 @@ pub struct AerospikeClusterPodSpecInitContainersLivenessProbe {
     pub exec: Option<AerospikeClusterPodSpecInitContainersLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2543,27 +2135,15 @@ pub struct AerospikeClusterPodSpecInitContainersLivenessProbe {
     pub http_get: Option<AerospikeClusterPodSpecInitContainersLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -2578,20 +2158,12 @@ pub struct AerospikeClusterPodSpecInitContainersLivenessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2614,8 +2186,8 @@ pub struct AerospikeClusterPodSpecInitContainersLivenessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -2629,13 +2201,8 @@ pub struct AerospikeClusterPodSpecInitContainersLivenessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<AerospikeClusterPodSpecInitContainersLivenessProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<AerospikeClusterPodSpecInitContainersLivenessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -2709,11 +2276,7 @@ pub struct AerospikeClusterPodSpecInitContainersReadinessProbe {
     pub exec: Option<AerospikeClusterPodSpecInitContainersReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -2723,27 +2286,15 @@ pub struct AerospikeClusterPodSpecInitContainersReadinessProbe {
     pub http_get: Option<AerospikeClusterPodSpecInitContainersReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -2758,20 +2309,12 @@ pub struct AerospikeClusterPodSpecInitContainersReadinessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -2794,8 +2337,8 @@ pub struct AerospikeClusterPodSpecInitContainersReadinessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -2809,13 +2352,8 @@ pub struct AerospikeClusterPodSpecInitContainersReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<AerospikeClusterPodSpecInitContainersReadinessProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<AerospikeClusterPodSpecInitContainersReadinessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -2871,12 +2409,12 @@ pub struct AerospikeClusterPodSpecInitContainersResizePolicy {
 pub struct AerospikeClusterPodSpecInitContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<AerospikeClusterPodSpecInitContainersResourcesClaims>>,
@@ -2913,11 +2451,7 @@ pub struct AerospikeClusterPodSpecInitContainersSecurityContext {
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
@@ -2940,22 +2474,14 @@ pub struct AerospikeClusterPodSpecInitContainersSecurityContext {
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -2963,11 +2489,7 @@ pub struct AerospikeClusterPodSpecInitContainersSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -2981,32 +2503,19 @@ pub struct AerospikeClusterPodSpecInitContainersSecurityContext {
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options:
-        Option<AerospikeClusterPodSpecInitContainersSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<AerospikeClusterPodSpecInitContainersSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<AerospikeClusterPodSpecInitContainersSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<AerospikeClusterPodSpecInitContainersSecurityContextWindowsOptions>,
 }
 
@@ -3054,16 +2563,12 @@ pub struct AerospikeClusterPodSpecInitContainersSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -3080,38 +2585,22 @@ pub struct AerospikeClusterPodSpecInitContainersSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -3129,11 +2618,7 @@ pub struct AerospikeClusterPodSpecInitContainersStartupProbe {
     pub exec: Option<AerospikeClusterPodSpecInitContainersStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3143,27 +2628,15 @@ pub struct AerospikeClusterPodSpecInitContainersStartupProbe {
     pub http_get: Option<AerospikeClusterPodSpecInitContainersStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -3178,20 +2651,12 @@ pub struct AerospikeClusterPodSpecInitContainersStartupProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -3214,8 +2679,8 @@ pub struct AerospikeClusterPodSpecInitContainersStartupProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -3229,13 +2694,8 @@ pub struct AerospikeClusterPodSpecInitContainersStartupProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<AerospikeClusterPodSpecInitContainersStartupProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<AerospikeClusterPodSpecInitContainersStartupProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -3292,11 +2752,7 @@ pub struct AerospikeClusterPodSpecInitContainersVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -3312,11 +2768,7 @@ pub struct AerospikeClusterPodSpecInitContainersVolumeMounts {
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -3338,13 +2790,13 @@ pub struct AerospikeClusterPodSpecSecurityContext {
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
-    ///
-    ///
+    /// 
+    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    ///
-    ///
+    /// 
+    /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
@@ -3356,11 +2808,7 @@ pub struct AerospikeClusterPodSpecSecurityContext {
     /// and emptydir.
     /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
@@ -3368,11 +2816,7 @@ pub struct AerospikeClusterPodSpecSecurityContext {
     /// PodSecurityContext, the value specified in SecurityContext takes precedence
     /// for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -3380,11 +2824,7 @@ pub struct AerospikeClusterPodSpecSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in SecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -3400,19 +2840,11 @@ pub struct AerospikeClusterPodSpecSecurityContext {
     /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
     /// takes precedence for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<AerospikeClusterPodSpecSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by the containers in this pod.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<AerospikeClusterPodSpecSecurityContextSeccompProfile>,
     /// A list of groups applied to the first process run in each container, in addition
     /// to the container's primary GID, the fsGroup (if specified), and group memberships
@@ -3421,11 +2853,7 @@ pub struct AerospikeClusterPodSpecSecurityContext {
     /// defined in the container image for the uid of the container process are still effective,
     /// even if they are not included in this list.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
     /// sysctls (by the container runtime) might fail to launch.
@@ -3436,11 +2864,7 @@ pub struct AerospikeClusterPodSpecSecurityContext {
     /// If unspecified, the options within a container's SecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<AerospikeClusterPodSpecSecurityContextWindowsOptions>,
 }
 
@@ -3474,16 +2898,12 @@ pub struct AerospikeClusterPodSpecSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -3509,38 +2929,22 @@ pub struct AerospikeClusterPodSpecSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -3590,11 +2994,7 @@ pub struct AerospikeClusterPodSpecSidecars {
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Actions that the management system should take in response to container lifecycle events.
     /// Cannot be updated.
@@ -3604,11 +3004,7 @@ pub struct AerospikeClusterPodSpecSidecars {
     /// Container will be restarted if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<AerospikeClusterPodSpecSidecarsLivenessProbe>,
     /// Name of the container specified as a DNS_LABEL.
     /// Each container in a pod must have a unique name (DNS_LABEL).
@@ -3627,18 +3023,10 @@ pub struct AerospikeClusterPodSpecSidecars {
     /// Container will be removed from service endpoints if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<AerospikeClusterPodSpecSidecarsReadinessProbe>,
     /// Resources resize policy for the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resizePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
     pub resize_policy: Option<Vec<AerospikeClusterPodSpecSidecarsResizePolicy>>,
     /// Compute Resources required by this container.
     /// Cannot be updated.
@@ -3660,20 +3048,12 @@ pub struct AerospikeClusterPodSpecSidecars {
     /// container. Instead, the next init container starts immediately after this
     /// init container is started, or after any startupProbe has successfully
     /// completed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     /// SecurityContext defines the security options the container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<AerospikeClusterPodSpecSidecarsSecurityContext>,
     /// StartupProbe indicates that the Pod has successfully initialized.
     /// If specified, no other probes are executed until this completes successfully.
@@ -3682,11 +3062,7 @@ pub struct AerospikeClusterPodSpecSidecars {
     /// when it might take a long time to load data or warm a cache, than during steady-state operation.
     /// This cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<AerospikeClusterPodSpecSidecarsStartupProbe>,
     /// Whether this container should allocate a buffer for stdin in the container runtime. If this
     /// is not set, reads from stdin in the container will always result in EOF.
@@ -3709,11 +3085,7 @@ pub struct AerospikeClusterPodSpecSidecars {
     /// all containers will be limited to 12kb.
     /// Defaults to /dev/termination-log.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
     /// Indicate how the termination message should be populated. File will use the contents of
     /// terminationMessagePath to populate the container status message on both success and failure.
@@ -3722,40 +3094,24 @@ pub struct AerospikeClusterPodSpecSidecars {
     /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
     /// Defaults to File.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
     /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
     /// volumeDevices is the list of block devices to be used by the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
     pub volume_devices: Option<Vec<AerospikeClusterPodSpecSidecarsVolumeDevices>>,
     /// Pod volumes to mount into the container's filesystem.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<AerospikeClusterPodSpecSidecarsVolumeMounts>>,
     /// Container's working directory.
     /// If not specified, the container runtime's default will be used, which
     /// might be configured in the container image.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -3784,11 +3140,7 @@ pub struct AerospikeClusterPodSpecSidecarsEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterPodSpecSidecarsEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
     pub config_map_key_ref: Option<AerospikeClusterPodSpecSidecarsEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
@@ -3796,18 +3148,10 @@ pub struct AerospikeClusterPodSpecSidecarsEnvValueFrom {
     pub field_ref: Option<AerospikeClusterPodSpecSidecarsEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
     pub resource_field_ref: Option<AerospikeClusterPodSpecSidecarsEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<AerospikeClusterPodSpecSidecarsEnvValueFromSecretKeyRef>,
 }
 
@@ -3831,11 +3175,7 @@ pub struct AerospikeClusterPodSpecSidecarsEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterPodSpecSidecarsEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -3847,11 +3187,7 @@ pub struct AerospikeClusterPodSpecSidecarsEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterPodSpecSidecarsEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3879,11 +3215,7 @@ pub struct AerospikeClusterPodSpecSidecarsEnvValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterPodSpecSidecarsEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<AerospikeClusterPodSpecSidecarsEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3984,13 +3316,8 @@ pub struct AerospikeClusterPodSpecSidecarsLifecyclePostStartHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<AerospikeClusterPodSpecSidecarsLifecyclePostStartHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<AerospikeClusterPodSpecSidecarsLifecyclePostStartHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -4082,13 +3409,8 @@ pub struct AerospikeClusterPodSpecSidecarsLifecyclePreStopHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<AerospikeClusterPodSpecSidecarsLifecyclePreStopHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<AerospikeClusterPodSpecSidecarsLifecyclePreStopHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -4144,11 +3466,7 @@ pub struct AerospikeClusterPodSpecSidecarsLivenessProbe {
     pub exec: Option<AerospikeClusterPodSpecSidecarsLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4158,27 +3476,15 @@ pub struct AerospikeClusterPodSpecSidecarsLivenessProbe {
     pub http_get: Option<AerospikeClusterPodSpecSidecarsLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -4193,20 +3499,12 @@ pub struct AerospikeClusterPodSpecSidecarsLivenessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -4229,8 +3527,8 @@ pub struct AerospikeClusterPodSpecSidecarsLivenessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -4244,11 +3542,7 @@ pub struct AerospikeClusterPodSpecSidecarsLivenessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<AerospikeClusterPodSpecSidecarsLivenessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4323,11 +3617,7 @@ pub struct AerospikeClusterPodSpecSidecarsReadinessProbe {
     pub exec: Option<AerospikeClusterPodSpecSidecarsReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4337,27 +3627,15 @@ pub struct AerospikeClusterPodSpecSidecarsReadinessProbe {
     pub http_get: Option<AerospikeClusterPodSpecSidecarsReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -4372,20 +3650,12 @@ pub struct AerospikeClusterPodSpecSidecarsReadinessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -4408,8 +3678,8 @@ pub struct AerospikeClusterPodSpecSidecarsReadinessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -4423,11 +3693,7 @@ pub struct AerospikeClusterPodSpecSidecarsReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<AerospikeClusterPodSpecSidecarsReadinessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4484,12 +3750,12 @@ pub struct AerospikeClusterPodSpecSidecarsResizePolicy {
 pub struct AerospikeClusterPodSpecSidecarsResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<AerospikeClusterPodSpecSidecarsResourcesClaims>>,
@@ -4526,11 +3792,7 @@ pub struct AerospikeClusterPodSpecSidecarsSecurityContext {
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
@@ -4553,22 +3815,14 @@ pub struct AerospikeClusterPodSpecSidecarsSecurityContext {
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -4576,11 +3830,7 @@ pub struct AerospikeClusterPodSpecSidecarsSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -4594,31 +3844,19 @@ pub struct AerospikeClusterPodSpecSidecarsSecurityContext {
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<AerospikeClusterPodSpecSidecarsSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<AerospikeClusterPodSpecSidecarsSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<AerospikeClusterPodSpecSidecarsSecurityContextWindowsOptions>,
 }
 
@@ -4666,16 +3904,12 @@ pub struct AerospikeClusterPodSpecSidecarsSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -4692,38 +3926,22 @@ pub struct AerospikeClusterPodSpecSidecarsSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -4741,11 +3959,7 @@ pub struct AerospikeClusterPodSpecSidecarsStartupProbe {
     pub exec: Option<AerospikeClusterPodSpecSidecarsStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4755,27 +3969,15 @@ pub struct AerospikeClusterPodSpecSidecarsStartupProbe {
     pub http_get: Option<AerospikeClusterPodSpecSidecarsStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -4790,20 +3992,12 @@ pub struct AerospikeClusterPodSpecSidecarsStartupProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -4826,8 +4020,8 @@ pub struct AerospikeClusterPodSpecSidecarsStartupProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -4841,11 +4035,7 @@ pub struct AerospikeClusterPodSpecSidecarsStartupProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
     pub http_headers: Option<Vec<AerospikeClusterPodSpecSidecarsStartupProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4903,11 +4093,7 @@ pub struct AerospikeClusterPodSpecSidecarsVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -4923,11 +4109,7 @@ pub struct AerospikeClusterPodSpecSidecarsVolumeMounts {
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -4953,11 +4135,7 @@ pub struct AerospikeClusterPodSpecTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -4978,11 +4156,7 @@ pub struct AerospikeClusterRackConfig {
     /// without being hindered by these problematic pods.
     /// Remember to set MaxIgnorablePods back to 0 once the required operation is done.
     /// This makes sure that later on, all pods are properly counted when evaluating the cluster stability.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxIgnorablePods"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxIgnorablePods")]
     pub max_ignorable_pods: Option<IntOrString>,
     /// List of Aerospike namespaces for which rack feature will be enabled
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -4991,18 +4165,10 @@ pub struct AerospikeClusterRackConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub racks: Option<Vec<AerospikeClusterRackConfigRacks>>,
     /// RollingUpdateBatchSize is the percentage/number of rack pods that can be restarted simultaneously
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollingUpdateBatchSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdateBatchSize")]
     pub rolling_update_batch_size: Option<IntOrString>,
     /// ScaleDownBatchSize is the percentage/number of rack pods that can be scaled down simultaneously
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scaleDownBatchSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleDownBatchSize")]
     pub scale_down_batch_size: Option<IntOrString>,
 }
 
@@ -5010,33 +4176,17 @@ pub struct AerospikeClusterRackConfig {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterRackConfigRacks {
     /// AerospikeConfig overrides the common AerospikeConfig for this Rack. This is merged with global Aerospike config.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "aerospikeConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "aerospikeConfig")]
     pub aerospike_config: Option<BTreeMap<String, serde_json::Value>>,
     /// Effective/operative Aerospike config. The resultant is a merge of rack Aerospike config and the global
     /// Aerospike config
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveAerospikeConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveAerospikeConfig")]
     pub effective_aerospike_config: Option<BTreeMap<String, serde_json::Value>>,
     /// Effective/operative PodSpec. The resultant is user input if specified else global PodSpec
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectivePodSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectivePodSpec")]
     pub effective_pod_spec: Option<AerospikeClusterRackConfigRacksEffectivePodSpec>,
     /// Effective/operative storage. The resultant is user input if specified else global storage
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveStorage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveStorage")]
     pub effective_storage: Option<AerospikeClusterRackConfigRacksEffectiveStorage>,
     /// Identifier for the rack
     pub id: i64,
@@ -5068,11 +4218,7 @@ pub struct AerospikeClusterRackConfigRacksEffectivePodSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<AerospikeClusterRackConfigRacksEffectivePodSpecAffinity>,
     /// NodeSelector constraints for this pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Tolerations for this pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5083,27 +4229,14 @@ pub struct AerospikeClusterRackConfigRacksEffectivePodSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<AerospikeClusterRackConfigRacksEffectivePodSpecAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
-    pub pod_anti_affinity:
-        Option<AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAntiAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAntiAffinity>,
 }
 
 /// Describes node affinity scheduling rules for the pod.
@@ -5153,8 +4286,7 @@ pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityNodeAffinityPr
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -5172,8 +4304,7 @@ pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityNodeAffinityPr
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -5216,8 +4347,7 @@ pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityNodeAffinityRe
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -5235,8 +4365,7 @@ pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityNodeAffinityRe
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -5355,8 +4484,7 @@ pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAffinityPre
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5390,8 +4518,7 @@ pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAffinityPre
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5478,8 +4605,7 @@ pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAffinityReq
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5513,8 +4639,7 @@ pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAffinityReq
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5632,8 +4757,7 @@ pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAntiAffinit
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5667,8 +4791,7 @@ pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAntiAffinit
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5755,8 +4878,7 @@ pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAntiAffinit
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5790,8 +4912,7 @@ pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAntiAffinit
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct AerospikeClusterRackConfigRacksEffectivePodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -5827,11 +4948,7 @@ pub struct AerospikeClusterRackConfigRacksEffectivePodSpecTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -5843,34 +4960,16 @@ pub struct AerospikeClusterRackConfigRacksEffectivePodSpecTolerations {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterRackConfigRacksEffectiveStorage {
     /// BlockVolumePolicy contains default policies for block volumes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "blockVolumePolicy"
-    )]
-    pub block_volume_policy:
-        Option<AerospikeClusterRackConfigRacksEffectiveStorageBlockVolumePolicy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockVolumePolicy")]
+    pub block_volume_policy: Option<AerospikeClusterRackConfigRacksEffectiveStorageBlockVolumePolicy>,
     /// CleanupThreads contains the maximum number of cleanup threads(dd or blkdiscard) per init container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cleanupThreads"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanupThreads")]
     pub cleanup_threads: Option<i64>,
     /// FileSystemVolumePolicy contains default policies for filesystem volumes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "filesystemVolumePolicy"
-    )]
-    pub filesystem_volume_policy:
-        Option<AerospikeClusterRackConfigRacksEffectiveStorageFilesystemVolumePolicy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filesystemVolumePolicy")]
+    pub filesystem_volume_policy: Option<AerospikeClusterRackConfigRacksEffectiveStorageFilesystemVolumePolicy>,
     /// LocalStorageClasses contains a list of storage classes which provisions local volumes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localStorageClasses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localStorageClasses")]
     pub local_storage_classes: Option<Vec<String>>,
     /// Volumes list to attach to created pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -5882,53 +4981,25 @@ pub struct AerospikeClusterRackConfigRacksEffectiveStorage {
 pub struct AerospikeClusterRackConfigRacksEffectiveStorageBlockVolumePolicy {
     /// CascadeDelete determines if the persistent volumes are deleted after the pod this volume binds to is
     /// terminated and removed from the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cascadeDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cascadeDelete")]
     pub cascade_delete: Option<bool>,
     /// Effective/operative value to use for cascade delete after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveCascadeDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveCascadeDelete")]
     pub effective_cascade_delete: Option<bool>,
     /// Effective/operative value to use as the volume init method after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveInitMethod"
-    )]
-    pub effective_init_method:
-        Option<AerospikeClusterRackConfigRacksEffectiveStorageBlockVolumePolicyEffectiveInitMethod>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveInitMethod")]
+    pub effective_init_method: Option<AerospikeClusterRackConfigRacksEffectiveStorageBlockVolumePolicyEffectiveInitMethod>,
     /// Effective/operative value to use as the volume wipe method after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveWipeMethod"
-    )]
-    pub effective_wipe_method:
-        Option<AerospikeClusterRackConfigRacksEffectiveStorageBlockVolumePolicyEffectiveWipeMethod>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveWipeMethod")]
+    pub effective_wipe_method: Option<AerospikeClusterRackConfigRacksEffectiveStorageBlockVolumePolicyEffectiveWipeMethod>,
     /// InitMethod determines how volumes attached to Aerospike server pods are initialized when the pods come up the
     /// first time. Defaults to "none".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initMethod"
-    )]
-    pub init_method:
-        Option<AerospikeClusterRackConfigRacksEffectiveStorageBlockVolumePolicyInitMethod>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initMethod")]
+    pub init_method: Option<AerospikeClusterRackConfigRacksEffectiveStorageBlockVolumePolicyInitMethod>,
     /// WipeMethod determines how volumes attached to Aerospike server pods are wiped for dealing with storage format
     /// changes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wipeMethod"
-    )]
-    pub wipe_method:
-        Option<AerospikeClusterRackConfigRacksEffectiveStorageBlockVolumePolicyWipeMethod>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wipeMethod")]
+    pub wipe_method: Option<AerospikeClusterRackConfigRacksEffectiveStorageBlockVolumePolicyWipeMethod>,
 }
 
 /// BlockVolumePolicy contains default policies for block volumes.
@@ -5988,55 +5059,25 @@ pub enum AerospikeClusterRackConfigRacksEffectiveStorageBlockVolumePolicyWipeMet
 pub struct AerospikeClusterRackConfigRacksEffectiveStorageFilesystemVolumePolicy {
     /// CascadeDelete determines if the persistent volumes are deleted after the pod this volume binds to is
     /// terminated and removed from the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cascadeDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cascadeDelete")]
     pub cascade_delete: Option<bool>,
     /// Effective/operative value to use for cascade delete after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveCascadeDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveCascadeDelete")]
     pub effective_cascade_delete: Option<bool>,
     /// Effective/operative value to use as the volume init method after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveInitMethod"
-    )]
-    pub effective_init_method: Option<
-        AerospikeClusterRackConfigRacksEffectiveStorageFilesystemVolumePolicyEffectiveInitMethod,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveInitMethod")]
+    pub effective_init_method: Option<AerospikeClusterRackConfigRacksEffectiveStorageFilesystemVolumePolicyEffectiveInitMethod>,
     /// Effective/operative value to use as the volume wipe method after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveWipeMethod"
-    )]
-    pub effective_wipe_method: Option<
-        AerospikeClusterRackConfigRacksEffectiveStorageFilesystemVolumePolicyEffectiveWipeMethod,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveWipeMethod")]
+    pub effective_wipe_method: Option<AerospikeClusterRackConfigRacksEffectiveStorageFilesystemVolumePolicyEffectiveWipeMethod>,
     /// InitMethod determines how volumes attached to Aerospike server pods are initialized when the pods come up the
     /// first time. Defaults to "none".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initMethod"
-    )]
-    pub init_method:
-        Option<AerospikeClusterRackConfigRacksEffectiveStorageFilesystemVolumePolicyInitMethod>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initMethod")]
+    pub init_method: Option<AerospikeClusterRackConfigRacksEffectiveStorageFilesystemVolumePolicyInitMethod>,
     /// WipeMethod determines how volumes attached to Aerospike server pods are wiped for dealing with storage format
     /// changes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wipeMethod"
-    )]
-    pub wipe_method:
-        Option<AerospikeClusterRackConfigRacksEffectiveStorageFilesystemVolumePolicyWipeMethod>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wipeMethod")]
+    pub wipe_method: Option<AerospikeClusterRackConfigRacksEffectiveStorageFilesystemVolumePolicyWipeMethod>,
 }
 
 /// FileSystemVolumePolicy contains default policies for filesystem volumes.
@@ -6098,50 +5139,23 @@ pub struct AerospikeClusterRackConfigRacksEffectiveStorageVolumes {
     pub aerospike: Option<AerospikeClusterRackConfigRacksEffectiveStorageVolumesAerospike>,
     /// CascadeDelete determines if the persistent volumes are deleted after the pod this volume binds to is
     /// terminated and removed from the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cascadeDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cascadeDelete")]
     pub cascade_delete: Option<bool>,
     /// Effective/operative value to use for cascade delete after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveCascadeDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveCascadeDelete")]
     pub effective_cascade_delete: Option<bool>,
     /// Effective/operative value to use as the volume init method after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveInitMethod"
-    )]
-    pub effective_init_method:
-        Option<AerospikeClusterRackConfigRacksEffectiveStorageVolumesEffectiveInitMethod>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveInitMethod")]
+    pub effective_init_method: Option<AerospikeClusterRackConfigRacksEffectiveStorageVolumesEffectiveInitMethod>,
     /// Effective/operative value to use as the volume wipe method after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveWipeMethod"
-    )]
-    pub effective_wipe_method:
-        Option<AerospikeClusterRackConfigRacksEffectiveStorageVolumesEffectiveWipeMethod>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveWipeMethod")]
+    pub effective_wipe_method: Option<AerospikeClusterRackConfigRacksEffectiveStorageVolumesEffectiveWipeMethod>,
     /// InitContainers are additional init containers where this volume will be mounted
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
-    pub init_containers:
-        Option<Vec<AerospikeClusterRackConfigRacksEffectiveStorageVolumesInitContainers>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
+    pub init_containers: Option<Vec<AerospikeClusterRackConfigRacksEffectiveStorageVolumesInitContainers>>,
     /// InitMethod determines how volumes attached to Aerospike server pods are initialized when the pods come up the
     /// first time. Defaults to "none".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initMethod")]
     pub init_method: Option<AerospikeClusterRackConfigRacksEffectiveStorageVolumesInitMethod>,
     /// Name for this volume, Name or path should be given.
     pub name: String,
@@ -6153,24 +5167,15 @@ pub struct AerospikeClusterRackConfigRacksEffectiveStorageVolumes {
     pub source: Option<AerospikeClusterRackConfigRacksEffectiveStorageVolumesSource>,
     /// WipeMethod determines how volumes attached to Aerospike server pods are wiped for dealing with storage format
     /// changes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wipeMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wipeMethod")]
     pub wipe_method: Option<AerospikeClusterRackConfigRacksEffectiveStorageVolumesWipeMethod>,
 }
 
 /// Aerospike attachment of this volume on Aerospike server container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterRackConfigRacksEffectiveStorageVolumesAerospike {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountOptions"
-    )]
-    pub mount_options:
-        Option<AerospikeClusterRackConfigRacksEffectiveStorageVolumesAerospikeMountOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountOptions")]
+    pub mount_options: Option<AerospikeClusterRackConfigRacksEffectiveStorageVolumesAerospikeMountOptions>,
     /// Path to attach the volume on the Aerospike server container.
     pub path: String,
 }
@@ -6181,11 +5186,7 @@ pub struct AerospikeClusterRackConfigRacksEffectiveStorageVolumesAerospikeMountO
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// Mounted read-only if true, read-write otherwise (false or unspecified).
     /// Defaults to false.
@@ -6200,11 +5201,7 @@ pub struct AerospikeClusterRackConfigRacksEffectiveStorageVolumesAerospikeMountO
     /// VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -6238,13 +5235,8 @@ pub struct AerospikeClusterRackConfigRacksEffectiveStorageVolumesInitContainers 
     /// ContainerName is the name of the container to attach this volume to.
     #[serde(rename = "containerName")]
     pub container_name: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountOptions"
-    )]
-    pub mount_options:
-        Option<AerospikeClusterRackConfigRacksEffectiveStorageVolumesInitContainersMountOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountOptions")]
+    pub mount_options: Option<AerospikeClusterRackConfigRacksEffectiveStorageVolumesInitContainersMountOptions>,
     /// Path to attach the volume on the container.
     pub path: String,
 }
@@ -6255,11 +5247,7 @@ pub struct AerospikeClusterRackConfigRacksEffectiveStorageVolumesInitContainersM
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// Mounted read-only if true, read-write otherwise (false or unspecified).
     /// Defaults to false.
@@ -6274,11 +5262,7 @@ pub struct AerospikeClusterRackConfigRacksEffectiveStorageVolumesInitContainersM
     /// VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -6300,13 +5284,8 @@ pub struct AerospikeClusterRackConfigRacksEffectiveStorageVolumesSidecars {
     /// ContainerName is the name of the container to attach this volume to.
     #[serde(rename = "containerName")]
     pub container_name: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountOptions"
-    )]
-    pub mount_options:
-        Option<AerospikeClusterRackConfigRacksEffectiveStorageVolumesSidecarsMountOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountOptions")]
+    pub mount_options: Option<AerospikeClusterRackConfigRacksEffectiveStorageVolumesSidecarsMountOptions>,
     /// Path to attach the volume on the container.
     pub path: String,
 }
@@ -6317,11 +5296,7 @@ pub struct AerospikeClusterRackConfigRacksEffectiveStorageVolumesSidecarsMountOp
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// Mounted read-only if true, read-write otherwise (false or unspecified).
     /// Defaults to false.
@@ -6336,11 +5311,7 @@ pub struct AerospikeClusterRackConfigRacksEffectiveStorageVolumesSidecarsMountOp
     /// VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -6355,16 +5326,11 @@ pub struct AerospikeClusterRackConfigRacksEffectiveStorageVolumesSource {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<AerospikeClusterRackConfigRacksEffectiveStorageVolumesSourceEmptyDir>,
     /// PersistentVolumeSpec describes a persistent volume to claim and attach to Aerospike pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolume"
-    )]
-    pub persistent_volume:
-        Option<AerospikeClusterRackConfigRacksEffectiveStorageVolumesSourcePersistentVolume>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolume")]
+    pub persistent_volume: Option<AerospikeClusterRackConfigRacksEffectiveStorageVolumesSourcePersistentVolume>,
     /// Adapts a Secret into a volume.
-    ///
-    ///
+    /// 
+    /// 
     /// The contents of the target Secret's Data field will be presented in a volume
     /// as files using the keys in the Data field as the file names.
     /// Secret volumes support ownership management and SELinux relabeling.
@@ -6382,11 +5348,7 @@ pub struct AerospikeClusterRackConfigRacksEffectiveStorageVolumesSourceConfigMap
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items if unspecified, each key-value pair in the Data field of the referenced
     /// ConfigMap will be projected into the volume as a file whose name is the
@@ -6396,8 +5358,7 @@ pub struct AerospikeClusterRackConfigRacksEffectiveStorageVolumesSourceConfigMap
     /// the volume setup will error unless it is marked optional. Paths must be
     /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<AerospikeClusterRackConfigRacksEffectiveStorageVolumesSourceConfigMapItems>>,
+    pub items: Option<Vec<AerospikeClusterRackConfigRacksEffectiveStorageVolumesSourceConfigMapItems>>,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -6453,21 +5414,13 @@ pub struct AerospikeClusterRackConfigRacksEffectiveStorageVolumesSourceEmptyDir 
 pub struct AerospikeClusterRackConfigRacksEffectiveStorageVolumesSourcePersistentVolume {
     /// Name for creating PVC for this volume, Name or path should be given
     /// Name string `json:"name"`
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<
-        AerospikeClusterRackConfigRacksEffectiveStorageVolumesSourcePersistentVolumeMetadata,
-    >,
+    pub metadata: Option<AerospikeClusterRackConfigRacksEffectiveStorageVolumesSourcePersistentVolumeMetadata>,
     /// A label query over volumes to consider for binding.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub selector: Option<
-        AerospikeClusterRackConfigRacksEffectiveStorageVolumesSourcePersistentVolumeSelector,
-    >,
+    pub selector: Option<AerospikeClusterRackConfigRacksEffectiveStorageVolumesSourcePersistentVolumeSelector>,
     /// Size of volume.
     pub size: IntOrString,
     /// StorageClass should be pre-created by user.
@@ -6504,8 +5457,7 @@ pub struct AerospikeClusterRackConfigRacksEffectiveStorageVolumesSourcePersisten
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterRackConfigRacksEffectiveStorageVolumesSourcePersistentVolumeSelectorMatchExpressions
-{
+pub struct AerospikeClusterRackConfigRacksEffectiveStorageVolumesSourcePersistentVolumeSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -6520,8 +5472,8 @@ pub struct AerospikeClusterRackConfigRacksEffectiveStorageVolumesSourcePersisten
 }
 
 /// Adapts a Secret into a volume.
-///
-///
+/// 
+/// 
 /// The contents of the target Secret's Data field will be presented in a volume
 /// as files using the keys in the Data field as the file names.
 /// Secret volumes support ownership management and SELinux relabeling.
@@ -6534,11 +5486,7 @@ pub struct AerospikeClusterRackConfigRacksEffectiveStorageVolumesSourceSecret {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items If unspecified, each key-value pair in the Data field of the referenced
     /// Secret will be projected into the volume as a file whose name is the
@@ -6554,11 +5502,7 @@ pub struct AerospikeClusterRackConfigRacksEffectiveStorageVolumesSourceSecret {
     pub optional: Option<bool>,
     /// secretName is the name of the secret in the pod's namespace to use.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -6601,11 +5545,7 @@ pub struct AerospikeClusterRackConfigRacksPodSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<AerospikeClusterRackConfigRacksPodSpecAffinity>,
     /// NodeSelector constraints for this pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Tolerations for this pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6616,25 +5556,13 @@ pub struct AerospikeClusterRackConfigRacksPodSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterRackConfigRacksPodSpecAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<AerospikeClusterRackConfigRacksPodSpecAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<AerospikeClusterRackConfigRacksPodSpecAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<AerospikeClusterRackConfigRacksPodSpecAffinityPodAntiAffinity>,
 }
 
@@ -6685,8 +5613,7 @@ pub struct AerospikeClusterRackConfigRacksPodSpecAffinityNodeAffinityPreferredDu
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterRackConfigRacksPodSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct AerospikeClusterRackConfigRacksPodSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -6704,8 +5631,7 @@ pub struct AerospikeClusterRackConfigRacksPodSpecAffinityNodeAffinityPreferredDu
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterRackConfigRacksPodSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct AerospikeClusterRackConfigRacksPodSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -6748,8 +5674,7 @@ pub struct AerospikeClusterRackConfigRacksPodSpecAffinityNodeAffinityRequiredDur
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterRackConfigRacksPodSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct AerospikeClusterRackConfigRacksPodSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -6767,8 +5692,7 @@ pub struct AerospikeClusterRackConfigRacksPodSpecAffinityNodeAffinityRequiredDur
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterRackConfigRacksPodSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct AerospikeClusterRackConfigRacksPodSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -6887,8 +5811,7 @@ pub struct AerospikeClusterRackConfigRacksPodSpecAffinityPodAffinityPreferredDur
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterRackConfigRacksPodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct AerospikeClusterRackConfigRacksPodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -6922,8 +5845,7 @@ pub struct AerospikeClusterRackConfigRacksPodSpecAffinityPodAffinityPreferredDur
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterRackConfigRacksPodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct AerospikeClusterRackConfigRacksPodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -7010,8 +5932,7 @@ pub struct AerospikeClusterRackConfigRacksPodSpecAffinityPodAffinityRequiredDuri
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterRackConfigRacksPodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct AerospikeClusterRackConfigRacksPodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -7045,8 +5966,7 @@ pub struct AerospikeClusterRackConfigRacksPodSpecAffinityPodAffinityRequiredDuri
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterRackConfigRacksPodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct AerospikeClusterRackConfigRacksPodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -7164,8 +6084,7 @@ pub struct AerospikeClusterRackConfigRacksPodSpecAffinityPodAntiAffinityPreferre
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterRackConfigRacksPodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct AerospikeClusterRackConfigRacksPodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -7199,8 +6118,7 @@ pub struct AerospikeClusterRackConfigRacksPodSpecAffinityPodAntiAffinityPreferre
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterRackConfigRacksPodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct AerospikeClusterRackConfigRacksPodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -7287,8 +6205,7 @@ pub struct AerospikeClusterRackConfigRacksPodSpecAffinityPodAntiAffinityRequired
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterRackConfigRacksPodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct AerospikeClusterRackConfigRacksPodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -7322,8 +6239,7 @@ pub struct AerospikeClusterRackConfigRacksPodSpecAffinityPodAntiAffinityRequired
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterRackConfigRacksPodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct AerospikeClusterRackConfigRacksPodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -7359,11 +6275,7 @@ pub struct AerospikeClusterRackConfigRacksPodSpecTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -7375,33 +6287,16 @@ pub struct AerospikeClusterRackConfigRacksPodSpecTolerations {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterRackConfigRacksStorage {
     /// BlockVolumePolicy contains default policies for block volumes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "blockVolumePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockVolumePolicy")]
     pub block_volume_policy: Option<AerospikeClusterRackConfigRacksStorageBlockVolumePolicy>,
     /// CleanupThreads contains the maximum number of cleanup threads(dd or blkdiscard) per init container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cleanupThreads"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanupThreads")]
     pub cleanup_threads: Option<i64>,
     /// FileSystemVolumePolicy contains default policies for filesystem volumes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "filesystemVolumePolicy"
-    )]
-    pub filesystem_volume_policy:
-        Option<AerospikeClusterRackConfigRacksStorageFilesystemVolumePolicy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filesystemVolumePolicy")]
+    pub filesystem_volume_policy: Option<AerospikeClusterRackConfigRacksStorageFilesystemVolumePolicy>,
     /// LocalStorageClasses contains a list of storage classes which provisions local volumes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localStorageClasses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localStorageClasses")]
     pub local_storage_classes: Option<Vec<String>>,
     /// Volumes list to attach to created pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7413,50 +6308,24 @@ pub struct AerospikeClusterRackConfigRacksStorage {
 pub struct AerospikeClusterRackConfigRacksStorageBlockVolumePolicy {
     /// CascadeDelete determines if the persistent volumes are deleted after the pod this volume binds to is
     /// terminated and removed from the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cascadeDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cascadeDelete")]
     pub cascade_delete: Option<bool>,
     /// Effective/operative value to use for cascade delete after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveCascadeDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveCascadeDelete")]
     pub effective_cascade_delete: Option<bool>,
     /// Effective/operative value to use as the volume init method after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveInitMethod"
-    )]
-    pub effective_init_method:
-        Option<AerospikeClusterRackConfigRacksStorageBlockVolumePolicyEffectiveInitMethod>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveInitMethod")]
+    pub effective_init_method: Option<AerospikeClusterRackConfigRacksStorageBlockVolumePolicyEffectiveInitMethod>,
     /// Effective/operative value to use as the volume wipe method after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveWipeMethod"
-    )]
-    pub effective_wipe_method:
-        Option<AerospikeClusterRackConfigRacksStorageBlockVolumePolicyEffectiveWipeMethod>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveWipeMethod")]
+    pub effective_wipe_method: Option<AerospikeClusterRackConfigRacksStorageBlockVolumePolicyEffectiveWipeMethod>,
     /// InitMethod determines how volumes attached to Aerospike server pods are initialized when the pods come up the
     /// first time. Defaults to "none".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initMethod")]
     pub init_method: Option<AerospikeClusterRackConfigRacksStorageBlockVolumePolicyInitMethod>,
     /// WipeMethod determines how volumes attached to Aerospike server pods are wiped for dealing with storage format
     /// changes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wipeMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wipeMethod")]
     pub wipe_method: Option<AerospikeClusterRackConfigRacksStorageBlockVolumePolicyWipeMethod>,
 }
 
@@ -7517,50 +6386,24 @@ pub enum AerospikeClusterRackConfigRacksStorageBlockVolumePolicyWipeMethod {
 pub struct AerospikeClusterRackConfigRacksStorageFilesystemVolumePolicy {
     /// CascadeDelete determines if the persistent volumes are deleted after the pod this volume binds to is
     /// terminated and removed from the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cascadeDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cascadeDelete")]
     pub cascade_delete: Option<bool>,
     /// Effective/operative value to use for cascade delete after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveCascadeDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveCascadeDelete")]
     pub effective_cascade_delete: Option<bool>,
     /// Effective/operative value to use as the volume init method after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveInitMethod"
-    )]
-    pub effective_init_method:
-        Option<AerospikeClusterRackConfigRacksStorageFilesystemVolumePolicyEffectiveInitMethod>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveInitMethod")]
+    pub effective_init_method: Option<AerospikeClusterRackConfigRacksStorageFilesystemVolumePolicyEffectiveInitMethod>,
     /// Effective/operative value to use as the volume wipe method after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveWipeMethod"
-    )]
-    pub effective_wipe_method:
-        Option<AerospikeClusterRackConfigRacksStorageFilesystemVolumePolicyEffectiveWipeMethod>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveWipeMethod")]
+    pub effective_wipe_method: Option<AerospikeClusterRackConfigRacksStorageFilesystemVolumePolicyEffectiveWipeMethod>,
     /// InitMethod determines how volumes attached to Aerospike server pods are initialized when the pods come up the
     /// first time. Defaults to "none".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initMethod")]
     pub init_method: Option<AerospikeClusterRackConfigRacksStorageFilesystemVolumePolicyInitMethod>,
     /// WipeMethod determines how volumes attached to Aerospike server pods are wiped for dealing with storage format
     /// changes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wipeMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wipeMethod")]
     pub wipe_method: Option<AerospikeClusterRackConfigRacksStorageFilesystemVolumePolicyWipeMethod>,
 }
 
@@ -7623,49 +6466,23 @@ pub struct AerospikeClusterRackConfigRacksStorageVolumes {
     pub aerospike: Option<AerospikeClusterRackConfigRacksStorageVolumesAerospike>,
     /// CascadeDelete determines if the persistent volumes are deleted after the pod this volume binds to is
     /// terminated and removed from the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cascadeDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cascadeDelete")]
     pub cascade_delete: Option<bool>,
     /// Effective/operative value to use for cascade delete after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveCascadeDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveCascadeDelete")]
     pub effective_cascade_delete: Option<bool>,
     /// Effective/operative value to use as the volume init method after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveInitMethod"
-    )]
-    pub effective_init_method:
-        Option<AerospikeClusterRackConfigRacksStorageVolumesEffectiveInitMethod>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveInitMethod")]
+    pub effective_init_method: Option<AerospikeClusterRackConfigRacksStorageVolumesEffectiveInitMethod>,
     /// Effective/operative value to use as the volume wipe method after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveWipeMethod"
-    )]
-    pub effective_wipe_method:
-        Option<AerospikeClusterRackConfigRacksStorageVolumesEffectiveWipeMethod>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveWipeMethod")]
+    pub effective_wipe_method: Option<AerospikeClusterRackConfigRacksStorageVolumesEffectiveWipeMethod>,
     /// InitContainers are additional init containers where this volume will be mounted
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<AerospikeClusterRackConfigRacksStorageVolumesInitContainers>>,
     /// InitMethod determines how volumes attached to Aerospike server pods are initialized when the pods come up the
     /// first time. Defaults to "none".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initMethod")]
     pub init_method: Option<AerospikeClusterRackConfigRacksStorageVolumesInitMethod>,
     /// Name for this volume, Name or path should be given.
     pub name: String,
@@ -7677,22 +6494,14 @@ pub struct AerospikeClusterRackConfigRacksStorageVolumes {
     pub source: Option<AerospikeClusterRackConfigRacksStorageVolumesSource>,
     /// WipeMethod determines how volumes attached to Aerospike server pods are wiped for dealing with storage format
     /// changes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wipeMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wipeMethod")]
     pub wipe_method: Option<AerospikeClusterRackConfigRacksStorageVolumesWipeMethod>,
 }
 
 /// Aerospike attachment of this volume on Aerospike server container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterRackConfigRacksStorageVolumesAerospike {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountOptions")]
     pub mount_options: Option<AerospikeClusterRackConfigRacksStorageVolumesAerospikeMountOptions>,
     /// Path to attach the volume on the Aerospike server container.
     pub path: String,
@@ -7704,11 +6513,7 @@ pub struct AerospikeClusterRackConfigRacksStorageVolumesAerospikeMountOptions {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// Mounted read-only if true, read-write otherwise (false or unspecified).
     /// Defaults to false.
@@ -7723,11 +6528,7 @@ pub struct AerospikeClusterRackConfigRacksStorageVolumesAerospikeMountOptions {
     /// VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -7761,13 +6562,8 @@ pub struct AerospikeClusterRackConfigRacksStorageVolumesInitContainers {
     /// ContainerName is the name of the container to attach this volume to.
     #[serde(rename = "containerName")]
     pub container_name: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountOptions"
-    )]
-    pub mount_options:
-        Option<AerospikeClusterRackConfigRacksStorageVolumesInitContainersMountOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountOptions")]
+    pub mount_options: Option<AerospikeClusterRackConfigRacksStorageVolumesInitContainersMountOptions>,
     /// Path to attach the volume on the container.
     pub path: String,
 }
@@ -7778,11 +6574,7 @@ pub struct AerospikeClusterRackConfigRacksStorageVolumesInitContainersMountOptio
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// Mounted read-only if true, read-write otherwise (false or unspecified).
     /// Defaults to false.
@@ -7797,11 +6589,7 @@ pub struct AerospikeClusterRackConfigRacksStorageVolumesInitContainersMountOptio
     /// VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -7823,11 +6611,7 @@ pub struct AerospikeClusterRackConfigRacksStorageVolumesSidecars {
     /// ContainerName is the name of the container to attach this volume to.
     #[serde(rename = "containerName")]
     pub container_name: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountOptions")]
     pub mount_options: Option<AerospikeClusterRackConfigRacksStorageVolumesSidecarsMountOptions>,
     /// Path to attach the volume on the container.
     pub path: String,
@@ -7839,11 +6623,7 @@ pub struct AerospikeClusterRackConfigRacksStorageVolumesSidecarsMountOptions {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// Mounted read-only if true, read-write otherwise (false or unspecified).
     /// Defaults to false.
@@ -7858,11 +6638,7 @@ pub struct AerospikeClusterRackConfigRacksStorageVolumesSidecarsMountOptions {
     /// VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -7877,16 +6653,11 @@ pub struct AerospikeClusterRackConfigRacksStorageVolumesSource {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<AerospikeClusterRackConfigRacksStorageVolumesSourceEmptyDir>,
     /// PersistentVolumeSpec describes a persistent volume to claim and attach to Aerospike pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolume"
-    )]
-    pub persistent_volume:
-        Option<AerospikeClusterRackConfigRacksStorageVolumesSourcePersistentVolume>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolume")]
+    pub persistent_volume: Option<AerospikeClusterRackConfigRacksStorageVolumesSourcePersistentVolume>,
     /// Adapts a Secret into a volume.
-    ///
-    ///
+    /// 
+    /// 
     /// The contents of the target Secret's Data field will be presented in a volume
     /// as files using the keys in the Data field as the file names.
     /// Secret volumes support ownership management and SELinux relabeling.
@@ -7904,11 +6675,7 @@ pub struct AerospikeClusterRackConfigRacksStorageVolumesSourceConfigMap {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items if unspecified, each key-value pair in the Data field of the referenced
     /// ConfigMap will be projected into the volume as a file whose name is the
@@ -7974,19 +6741,13 @@ pub struct AerospikeClusterRackConfigRacksStorageVolumesSourceEmptyDir {
 pub struct AerospikeClusterRackConfigRacksStorageVolumesSourcePersistentVolume {
     /// Name for creating PVC for this volume, Name or path should be given
     /// Name string `json:"name"`
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub metadata:
-        Option<AerospikeClusterRackConfigRacksStorageVolumesSourcePersistentVolumeMetadata>,
+    pub metadata: Option<AerospikeClusterRackConfigRacksStorageVolumesSourcePersistentVolumeMetadata>,
     /// A label query over volumes to consider for binding.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub selector:
-        Option<AerospikeClusterRackConfigRacksStorageVolumesSourcePersistentVolumeSelector>,
+    pub selector: Option<AerospikeClusterRackConfigRacksStorageVolumesSourcePersistentVolumeSelector>,
     /// Size of volume.
     pub size: IntOrString,
     /// StorageClass should be pre-created by user.
@@ -8023,8 +6784,7 @@ pub struct AerospikeClusterRackConfigRacksStorageVolumesSourcePersistentVolumeSe
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterRackConfigRacksStorageVolumesSourcePersistentVolumeSelectorMatchExpressions
-{
+pub struct AerospikeClusterRackConfigRacksStorageVolumesSourcePersistentVolumeSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -8039,8 +6799,8 @@ pub struct AerospikeClusterRackConfigRacksStorageVolumesSourcePersistentVolumeSe
 }
 
 /// Adapts a Secret into a volume.
-///
-///
+/// 
+/// 
 /// The contents of the target Secret's Data field will be presented in a volume
 /// as files using the keys in the Data field as the file names.
 /// Secret volumes support ownership management and SELinux relabeling.
@@ -8053,11 +6813,7 @@ pub struct AerospikeClusterRackConfigRacksStorageVolumesSourceSecret {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items If unspecified, each key-value pair in the Data field of the referenced
     /// Secret will be projected into the volume as a file whose name is the
@@ -8073,11 +6829,7 @@ pub struct AerospikeClusterRackConfigRacksStorageVolumesSourceSecret {
     pub optional: Option<bool>,
     /// secretName is the name of the secret in the pod's namespace to use.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -8119,11 +6871,7 @@ pub enum AerospikeClusterRackConfigRacksStorageVolumesWipeMethod {
 pub struct AerospikeClusterSeedsFinderServices {
     /// LoadBalancer created to discover Aerospike Cluster nodes from outside of
     /// Kubernetes cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancer")]
     pub load_balancer: Option<AerospikeClusterSeedsFinderServicesLoadBalancer>,
 }
 
@@ -8136,18 +6884,9 @@ pub struct AerospikeClusterSeedsFinderServicesLoadBalancer {
     /// ServiceExternalTrafficPolicy describes how nodes distribute service traffic they
     /// receive on one of the Service's "externally-facing" addresses (NodePorts, ExternalIPs,
     /// and LoadBalancer IPs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalTrafficPolicy"
-    )]
-    pub external_traffic_policy:
-        Option<AerospikeClusterSeedsFinderServicesLoadBalancerExternalTrafficPolicy>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerSourceRanges"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
+    pub external_traffic_policy: Option<AerospikeClusterSeedsFinderServicesLoadBalancerExternalTrafficPolicy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
     /// Port Exposed port on load balancer. If not specified TargetPort is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8157,11 +6896,7 @@ pub struct AerospikeClusterSeedsFinderServicesLoadBalancer {
     pub port_name: Option<String>,
     /// TargetPort Target port. If not specified the tls-port of network.service stanza is used from Aerospike config.
     /// If there is no tls port configured then regular port from network.service is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
     pub target_port: Option<i32>,
 }
 
@@ -8177,32 +6912,16 @@ pub enum AerospikeClusterSeedsFinderServicesLoadBalancerExternalTrafficPolicy {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStorage {
     /// BlockVolumePolicy contains default policies for block volumes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "blockVolumePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockVolumePolicy")]
     pub block_volume_policy: Option<AerospikeClusterStorageBlockVolumePolicy>,
     /// CleanupThreads contains the maximum number of cleanup threads(dd or blkdiscard) per init container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cleanupThreads"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanupThreads")]
     pub cleanup_threads: Option<i64>,
     /// FileSystemVolumePolicy contains default policies for filesystem volumes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "filesystemVolumePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filesystemVolumePolicy")]
     pub filesystem_volume_policy: Option<AerospikeClusterStorageFilesystemVolumePolicy>,
     /// LocalStorageClasses contains a list of storage classes which provisions local volumes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localStorageClasses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localStorageClasses")]
     pub local_storage_classes: Option<Vec<String>>,
     /// Volumes list to attach to created pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -8214,48 +6933,24 @@ pub struct AerospikeClusterStorage {
 pub struct AerospikeClusterStorageBlockVolumePolicy {
     /// CascadeDelete determines if the persistent volumes are deleted after the pod this volume binds to is
     /// terminated and removed from the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cascadeDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cascadeDelete")]
     pub cascade_delete: Option<bool>,
     /// Effective/operative value to use for cascade delete after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveCascadeDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveCascadeDelete")]
     pub effective_cascade_delete: Option<bool>,
     /// Effective/operative value to use as the volume init method after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveInitMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveInitMethod")]
     pub effective_init_method: Option<AerospikeClusterStorageBlockVolumePolicyEffectiveInitMethod>,
     /// Effective/operative value to use as the volume wipe method after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveWipeMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveWipeMethod")]
     pub effective_wipe_method: Option<AerospikeClusterStorageBlockVolumePolicyEffectiveWipeMethod>,
     /// InitMethod determines how volumes attached to Aerospike server pods are initialized when the pods come up the
     /// first time. Defaults to "none".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initMethod")]
     pub init_method: Option<AerospikeClusterStorageBlockVolumePolicyInitMethod>,
     /// WipeMethod determines how volumes attached to Aerospike server pods are wiped for dealing with storage format
     /// changes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wipeMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wipeMethod")]
     pub wipe_method: Option<AerospikeClusterStorageBlockVolumePolicyWipeMethod>,
 }
 
@@ -8316,50 +7011,24 @@ pub enum AerospikeClusterStorageBlockVolumePolicyWipeMethod {
 pub struct AerospikeClusterStorageFilesystemVolumePolicy {
     /// CascadeDelete determines if the persistent volumes are deleted after the pod this volume binds to is
     /// terminated and removed from the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cascadeDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cascadeDelete")]
     pub cascade_delete: Option<bool>,
     /// Effective/operative value to use for cascade delete after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveCascadeDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveCascadeDelete")]
     pub effective_cascade_delete: Option<bool>,
     /// Effective/operative value to use as the volume init method after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveInitMethod"
-    )]
-    pub effective_init_method:
-        Option<AerospikeClusterStorageFilesystemVolumePolicyEffectiveInitMethod>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveInitMethod")]
+    pub effective_init_method: Option<AerospikeClusterStorageFilesystemVolumePolicyEffectiveInitMethod>,
     /// Effective/operative value to use as the volume wipe method after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveWipeMethod"
-    )]
-    pub effective_wipe_method:
-        Option<AerospikeClusterStorageFilesystemVolumePolicyEffectiveWipeMethod>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveWipeMethod")]
+    pub effective_wipe_method: Option<AerospikeClusterStorageFilesystemVolumePolicyEffectiveWipeMethod>,
     /// InitMethod determines how volumes attached to Aerospike server pods are initialized when the pods come up the
     /// first time. Defaults to "none".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initMethod")]
     pub init_method: Option<AerospikeClusterStorageFilesystemVolumePolicyInitMethod>,
     /// WipeMethod determines how volumes attached to Aerospike server pods are wiped for dealing with storage format
     /// changes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wipeMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wipeMethod")]
     pub wipe_method: Option<AerospikeClusterStorageFilesystemVolumePolicyWipeMethod>,
 }
 
@@ -8422,47 +7091,23 @@ pub struct AerospikeClusterStorageVolumes {
     pub aerospike: Option<AerospikeClusterStorageVolumesAerospike>,
     /// CascadeDelete determines if the persistent volumes are deleted after the pod this volume binds to is
     /// terminated and removed from the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cascadeDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cascadeDelete")]
     pub cascade_delete: Option<bool>,
     /// Effective/operative value to use for cascade delete after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveCascadeDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveCascadeDelete")]
     pub effective_cascade_delete: Option<bool>,
     /// Effective/operative value to use as the volume init method after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveInitMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveInitMethod")]
     pub effective_init_method: Option<AerospikeClusterStorageVolumesEffectiveInitMethod>,
     /// Effective/operative value to use as the volume wipe method after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveWipeMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveWipeMethod")]
     pub effective_wipe_method: Option<AerospikeClusterStorageVolumesEffectiveWipeMethod>,
     /// InitContainers are additional init containers where this volume will be mounted
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<AerospikeClusterStorageVolumesInitContainers>>,
     /// InitMethod determines how volumes attached to Aerospike server pods are initialized when the pods come up the
     /// first time. Defaults to "none".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initMethod")]
     pub init_method: Option<AerospikeClusterStorageVolumesInitMethod>,
     /// Name for this volume, Name or path should be given.
     pub name: String,
@@ -8474,22 +7119,14 @@ pub struct AerospikeClusterStorageVolumes {
     pub source: Option<AerospikeClusterStorageVolumesSource>,
     /// WipeMethod determines how volumes attached to Aerospike server pods are wiped for dealing with storage format
     /// changes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wipeMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wipeMethod")]
     pub wipe_method: Option<AerospikeClusterStorageVolumesWipeMethod>,
 }
 
 /// Aerospike attachment of this volume on Aerospike server container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStorageVolumesAerospike {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountOptions")]
     pub mount_options: Option<AerospikeClusterStorageVolumesAerospikeMountOptions>,
     /// Path to attach the volume on the Aerospike server container.
     pub path: String,
@@ -8501,11 +7138,7 @@ pub struct AerospikeClusterStorageVolumesAerospikeMountOptions {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// Mounted read-only if true, read-write otherwise (false or unspecified).
     /// Defaults to false.
@@ -8520,11 +7153,7 @@ pub struct AerospikeClusterStorageVolumesAerospikeMountOptions {
     /// VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -8558,11 +7187,7 @@ pub struct AerospikeClusterStorageVolumesInitContainers {
     /// ContainerName is the name of the container to attach this volume to.
     #[serde(rename = "containerName")]
     pub container_name: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountOptions")]
     pub mount_options: Option<AerospikeClusterStorageVolumesInitContainersMountOptions>,
     /// Path to attach the volume on the container.
     pub path: String,
@@ -8574,11 +7199,7 @@ pub struct AerospikeClusterStorageVolumesInitContainersMountOptions {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// Mounted read-only if true, read-write otherwise (false or unspecified).
     /// Defaults to false.
@@ -8593,11 +7214,7 @@ pub struct AerospikeClusterStorageVolumesInitContainersMountOptions {
     /// VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -8619,11 +7236,7 @@ pub struct AerospikeClusterStorageVolumesSidecars {
     /// ContainerName is the name of the container to attach this volume to.
     #[serde(rename = "containerName")]
     pub container_name: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountOptions")]
     pub mount_options: Option<AerospikeClusterStorageVolumesSidecarsMountOptions>,
     /// Path to attach the volume on the container.
     pub path: String,
@@ -8635,11 +7248,7 @@ pub struct AerospikeClusterStorageVolumesSidecarsMountOptions {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// Mounted read-only if true, read-write otherwise (false or unspecified).
     /// Defaults to false.
@@ -8654,11 +7263,7 @@ pub struct AerospikeClusterStorageVolumesSidecarsMountOptions {
     /// VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -8673,15 +7278,11 @@ pub struct AerospikeClusterStorageVolumesSource {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<AerospikeClusterStorageVolumesSourceEmptyDir>,
     /// PersistentVolumeSpec describes a persistent volume to claim and attach to Aerospike pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolume")]
     pub persistent_volume: Option<AerospikeClusterStorageVolumesSourcePersistentVolume>,
     /// Adapts a Secret into a volume.
-    ///
-    ///
+    /// 
+    /// 
     /// The contents of the target Secret's Data field will be presented in a volume
     /// as files using the keys in the Data field as the file names.
     /// Secret volumes support ownership management and SELinux relabeling.
@@ -8699,11 +7300,7 @@ pub struct AerospikeClusterStorageVolumesSourceConfigMap {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items if unspecified, each key-value pair in the Data field of the referenced
     /// ConfigMap will be projected into the volume as a file whose name is the
@@ -8769,11 +7366,7 @@ pub struct AerospikeClusterStorageVolumesSourceEmptyDir {
 pub struct AerospikeClusterStorageVolumesSourcePersistentVolume {
     /// Name for creating PVC for this volume, Name or path should be given
     /// Name string `json:"name"`
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<AerospikeClusterStorageVolumesSourcePersistentVolumeMetadata>,
@@ -8804,21 +7397,12 @@ pub struct AerospikeClusterStorageVolumesSourcePersistentVolumeMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStorageVolumesSourcePersistentVolumeSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions:
-        Option<Vec<AerospikeClusterStorageVolumesSourcePersistentVolumeSelectorMatchExpressions>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<AerospikeClusterStorageVolumesSourcePersistentVolumeSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -8840,8 +7424,8 @@ pub struct AerospikeClusterStorageVolumesSourcePersistentVolumeSelectorMatchExpr
 }
 
 /// Adapts a Secret into a volume.
-///
-///
+/// 
+/// 
 /// The contents of the target Secret's Data field will be presented in a volume
 /// as files using the keys in the Data field as the file names.
 /// Secret volumes support ownership management and SELinux relabeling.
@@ -8854,11 +7438,7 @@ pub struct AerospikeClusterStorageVolumesSourceSecret {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items If unspecified, each key-value pair in the Data field of the referenced
     /// Secret will be projected into the volume as a file whose name is the
@@ -8874,11 +7454,7 @@ pub struct AerospikeClusterStorageVolumesSourceSecret {
     pub optional: Option<bool>,
     /// secretName is the name of the secret in the pod's namespace to use.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -8932,96 +7508,56 @@ pub struct AerospikeClusterValidationPolicy {
 pub struct AerospikeClusterStatus {
     /// AerospikeAccessControl has the Aerospike roles and users definitions.
     /// Required if aerospike cluster security is enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "aerospikeAccessControl"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "aerospikeAccessControl")]
     pub aerospike_access_control: Option<AerospikeClusterStatusAerospikeAccessControl>,
     /// AerospikeConfig sets config in aerospike.conf file. Other configs are taken as default
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "aerospikeConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "aerospikeConfig")]
     pub aerospike_config: Option<BTreeMap<String, serde_json::Value>>,
     /// AerospikeNetworkPolicy specifies how clients and tools access the Aerospike cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "aerospikeNetworkPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "aerospikeNetworkPolicy")]
     pub aerospike_network_policy: Option<AerospikeClusterStatusAerospikeNetworkPolicy>,
     /// Disable the PodDisruptionBudget creation for the Aerospike cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disablePDB"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disablePDB")]
     pub disable_pdb: Option<bool>,
     /// EnableDynamicConfigUpdate enables dynamic config update flow of the operator.
     /// If enabled, operator will try to update the Aerospike config dynamically.
     /// In case of inconsistent state during dynamic config update, operator falls back to rolling restart.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableDynamicConfigUpdate"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableDynamicConfigUpdate")]
     pub enable_dynamic_config_update: Option<bool>,
     /// Aerospike server image
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub image: Option<String>,
     /// IsReadinessProbeEnabled tells whether the readiness probe is present in all pods or not.
     /// Moreover, PodDisruptionBudget should be created for the Aerospike cluster only when this field is enabled.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "isReadinessProbeEnabled"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "isReadinessProbeEnabled")]
     pub is_readiness_probe_enabled: Option<bool>,
     /// K8sNodeBlockList is a list of Kubernetes nodes which are not used for Aerospike pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "k8sNodeBlockList"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "k8sNodeBlockList")]
     pub k8s_node_block_list: Option<Vec<String>>,
     /// MaxUnavailable is the percentage/number of pods that can be allowed to go down or unavailable before application
     /// disruption. This value is used to create PodDisruptionBudget. Defaults to 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxUnavailable"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxUnavailable")]
     pub max_unavailable: Option<IntOrString>,
     /// If set true then multiple pods can be created per Kubernetes Node.
     /// This will create a NodePort service for each Pod.
     /// NodePort, as the name implies, opens a specific port on all the Kubernetes Nodes ,
     /// and any traffic that is sent to this port is forwarded to the service.
     /// Here service picks a random port in range (30000-32767), so these port should be open.
-    ///
-    ///
+    /// 
+    /// 
     /// If set false then only single pod can be created per Kubernetes Node.
     /// This will create Pods using hostPort setting.
     /// The container port will be exposed to the external network at <hostIP>:<hostPort>,
     /// where the hostIP is the IP address of the Kubernetes Node where the container is running and
     /// the hostPort is the port requested by the user.
     /// Deprecated: MultiPodPerHost is now part of podSpec
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "multiPodPerHost"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multiPodPerHost")]
     pub multi_pod_per_host: Option<bool>,
     /// Operations is a list of on-demand operation to be performed on the Aerospike cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub operations: Option<Vec<AerospikeClusterStatusOperations>>,
     /// Certificates to connect to Aerospike. If omitted then certs are taken from the secret 'aerospike-secret'.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "operatorClientCertSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "operatorClientCertSpec")]
     pub operator_client_cert_spec: Option<AerospikeClusterStatusOperatorClientCertSpec>,
     /// Phase denotes the current phase of Aerospike cluster operation.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9036,11 +7572,7 @@ pub struct AerospikeClusterStatus {
     pub pods: Option<BTreeMap<String, AerospikeClusterStatusPods>>,
     /// RackConfig Configures the operator to deploy rack aware Aerospike cluster.
     /// Pods will be deployed in given racks based on given configuration
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rackConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rackConfig")]
     pub rack_config: Option<AerospikeClusterStatusRackConfig>,
     /// Define resources requests and limits for Aerospike Server Container.
     /// Please contact aerospike for proper sizing exercise
@@ -9049,18 +7581,10 @@ pub struct AerospikeClusterStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<AerospikeClusterStatusResources>,
     /// RosterNodeBlockList is a list of blocked nodeIDs from roster in a strong-consistency setup
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rosterNodeBlockList"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rosterNodeBlockList")]
     pub roster_node_block_list: Option<Vec<String>>,
     /// SeedsFinderServices describes services which are used for seeding Aerospike nodes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seedsFinderServices"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seedsFinderServices")]
     pub seeds_finder_services: Option<AerospikeClusterStatusSeedsFinderServices>,
     /// Aerospike cluster size
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9069,11 +7593,7 @@ pub struct AerospikeClusterStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub storage: Option<AerospikeClusterStatusStorage>,
     /// ValidationPolicy controls validation of the Aerospike cluster resource.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "validationPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "validationPolicy")]
     pub validation_policy: Option<AerospikeClusterStatusValidationPolicy>,
 }
 
@@ -9082,11 +7602,7 @@ pub struct AerospikeClusterStatus {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusAerospikeAccessControl {
     /// AerospikeClientAdminPolicy specify the aerospike client admin policy for access control operations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "adminPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "adminPolicy")]
     pub admin_policy: Option<AerospikeClusterStatusAerospikeAccessControlAdminPolicy>,
     /// Roles is the set of roles to allow on the Aerospike cluster.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9116,11 +7632,7 @@ pub struct AerospikeClusterStatusAerospikeAccessControlRoles {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub whitelist: Option<Vec<String>>,
     /// WriteQuota specifies permitted rate of write records for current role (the value is in RPS)
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "writeQuota"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "writeQuota")]
     pub write_quota: Option<i32>,
 }
 
@@ -9146,11 +7658,7 @@ pub struct AerospikeClusterStatusAerospikeNetworkPolicy {
     pub access: Option<AerospikeClusterStatusAerospikeNetworkPolicyAccess>,
     /// AlternateAccessType is the type of network address to use for Aerospike alternate access address.
     /// Defaults to hostExternal.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "alternateAccess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "alternateAccess")]
     pub alternate_access: Option<AerospikeClusterStatusAerospikeNetworkPolicyAlternateAccess>,
     /// CustomAccessNetworkNames is the list of the pod's network interfaces used for Aerospike access address.
     /// Each element in the list is specified with a namespace and the name of a NetworkAttachmentDefinition,
@@ -9158,11 +7666,7 @@ pub struct AerospikeClusterStatusAerospikeNetworkPolicy {
     /// These elements must be defined in the pod annotation k8s.v1.cni.cncf.io/networks in order to assign
     /// network interfaces to the pod.
     /// Required with 'customInterface' access type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customAccessNetworkNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customAccessNetworkNames")]
     pub custom_access_network_names: Option<Vec<String>>,
     /// CustomAlternateAccessNetworkNames is the list of the pod's network interfaces used for Aerospike
     /// alternate access address.
@@ -9171,11 +7675,7 @@ pub struct AerospikeClusterStatusAerospikeNetworkPolicy {
     /// These elements must be defined in the pod annotation k8s.v1.cni.cncf.io/networks in order to assign
     /// network interfaces to the pod.
     /// Required with 'customInterface' alternateAccess type
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customAlternateAccessNetworkNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customAlternateAccessNetworkNames")]
     pub custom_alternate_access_network_names: Option<Vec<String>>,
     /// CustomFabricNetworkNames is the list of the pod's network interfaces used for Aerospike fabric address.
     /// Each element in the list is specified with a namespace and the name of a NetworkAttachmentDefinition,
@@ -9183,11 +7683,7 @@ pub struct AerospikeClusterStatusAerospikeNetworkPolicy {
     /// These elements must be defined in the pod annotation k8s.v1.cni.cncf.io/networks in order to assign
     /// network interfaces to the pod.
     /// Required with 'customInterface' fabric type
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customFabricNetworkNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customFabricNetworkNames")]
     pub custom_fabric_network_names: Option<Vec<String>>,
     /// CustomTLSAccessNetworkNames is the list of the pod's network interfaces used for Aerospike TLS access address.
     /// Each element in the list is specified with a namespace and the name of a NetworkAttachmentDefinition,
@@ -9195,11 +7691,7 @@ pub struct AerospikeClusterStatusAerospikeNetworkPolicy {
     /// These elements must be defined in the pod annotation k8s.v1.cni.cncf.io/networks in order to assign
     /// network interfaces to the pod.
     /// Required with 'customInterface' tlsAccess type
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customTLSAccessNetworkNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customTLSAccessNetworkNames")]
     pub custom_tls_access_network_names: Option<Vec<String>>,
     /// CustomTLSAlternateAccessNetworkNames is the list of the pod's network interfaces used for Aerospike TLS
     /// alternate access address.
@@ -9208,11 +7700,7 @@ pub struct AerospikeClusterStatusAerospikeNetworkPolicy {
     /// These elements must be defined in the pod annotation k8s.v1.cni.cncf.io/networks in order to assign
     /// network interfaces to the pod.
     /// Required with 'customInterface' tlsAlternateAccess type
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customTLSAlternateAccessNetworkNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customTLSAlternateAccessNetworkNames")]
     pub custom_tls_alternate_access_network_names: Option<Vec<String>>,
     /// CustomTLSFabricNetworkNames is the list of the pod's network interfaces used for Aerospike TLS fabric address.
     /// Each element in the list is specified with a namespace and the name of a NetworkAttachmentDefinition,
@@ -9220,11 +7708,7 @@ pub struct AerospikeClusterStatusAerospikeNetworkPolicy {
     /// These elements must be defined in the pod annotation k8s.v1.cni.cncf.io/networks in order to assign network
     /// interfaces to the pod.
     /// Required with 'customInterface' tlsFabric type
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "customTLSFabricNetworkNames"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "customTLSFabricNetworkNames")]
     pub custom_tls_fabric_network_names: Option<Vec<String>>,
     /// FabricType is the type of network address to use for Aerospike fabric address.
     /// Defaults is empty meaning all interfaces 'any'.
@@ -9236,13 +7720,8 @@ pub struct AerospikeClusterStatusAerospikeNetworkPolicy {
     pub tls_access: Option<AerospikeClusterStatusAerospikeNetworkPolicyTlsAccess>,
     /// TLSAlternateAccessType is the type of network address to use for Aerospike TLS alternate access address.
     /// Defaults to hostExternal.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsAlternateAccess"
-    )]
-    pub tls_alternate_access:
-        Option<AerospikeClusterStatusAerospikeNetworkPolicyTlsAlternateAccess>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsAlternateAccess")]
+    pub tls_alternate_access: Option<AerospikeClusterStatusAerospikeNetworkPolicyTlsAlternateAccess>,
     /// TLSFabricType is the type of network address to use for Aerospike TLS fabric address.
     /// Defaults is empty meaning all interfaces 'any'.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsFabric")]
@@ -9344,25 +7823,12 @@ pub struct AerospikeClusterStatusOperatorClientCertSpec {
     /// AerospikeCertPathInOperatorSource contain configuration for certificates used by operator to connect to aerospike
     /// cluster.
     /// All paths are on operator's filesystem.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "certPathInOperator"
-    )]
-    pub cert_path_in_operator:
-        Option<AerospikeClusterStatusOperatorClientCertSpecCertPathInOperator>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretCertSource"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "certPathInOperator")]
+    pub cert_path_in_operator: Option<AerospikeClusterStatusOperatorClientCertSpecCertPathInOperator>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretCertSource")]
     pub secret_cert_source: Option<AerospikeClusterStatusOperatorClientCertSpecSecretCertSource>,
     /// If specified, this name will be added to tls-authenticate-client list by the operator
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsClientName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsClientName")]
     pub tls_client_name: Option<String>,
 }
 
@@ -9371,60 +7837,27 @@ pub struct AerospikeClusterStatusOperatorClientCertSpec {
 /// All paths are on operator's filesystem.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusOperatorClientCertSpecCertPathInOperator {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertsPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertsPath")]
     pub ca_certs_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertPath")]
     pub client_cert_path: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientKeyPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientKeyPath")]
     pub client_key_path: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusOperatorClientCertSpecSecretCertSource {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertsFilename"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertsFilename")]
     pub ca_certs_filename: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "caCertsSource"
-    )]
-    pub ca_certs_source:
-        Option<AerospikeClusterStatusOperatorClientCertSpecSecretCertSourceCaCertsSource>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientCertFilename"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "caCertsSource")]
+    pub ca_certs_source: Option<AerospikeClusterStatusOperatorClientCertSpecSecretCertSourceCaCertsSource>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientCertFilename")]
     pub client_cert_filename: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientKeyFilename"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientKeyFilename")]
     pub client_key_filename: Option<String>,
     #[serde(rename = "secretName")]
     pub secret_name: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretNamespace")]
     pub secret_namespace: Option<String>,
 }
 
@@ -9432,11 +7865,7 @@ pub struct AerospikeClusterStatusOperatorClientCertSpecSecretCertSource {
 pub struct AerospikeClusterStatusOperatorClientCertSpecSecretCertSourceCaCertsSource {
     #[serde(rename = "secretName")]
     pub secret_name: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretNamespace")]
     pub secret_namespace: Option<String>,
 }
 
@@ -9453,19 +7882,11 @@ pub enum AerospikeClusterStatusPhase {
 pub struct AerospikeClusterStatusPodSpec {
     /// AerospikeContainerSpec configures the aerospike-server container
     /// created by the operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "aerospikeContainer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "aerospikeContainer")]
     pub aerospike_container: Option<AerospikeClusterStatusPodSpecAerospikeContainer>,
     /// AerospikeInitContainerSpec configures the aerospike-init container
     /// created by the operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "aerospikeInitContainer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "aerospikeInitContainer")]
     pub aerospike_init_container: Option<AerospikeClusterStatusPodSpecAerospikeInitContainer>,
     /// Affinity rules for pod placement.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9479,35 +7900,19 @@ pub struct AerospikeClusterStatusPodSpec {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsPolicy")]
     pub dns_policy: Option<String>,
     /// Effective value of the DNSPolicy
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveDNSPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveDNSPolicy")]
     pub effective_dns_policy: Option<String>,
     /// HostNetwork enables host networking for the pod.
     /// To enable hostNetwork multiPodPerHost must be false.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostNetwork"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetwork")]
     pub host_network: Option<bool>,
     /// ImagePullSecrets is an optional list of references to secrets in the same namespace to use for pulling any of
     /// the images used by this PodSpec.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#specifying-imagepullsecrets-on-a-pod
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullSecrets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullSecrets")]
     pub image_pull_secrets: Option<Vec<AerospikeClusterStatusPodSpecImagePullSecrets>>,
     /// InitContainers to add to the pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<AerospikeClusterStatusPodSpecInitContainers>>,
     /// MetaData to add to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9518,33 +7923,21 @@ pub struct AerospikeClusterStatusPodSpec {
     /// NodePort, as the name implies, opens a specific port on all the Kubernetes Nodes ,
     /// and any traffic that is sent to this port is forwarded to the service.
     /// Here service picks a random port in range (30000-32767), so these port should be open.
-    ///
-    ///
+    /// 
+    /// 
     /// If set false then only single pod can be created per Kubernetes Node.
     /// This will create Pods using hostPort setting.
     /// The container port will be exposed to the external network at <hostIP>:<hostPort>,
     /// where the hostIP is the IP address of the Kubernetes Node where the container is running and
     /// the hostPort is the port requested by the user.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "multiPodPerHost"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "multiPodPerHost")]
     pub multi_pod_per_host: Option<bool>,
     /// NodeSelector constraints for this pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// SecurityContext holds pod-level security attributes and common container settings.
     /// Optional: Defaults to empty.  See type description for default values of each field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<AerospikeClusterStatusPodSpecSecurityContext>,
     /// Sidecars to add to the pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9565,11 +7958,7 @@ pub struct AerospikeClusterStatusPodSpecAerospikeContainer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<AerospikeClusterStatusPodSpecAerospikeContainerResources>,
     /// SecurityContext that will be added to aerospike-server container created by operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<AerospikeClusterStatusPodSpecAerospikeContainerSecurityContext>,
 }
 
@@ -9581,12 +7970,12 @@ pub struct AerospikeClusterStatusPodSpecAerospikeContainer {
 pub struct AerospikeClusterStatusPodSpecAerospikeContainerResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<AerospikeClusterStatusPodSpecAerospikeContainerResourcesClaims>>,
@@ -9621,18 +8010,13 @@ pub struct AerospikeClusterStatusPodSpecAerospikeContainerSecurityContext {
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub capabilities:
-        Option<AerospikeClusterStatusPodSpecAerospikeContainerSecurityContextCapabilities>,
+    pub capabilities: Option<AerospikeClusterStatusPodSpecAerospikeContainerSecurityContextCapabilities>,
     /// Run container in privileged mode.
     /// Processes in privileged containers are essentially equivalent to root on the host.
     /// Defaults to false.
@@ -9649,22 +8033,14 @@ pub struct AerospikeClusterStatusPodSpecAerospikeContainerSecurityContext {
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -9672,11 +8048,7 @@ pub struct AerospikeClusterStatusPodSpecAerospikeContainerSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -9690,35 +8062,20 @@ pub struct AerospikeClusterStatusPodSpecAerospikeContainerSecurityContext {
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options:
-        Option<AerospikeClusterStatusPodSpecAerospikeContainerSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<AerospikeClusterStatusPodSpecAerospikeContainerSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile:
-        Option<AerospikeClusterStatusPodSpecAerospikeContainerSecurityContextSeccompProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<AerospikeClusterStatusPodSpecAerospikeContainerSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options:
-        Option<AerospikeClusterStatusPodSpecAerospikeContainerSecurityContextWindowsOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<AerospikeClusterStatusPodSpecAerospikeContainerSecurityContextWindowsOptions>,
 }
 
 /// The capabilities to add/drop when running containers.
@@ -9765,16 +8122,12 @@ pub struct AerospikeClusterStatusPodSpecAerospikeContainerSecurityContextSeccomp
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -9791,38 +8144,22 @@ pub struct AerospikeClusterStatusPodSpecAerospikeContainerSecurityContextWindows
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -9831,26 +8168,14 @@ pub struct AerospikeClusterStatusPodSpecAerospikeContainerSecurityContextWindows
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusPodSpecAerospikeInitContainer {
     /// ImageNameAndTag is the name:tag of aerospike-init container image
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageNameAndTag"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageNameAndTag")]
     pub image_name_and_tag: Option<String>,
     /// ImageRegistry is the name of image registry for aerospike-init container image
     /// ImageRegistry, e.g. docker.io, redhat.access.com
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageRegistry"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistry")]
     pub image_registry: Option<String>,
     /// ImageRegistryNamespace is the name of namespace in registry for aerospike-init container image
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imageRegistryNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imageRegistryNamespace")]
     pub image_registry_namespace: Option<String>,
     /// Define resources requests and limits for Aerospike init Container.
     /// Only Memory and Cpu resources can be given
@@ -9858,13 +8183,8 @@ pub struct AerospikeClusterStatusPodSpecAerospikeInitContainer {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<AerospikeClusterStatusPodSpecAerospikeInitContainerResources>,
     /// SecurityContext that will be added to aerospike-init container created by operator.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
-    pub security_context:
-        Option<AerospikeClusterStatusPodSpecAerospikeInitContainerSecurityContext>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
+    pub security_context: Option<AerospikeClusterStatusPodSpecAerospikeInitContainerSecurityContext>,
 }
 
 /// Define resources requests and limits for Aerospike init Container.
@@ -9874,12 +8194,12 @@ pub struct AerospikeClusterStatusPodSpecAerospikeInitContainer {
 pub struct AerospikeClusterStatusPodSpecAerospikeInitContainerResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<AerospikeClusterStatusPodSpecAerospikeInitContainerResourcesClaims>>,
@@ -9914,18 +8234,13 @@ pub struct AerospikeClusterStatusPodSpecAerospikeInitContainerSecurityContext {
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub capabilities:
-        Option<AerospikeClusterStatusPodSpecAerospikeInitContainerSecurityContextCapabilities>,
+    pub capabilities: Option<AerospikeClusterStatusPodSpecAerospikeInitContainerSecurityContextCapabilities>,
     /// Run container in privileged mode.
     /// Processes in privileged containers are essentially equivalent to root on the host.
     /// Defaults to false.
@@ -9942,22 +8257,14 @@ pub struct AerospikeClusterStatusPodSpecAerospikeInitContainerSecurityContext {
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -9965,11 +8272,7 @@ pub struct AerospikeClusterStatusPodSpecAerospikeInitContainerSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -9983,35 +8286,20 @@ pub struct AerospikeClusterStatusPodSpecAerospikeInitContainerSecurityContext {
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options:
-        Option<AerospikeClusterStatusPodSpecAerospikeInitContainerSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<AerospikeClusterStatusPodSpecAerospikeInitContainerSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile:
-        Option<AerospikeClusterStatusPodSpecAerospikeInitContainerSecurityContextSeccompProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<AerospikeClusterStatusPodSpecAerospikeInitContainerSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options:
-        Option<AerospikeClusterStatusPodSpecAerospikeInitContainerSecurityContextWindowsOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<AerospikeClusterStatusPodSpecAerospikeInitContainerSecurityContextWindowsOptions>,
 }
 
 /// The capabilities to add/drop when running containers.
@@ -10058,16 +8346,12 @@ pub struct AerospikeClusterStatusPodSpecAerospikeInitContainerSecurityContextSec
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -10084,38 +8368,22 @@ pub struct AerospikeClusterStatusPodSpecAerospikeInitContainerSecurityContextWin
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -10123,25 +8391,13 @@ pub struct AerospikeClusterStatusPodSpecAerospikeInitContainerSecurityContextWin
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusPodSpecAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<AerospikeClusterStatusPodSpecAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<AerospikeClusterStatusPodSpecAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
     pub pod_anti_affinity: Option<AerospikeClusterStatusPodSpecAffinityPodAntiAffinity>,
 }
 
@@ -10192,8 +8448,7 @@ pub struct AerospikeClusterStatusPodSpecAffinityNodeAffinityPreferredDuringSched
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusPodSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct AerospikeClusterStatusPodSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -10211,8 +8466,7 @@ pub struct AerospikeClusterStatusPodSpecAffinityNodeAffinityPreferredDuringSched
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusPodSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct AerospikeClusterStatusPodSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -10255,8 +8509,7 @@ pub struct AerospikeClusterStatusPodSpecAffinityNodeAffinityRequiredDuringSchedu
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusPodSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct AerospikeClusterStatusPodSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -10274,8 +8527,7 @@ pub struct AerospikeClusterStatusPodSpecAffinityNodeAffinityRequiredDuringSchedu
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusPodSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct AerospikeClusterStatusPodSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -10394,8 +8646,7 @@ pub struct AerospikeClusterStatusPodSpecAffinityPodAffinityPreferredDuringSchedu
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusPodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct AerospikeClusterStatusPodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -10429,8 +8680,7 @@ pub struct AerospikeClusterStatusPodSpecAffinityPodAffinityPreferredDuringSchedu
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusPodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct AerospikeClusterStatusPodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -10517,8 +8767,7 @@ pub struct AerospikeClusterStatusPodSpecAffinityPodAffinityRequiredDuringSchedul
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusPodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct AerospikeClusterStatusPodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -10552,8 +8801,7 @@ pub struct AerospikeClusterStatusPodSpecAffinityPodAffinityRequiredDuringSchedul
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusPodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct AerospikeClusterStatusPodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -10671,8 +8919,7 @@ pub struct AerospikeClusterStatusPodSpecAffinityPodAntiAffinityPreferredDuringSc
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusPodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct AerospikeClusterStatusPodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -10706,8 +8953,7 @@ pub struct AerospikeClusterStatusPodSpecAffinityPodAntiAffinityPreferredDuringSc
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusPodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct AerospikeClusterStatusPodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -10794,8 +9040,7 @@ pub struct AerospikeClusterStatusPodSpecAffinityPodAntiAffinityRequiredDuringSch
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusPodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct AerospikeClusterStatusPodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -10829,8 +9074,7 @@ pub struct AerospikeClusterStatusPodSpecAffinityPodAntiAffinityRequiredDuringSch
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusPodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct AerospikeClusterStatusPodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -10933,11 +9177,7 @@ pub struct AerospikeClusterStatusPodSpecInitContainers {
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Actions that the management system should take in response to container lifecycle events.
     /// Cannot be updated.
@@ -10947,11 +9187,7 @@ pub struct AerospikeClusterStatusPodSpecInitContainers {
     /// Container will be restarted if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<AerospikeClusterStatusPodSpecInitContainersLivenessProbe>,
     /// Name of the container specified as a DNS_LABEL.
     /// Each container in a pod must have a unique name (DNS_LABEL).
@@ -10970,18 +9206,10 @@ pub struct AerospikeClusterStatusPodSpecInitContainers {
     /// Container will be removed from service endpoints if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<AerospikeClusterStatusPodSpecInitContainersReadinessProbe>,
     /// Resources resize policy for the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resizePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
     pub resize_policy: Option<Vec<AerospikeClusterStatusPodSpecInitContainersResizePolicy>>,
     /// Compute Resources required by this container.
     /// Cannot be updated.
@@ -11003,20 +9231,12 @@ pub struct AerospikeClusterStatusPodSpecInitContainers {
     /// container. Instead, the next init container starts immediately after this
     /// init container is started, or after any startupProbe has successfully
     /// completed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     /// SecurityContext defines the security options the container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<AerospikeClusterStatusPodSpecInitContainersSecurityContext>,
     /// StartupProbe indicates that the Pod has successfully initialized.
     /// If specified, no other probes are executed until this completes successfully.
@@ -11025,11 +9245,7 @@ pub struct AerospikeClusterStatusPodSpecInitContainers {
     /// when it might take a long time to load data or warm a cache, than during steady-state operation.
     /// This cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<AerospikeClusterStatusPodSpecInitContainersStartupProbe>,
     /// Whether this container should allocate a buffer for stdin in the container runtime. If this
     /// is not set, reads from stdin in the container will always result in EOF.
@@ -11052,11 +9268,7 @@ pub struct AerospikeClusterStatusPodSpecInitContainers {
     /// all containers will be limited to 12kb.
     /// Defaults to /dev/termination-log.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
     /// Indicate how the termination message should be populated. File will use the contents of
     /// terminationMessagePath to populate the container status message on both success and failure.
@@ -11065,40 +9277,24 @@ pub struct AerospikeClusterStatusPodSpecInitContainers {
     /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
     /// Defaults to File.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
     /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
     /// volumeDevices is the list of block devices to be used by the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
     pub volume_devices: Option<Vec<AerospikeClusterStatusPodSpecInitContainersVolumeDevices>>,
     /// Pod volumes to mount into the container's filesystem.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<AerospikeClusterStatusPodSpecInitContainersVolumeMounts>>,
     /// Container's working directory.
     /// If not specified, the container runtime's default will be used, which
     /// might be configured in the container image.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -11127,32 +9323,18 @@ pub struct AerospikeClusterStatusPodSpecInitContainersEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusPodSpecInitContainersEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<AerospikeClusterStatusPodSpecInitContainersEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<AerospikeClusterStatusPodSpecInitContainersEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<AerospikeClusterStatusPodSpecInitContainersEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<AerospikeClusterStatusPodSpecInitContainersEnvValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<AerospikeClusterStatusPodSpecInitContainersEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<AerospikeClusterStatusPodSpecInitContainersEnvValueFromSecretKeyRef>,
 }
 
@@ -11176,11 +9358,7 @@ pub struct AerospikeClusterStatusPodSpecInitContainersEnvValueFromConfigMapKeyRe
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusPodSpecInitContainersEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -11192,11 +9370,7 @@ pub struct AerospikeClusterStatusPodSpecInitContainersEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusPodSpecInitContainersEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -11224,11 +9398,7 @@ pub struct AerospikeClusterStatusPodSpecInitContainersEnvValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusPodSpecInitContainersEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<AerospikeClusterStatusPodSpecInitContainersEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -11329,14 +9499,8 @@ pub struct AerospikeClusterStatusPodSpecInitContainersLifecyclePostStartHttpGet 
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers: Option<
-        Vec<AerospikeClusterStatusPodSpecInitContainersLifecyclePostStartHttpGetHttpHeaders>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<AerospikeClusterStatusPodSpecInitContainersLifecyclePostStartHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -11428,13 +9592,8 @@ pub struct AerospikeClusterStatusPodSpecInitContainersLifecyclePreStopHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<AerospikeClusterStatusPodSpecInitContainersLifecyclePreStopHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<AerospikeClusterStatusPodSpecInitContainersLifecyclePreStopHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -11490,11 +9649,7 @@ pub struct AerospikeClusterStatusPodSpecInitContainersLivenessProbe {
     pub exec: Option<AerospikeClusterStatusPodSpecInitContainersLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -11504,27 +9659,15 @@ pub struct AerospikeClusterStatusPodSpecInitContainersLivenessProbe {
     pub http_get: Option<AerospikeClusterStatusPodSpecInitContainersLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -11539,20 +9682,12 @@ pub struct AerospikeClusterStatusPodSpecInitContainersLivenessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -11575,8 +9710,8 @@ pub struct AerospikeClusterStatusPodSpecInitContainersLivenessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -11590,13 +9725,8 @@ pub struct AerospikeClusterStatusPodSpecInitContainersLivenessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<AerospikeClusterStatusPodSpecInitContainersLivenessProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<AerospikeClusterStatusPodSpecInitContainersLivenessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -11670,11 +9800,7 @@ pub struct AerospikeClusterStatusPodSpecInitContainersReadinessProbe {
     pub exec: Option<AerospikeClusterStatusPodSpecInitContainersReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -11684,27 +9810,15 @@ pub struct AerospikeClusterStatusPodSpecInitContainersReadinessProbe {
     pub http_get: Option<AerospikeClusterStatusPodSpecInitContainersReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -11719,20 +9833,12 @@ pub struct AerospikeClusterStatusPodSpecInitContainersReadinessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -11755,8 +9861,8 @@ pub struct AerospikeClusterStatusPodSpecInitContainersReadinessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -11770,13 +9876,8 @@ pub struct AerospikeClusterStatusPodSpecInitContainersReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<AerospikeClusterStatusPodSpecInitContainersReadinessProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<AerospikeClusterStatusPodSpecInitContainersReadinessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -11832,12 +9933,12 @@ pub struct AerospikeClusterStatusPodSpecInitContainersResizePolicy {
 pub struct AerospikeClusterStatusPodSpecInitContainersResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<AerospikeClusterStatusPodSpecInitContainersResourcesClaims>>,
@@ -11874,18 +9975,13 @@ pub struct AerospikeClusterStatusPodSpecInitContainersSecurityContext {
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub capabilities:
-        Option<AerospikeClusterStatusPodSpecInitContainersSecurityContextCapabilities>,
+    pub capabilities: Option<AerospikeClusterStatusPodSpecInitContainersSecurityContextCapabilities>,
     /// Run container in privileged mode.
     /// Processes in privileged containers are essentially equivalent to root on the host.
     /// Defaults to false.
@@ -11902,22 +9998,14 @@ pub struct AerospikeClusterStatusPodSpecInitContainersSecurityContext {
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -11925,11 +10013,7 @@ pub struct AerospikeClusterStatusPodSpecInitContainersSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -11943,35 +10027,20 @@ pub struct AerospikeClusterStatusPodSpecInitContainersSecurityContext {
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options:
-        Option<AerospikeClusterStatusPodSpecInitContainersSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<AerospikeClusterStatusPodSpecInitContainersSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
-    pub seccomp_profile:
-        Option<AerospikeClusterStatusPodSpecInitContainersSecurityContextSeccompProfile>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
+    pub seccomp_profile: Option<AerospikeClusterStatusPodSpecInitContainersSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
-    pub windows_options:
-        Option<AerospikeClusterStatusPodSpecInitContainersSecurityContextWindowsOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
+    pub windows_options: Option<AerospikeClusterStatusPodSpecInitContainersSecurityContextWindowsOptions>,
 }
 
 /// The capabilities to add/drop when running containers.
@@ -12018,16 +10087,12 @@ pub struct AerospikeClusterStatusPodSpecInitContainersSecurityContextSeccompProf
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -12044,38 +10109,22 @@ pub struct AerospikeClusterStatusPodSpecInitContainersSecurityContextWindowsOpti
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -12093,11 +10142,7 @@ pub struct AerospikeClusterStatusPodSpecInitContainersStartupProbe {
     pub exec: Option<AerospikeClusterStatusPodSpecInitContainersStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -12107,27 +10152,15 @@ pub struct AerospikeClusterStatusPodSpecInitContainersStartupProbe {
     pub http_get: Option<AerospikeClusterStatusPodSpecInitContainersStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -12142,20 +10175,12 @@ pub struct AerospikeClusterStatusPodSpecInitContainersStartupProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -12178,8 +10203,8 @@ pub struct AerospikeClusterStatusPodSpecInitContainersStartupProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -12193,13 +10218,8 @@ pub struct AerospikeClusterStatusPodSpecInitContainersStartupProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<AerospikeClusterStatusPodSpecInitContainersStartupProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<AerospikeClusterStatusPodSpecInitContainersStartupProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -12256,11 +10276,7 @@ pub struct AerospikeClusterStatusPodSpecInitContainersVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -12276,11 +10292,7 @@ pub struct AerospikeClusterStatusPodSpecInitContainersVolumeMounts {
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -12302,13 +10314,13 @@ pub struct AerospikeClusterStatusPodSpecSecurityContext {
     /// A special supplemental group that applies to all containers in a pod.
     /// Some volume types allow the Kubelet to change the ownership of that volume
     /// to be owned by the pod:
-    ///
-    ///
+    /// 
+    /// 
     /// 1. The owning GID will be the FSGroup
     /// 2. The setgid bit is set (new files created in the volume will be owned by FSGroup)
     /// 3. The permission bits are OR'd with rw-rw----
-    ///
-    ///
+    /// 
+    /// 
     /// If unset, the Kubelet will not modify the ownership and permissions of any volume.
     /// Note that this field cannot be set when spec.os.name is windows.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroup")]
@@ -12320,11 +10332,7 @@ pub struct AerospikeClusterStatusPodSpecSecurityContext {
     /// and emptydir.
     /// Valid values are "OnRootMismatch" and "Always". If not specified, "Always" is used.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fsGroupChangePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fsGroupChangePolicy")]
     pub fs_group_change_policy: Option<String>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
@@ -12332,11 +10340,7 @@ pub struct AerospikeClusterStatusPodSpecSecurityContext {
     /// PodSecurityContext, the value specified in SecurityContext takes precedence
     /// for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -12344,11 +10348,7 @@ pub struct AerospikeClusterStatusPodSpecSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in SecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -12364,19 +10364,11 @@ pub struct AerospikeClusterStatusPodSpecSecurityContext {
     /// both SecurityContext and PodSecurityContext, the value specified in SecurityContext
     /// takes precedence for that container.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
     pub se_linux_options: Option<AerospikeClusterStatusPodSpecSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by the containers in this pod.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<AerospikeClusterStatusPodSpecSecurityContextSeccompProfile>,
     /// A list of groups applied to the first process run in each container, in addition
     /// to the container's primary GID, the fsGroup (if specified), and group memberships
@@ -12385,11 +10377,7 @@ pub struct AerospikeClusterStatusPodSpecSecurityContext {
     /// defined in the container image for the uid of the container process are still effective,
     /// even if they are not included in this list.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "supplementalGroups"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "supplementalGroups")]
     pub supplemental_groups: Option<Vec<i64>>,
     /// Sysctls hold a list of namespaced sysctls used for the pod. Pods with unsupported
     /// sysctls (by the container runtime) might fail to launch.
@@ -12400,11 +10388,7 @@ pub struct AerospikeClusterStatusPodSpecSecurityContext {
     /// If unspecified, the options within a container's SecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<AerospikeClusterStatusPodSpecSecurityContextWindowsOptions>,
 }
 
@@ -12438,16 +10422,12 @@ pub struct AerospikeClusterStatusPodSpecSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -12473,38 +10453,22 @@ pub struct AerospikeClusterStatusPodSpecSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -12554,11 +10518,7 @@ pub struct AerospikeClusterStatusPodSpecSidecars {
     /// Defaults to Always if :latest tag is specified, or IfNotPresent otherwise.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/containers/images#updating-images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "imagePullPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "imagePullPolicy")]
     pub image_pull_policy: Option<String>,
     /// Actions that the management system should take in response to container lifecycle events.
     /// Cannot be updated.
@@ -12568,11 +10528,7 @@ pub struct AerospikeClusterStatusPodSpecSidecars {
     /// Container will be restarted if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "livenessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "livenessProbe")]
     pub liveness_probe: Option<AerospikeClusterStatusPodSpecSidecarsLivenessProbe>,
     /// Name of the container specified as a DNS_LABEL.
     /// Each container in a pod must have a unique name (DNS_LABEL).
@@ -12591,18 +10547,10 @@ pub struct AerospikeClusterStatusPodSpecSidecars {
     /// Container will be removed from service endpoints if the probe fails.
     /// Cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readinessProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readinessProbe")]
     pub readiness_probe: Option<AerospikeClusterStatusPodSpecSidecarsReadinessProbe>,
     /// Resources resize policy for the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resizePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resizePolicy")]
     pub resize_policy: Option<Vec<AerospikeClusterStatusPodSpecSidecarsResizePolicy>>,
     /// Compute Resources required by this container.
     /// Cannot be updated.
@@ -12624,20 +10572,12 @@ pub struct AerospikeClusterStatusPodSpecSidecars {
     /// container. Instead, the next init container starts immediately after this
     /// init container is started, or after any startupProbe has successfully
     /// completed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "restartPolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "restartPolicy")]
     pub restart_policy: Option<String>,
     /// SecurityContext defines the security options the container should be run with.
     /// If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext.
     /// More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityContext"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityContext")]
     pub security_context: Option<AerospikeClusterStatusPodSpecSidecarsSecurityContext>,
     /// StartupProbe indicates that the Pod has successfully initialized.
     /// If specified, no other probes are executed until this completes successfully.
@@ -12646,11 +10586,7 @@ pub struct AerospikeClusterStatusPodSpecSidecars {
     /// when it might take a long time to load data or warm a cache, than during steady-state operation.
     /// This cannot be updated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "startupProbe"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "startupProbe")]
     pub startup_probe: Option<AerospikeClusterStatusPodSpecSidecarsStartupProbe>,
     /// Whether this container should allocate a buffer for stdin in the container runtime. If this
     /// is not set, reads from stdin in the container will always result in EOF.
@@ -12673,11 +10609,7 @@ pub struct AerospikeClusterStatusPodSpecSidecars {
     /// all containers will be limited to 12kb.
     /// Defaults to /dev/termination-log.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePath")]
     pub termination_message_path: Option<String>,
     /// Indicate how the termination message should be populated. File will use the contents of
     /// terminationMessagePath to populate the container status message on both success and failure.
@@ -12686,40 +10618,24 @@ pub struct AerospikeClusterStatusPodSpecSidecars {
     /// The log output is limited to 2048 bytes or 80 lines, whichever is smaller.
     /// Defaults to File.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationMessagePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationMessagePolicy")]
     pub termination_message_policy: Option<String>,
     /// Whether this container should allocate a TTY for itself, also requires 'stdin' to be true.
     /// Default is false.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tty: Option<bool>,
     /// volumeDevices is the list of block devices to be used by the container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeDevices"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeDevices")]
     pub volume_devices: Option<Vec<AerospikeClusterStatusPodSpecSidecarsVolumeDevices>>,
     /// Pod volumes to mount into the container's filesystem.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "volumeMounts"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "volumeMounts")]
     pub volume_mounts: Option<Vec<AerospikeClusterStatusPodSpecSidecarsVolumeMounts>>,
     /// Container's working directory.
     /// If not specified, the container runtime's default will be used, which
     /// might be configured in the container image.
     /// Cannot be updated.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "workingDir"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "workingDir")]
     pub working_dir: Option<String>,
 }
 
@@ -12748,32 +10664,18 @@ pub struct AerospikeClusterStatusPodSpecSidecarsEnv {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusPodSpecSidecarsEnvValueFrom {
     /// Selects a key of a ConfigMap.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapKeyRef"
-    )]
-    pub config_map_key_ref:
-        Option<AerospikeClusterStatusPodSpecSidecarsEnvValueFromConfigMapKeyRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapKeyRef")]
+    pub config_map_key_ref: Option<AerospikeClusterStatusPodSpecSidecarsEnvValueFromConfigMapKeyRef>,
     /// Selects a field of the pod: supports metadata.name, metadata.namespace, `metadata.labels['<KEY>']`, `metadata.annotations['<KEY>']`,
     /// spec.nodeName, spec.serviceAccountName, status.hostIP, status.podIP, status.podIPs.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "fieldRef")]
     pub field_ref: Option<AerospikeClusterStatusPodSpecSidecarsEnvValueFromFieldRef>,
     /// Selects a resource of the container: only resources limits and requests
     /// (limits.cpu, limits.memory, limits.ephemeral-storage, requests.cpu, requests.memory and requests.ephemeral-storage) are currently supported.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceFieldRef"
-    )]
-    pub resource_field_ref:
-        Option<AerospikeClusterStatusPodSpecSidecarsEnvValueFromResourceFieldRef>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceFieldRef")]
+    pub resource_field_ref: Option<AerospikeClusterStatusPodSpecSidecarsEnvValueFromResourceFieldRef>,
     /// Selects a key of a secret in the pod's namespace
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretKeyRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretKeyRef")]
     pub secret_key_ref: Option<AerospikeClusterStatusPodSpecSidecarsEnvValueFromSecretKeyRef>,
 }
 
@@ -12797,11 +10699,7 @@ pub struct AerospikeClusterStatusPodSpecSidecarsEnvValueFromConfigMapKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusPodSpecSidecarsEnvValueFromFieldRef {
     /// Version of the schema the FieldPath is written in terms of, defaults to "v1".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "apiVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiVersion")]
     pub api_version: Option<String>,
     /// Path of the field to select in the specified API version.
     #[serde(rename = "fieldPath")]
@@ -12813,11 +10711,7 @@ pub struct AerospikeClusterStatusPodSpecSidecarsEnvValueFromFieldRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusPodSpecSidecarsEnvValueFromResourceFieldRef {
     /// Container name: required for volumes, optional for env vars
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "containerName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "containerName")]
     pub container_name: Option<String>,
     /// Specifies the output format of the exposed resources, defaults to "1"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -12845,11 +10739,7 @@ pub struct AerospikeClusterStatusPodSpecSidecarsEnvValueFromSecretKeyRef {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusPodSpecSidecarsEnvFrom {
     /// The ConfigMap to select from
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "configMapRef"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMapRef")]
     pub config_map_ref: Option<AerospikeClusterStatusPodSpecSidecarsEnvFromConfigMapRef>,
     /// An optional identifier to prepend to each key in the ConfigMap. Must be a C_IDENTIFIER.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -12950,13 +10840,8 @@ pub struct AerospikeClusterStatusPodSpecSidecarsLifecyclePostStartHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<AerospikeClusterStatusPodSpecSidecarsLifecyclePostStartHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<AerospikeClusterStatusPodSpecSidecarsLifecyclePostStartHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -13048,13 +10933,8 @@ pub struct AerospikeClusterStatusPodSpecSidecarsLifecyclePreStopHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<AerospikeClusterStatusPodSpecSidecarsLifecyclePreStopHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<AerospikeClusterStatusPodSpecSidecarsLifecyclePreStopHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -13110,11 +10990,7 @@ pub struct AerospikeClusterStatusPodSpecSidecarsLivenessProbe {
     pub exec: Option<AerospikeClusterStatusPodSpecSidecarsLivenessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -13124,27 +11000,15 @@ pub struct AerospikeClusterStatusPodSpecSidecarsLivenessProbe {
     pub http_get: Option<AerospikeClusterStatusPodSpecSidecarsLivenessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -13159,20 +11023,12 @@ pub struct AerospikeClusterStatusPodSpecSidecarsLivenessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -13195,8 +11051,8 @@ pub struct AerospikeClusterStatusPodSpecSidecarsLivenessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -13210,13 +11066,8 @@ pub struct AerospikeClusterStatusPodSpecSidecarsLivenessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<AerospikeClusterStatusPodSpecSidecarsLivenessProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<AerospikeClusterStatusPodSpecSidecarsLivenessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -13290,11 +11141,7 @@ pub struct AerospikeClusterStatusPodSpecSidecarsReadinessProbe {
     pub exec: Option<AerospikeClusterStatusPodSpecSidecarsReadinessProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -13304,27 +11151,15 @@ pub struct AerospikeClusterStatusPodSpecSidecarsReadinessProbe {
     pub http_get: Option<AerospikeClusterStatusPodSpecSidecarsReadinessProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -13339,20 +11174,12 @@ pub struct AerospikeClusterStatusPodSpecSidecarsReadinessProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -13375,8 +11202,8 @@ pub struct AerospikeClusterStatusPodSpecSidecarsReadinessProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -13390,13 +11217,8 @@ pub struct AerospikeClusterStatusPodSpecSidecarsReadinessProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<AerospikeClusterStatusPodSpecSidecarsReadinessProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<AerospikeClusterStatusPodSpecSidecarsReadinessProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -13452,12 +11274,12 @@ pub struct AerospikeClusterStatusPodSpecSidecarsResizePolicy {
 pub struct AerospikeClusterStatusPodSpecSidecarsResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<AerospikeClusterStatusPodSpecSidecarsResourcesClaims>>,
@@ -13494,11 +11316,7 @@ pub struct AerospikeClusterStatusPodSpecSidecarsSecurityContext {
     /// 1) run as Privileged
     /// 2) has CAP_SYS_ADMIN
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowPrivilegeEscalation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPrivilegeEscalation")]
     pub allow_privilege_escalation: Option<bool>,
     /// The capabilities to add/drop when running containers.
     /// Defaults to the default set of capabilities granted by the container runtime.
@@ -13521,22 +11339,14 @@ pub struct AerospikeClusterStatusPodSpecSidecarsSecurityContext {
     /// Whether this container has a read-only root filesystem.
     /// Default is false.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "readOnlyRootFilesystem"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "readOnlyRootFilesystem")]
     pub read_only_root_filesystem: Option<bool>,
     /// The GID to run the entrypoint of the container process.
     /// Uses runtime default if unset.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsGroup")]
     pub run_as_group: Option<i64>,
     /// Indicates that the container must run as a non-root user.
     /// If true, the Kubelet will validate the image at runtime to ensure that it
@@ -13544,11 +11354,7 @@ pub struct AerospikeClusterStatusPodSpecSidecarsSecurityContext {
     /// If unset or false, no such validation will be performed.
     /// May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsNonRoot"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsNonRoot")]
     pub run_as_non_root: Option<bool>,
     /// The UID to run the entrypoint of the container process.
     /// Defaults to user specified in image metadata if unspecified.
@@ -13562,32 +11368,19 @@ pub struct AerospikeClusterStatusPodSpecSidecarsSecurityContext {
     /// container.  May also be set in PodSecurityContext.  If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seLinuxOptions"
-    )]
-    pub se_linux_options:
-        Option<AerospikeClusterStatusPodSpecSidecarsSecurityContextSeLinuxOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seLinuxOptions")]
+    pub se_linux_options: Option<AerospikeClusterStatusPodSpecSidecarsSecurityContextSeLinuxOptions>,
     /// The seccomp options to use by this container. If seccomp options are
     /// provided at both the pod & container level, the container options
     /// override the pod options.
     /// Note that this field cannot be set when spec.os.name is windows.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "seccompProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "seccompProfile")]
     pub seccomp_profile: Option<AerospikeClusterStatusPodSpecSidecarsSecurityContextSeccompProfile>,
     /// The Windows specific settings applied to all containers.
     /// If unspecified, the options from the PodSecurityContext will be used.
     /// If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
     /// Note that this field cannot be set when spec.os.name is linux.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "windowsOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "windowsOptions")]
     pub windows_options: Option<AerospikeClusterStatusPodSpecSidecarsSecurityContextWindowsOptions>,
 }
 
@@ -13635,16 +11428,12 @@ pub struct AerospikeClusterStatusPodSpecSidecarsSecurityContextSeccompProfile {
     /// The profile must be preconfigured on the node to work.
     /// Must be a descending path, relative to the kubelet's configured seccomp profile location.
     /// Must be set if type is "Localhost". Must NOT be set for any other type.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localhostProfile"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localhostProfile")]
     pub localhost_profile: Option<String>,
     /// type indicates which kind of seccomp profile will be applied.
     /// Valid options are:
-    ///
-    ///
+    /// 
+    /// 
     /// Localhost - a profile defined in a file on the node should be used.
     /// RuntimeDefault - the container runtime default profile should be used.
     /// Unconfined - no profile should be applied.
@@ -13661,38 +11450,22 @@ pub struct AerospikeClusterStatusPodSpecSidecarsSecurityContextWindowsOptions {
     /// GMSACredentialSpec is where the GMSA admission webhook
     /// (https://github.com/kubernetes-sigs/windows-gmsa) inlines the contents of the
     /// GMSA credential spec named by the GMSACredentialSpecName field.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpec")]
     pub gmsa_credential_spec: Option<String>,
     /// GMSACredentialSpecName is the name of the GMSA credential spec to use.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gmsaCredentialSpecName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gmsaCredentialSpecName")]
     pub gmsa_credential_spec_name: Option<String>,
     /// HostProcess determines if a container should be run as a 'Host Process' container.
     /// All of a Pod's containers must have the same effective HostProcess value
     /// (it is not allowed to have a mix of HostProcess containers and non-HostProcess containers).
     /// In addition, if HostProcess is true then HostNetwork must also be set to true.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostProcess"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostProcess")]
     pub host_process: Option<bool>,
     /// The UserName in Windows to run the entrypoint of the container process.
     /// Defaults to the user specified in image metadata if unspecified.
     /// May also be set in PodSecurityContext. If set in both SecurityContext and
     /// PodSecurityContext, the value specified in SecurityContext takes precedence.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "runAsUserName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "runAsUserName")]
     pub run_as_user_name: Option<String>,
 }
 
@@ -13710,11 +11483,7 @@ pub struct AerospikeClusterStatusPodSpecSidecarsStartupProbe {
     pub exec: Option<AerospikeClusterStatusPodSpecSidecarsStartupProbeExec>,
     /// Minimum consecutive failures for the probe to be considered failed after having succeeded.
     /// Defaults to 3. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "failureThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "failureThreshold")]
     pub failure_threshold: Option<i32>,
     /// GRPC specifies an action involving a GRPC port.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -13724,27 +11493,15 @@ pub struct AerospikeClusterStatusPodSpecSidecarsStartupProbe {
     pub http_get: Option<AerospikeClusterStatusPodSpecSidecarsStartupProbeHttpGet>,
     /// Number of seconds after the container has started before liveness probes are initiated.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initialDelaySeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initialDelaySeconds")]
     pub initial_delay_seconds: Option<i32>,
     /// How often (in seconds) to perform the probe.
     /// Default to 10 seconds. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "periodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "periodSeconds")]
     pub period_seconds: Option<i32>,
     /// Minimum consecutive successes for the probe to be considered successful after having failed.
     /// Defaults to 1. Must be 1 for liveness and startup. Minimum value is 1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "successThreshold"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "successThreshold")]
     pub success_threshold: Option<i32>,
     /// TCPSocket specifies an action involving a TCP port.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tcpSocket")]
@@ -13759,20 +11516,12 @@ pub struct AerospikeClusterStatusPodSpecSidecarsStartupProbe {
     /// the kill signal (no opportunity to shut down).
     /// This is a beta field and requires enabling ProbeTerminationGracePeriod feature gate.
     /// Minimum value is 1. spec.terminationGracePeriodSeconds is used if unset.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "terminationGracePeriodSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "terminationGracePeriodSeconds")]
     pub termination_grace_period_seconds: Option<i64>,
     /// Number of seconds after which the probe times out.
     /// Defaults to 1 second. Minimum value is 1.
     /// More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#container-probes
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "timeoutSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "timeoutSeconds")]
     pub timeout_seconds: Option<i32>,
 }
 
@@ -13795,8 +11544,8 @@ pub struct AerospikeClusterStatusPodSpecSidecarsStartupProbeGrpc {
     pub port: i32,
     /// Service is the name of the service to place in the gRPC HealthCheckRequest
     /// (see https://github.com/grpc/grpc/blob/master/doc/health-checking.md).
-    ///
-    ///
+    /// 
+    /// 
     /// If this is not specified, the default behavior is defined by gRPC.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub service: Option<String>,
@@ -13810,13 +11559,8 @@ pub struct AerospikeClusterStatusPodSpecSidecarsStartupProbeHttpGet {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub host: Option<String>,
     /// Custom headers to set in the request. HTTP allows repeated headers.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpHeaders"
-    )]
-    pub http_headers:
-        Option<Vec<AerospikeClusterStatusPodSpecSidecarsStartupProbeHttpGetHttpHeaders>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpHeaders")]
+    pub http_headers: Option<Vec<AerospikeClusterStatusPodSpecSidecarsStartupProbeHttpGetHttpHeaders>>,
     /// Path to access on the HTTP server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub path: Option<String>,
@@ -13873,11 +11617,7 @@ pub struct AerospikeClusterStatusPodSpecSidecarsVolumeMounts {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// This must match the Name of a Volume.
     pub name: String,
@@ -13893,11 +11633,7 @@ pub struct AerospikeClusterStatusPodSpecSidecarsVolumeMounts {
     /// Behaves similarly to SubPath but environment variable references $(VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -13923,11 +11659,7 @@ pub struct AerospikeClusterStatusPodSpecTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -13944,42 +11676,22 @@ pub struct AerospikeClusterStatusPods {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub aerospike: Option<AerospikeClusterStatusPodsAerospike>,
     /// AerospikeConfigHash is ripemd160 hash of aerospikeConfig used by this pod
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "aerospikeConfigHash"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "aerospikeConfigHash")]
     pub aerospike_config_hash: Option<String>,
     /// DirtyVolumes is the list of volume names that are removed
     /// from aerospike namespaces and will be cleaned during init
     /// if they are reused in any namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dirtyVolumes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dirtyVolumes")]
     pub dirty_volumes: Option<Vec<String>>,
     /// DynamicConfigUpdateStatus is the status of dynamic config update operation.
     /// Empty "" status means successful update.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dynamicConfigUpdateStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dynamicConfigUpdateStatus")]
     pub dynamic_config_update_status: Option<AerospikeClusterStatusPodsDynamicConfigUpdateStatus>,
     /// HostExternalIP of the K8s host this pod is scheduled on.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostExternalIP"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostExternalIP")]
     pub host_external_ip: Option<String>,
     /// HostInternalIP of the K8s host this pod is scheduled on.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostInternalIP"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostInternalIP")]
     pub host_internal_ip: Option<String>,
     /// Image is the Aerospike image this pod is running.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -13989,18 +11701,10 @@ pub struct AerospikeClusterStatusPods {
     pub init_image: Option<String>,
     /// InitializedVolumes is the list of volume names that have already been
     /// initialized.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initializedVolumes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initializedVolumes")]
     pub initialized_volumes: Option<Vec<String>>,
     /// NetworkPolicyHash is ripemd160 hash of NetworkPolicy used by this pod
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "networkPolicyHash"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "networkPolicyHash")]
     pub network_policy_hash: Option<String>,
     /// PodIP in the K8s network.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podIP")]
@@ -14009,18 +11713,10 @@ pub struct AerospikeClusterStatusPods {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "podPort")]
     pub pod_port: Option<i64>,
     /// PodSpecHash is ripemd160 hash of PodSpec used by this pod
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podSpecHash"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podSpecHash")]
     pub pod_spec_hash: Option<String>,
     /// ServicePort is the port Aerospike clients outside K8s can connect to.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "servicePort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "servicePort")]
     pub service_port: Option<i32>,
 }
 
@@ -14028,18 +11724,10 @@ pub struct AerospikeClusterStatusPods {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusPodsAerospike {
     /// AccessEndpoints are the access endpoints for this pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessEndpoints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessEndpoints")]
     pub access_endpoints: Option<Vec<String>>,
     /// AlternateAccessEndpoints are the alternate access endpoints for this pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "alternateAccessEndpoints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "alternateAccessEndpoints")]
     pub alternate_access_endpoints: Option<Vec<String>>,
     /// ClusterName is the name of the Aerospike cluster this pod belongs to.
     #[serde(rename = "clusterName")]
@@ -14051,18 +11739,10 @@ pub struct AerospikeClusterStatusPodsAerospike {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "rackID")]
     pub rack_id: Option<i64>,
     /// TLSAccessEndpoints are the TLS access endpoints for this pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsAccessEndpoints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsAccessEndpoints")]
     pub tls_access_endpoints: Option<Vec<String>>,
     /// TLSAlternateAccessEndpoints are the alternate TLS access endpoints for this pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tlsAlternateAccessEndpoints"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsAlternateAccessEndpoints")]
     pub tls_alternate_access_endpoints: Option<Vec<String>>,
     /// TLSName is the TLS name of this pod in the Aerospike cluster.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsName")]
@@ -14093,11 +11773,7 @@ pub struct AerospikeClusterStatusRackConfig {
     /// without being hindered by these problematic pods.
     /// Remember to set MaxIgnorablePods back to 0 once the required operation is done.
     /// This makes sure that later on, all pods are properly counted when evaluating the cluster stability.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxIgnorablePods"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxIgnorablePods")]
     pub max_ignorable_pods: Option<IntOrString>,
     /// List of Aerospike namespaces for which rack feature will be enabled
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -14106,18 +11782,10 @@ pub struct AerospikeClusterStatusRackConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub racks: Option<Vec<AerospikeClusterStatusRackConfigRacks>>,
     /// RollingUpdateBatchSize is the percentage/number of rack pods that can be restarted simultaneously
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "rollingUpdateBatchSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "rollingUpdateBatchSize")]
     pub rolling_update_batch_size: Option<IntOrString>,
     /// ScaleDownBatchSize is the percentage/number of rack pods that can be scaled down simultaneously
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scaleDownBatchSize"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scaleDownBatchSize")]
     pub scale_down_batch_size: Option<IntOrString>,
 }
 
@@ -14125,33 +11793,17 @@ pub struct AerospikeClusterStatusRackConfig {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusRackConfigRacks {
     /// AerospikeConfig overrides the common AerospikeConfig for this Rack. This is merged with global Aerospike config.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "aerospikeConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "aerospikeConfig")]
     pub aerospike_config: Option<BTreeMap<String, serde_json::Value>>,
     /// Effective/operative Aerospike config. The resultant is a merge of rack Aerospike config and the global
     /// Aerospike config
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveAerospikeConfig"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveAerospikeConfig")]
     pub effective_aerospike_config: Option<BTreeMap<String, serde_json::Value>>,
     /// Effective/operative PodSpec. The resultant is user input if specified else global PodSpec
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectivePodSpec"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectivePodSpec")]
     pub effective_pod_spec: Option<AerospikeClusterStatusRackConfigRacksEffectivePodSpec>,
     /// Effective/operative storage. The resultant is user input if specified else global storage
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveStorage"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveStorage")]
     pub effective_storage: Option<AerospikeClusterStatusRackConfigRacksEffectiveStorage>,
     /// Identifier for the rack
     pub id: i64,
@@ -14183,11 +11835,7 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinity>,
     /// NodeSelector constraints for this pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Tolerations for this pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -14198,29 +11846,14 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
-    pub node_affinity:
-        Option<AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityNodeAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
+    pub node_affinity: Option<AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
-    pub pod_affinity:
-        Option<AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
+    pub pod_affinity: Option<AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
-    pub pod_anti_affinity:
-        Option<AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAntiAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAntiAffinity>,
 }
 
 /// Describes node affinity scheduling rules for the pod.
@@ -14270,8 +11903,7 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityNodeAffi
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -14289,8 +11921,7 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityNodeAffi
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -14333,8 +11964,7 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityNodeAffi
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -14352,8 +11982,7 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityNodeAffi
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -14472,8 +12101,7 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAffin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -14507,8 +12135,7 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAffin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -14595,8 +12222,7 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAffin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -14630,8 +12256,7 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAffin
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -14749,8 +12374,7 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAntiA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -14784,8 +12408,7 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAntiA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -14872,8 +12495,7 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAntiA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -14907,8 +12529,7 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAntiA
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -14944,11 +12565,7 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -14960,34 +12577,16 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectivePodSpecTolerations {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorage {
     /// BlockVolumePolicy contains default policies for block volumes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "blockVolumePolicy"
-    )]
-    pub block_volume_policy:
-        Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageBlockVolumePolicy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockVolumePolicy")]
+    pub block_volume_policy: Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageBlockVolumePolicy>,
     /// CleanupThreads contains the maximum number of cleanup threads(dd or blkdiscard) per init container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cleanupThreads"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanupThreads")]
     pub cleanup_threads: Option<i64>,
     /// FileSystemVolumePolicy contains default policies for filesystem volumes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "filesystemVolumePolicy"
-    )]
-    pub filesystem_volume_policy:
-        Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageFilesystemVolumePolicy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filesystemVolumePolicy")]
+    pub filesystem_volume_policy: Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageFilesystemVolumePolicy>,
     /// LocalStorageClasses contains a list of storage classes which provisions local volumes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localStorageClasses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localStorageClasses")]
     pub local_storage_classes: Option<Vec<String>>,
     /// Volumes list to attach to created pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -14999,55 +12598,25 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorage {
 pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorageBlockVolumePolicy {
     /// CascadeDelete determines if the persistent volumes are deleted after the pod this volume binds to is
     /// terminated and removed from the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cascadeDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cascadeDelete")]
     pub cascade_delete: Option<bool>,
     /// Effective/operative value to use for cascade delete after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveCascadeDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveCascadeDelete")]
     pub effective_cascade_delete: Option<bool>,
     /// Effective/operative value to use as the volume init method after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveInitMethod"
-    )]
-    pub effective_init_method: Option<
-        AerospikeClusterStatusRackConfigRacksEffectiveStorageBlockVolumePolicyEffectiveInitMethod,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveInitMethod")]
+    pub effective_init_method: Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageBlockVolumePolicyEffectiveInitMethod>,
     /// Effective/operative value to use as the volume wipe method after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveWipeMethod"
-    )]
-    pub effective_wipe_method: Option<
-        AerospikeClusterStatusRackConfigRacksEffectiveStorageBlockVolumePolicyEffectiveWipeMethod,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveWipeMethod")]
+    pub effective_wipe_method: Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageBlockVolumePolicyEffectiveWipeMethod>,
     /// InitMethod determines how volumes attached to Aerospike server pods are initialized when the pods come up the
     /// first time. Defaults to "none".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initMethod"
-    )]
-    pub init_method:
-        Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageBlockVolumePolicyInitMethod>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initMethod")]
+    pub init_method: Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageBlockVolumePolicyInitMethod>,
     /// WipeMethod determines how volumes attached to Aerospike server pods are wiped for dealing with storage format
     /// changes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wipeMethod"
-    )]
-    pub wipe_method:
-        Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageBlockVolumePolicyWipeMethod>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wipeMethod")]
+    pub wipe_method: Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageBlockVolumePolicyWipeMethod>,
 }
 
 /// BlockVolumePolicy contains default policies for block volumes.
@@ -15130,8 +12699,7 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorageFilesystemVolume
 
 /// FileSystemVolumePolicy contains default policies for filesystem volumes.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum AerospikeClusterStatusRackConfigRacksEffectiveStorageFilesystemVolumePolicyEffectiveInitMethod
-{
+pub enum AerospikeClusterStatusRackConfigRacksEffectiveStorageFilesystemVolumePolicyEffectiveInitMethod {
     #[serde(rename = "none")]
     None,
     #[serde(rename = "dd")]
@@ -15144,8 +12712,7 @@ pub enum AerospikeClusterStatusRackConfigRacksEffectiveStorageFilesystemVolumePo
 
 /// FileSystemVolumePolicy contains default policies for filesystem volumes.
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
-pub enum AerospikeClusterStatusRackConfigRacksEffectiveStorageFilesystemVolumePolicyEffectiveWipeMethod
-{
+pub enum AerospikeClusterStatusRackConfigRacksEffectiveStorageFilesystemVolumePolicyEffectiveWipeMethod {
     #[serde(rename = "none")]
     None,
     #[serde(rename = "dd")]
@@ -15189,50 +12756,23 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumes {
     pub aerospike: Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesAerospike>,
     /// CascadeDelete determines if the persistent volumes are deleted after the pod this volume binds to is
     /// terminated and removed from the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cascadeDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cascadeDelete")]
     pub cascade_delete: Option<bool>,
     /// Effective/operative value to use for cascade delete after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveCascadeDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveCascadeDelete")]
     pub effective_cascade_delete: Option<bool>,
     /// Effective/operative value to use as the volume init method after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveInitMethod"
-    )]
-    pub effective_init_method:
-        Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesEffectiveInitMethod>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveInitMethod")]
+    pub effective_init_method: Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesEffectiveInitMethod>,
     /// Effective/operative value to use as the volume wipe method after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveWipeMethod"
-    )]
-    pub effective_wipe_method:
-        Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesEffectiveWipeMethod>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveWipeMethod")]
+    pub effective_wipe_method: Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesEffectiveWipeMethod>,
     /// InitContainers are additional init containers where this volume will be mounted
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
-    pub init_containers:
-        Option<Vec<AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesInitContainers>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
+    pub init_containers: Option<Vec<AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesInitContainers>>,
     /// InitMethod determines how volumes attached to Aerospike server pods are initialized when the pods come up the
     /// first time. Defaults to "none".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initMethod")]
     pub init_method: Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesInitMethod>,
     /// Name for this volume, Name or path should be given.
     pub name: String,
@@ -15244,24 +12784,15 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumes {
     pub source: Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSource>,
     /// WipeMethod determines how volumes attached to Aerospike server pods are wiped for dealing with storage format
     /// changes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wipeMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wipeMethod")]
     pub wipe_method: Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesWipeMethod>,
 }
 
 /// Aerospike attachment of this volume on Aerospike server container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesAerospike {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountOptions"
-    )]
-    pub mount_options:
-        Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesAerospikeMountOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountOptions")]
+    pub mount_options: Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesAerospikeMountOptions>,
     /// Path to attach the volume on the Aerospike server container.
     pub path: String,
 }
@@ -15272,11 +12803,7 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesAerospike
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// Mounted read-only if true, read-write otherwise (false or unspecified).
     /// Defaults to false.
@@ -15291,11 +12818,7 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesAerospike
     /// VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -15329,14 +12852,8 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesInitConta
     /// ContainerName is the name of the container to attach this volume to.
     #[serde(rename = "containerName")]
     pub container_name: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountOptions"
-    )]
-    pub mount_options: Option<
-        AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesInitContainersMountOptions,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountOptions")]
+    pub mount_options: Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesInitContainersMountOptions>,
     /// Path to attach the volume on the container.
     pub path: String,
 }
@@ -15347,11 +12864,7 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesInitConta
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// Mounted read-only if true, read-write otherwise (false or unspecified).
     /// Defaults to false.
@@ -15366,11 +12879,7 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesInitConta
     /// VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -15392,13 +12901,8 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSidecars 
     /// ContainerName is the name of the container to attach this volume to.
     #[serde(rename = "containerName")]
     pub container_name: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountOptions"
-    )]
-    pub mount_options:
-        Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSidecarsMountOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountOptions")]
+    pub mount_options: Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSidecarsMountOptions>,
     /// Path to attach the volume on the container.
     pub path: String,
 }
@@ -15409,11 +12913,7 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSidecarsM
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// Mounted read-only if true, read-write otherwise (false or unspecified).
     /// Defaults to false.
@@ -15428,11 +12928,7 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSidecarsM
     /// VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -15441,24 +12937,17 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSidecarsM
 pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSource {
     /// ConfigMap represents a configMap that should populate this volume
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "configMap")]
-    pub config_map:
-        Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSourceConfigMap>,
+    pub config_map: Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSourceConfigMap>,
     /// EmptyDir represents a temporary directory that shares a pod's lifetime.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#emptydir
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
-    pub empty_dir:
-        Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSourceEmptyDir>,
+    pub empty_dir: Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSourceEmptyDir>,
     /// PersistentVolumeSpec describes a persistent volume to claim and attach to Aerospike pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolume"
-    )]
-    pub persistent_volume:
-        Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSourcePersistentVolume>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolume")]
+    pub persistent_volume: Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSourcePersistentVolume>,
     /// Adapts a Secret into a volume.
-    ///
-    ///
+    /// 
+    /// 
     /// The contents of the target Secret's Data field will be presented in a volume
     /// as files using the keys in the Data field as the file names.
     /// Secret volumes support ownership management and SELinux relabeling.
@@ -15476,11 +12965,7 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSourceCon
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items if unspecified, each key-value pair in the Data field of the referenced
     /// ConfigMap will be projected into the volume as a file whose name is the
@@ -15490,9 +12975,7 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSourceCon
     /// the volume setup will error unless it is marked optional. Paths must be
     /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items: Option<
-        Vec<AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSourceConfigMapItems>,
-    >,
+    pub items: Option<Vec<AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSourceConfigMapItems>>,
     /// Name of the referent.
     /// More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names
     /// TODO: Add other useful fields. apiVersion, kind, uid?
@@ -15548,21 +13031,13 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSourceEmp
 pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSourcePersistentVolume {
     /// Name for creating PVC for this volume, Name or path should be given
     /// Name string `json:"name"`
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub metadata: Option<
-        AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSourcePersistentVolumeMetadata,
-    >,
+    pub metadata: Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSourcePersistentVolumeMetadata>,
     /// A label query over volumes to consider for binding.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub selector: Option<
-        AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSourcePersistentVolumeSelector,
-    >,
+    pub selector: Option<AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSourcePersistentVolumeSelector>,
     /// Size of volume.
     pub size: IntOrString,
     /// StorageClass should be pre-created by user.
@@ -15574,8 +13049,7 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSourcePer
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSourcePersistentVolumeMetadata
-{
+pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSourcePersistentVolumeMetadata {
     /// Key - Value pair that may be set by external tools to store and retrieve arbitrary metadata
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub annotations: Option<BTreeMap<String, String>>,
@@ -15600,8 +13074,7 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSourcePer
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSourcePersistentVolumeSelectorMatchExpressions
-{
+pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSourcePersistentVolumeSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -15616,8 +13089,8 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSourcePer
 }
 
 /// Adapts a Secret into a volume.
-///
-///
+/// 
+/// 
 /// The contents of the target Secret's Data field will be presented in a volume
 /// as files using the keys in the Data field as the file names.
 /// Secret volumes support ownership management and SELinux relabeling.
@@ -15630,11 +13103,7 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSourceSec
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items If unspecified, each key-value pair in the Data field of the referenced
     /// Secret will be projected into the volume as a file whose name is the
@@ -15644,18 +13113,13 @@ pub struct AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSourceSec
     /// the volume setup will error unless it is marked optional. Paths must be
     /// relative and may not contain the '..' path or start with '..'.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSourceSecretItems>>,
+    pub items: Option<Vec<AerospikeClusterStatusRackConfigRacksEffectiveStorageVolumesSourceSecretItems>>,
     /// optional field specify whether the Secret or its keys must be defined
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub optional: Option<bool>,
     /// secretName is the name of the secret in the pod's namespace to use.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -15698,11 +13162,7 @@ pub struct AerospikeClusterStatusRackConfigRacksPodSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub affinity: Option<AerospikeClusterStatusRackConfigRacksPodSpecAffinity>,
     /// NodeSelector constraints for this pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeSelector"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeSelector")]
     pub node_selector: Option<BTreeMap<String, String>>,
     /// Tolerations for this pod.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -15713,27 +13173,14 @@ pub struct AerospikeClusterStatusRackConfigRacksPodSpec {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinity {
     /// Describes node affinity scheduling rules for the pod.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nodeAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nodeAffinity")]
     pub node_affinity: Option<AerospikeClusterStatusRackConfigRacksPodSpecAffinityNodeAffinity>,
     /// Describes pod affinity scheduling rules (e.g. co-locate this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAffinity"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAffinity")]
     pub pod_affinity: Option<AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAffinity>,
     /// Describes pod anti-affinity scheduling rules (e.g. avoid putting this pod in the same node, zone, etc. as some other pod(s)).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "podAntiAffinity"
-    )]
-    pub pod_anti_affinity:
-        Option<AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAntiAffinity>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "podAntiAffinity")]
+    pub pod_anti_affinity: Option<AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAntiAffinity>,
 }
 
 /// Describes node affinity scheduling rules for the pod.
@@ -15783,8 +13230,7 @@ pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityNodeAffinityPrefe
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions
-{
+pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -15802,8 +13248,7 @@ pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityNodeAffinityPrefe
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields
-{
+pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityNodeAffinityPreferredDuringSchedulingIgnoredDuringExecutionPreferenceMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -15846,8 +13291,7 @@ pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityNodeAffinityRequi
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions
-{
+pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchExpressions {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -15865,8 +13309,7 @@ pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityNodeAffinityRequi
 /// A node selector requirement is a selector that contains values, a key, and an operator
 /// that relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields
-{
+pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityNodeAffinityRequiredDuringSchedulingIgnoredDuringExecutionNodeSelectorTermsMatchFields {
     /// The label key that the selector applies to.
     pub key: String,
     /// Represents a key's relationship to a set of values.
@@ -15985,8 +13428,7 @@ pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAffinityPrefer
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -16020,8 +13462,7 @@ pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAffinityPrefer
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -16108,8 +13549,7 @@ pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAffinityRequir
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -16143,8 +13583,7 @@ pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAffinityRequir
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -16262,8 +13701,7 @@ pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAntiAffinityPr
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions
-{
+pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -16297,8 +13735,7 @@ pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAntiAffinityPr
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions
-{
+pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAntiAffinityPreferredDuringSchedulingIgnoredDuringExecutionPodAffinityTermNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -16385,8 +13822,7 @@ pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAntiAffinityRe
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions
-{
+pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionLabelSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -16420,8 +13856,7 @@ pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAntiAffinityRe
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions
-{
+pub struct AerospikeClusterStatusRackConfigRacksPodSpecAffinityPodAntiAffinityRequiredDuringSchedulingIgnoredDuringExecutionNamespaceSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -16457,11 +13892,7 @@ pub struct AerospikeClusterStatusRackConfigRacksPodSpecTolerations {
     /// of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
     /// it is not set, which means tolerate the taint forever (do not evict). Zero and
     /// negative values will be treated as 0 (evict immediately) by the system.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tolerationSeconds"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tolerationSeconds")]
     pub toleration_seconds: Option<i64>,
     /// Value is the taint value the toleration matches to.
     /// If the operator is Exists, the value should be empty, otherwise just a regular string.
@@ -16473,33 +13904,16 @@ pub struct AerospikeClusterStatusRackConfigRacksPodSpecTolerations {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusRackConfigRacksStorage {
     /// BlockVolumePolicy contains default policies for block volumes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "blockVolumePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockVolumePolicy")]
     pub block_volume_policy: Option<AerospikeClusterStatusRackConfigRacksStorageBlockVolumePolicy>,
     /// CleanupThreads contains the maximum number of cleanup threads(dd or blkdiscard) per init container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cleanupThreads"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanupThreads")]
     pub cleanup_threads: Option<i64>,
     /// FileSystemVolumePolicy contains default policies for filesystem volumes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "filesystemVolumePolicy"
-    )]
-    pub filesystem_volume_policy:
-        Option<AerospikeClusterStatusRackConfigRacksStorageFilesystemVolumePolicy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filesystemVolumePolicy")]
+    pub filesystem_volume_policy: Option<AerospikeClusterStatusRackConfigRacksStorageFilesystemVolumePolicy>,
     /// LocalStorageClasses contains a list of storage classes which provisions local volumes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localStorageClasses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localStorageClasses")]
     pub local_storage_classes: Option<Vec<String>>,
     /// Volumes list to attach to created pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -16511,53 +13925,25 @@ pub struct AerospikeClusterStatusRackConfigRacksStorage {
 pub struct AerospikeClusterStatusRackConfigRacksStorageBlockVolumePolicy {
     /// CascadeDelete determines if the persistent volumes are deleted after the pod this volume binds to is
     /// terminated and removed from the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cascadeDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cascadeDelete")]
     pub cascade_delete: Option<bool>,
     /// Effective/operative value to use for cascade delete after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveCascadeDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveCascadeDelete")]
     pub effective_cascade_delete: Option<bool>,
     /// Effective/operative value to use as the volume init method after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveInitMethod"
-    )]
-    pub effective_init_method:
-        Option<AerospikeClusterStatusRackConfigRacksStorageBlockVolumePolicyEffectiveInitMethod>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveInitMethod")]
+    pub effective_init_method: Option<AerospikeClusterStatusRackConfigRacksStorageBlockVolumePolicyEffectiveInitMethod>,
     /// Effective/operative value to use as the volume wipe method after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveWipeMethod"
-    )]
-    pub effective_wipe_method:
-        Option<AerospikeClusterStatusRackConfigRacksStorageBlockVolumePolicyEffectiveWipeMethod>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveWipeMethod")]
+    pub effective_wipe_method: Option<AerospikeClusterStatusRackConfigRacksStorageBlockVolumePolicyEffectiveWipeMethod>,
     /// InitMethod determines how volumes attached to Aerospike server pods are initialized when the pods come up the
     /// first time. Defaults to "none".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initMethod"
-    )]
-    pub init_method:
-        Option<AerospikeClusterStatusRackConfigRacksStorageBlockVolumePolicyInitMethod>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initMethod")]
+    pub init_method: Option<AerospikeClusterStatusRackConfigRacksStorageBlockVolumePolicyInitMethod>,
     /// WipeMethod determines how volumes attached to Aerospike server pods are wiped for dealing with storage format
     /// changes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wipeMethod"
-    )]
-    pub wipe_method:
-        Option<AerospikeClusterStatusRackConfigRacksStorageBlockVolumePolicyWipeMethod>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wipeMethod")]
+    pub wipe_method: Option<AerospikeClusterStatusRackConfigRacksStorageBlockVolumePolicyWipeMethod>,
 }
 
 /// BlockVolumePolicy contains default policies for block volumes.
@@ -16617,55 +14003,25 @@ pub enum AerospikeClusterStatusRackConfigRacksStorageBlockVolumePolicyWipeMethod
 pub struct AerospikeClusterStatusRackConfigRacksStorageFilesystemVolumePolicy {
     /// CascadeDelete determines if the persistent volumes are deleted after the pod this volume binds to is
     /// terminated and removed from the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cascadeDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cascadeDelete")]
     pub cascade_delete: Option<bool>,
     /// Effective/operative value to use for cascade delete after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveCascadeDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveCascadeDelete")]
     pub effective_cascade_delete: Option<bool>,
     /// Effective/operative value to use as the volume init method after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveInitMethod"
-    )]
-    pub effective_init_method: Option<
-        AerospikeClusterStatusRackConfigRacksStorageFilesystemVolumePolicyEffectiveInitMethod,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveInitMethod")]
+    pub effective_init_method: Option<AerospikeClusterStatusRackConfigRacksStorageFilesystemVolumePolicyEffectiveInitMethod>,
     /// Effective/operative value to use as the volume wipe method after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveWipeMethod"
-    )]
-    pub effective_wipe_method: Option<
-        AerospikeClusterStatusRackConfigRacksStorageFilesystemVolumePolicyEffectiveWipeMethod,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveWipeMethod")]
+    pub effective_wipe_method: Option<AerospikeClusterStatusRackConfigRacksStorageFilesystemVolumePolicyEffectiveWipeMethod>,
     /// InitMethod determines how volumes attached to Aerospike server pods are initialized when the pods come up the
     /// first time. Defaults to "none".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initMethod"
-    )]
-    pub init_method:
-        Option<AerospikeClusterStatusRackConfigRacksStorageFilesystemVolumePolicyInitMethod>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initMethod")]
+    pub init_method: Option<AerospikeClusterStatusRackConfigRacksStorageFilesystemVolumePolicyInitMethod>,
     /// WipeMethod determines how volumes attached to Aerospike server pods are wiped for dealing with storage format
     /// changes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wipeMethod"
-    )]
-    pub wipe_method:
-        Option<AerospikeClusterStatusRackConfigRacksStorageFilesystemVolumePolicyWipeMethod>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wipeMethod")]
+    pub wipe_method: Option<AerospikeClusterStatusRackConfigRacksStorageFilesystemVolumePolicyWipeMethod>,
 }
 
 /// FileSystemVolumePolicy contains default policies for filesystem volumes.
@@ -16727,50 +14083,23 @@ pub struct AerospikeClusterStatusRackConfigRacksStorageVolumes {
     pub aerospike: Option<AerospikeClusterStatusRackConfigRacksStorageVolumesAerospike>,
     /// CascadeDelete determines if the persistent volumes are deleted after the pod this volume binds to is
     /// terminated and removed from the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cascadeDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cascadeDelete")]
     pub cascade_delete: Option<bool>,
     /// Effective/operative value to use for cascade delete after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveCascadeDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveCascadeDelete")]
     pub effective_cascade_delete: Option<bool>,
     /// Effective/operative value to use as the volume init method after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveInitMethod"
-    )]
-    pub effective_init_method:
-        Option<AerospikeClusterStatusRackConfigRacksStorageVolumesEffectiveInitMethod>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveInitMethod")]
+    pub effective_init_method: Option<AerospikeClusterStatusRackConfigRacksStorageVolumesEffectiveInitMethod>,
     /// Effective/operative value to use as the volume wipe method after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveWipeMethod"
-    )]
-    pub effective_wipe_method:
-        Option<AerospikeClusterStatusRackConfigRacksStorageVolumesEffectiveWipeMethod>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveWipeMethod")]
+    pub effective_wipe_method: Option<AerospikeClusterStatusRackConfigRacksStorageVolumesEffectiveWipeMethod>,
     /// InitContainers are additional init containers where this volume will be mounted
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
-    pub init_containers:
-        Option<Vec<AerospikeClusterStatusRackConfigRacksStorageVolumesInitContainers>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
+    pub init_containers: Option<Vec<AerospikeClusterStatusRackConfigRacksStorageVolumesInitContainers>>,
     /// InitMethod determines how volumes attached to Aerospike server pods are initialized when the pods come up the
     /// first time. Defaults to "none".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initMethod")]
     pub init_method: Option<AerospikeClusterStatusRackConfigRacksStorageVolumesInitMethod>,
     /// Name for this volume, Name or path should be given.
     pub name: String,
@@ -16782,24 +14111,15 @@ pub struct AerospikeClusterStatusRackConfigRacksStorageVolumes {
     pub source: Option<AerospikeClusterStatusRackConfigRacksStorageVolumesSource>,
     /// WipeMethod determines how volumes attached to Aerospike server pods are wiped for dealing with storage format
     /// changes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wipeMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wipeMethod")]
     pub wipe_method: Option<AerospikeClusterStatusRackConfigRacksStorageVolumesWipeMethod>,
 }
 
 /// Aerospike attachment of this volume on Aerospike server container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusRackConfigRacksStorageVolumesAerospike {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountOptions"
-    )]
-    pub mount_options:
-        Option<AerospikeClusterStatusRackConfigRacksStorageVolumesAerospikeMountOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountOptions")]
+    pub mount_options: Option<AerospikeClusterStatusRackConfigRacksStorageVolumesAerospikeMountOptions>,
     /// Path to attach the volume on the Aerospike server container.
     pub path: String,
 }
@@ -16810,11 +14130,7 @@ pub struct AerospikeClusterStatusRackConfigRacksStorageVolumesAerospikeMountOpti
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// Mounted read-only if true, read-write otherwise (false or unspecified).
     /// Defaults to false.
@@ -16829,11 +14145,7 @@ pub struct AerospikeClusterStatusRackConfigRacksStorageVolumesAerospikeMountOpti
     /// VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -16867,13 +14179,8 @@ pub struct AerospikeClusterStatusRackConfigRacksStorageVolumesInitContainers {
     /// ContainerName is the name of the container to attach this volume to.
     #[serde(rename = "containerName")]
     pub container_name: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountOptions"
-    )]
-    pub mount_options:
-        Option<AerospikeClusterStatusRackConfigRacksStorageVolumesInitContainersMountOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountOptions")]
+    pub mount_options: Option<AerospikeClusterStatusRackConfigRacksStorageVolumesInitContainersMountOptions>,
     /// Path to attach the volume on the container.
     pub path: String,
 }
@@ -16884,11 +14191,7 @@ pub struct AerospikeClusterStatusRackConfigRacksStorageVolumesInitContainersMoun
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// Mounted read-only if true, read-write otherwise (false or unspecified).
     /// Defaults to false.
@@ -16903,11 +14206,7 @@ pub struct AerospikeClusterStatusRackConfigRacksStorageVolumesInitContainersMoun
     /// VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -16929,13 +14228,8 @@ pub struct AerospikeClusterStatusRackConfigRacksStorageVolumesSidecars {
     /// ContainerName is the name of the container to attach this volume to.
     #[serde(rename = "containerName")]
     pub container_name: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountOptions"
-    )]
-    pub mount_options:
-        Option<AerospikeClusterStatusRackConfigRacksStorageVolumesSidecarsMountOptions>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountOptions")]
+    pub mount_options: Option<AerospikeClusterStatusRackConfigRacksStorageVolumesSidecarsMountOptions>,
     /// Path to attach the volume on the container.
     pub path: String,
 }
@@ -16946,11 +14240,7 @@ pub struct AerospikeClusterStatusRackConfigRacksStorageVolumesSidecarsMountOptio
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// Mounted read-only if true, read-write otherwise (false or unspecified).
     /// Defaults to false.
@@ -16965,11 +14255,7 @@ pub struct AerospikeClusterStatusRackConfigRacksStorageVolumesSidecarsMountOptio
     /// VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -16984,16 +14270,11 @@ pub struct AerospikeClusterStatusRackConfigRacksStorageVolumesSource {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<AerospikeClusterStatusRackConfigRacksStorageVolumesSourceEmptyDir>,
     /// PersistentVolumeSpec describes a persistent volume to claim and attach to Aerospike pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolume"
-    )]
-    pub persistent_volume:
-        Option<AerospikeClusterStatusRackConfigRacksStorageVolumesSourcePersistentVolume>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolume")]
+    pub persistent_volume: Option<AerospikeClusterStatusRackConfigRacksStorageVolumesSourcePersistentVolume>,
     /// Adapts a Secret into a volume.
-    ///
-    ///
+    /// 
+    /// 
     /// The contents of the target Secret's Data field will be presented in a volume
     /// as files using the keys in the Data field as the file names.
     /// Secret volumes support ownership management and SELinux relabeling.
@@ -17011,11 +14292,7 @@ pub struct AerospikeClusterStatusRackConfigRacksStorageVolumesSourceConfigMap {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items if unspecified, each key-value pair in the Data field of the referenced
     /// ConfigMap will be projected into the volume as a file whose name is the
@@ -17081,19 +14358,13 @@ pub struct AerospikeClusterStatusRackConfigRacksStorageVolumesSourceEmptyDir {
 pub struct AerospikeClusterStatusRackConfigRacksStorageVolumesSourcePersistentVolume {
     /// Name for creating PVC for this volume, Name or path should be given
     /// Name string `json:"name"`
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub metadata:
-        Option<AerospikeClusterStatusRackConfigRacksStorageVolumesSourcePersistentVolumeMetadata>,
+    pub metadata: Option<AerospikeClusterStatusRackConfigRacksStorageVolumesSourcePersistentVolumeMetadata>,
     /// A label query over volumes to consider for binding.
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub selector:
-        Option<AerospikeClusterStatusRackConfigRacksStorageVolumesSourcePersistentVolumeSelector>,
+    pub selector: Option<AerospikeClusterStatusRackConfigRacksStorageVolumesSourcePersistentVolumeSelector>,
     /// Size of volume.
     pub size: IntOrString,
     /// StorageClass should be pre-created by user.
@@ -17130,8 +14401,7 @@ pub struct AerospikeClusterStatusRackConfigRacksStorageVolumesSourcePersistentVo
 /// A label selector requirement is a selector that contains values, a key, and an operator that
 /// relates the key and values.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-pub struct AerospikeClusterStatusRackConfigRacksStorageVolumesSourcePersistentVolumeSelectorMatchExpressions
-{
+pub struct AerospikeClusterStatusRackConfigRacksStorageVolumesSourcePersistentVolumeSelectorMatchExpressions {
     /// key is the label key that the selector applies to.
     pub key: String,
     /// operator represents a key's relationship to a set of values.
@@ -17146,8 +14416,8 @@ pub struct AerospikeClusterStatusRackConfigRacksStorageVolumesSourcePersistentVo
 }
 
 /// Adapts a Secret into a volume.
-///
-///
+/// 
+/// 
 /// The contents of the target Secret's Data field will be presented in a volume
 /// as files using the keys in the Data field as the file names.
 /// Secret volumes support ownership management and SELinux relabeling.
@@ -17160,11 +14430,7 @@ pub struct AerospikeClusterStatusRackConfigRacksStorageVolumesSourceSecret {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items If unspecified, each key-value pair in the Data field of the referenced
     /// Secret will be projected into the volume as a file whose name is the
@@ -17180,11 +14446,7 @@ pub struct AerospikeClusterStatusRackConfigRacksStorageVolumesSourceSecret {
     pub optional: Option<bool>,
     /// secretName is the name of the secret in the pod's namespace to use.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -17228,12 +14490,12 @@ pub enum AerospikeClusterStatusRackConfigRacksStorageVolumesWipeMethod {
 pub struct AerospikeClusterStatusResources {
     /// Claims lists the names of resources, defined in spec.resourceClaims,
     /// that are used by this container.
-    ///
-    ///
+    /// 
+    /// 
     /// This is an alpha field and requires enabling the
     /// DynamicResourceAllocation feature gate.
-    ///
-    ///
+    /// 
+    /// 
     /// This field is immutable. It can only be set for containers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub claims: Option<Vec<AerospikeClusterStatusResourcesClaims>>,
@@ -17263,11 +14525,7 @@ pub struct AerospikeClusterStatusResourcesClaims {
 pub struct AerospikeClusterStatusSeedsFinderServices {
     /// LoadBalancer created to discover Aerospike Cluster nodes from outside of
     /// Kubernetes cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancer"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancer")]
     pub load_balancer: Option<AerospikeClusterStatusSeedsFinderServicesLoadBalancer>,
 }
 
@@ -17280,18 +14538,9 @@ pub struct AerospikeClusterStatusSeedsFinderServicesLoadBalancer {
     /// ServiceExternalTrafficPolicy describes how nodes distribute service traffic they
     /// receive on one of the Service's "externally-facing" addresses (NodePorts, ExternalIPs,
     /// and LoadBalancer IPs.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "externalTrafficPolicy"
-    )]
-    pub external_traffic_policy:
-        Option<AerospikeClusterStatusSeedsFinderServicesLoadBalancerExternalTrafficPolicy>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "loadBalancerSourceRanges"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "externalTrafficPolicy")]
+    pub external_traffic_policy: Option<AerospikeClusterStatusSeedsFinderServicesLoadBalancerExternalTrafficPolicy>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "loadBalancerSourceRanges")]
     pub load_balancer_source_ranges: Option<Vec<String>>,
     /// Port Exposed port on load balancer. If not specified TargetPort is used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -17301,11 +14550,7 @@ pub struct AerospikeClusterStatusSeedsFinderServicesLoadBalancer {
     pub port_name: Option<String>,
     /// TargetPort Target port. If not specified the tls-port of network.service stanza is used from Aerospike config.
     /// If there is no tls port configured then regular port from network.service is used.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetPort"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetPort")]
     pub target_port: Option<i32>,
 }
 
@@ -17321,32 +14566,16 @@ pub enum AerospikeClusterStatusSeedsFinderServicesLoadBalancerExternalTrafficPol
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusStorage {
     /// BlockVolumePolicy contains default policies for block volumes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "blockVolumePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "blockVolumePolicy")]
     pub block_volume_policy: Option<AerospikeClusterStatusStorageBlockVolumePolicy>,
     /// CleanupThreads contains the maximum number of cleanup threads(dd or blkdiscard) per init container.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cleanupThreads"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cleanupThreads")]
     pub cleanup_threads: Option<i64>,
     /// FileSystemVolumePolicy contains default policies for filesystem volumes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "filesystemVolumePolicy"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "filesystemVolumePolicy")]
     pub filesystem_volume_policy: Option<AerospikeClusterStatusStorageFilesystemVolumePolicy>,
     /// LocalStorageClasses contains a list of storage classes which provisions local volumes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "localStorageClasses"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "localStorageClasses")]
     pub local_storage_classes: Option<Vec<String>>,
     /// Volumes list to attach to created pods.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -17358,50 +14587,24 @@ pub struct AerospikeClusterStatusStorage {
 pub struct AerospikeClusterStatusStorageBlockVolumePolicy {
     /// CascadeDelete determines if the persistent volumes are deleted after the pod this volume binds to is
     /// terminated and removed from the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cascadeDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cascadeDelete")]
     pub cascade_delete: Option<bool>,
     /// Effective/operative value to use for cascade delete after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveCascadeDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveCascadeDelete")]
     pub effective_cascade_delete: Option<bool>,
     /// Effective/operative value to use as the volume init method after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveInitMethod"
-    )]
-    pub effective_init_method:
-        Option<AerospikeClusterStatusStorageBlockVolumePolicyEffectiveInitMethod>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveInitMethod")]
+    pub effective_init_method: Option<AerospikeClusterStatusStorageBlockVolumePolicyEffectiveInitMethod>,
     /// Effective/operative value to use as the volume wipe method after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveWipeMethod"
-    )]
-    pub effective_wipe_method:
-        Option<AerospikeClusterStatusStorageBlockVolumePolicyEffectiveWipeMethod>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveWipeMethod")]
+    pub effective_wipe_method: Option<AerospikeClusterStatusStorageBlockVolumePolicyEffectiveWipeMethod>,
     /// InitMethod determines how volumes attached to Aerospike server pods are initialized when the pods come up the
     /// first time. Defaults to "none".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initMethod")]
     pub init_method: Option<AerospikeClusterStatusStorageBlockVolumePolicyInitMethod>,
     /// WipeMethod determines how volumes attached to Aerospike server pods are wiped for dealing with storage format
     /// changes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wipeMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wipeMethod")]
     pub wipe_method: Option<AerospikeClusterStatusStorageBlockVolumePolicyWipeMethod>,
 }
 
@@ -17462,50 +14665,24 @@ pub enum AerospikeClusterStatusStorageBlockVolumePolicyWipeMethod {
 pub struct AerospikeClusterStatusStorageFilesystemVolumePolicy {
     /// CascadeDelete determines if the persistent volumes are deleted after the pod this volume binds to is
     /// terminated and removed from the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cascadeDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cascadeDelete")]
     pub cascade_delete: Option<bool>,
     /// Effective/operative value to use for cascade delete after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveCascadeDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveCascadeDelete")]
     pub effective_cascade_delete: Option<bool>,
     /// Effective/operative value to use as the volume init method after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveInitMethod"
-    )]
-    pub effective_init_method:
-        Option<AerospikeClusterStatusStorageFilesystemVolumePolicyEffectiveInitMethod>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveInitMethod")]
+    pub effective_init_method: Option<AerospikeClusterStatusStorageFilesystemVolumePolicyEffectiveInitMethod>,
     /// Effective/operative value to use as the volume wipe method after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveWipeMethod"
-    )]
-    pub effective_wipe_method:
-        Option<AerospikeClusterStatusStorageFilesystemVolumePolicyEffectiveWipeMethod>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveWipeMethod")]
+    pub effective_wipe_method: Option<AerospikeClusterStatusStorageFilesystemVolumePolicyEffectiveWipeMethod>,
     /// InitMethod determines how volumes attached to Aerospike server pods are initialized when the pods come up the
     /// first time. Defaults to "none".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initMethod")]
     pub init_method: Option<AerospikeClusterStatusStorageFilesystemVolumePolicyInitMethod>,
     /// WipeMethod determines how volumes attached to Aerospike server pods are wiped for dealing with storage format
     /// changes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wipeMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wipeMethod")]
     pub wipe_method: Option<AerospikeClusterStatusStorageFilesystemVolumePolicyWipeMethod>,
 }
 
@@ -17568,47 +14745,23 @@ pub struct AerospikeClusterStatusStorageVolumes {
     pub aerospike: Option<AerospikeClusterStatusStorageVolumesAerospike>,
     /// CascadeDelete determines if the persistent volumes are deleted after the pod this volume binds to is
     /// terminated and removed from the cluster.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "cascadeDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "cascadeDelete")]
     pub cascade_delete: Option<bool>,
     /// Effective/operative value to use for cascade delete after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveCascadeDelete"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveCascadeDelete")]
     pub effective_cascade_delete: Option<bool>,
     /// Effective/operative value to use as the volume init method after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveInitMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveInitMethod")]
     pub effective_init_method: Option<AerospikeClusterStatusStorageVolumesEffectiveInitMethod>,
     /// Effective/operative value to use as the volume wipe method after applying defaults.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "effectiveWipeMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "effectiveWipeMethod")]
     pub effective_wipe_method: Option<AerospikeClusterStatusStorageVolumesEffectiveWipeMethod>,
     /// InitContainers are additional init containers where this volume will be mounted
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initContainers"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initContainers")]
     pub init_containers: Option<Vec<AerospikeClusterStatusStorageVolumesInitContainers>>,
     /// InitMethod determines how volumes attached to Aerospike server pods are initialized when the pods come up the
     /// first time. Defaults to "none".
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "initMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "initMethod")]
     pub init_method: Option<AerospikeClusterStatusStorageVolumesInitMethod>,
     /// Name for this volume, Name or path should be given.
     pub name: String,
@@ -17620,22 +14773,14 @@ pub struct AerospikeClusterStatusStorageVolumes {
     pub source: Option<AerospikeClusterStatusStorageVolumesSource>,
     /// WipeMethod determines how volumes attached to Aerospike server pods are wiped for dealing with storage format
     /// changes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "wipeMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "wipeMethod")]
     pub wipe_method: Option<AerospikeClusterStatusStorageVolumesWipeMethod>,
 }
 
 /// Aerospike attachment of this volume on Aerospike server container.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusStorageVolumesAerospike {
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountOptions")]
     pub mount_options: Option<AerospikeClusterStatusStorageVolumesAerospikeMountOptions>,
     /// Path to attach the volume on the Aerospike server container.
     pub path: String,
@@ -17647,11 +14792,7 @@ pub struct AerospikeClusterStatusStorageVolumesAerospikeMountOptions {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// Mounted read-only if true, read-write otherwise (false or unspecified).
     /// Defaults to false.
@@ -17666,11 +14807,7 @@ pub struct AerospikeClusterStatusStorageVolumesAerospikeMountOptions {
     /// VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -17704,11 +14841,7 @@ pub struct AerospikeClusterStatusStorageVolumesInitContainers {
     /// ContainerName is the name of the container to attach this volume to.
     #[serde(rename = "containerName")]
     pub container_name: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountOptions")]
     pub mount_options: Option<AerospikeClusterStatusStorageVolumesInitContainersMountOptions>,
     /// Path to attach the volume on the container.
     pub path: String,
@@ -17720,11 +14853,7 @@ pub struct AerospikeClusterStatusStorageVolumesInitContainersMountOptions {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// Mounted read-only if true, read-write otherwise (false or unspecified).
     /// Defaults to false.
@@ -17739,11 +14868,7 @@ pub struct AerospikeClusterStatusStorageVolumesInitContainersMountOptions {
     /// VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -17765,11 +14890,7 @@ pub struct AerospikeClusterStatusStorageVolumesSidecars {
     /// ContainerName is the name of the container to attach this volume to.
     #[serde(rename = "containerName")]
     pub container_name: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountOptions"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountOptions")]
     pub mount_options: Option<AerospikeClusterStatusStorageVolumesSidecarsMountOptions>,
     /// Path to attach the volume on the container.
     pub path: String,
@@ -17781,11 +14902,7 @@ pub struct AerospikeClusterStatusStorageVolumesSidecarsMountOptions {
     /// to container and the other way around.
     /// When not set, MountPropagationNone is used.
     /// This field is beta in 1.10.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mountPropagation"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mountPropagation")]
     pub mount_propagation: Option<String>,
     /// Mounted read-only if true, read-write otherwise (false or unspecified).
     /// Defaults to false.
@@ -17800,11 +14917,7 @@ pub struct AerospikeClusterStatusStorageVolumesSidecarsMountOptions {
     /// VAR_NAME) are expanded using the container's environment.
     /// Defaults to "" (volume's root).
     /// SubPathExpr and SubPath are mutually exclusive.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "subPathExpr"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "subPathExpr")]
     pub sub_path_expr: Option<String>,
 }
 
@@ -17819,15 +14932,11 @@ pub struct AerospikeClusterStatusStorageVolumesSource {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "emptyDir")]
     pub empty_dir: Option<AerospikeClusterStatusStorageVolumesSourceEmptyDir>,
     /// PersistentVolumeSpec describes a persistent volume to claim and attach to Aerospike pods.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "persistentVolume"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "persistentVolume")]
     pub persistent_volume: Option<AerospikeClusterStatusStorageVolumesSourcePersistentVolume>,
     /// Adapts a Secret into a volume.
-    ///
-    ///
+    /// 
+    /// 
     /// The contents of the target Secret's Data field will be presented in a volume
     /// as files using the keys in the Data field as the file names.
     /// Secret volumes support ownership management and SELinux relabeling.
@@ -17845,11 +14954,7 @@ pub struct AerospikeClusterStatusStorageVolumesSourceConfigMap {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items if unspecified, each key-value pair in the Data field of the referenced
     /// ConfigMap will be projected into the volume as a file whose name is the
@@ -17915,11 +15020,7 @@ pub struct AerospikeClusterStatusStorageVolumesSourceEmptyDir {
 pub struct AerospikeClusterStatusStorageVolumesSourcePersistentVolume {
     /// Name for creating PVC for this volume, Name or path should be given
     /// Name string `json:"name"`
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "accessModes"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "accessModes")]
     pub access_modes: Option<Vec<String>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub metadata: Option<AerospikeClusterStatusStorageVolumesSourcePersistentVolumeMetadata>,
@@ -17950,22 +15051,12 @@ pub struct AerospikeClusterStatusStorageVolumesSourcePersistentVolumeMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct AerospikeClusterStatusStorageVolumesSourcePersistentVolumeSelector {
     /// matchExpressions is a list of label selector requirements. The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchExpressions"
-    )]
-    pub match_expressions: Option<
-        Vec<AerospikeClusterStatusStorageVolumesSourcePersistentVolumeSelectorMatchExpressions>,
-    >,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchExpressions")]
+    pub match_expressions: Option<Vec<AerospikeClusterStatusStorageVolumesSourcePersistentVolumeSelectorMatchExpressions>>,
     /// matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
     /// map is equivalent to an element of matchExpressions, whose key field is "key", the
     /// operator is "In", and the values array contains only "value". The requirements are ANDed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchLabels")]
     pub match_labels: Option<BTreeMap<String, String>>,
 }
 
@@ -17987,8 +15078,8 @@ pub struct AerospikeClusterStatusStorageVolumesSourcePersistentVolumeSelectorMat
 }
 
 /// Adapts a Secret into a volume.
-///
-///
+/// 
+/// 
 /// The contents of the target Secret's Data field will be presented in a volume
 /// as files using the keys in the Data field as the file names.
 /// Secret volumes support ownership management and SELinux relabeling.
@@ -18001,11 +15092,7 @@ pub struct AerospikeClusterStatusStorageVolumesSourceSecret {
     /// Directories within the path are not affected by this setting.
     /// This might be in conflict with other options that affect the file
     /// mode, like fsGroup, and the result can be other mode bits set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "defaultMode"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "defaultMode")]
     pub default_mode: Option<i32>,
     /// items If unspecified, each key-value pair in the Data field of the referenced
     /// Secret will be projected into the volume as a file whose name is the
@@ -18021,11 +15108,7 @@ pub struct AerospikeClusterStatusStorageVolumesSourceSecret {
     pub optional: Option<bool>,
     /// secretName is the name of the secret in the pod's namespace to use.
     /// More info: https://kubernetes.io/docs/concepts/storage/volumes#secret
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "secretName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "secretName")]
     pub secret_name: Option<String>,
 }
 
@@ -18073,3 +15156,4 @@ pub struct AerospikeClusterStatusValidationPolicy {
     #[serde(rename = "skipXdrDlogFileValidate")]
     pub skip_xdr_dlog_file_validate: bool,
 }
+

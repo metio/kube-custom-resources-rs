@@ -5,24 +5,19 @@
 #[allow(unused_imports)]
 mod prelude {
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
 }
 use self::prelude::*;
 
 /// Spec represents the specification of a Ceph BlockPool Rados Namespace
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "ceph.rook.io",
-    version = "v1",
-    kind = "CephBlockPoolRadosNamespace",
-    plural = "cephblockpoolradosnamespaces"
-)]
+#[kube(group = "ceph.rook.io", version = "v1", kind = "CephBlockPoolRadosNamespace", plural = "cephblockpoolradosnamespaces")]
 #[kube(namespaced)]
 #[kube(status = "CephBlockPoolRadosNamespaceStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct CephBlockPoolRadosNamespaceSpec {
     /// BlockPoolName is the name of Ceph BlockPool. Typically it's the name of
     /// the CephBlockPool CR.
@@ -42,18 +37,10 @@ pub struct CephBlockPoolRadosNamespaceMirroring {
     /// Mode is the mirroring mode; either pool or image
     pub mode: CephBlockPoolRadosNamespaceMirroringMode,
     /// RemoteNamespace is the name of the CephBlockPoolRadosNamespace on the secondary cluster CephBlockPool
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "remoteNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "remoteNamespace")]
     pub remote_namespace: Option<String>,
     /// SnapshotSchedules is the scheduling of snapshot for mirrored images
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotSchedules"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotSchedules")]
     pub snapshot_schedules: Option<Vec<CephBlockPoolRadosNamespaceMirroringSnapshotSchedules>>,
 }
 
@@ -88,28 +75,16 @@ pub struct CephBlockPoolRadosNamespaceStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub info: Option<BTreeMap<String, String>>,
     /// MirroringInfoSpec is the status of the pool/radosnamespace mirroring
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mirroringInfo"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mirroringInfo")]
     pub mirroring_info: Option<CephBlockPoolRadosNamespaceStatusMirroringInfo>,
     /// MirroringStatusSpec is the status of the pool/radosNamespace mirroring
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "mirroringStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "mirroringStatus")]
     pub mirroring_status: Option<CephBlockPoolRadosNamespaceStatusMirroringStatus>,
     /// ConditionType represent a resource's status
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub phase: Option<String>,
     /// SnapshotScheduleStatusSpec is the status of the snapshot schedule
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotScheduleStatus"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotScheduleStatus")]
     pub snapshot_schedule_status: Option<CephBlockPoolRadosNamespaceStatusSnapshotScheduleStatus>,
 }
 
@@ -118,17 +93,9 @@ pub struct CephBlockPoolRadosNamespaceStatus {
 pub struct CephBlockPoolRadosNamespaceStatusMirroringInfo {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub details: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastChanged"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastChanged")]
     pub last_changed: Option<String>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastChecked"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastChecked")]
     pub last_checked: Option<String>,
     /// Mode is the mirroring mode
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -168,18 +135,10 @@ pub struct CephBlockPoolRadosNamespaceStatusMirroringStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub details: Option<String>,
     /// LastChanged is the last time time the status last changed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastChanged"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastChanged")]
     pub last_changed: Option<String>,
     /// LastChecked is the last time time the status was checked
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastChecked"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastChecked")]
     pub last_checked: Option<String>,
     /// Summary is the mirroring status summary
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -236,27 +195,14 @@ pub struct CephBlockPoolRadosNamespaceStatusSnapshotScheduleStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub details: Option<String>,
     /// LastChanged is the last time time the status last changed
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastChanged"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastChanged")]
     pub last_changed: Option<String>,
     /// LastChecked is the last time time the status was checked
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lastChecked"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lastChecked")]
     pub last_checked: Option<String>,
     /// SnapshotSchedules is the list of snapshots scheduled
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "snapshotSchedules"
-    )]
-    pub snapshot_schedules:
-        Option<Vec<CephBlockPoolRadosNamespaceStatusSnapshotScheduleStatusSnapshotSchedules>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "snapshotSchedules")]
+    pub snapshot_schedules: Option<Vec<CephBlockPoolRadosNamespaceStatusSnapshotScheduleStatusSnapshotSchedules>>,
 }
 
 /// SnapshotSchedulesSpec is the list of snapshot scheduled for images in a pool
@@ -267,8 +213,7 @@ pub struct CephBlockPoolRadosNamespaceStatusSnapshotScheduleStatusSnapshotSchedu
     pub image: Option<String>,
     /// Items is the list schedules times for a given snapshot
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub items:
-        Option<Vec<CephBlockPoolRadosNamespaceStatusSnapshotScheduleStatusSnapshotSchedulesItems>>,
+    pub items: Option<Vec<CephBlockPoolRadosNamespaceStatusSnapshotScheduleStatusSnapshotSchedulesItems>>,
     /// Namespace is the RADOS namespace the image is part of
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
@@ -287,3 +232,4 @@ pub struct CephBlockPoolRadosNamespaceStatusSnapshotScheduleStatusSnapshotSchedu
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub start_time: Option<String>,
 }
+

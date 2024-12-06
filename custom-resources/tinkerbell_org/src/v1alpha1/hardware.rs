@@ -4,26 +4,21 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// HardwareSpec defines the desired state of Hardware.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "tinkerbell.org",
-    version = "v1alpha1",
-    kind = "Hardware",
-    plural = "hardware"
-)]
+#[kube(group = "tinkerbell.org", version = "v1alpha1", kind = "Hardware", plural = "hardware")]
 #[kube(namespaced)]
 #[kube(status = "HardwareStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct HardwareSpec {
     /// BMCRef contains a relation to a BMC state management type in the same
     /// namespace as the Hardware. This may be used for BMC management by
@@ -40,11 +35,7 @@ pub struct HardwareSpec {
     /// Resources may be used for scheduling by orchestrators.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub resources: Option<BTreeMap<String, IntOrString>>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tinkVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tinkVersion")]
     pub tink_version: Option<i64>,
     /// UserData is the user data to configure in the hardware's
     /// metadata
@@ -52,11 +43,7 @@ pub struct HardwareSpec {
     pub user_data: Option<String>,
     /// VendorData is the vendor data to configure in the hardware's
     /// metadata
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "vendorData"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "vendorData")]
     pub vendor_data: Option<String>,
 }
 
@@ -90,11 +77,7 @@ pub struct HardwareInterfaces {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub dhcp: Option<HardwareInterfacesDhcp>,
     /// DisableDHCP disables DHCP for this interface.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "disableDhcp"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "disableDhcp")]
     pub disable_dhcp: Option<bool>,
     /// Netboot configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -146,11 +129,7 @@ pub struct HardwareInterfacesDhcpIp {
 pub struct HardwareInterfacesNetboot {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowPXE")]
     pub allow_pxe: Option<bool>,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowWorkflow"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowWorkflow")]
     pub allow_workflow: Option<bool>,
     /// IPXE configuration.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -199,8 +178,7 @@ pub struct HardwareMetadata {
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct HardwareMetadataCustom {
     #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub preinstalled_operating_system_version:
-        Option<HardwareMetadataCustomPreinstalledOperatingSystemVersion>,
+    pub preinstalled_operating_system_version: Option<HardwareMetadataCustomPreinstalledOperatingSystemVersion>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub private_subnets: Option<Vec<String>>,
 }
@@ -396,3 +374,4 @@ pub struct HardwareStatus {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub state: Option<String>,
 }
+

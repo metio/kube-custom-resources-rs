@@ -4,150 +4,81 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::util::intstr::IntOrString;
 }
 use self::prelude::*;
 
 /// ScrapeConfigSpec is a specification of the desired configuration for a scrape configuration.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "monitoring.coreos.com",
-    version = "v1alpha1",
-    kind = "ScrapeConfig",
-    plural = "scrapeconfigs"
-)]
+#[kube(group = "monitoring.coreos.com", version = "v1alpha1", kind = "ScrapeConfig", plural = "scrapeconfigs")]
 #[kube(namespaced)]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct ScrapeConfigSpec {
     /// Authorization header to use on every scrape request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<ScrapeConfigAuthorization>,
     /// AzureSDConfigs defines a list of Azure service discovery configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "azureSDConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "azureSDConfigs")]
     pub azure_sd_configs: Option<Vec<ScrapeConfigAzureSdConfigs>>,
     /// BasicAuth information to use on every scrape request.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<ScrapeConfigBasicAuth>,
     /// ConsulSDConfigs defines a list of Consul service discovery configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "consulSDConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "consulSDConfigs")]
     pub consul_sd_configs: Option<Vec<ScrapeConfigConsulSdConfigs>>,
     /// DigitalOceanSDConfigs defines a list of DigitalOcean service discovery configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "digitalOceanSDConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "digitalOceanSDConfigs")]
     pub digital_ocean_sd_configs: Option<Vec<ScrapeConfigDigitalOceanSdConfigs>>,
     /// DNSSDConfigs defines a list of DNS service discovery configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dnsSDConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dnsSDConfigs")]
     pub dns_sd_configs: Option<Vec<ScrapeConfigDnsSdConfigs>>,
     /// DockerSDConfigs defines a list of Docker service discovery configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dockerSDConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dockerSDConfigs")]
     pub docker_sd_configs: Option<Vec<ScrapeConfigDockerSdConfigs>>,
     /// DockerswarmSDConfigs defines a list of Dockerswarm service discovery configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "dockerSwarmSDConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "dockerSwarmSDConfigs")]
     pub docker_swarm_sd_configs: Option<Vec<ScrapeConfigDockerSwarmSdConfigs>>,
     /// EC2SDConfigs defines a list of EC2 service discovery configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ec2SDConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ec2SDConfigs")]
     pub ec2_sd_configs: Option<Vec<ScrapeConfigEc2SdConfigs>>,
     /// When false, Prometheus will request uncompressed response from the scraped target.
-    ///
+    /// 
     /// It requires Prometheus >= v2.49.0.
-    ///
+    /// 
     /// If unset, Prometheus uses true by default.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableCompression"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableCompression")]
     pub enable_compression: Option<bool>,
     /// EurekaSDConfigs defines a list of Eureka service discovery configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "eurekaSDConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "eurekaSDConfigs")]
     pub eureka_sd_configs: Option<Vec<ScrapeConfigEurekaSdConfigs>>,
     /// FileSDConfigs defines a list of file service discovery configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fileSDConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fileSDConfigs")]
     pub file_sd_configs: Option<Vec<ScrapeConfigFileSdConfigs>>,
     /// GCESDConfigs defines a list of GCE service discovery configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "gceSDConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "gceSDConfigs")]
     pub gce_sd_configs: Option<Vec<ScrapeConfigGceSdConfigs>>,
     /// HetznerSDConfigs defines a list of Hetzner service discovery configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hetznerSDConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hetznerSDConfigs")]
     pub hetzner_sd_configs: Option<Vec<ScrapeConfigHetznerSdConfigs>>,
     /// HonorLabels chooses the metric's labels on collisions with target labels.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "honorLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "honorLabels")]
     pub honor_labels: Option<bool>,
     /// HonorTimestamps controls whether Prometheus respects the timestamps present in scraped data.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "honorTimestamps"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "honorTimestamps")]
     pub honor_timestamps: Option<bool>,
     /// HTTPSDConfigs defines a list of HTTP service discovery configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "httpSDConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "httpSDConfigs")]
     pub http_sd_configs: Option<Vec<ScrapeConfigHttpSdConfigs>>,
     /// IonosSDConfigs defines a list of IONOS service discovery configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ionosSDConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ionosSDConfigs")]
     pub ionos_sd_configs: Option<Vec<ScrapeConfigIonosSdConfigs>>,
     /// The value of the `job` label assigned to the scraped metrics by default.
-    ///
+    /// 
     /// The `job_name` field in the rendered scrape configuration is always controlled by the
     /// operator to prevent duplicate job names, which Prometheus does not allow. Instead the
     /// `job` label is set by means of relabeling configs.
@@ -155,160 +86,88 @@ pub struct ScrapeConfigSpec {
     pub job_name: Option<String>,
     /// Per-scrape limit on the number of targets dropped by relabeling
     /// that will be kept in memory. 0 means no limit.
-    ///
+    /// 
     /// It requires Prometheus >= v2.47.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "keepDroppedTargets"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "keepDroppedTargets")]
     pub keep_dropped_targets: Option<i64>,
     /// KubernetesSDConfigs defines a list of Kubernetes service discovery configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kubernetesSDConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kubernetesSDConfigs")]
     pub kubernetes_sd_configs: Option<Vec<ScrapeConfigKubernetesSdConfigs>>,
     /// KumaSDConfigs defines a list of Kuma service discovery configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "kumaSDConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "kumaSDConfigs")]
     pub kuma_sd_configs: Option<Vec<ScrapeConfigKumaSdConfigs>>,
     /// Per-scrape limit on number of labels that will be accepted for a sample.
     /// Only valid in Prometheus versions 2.27.0 and newer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelLimit")]
     pub label_limit: Option<i64>,
     /// Per-scrape limit on length of labels name that will be accepted for a sample.
     /// Only valid in Prometheus versions 2.27.0 and newer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelNameLengthLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelNameLengthLimit")]
     pub label_name_length_limit: Option<i64>,
     /// Per-scrape limit on length of labels value that will be accepted for a sample.
     /// Only valid in Prometheus versions 2.27.0 and newer.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "labelValueLengthLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "labelValueLengthLimit")]
     pub label_value_length_limit: Option<i64>,
     /// LightsailSDConfigs defines a list of Lightsail service discovery configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "lightSailSDConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "lightSailSDConfigs")]
     pub light_sail_sd_configs: Option<Vec<ScrapeConfigLightSailSdConfigs>>,
     /// LinodeSDConfigs defines a list of Linode service discovery configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "linodeSDConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "linodeSDConfigs")]
     pub linode_sd_configs: Option<Vec<ScrapeConfigLinodeSdConfigs>>,
     /// MetricRelabelConfigs to apply to samples before ingestion.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricRelabelings"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricRelabelings")]
     pub metric_relabelings: Option<Vec<ScrapeConfigMetricRelabelings>>,
     /// MetricsPath HTTP path to scrape for metrics. If empty, Prometheus uses the default value (e.g. /metrics).
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "metricsPath"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "metricsPath")]
     pub metrics_path: Option<String>,
     /// If there are more than this many buckets in a native histogram,
     /// buckets will be merged to stay within the limit.
     /// It requires Prometheus >= v2.45.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nativeHistogramBucketLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nativeHistogramBucketLimit")]
     pub native_histogram_bucket_limit: Option<i64>,
     /// If the growth factor of one bucket to the next is smaller than this,
     /// buckets will be merged to increase the factor sufficiently.
     /// It requires Prometheus >= v2.50.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nativeHistogramMinBucketFactor"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nativeHistogramMinBucketFactor")]
     pub native_histogram_min_bucket_factor: Option<IntOrString>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// NomadSDConfigs defines a list of Nomad service discovery configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nomadSDConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nomadSDConfigs")]
     pub nomad_sd_configs: Option<Vec<ScrapeConfigNomadSdConfigs>>,
     /// OAuth2 configuration to use on every scrape request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub oauth2: Option<ScrapeConfigOauth2>,
     /// OpenStackSDConfigs defines a list of OpenStack service discovery configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "openstackSDConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "openstackSDConfigs")]
     pub openstack_sd_configs: Option<Vec<ScrapeConfigOpenstackSdConfigs>>,
     /// OVHCloudSDConfigs defines a list of OVHcloud service discovery configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ovhcloudSDConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ovhcloudSDConfigs")]
     pub ovhcloud_sd_configs: Option<Vec<ScrapeConfigOvhcloudSdConfigs>>,
     /// Optional HTTP URL parameters
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub params: Option<BTreeMap<String, String>>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
     /// PuppetDBSDConfigs defines a list of PuppetDB service discovery configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "puppetDBSDConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "puppetDBSDConfigs")]
     pub puppet_dbsd_configs: Option<Vec<ScrapeConfigPuppetDbsdConfigs>>,
     /// RelabelConfigs defines how to rewrite the target's labels before scraping.
     /// Prometheus Operator automatically adds relabelings for a few standard Kubernetes fields.
@@ -317,77 +176,41 @@ pub struct ScrapeConfigSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub relabelings: Option<Vec<ScrapeConfigRelabelings>>,
     /// SampleLimit defines per-scrape limit on number of scraped samples that will be accepted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sampleLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sampleLimit")]
     pub sample_limit: Option<i64>,
     /// ScalewaySDConfigs defines a list of Scaleway instances and baremetal service discovery configurations.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scalewaySDConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scalewaySDConfigs")]
     pub scaleway_sd_configs: Option<Vec<ScrapeConfigScalewaySdConfigs>>,
     /// Configures the protocol scheme used for requests.
     /// If empty, Prometheus uses HTTP by default.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub scheme: Option<ScrapeConfigScheme>,
     /// The scrape class to apply.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scrapeClass"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeClass")]
     pub scrape_class: Option<String>,
     /// Whether to scrape a classic histogram that is also exposed as a native histogram.
     /// It requires Prometheus >= v2.45.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scrapeClassicHistograms"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeClassicHistograms")]
     pub scrape_classic_histograms: Option<bool>,
     /// ScrapeInterval is the interval between consecutive scrapes.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scrapeInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeInterval")]
     pub scrape_interval: Option<String>,
     /// The protocols to negotiate during a scrape. It tells clients the
     /// protocols supported by Prometheus in order of preference (from most to least preferred).
-    ///
+    /// 
     /// If unset, Prometheus uses its default value.
-    ///
+    /// 
     /// It requires Prometheus >= v2.49.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scrapeProtocols"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeProtocols")]
     pub scrape_protocols: Option<Vec<String>>,
     /// ScrapeTimeout is the number of seconds to wait until a scrape request times out.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "scrapeTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "scrapeTimeout")]
     pub scrape_timeout: Option<String>,
     /// StaticConfigs defines a list of static targets with a common label set.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "staticConfigs"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "staticConfigs")]
     pub static_configs: Option<Vec<ScrapeConfigStaticConfigs>>,
     /// TargetLimit defines a limit on the number of scraped targets that will be accepted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetLimit"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLimit")]
     pub target_limit: Option<i64>,
     /// TLS configuration to use on every scrape request
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
@@ -396,11 +219,7 @@ pub struct ScrapeConfigSpec {
     /// the metrics that have an explicit timestamp present in scraped data.
     /// Has no effect if `honorTimestamps` is false.
     /// It requires Prometheus >= v2.48.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "trackTimestampsStaleness"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "trackTimestampsStaleness")]
     pub track_timestamps_staleness: Option<bool>,
 }
 
@@ -411,9 +230,9 @@ pub struct ScrapeConfigAuthorization {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ScrapeConfigAuthorizationCredentials>,
     /// Defines the authentication type. The value is case-insensitive.
-    ///
+    /// 
     /// "Basic" is not a supported value.
-    ///
+    /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -444,21 +263,13 @@ pub struct ScrapeConfigAzureSdConfigs {
     /// See https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/overview
     /// SDK authentication method uses environment variables by default.
     /// See https://learn.microsoft.com/en-us/azure/developer/go/azure-sdk-authentication
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "authenticationMethod"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "authenticationMethod")]
     pub authentication_method: Option<ScrapeConfigAzureSdConfigsAuthenticationMethod>,
     /// Optional client ID. Only required with the OAuth authentication method.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientID")]
     pub client_id: Option<String>,
     /// Optional client secret. Only required with the OAuth authentication method.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "clientSecret"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientSecret")]
     pub client_secret: Option<ScrapeConfigAzureSdConfigsClientSecret>,
     /// The Azure environment.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -468,18 +279,10 @@ pub struct ScrapeConfigAzureSdConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub port: Option<i64>,
     /// RefreshInterval configures the refresh interval at which Prometheus will re-read the instance list.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
     /// Optional resource group name. Limits discovery to this resource group.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "resourceGroup"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "resourceGroup")]
     pub resource_group: Option<String>,
     /// The subscription ID. Always required.
     #[serde(rename = "subscriptionID")]
@@ -571,11 +374,7 @@ pub struct ScrapeConfigBasicAuthUsername {
 pub struct ScrapeConfigConsulSdConfigs {
     /// Allow stale Consul results (see https://www.consul.io/api/features/consistency.html). Will reduce load on Consul.
     /// If unset, Prometheus uses its default value.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowStale"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowStale")]
     pub allow_stale: Option<bool>,
     /// Authorization header configuration to authenticate against the Consul Server.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -589,19 +388,11 @@ pub struct ScrapeConfigConsulSdConfigs {
     pub datacenter: Option<String>,
     /// Whether to enable HTTP2.
     /// If unset, Prometheus uses its default value.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableHTTP2"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHTTP2")]
     pub enable_http2: Option<bool>,
     /// Configure whether HTTP requests follow HTTP 3xx redirects.
     /// If unset, Prometheus uses its default value.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// Namespaces are only supported in Consul Enterprise.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -609,7 +400,7 @@ pub struct ScrapeConfigConsulSdConfigs {
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
@@ -624,23 +415,14 @@ pub struct ScrapeConfigConsulSdConfigs {
     pub partition: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header:
-        Option<BTreeMap<String, ScrapeConfigConsulSdConfigsProxyConnectHeader>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigConsulSdConfigsProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -648,11 +430,7 @@ pub struct ScrapeConfigConsulSdConfigs {
     /// The time after which the provided names are refreshed.
     /// On large setup it might be a good idea to increase this value because the catalog will change all the time.
     /// If unset, Prometheus uses its default value.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
     /// HTTP Scheme default "http"
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -664,11 +442,7 @@ pub struct ScrapeConfigConsulSdConfigs {
     pub services: Option<Vec<String>>,
     /// The string by which Consul tags are joined into the tag label.
     /// If unset, Prometheus uses its default value.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tagSeparator"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tagSeparator")]
     pub tag_separator: Option<String>,
     /// An optional list of tags used to filter nodes for a given service. Services must contain all tags in the list.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -688,9 +462,9 @@ pub struct ScrapeConfigConsulSdConfigsAuthorization {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ScrapeConfigConsulSdConfigsAuthorizationCredentials>,
     /// Defines the authentication type. The value is case-insensitive.
-    ///
+    /// 
     /// "Basic" is not a supported value.
-    ///
+    /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -776,38 +550,25 @@ pub struct ScrapeConfigConsulSdConfigsOauth2 {
     pub client_secret: ScrapeConfigConsulSdConfigsOauth2ClientSecret,
     /// `endpointParams` configures the HTTP parameters to append to the token
     /// URL.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header:
-        Option<BTreeMap<String, ScrapeConfigConsulSdConfigsOauth2ProxyConnectHeader>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigConsulSdConfigsOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -916,39 +677,23 @@ pub struct ScrapeConfigConsulSdConfigsOauth2TlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ScrapeConfigConsulSdConfigsOauth2TlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigConsulSdConfigsOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigConsulSdConfigsOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigConsulSdConfigsOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -1124,39 +869,23 @@ pub struct ScrapeConfigConsulSdConfigsTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ScrapeConfigConsulSdConfigsTlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigConsulSdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigConsulSdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigConsulSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -1320,23 +1049,15 @@ pub struct ScrapeConfigDigitalOceanSdConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<ScrapeConfigDigitalOceanSdConfigsAuthorization>,
     /// Whether to enable HTTP2.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableHTTP2"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHTTP2")]
     pub enable_http2: Option<bool>,
     /// Configure whether HTTP requests follow HTTP 3xx redirects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
@@ -1349,33 +1070,20 @@ pub struct ScrapeConfigDigitalOceanSdConfigs {
     pub port: Option<i64>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header:
-        Option<BTreeMap<String, ScrapeConfigDigitalOceanSdConfigsProxyConnectHeader>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigDigitalOceanSdConfigsProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
     /// Refresh interval to re-read the instance list.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
     /// TLS configuration applying to the target HTTP endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
@@ -1390,9 +1098,9 @@ pub struct ScrapeConfigDigitalOceanSdConfigsAuthorization {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ScrapeConfigDigitalOceanSdConfigsAuthorizationCredentials>,
     /// Defines the authentication type. The value is case-insensitive.
-    ///
+    /// 
     /// "Basic" is not a supported value.
-    ///
+    /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -1429,38 +1137,25 @@ pub struct ScrapeConfigDigitalOceanSdConfigsOauth2 {
     pub client_secret: ScrapeConfigDigitalOceanSdConfigsOauth2ClientSecret,
     /// `endpointParams` configures the HTTP parameters to append to the token
     /// URL.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header:
-        Option<BTreeMap<String, ScrapeConfigDigitalOceanSdConfigsOauth2ProxyConnectHeader>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigDigitalOceanSdConfigsOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -1569,39 +1264,23 @@ pub struct ScrapeConfigDigitalOceanSdConfigsOauth2TlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ScrapeConfigDigitalOceanSdConfigsOauth2TlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigDigitalOceanSdConfigsOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigDigitalOceanSdConfigsOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigDigitalOceanSdConfigsOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -1767,39 +1446,23 @@ pub struct ScrapeConfigDigitalOceanSdConfigsTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ScrapeConfigDigitalOceanSdConfigsTlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigDigitalOceanSdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigDigitalOceanSdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigDigitalOceanSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -1949,15 +1612,11 @@ pub struct ScrapeConfigDnsSdConfigs {
     pub port: Option<i32>,
     /// RefreshInterval configures the time after which the provided names are refreshed.
     /// If not set, Prometheus uses its default value.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
     /// The type of DNS query to perform. One of SRV, A, AAAA, MX or NS.
     /// If not set, Prometheus uses its default value.
-    ///
+    /// 
     /// When set to NS, it requires Prometheus >= v2.49.0.
     /// When set to MX, it requires Prometheus >= v2.38.0
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
@@ -1994,44 +1653,28 @@ pub struct ScrapeConfigDockerSdConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<ScrapeConfigDockerSdConfigsBasicAuth>,
     /// Whether to enable HTTP2.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableHTTP2"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHTTP2")]
     pub enable_http2: Option<bool>,
     /// Optional filters to limit the discovery process to a subset of the available resources.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filters: Option<Vec<ScrapeConfigDockerSdConfigsFilters>>,
     /// Configure whether HTTP requests follow HTTP 3xx redirects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// Address of the docker daemon
     pub host: String,
     /// The host to use if the container is in host networking mode.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "hostNetworkingHost"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "hostNetworkingHost")]
     pub host_networking_host: Option<String>,
     /// Configure whether to match the first network if the container has multiple networks defined.
     /// If unset, Prometheus uses true by default.
     /// It requires Prometheus >= v2.54.1.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "matchFirstNetwork"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "matchFirstNetwork")]
     pub match_first_network: Option<bool>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
@@ -2044,33 +1687,20 @@ pub struct ScrapeConfigDockerSdConfigs {
     pub port: Option<i64>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header:
-        Option<BTreeMap<String, ScrapeConfigDockerSdConfigsProxyConnectHeader>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigDockerSdConfigsProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
     /// Time after which the container is refreshed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
     /// TLS configuration applying to the target HTTP endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
@@ -2085,9 +1715,9 @@ pub struct ScrapeConfigDockerSdConfigsAuthorization {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ScrapeConfigDockerSdConfigsAuthorizationCredentials>,
     /// Defines the authentication type. The value is case-insensitive.
-    ///
+    /// 
     /// "Basic" is not a supported value.
-    ///
+    /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -2182,38 +1812,25 @@ pub struct ScrapeConfigDockerSdConfigsOauth2 {
     pub client_secret: ScrapeConfigDockerSdConfigsOauth2ClientSecret,
     /// `endpointParams` configures the HTTP parameters to append to the token
     /// URL.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header:
-        Option<BTreeMap<String, ScrapeConfigDockerSdConfigsOauth2ProxyConnectHeader>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigDockerSdConfigsOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -2322,39 +1939,23 @@ pub struct ScrapeConfigDockerSdConfigsOauth2TlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ScrapeConfigDockerSdConfigsOauth2TlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigDockerSdConfigsOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigDockerSdConfigsOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigDockerSdConfigsOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -2520,39 +2121,23 @@ pub struct ScrapeConfigDockerSdConfigsTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ScrapeConfigDockerSdConfigsTlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigDockerSdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigDockerSdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigDockerSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -2700,11 +2285,7 @@ pub struct ScrapeConfigDockerSwarmSdConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<ScrapeConfigDockerSwarmSdConfigsBasicAuth>,
     /// Whether to enable HTTP2.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableHTTP2"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHTTP2")]
     pub enable_http2: Option<bool>,
     /// Optional filters to limit the discovery process to a subset of available
     /// resources.
@@ -2715,18 +2296,14 @@ pub struct ScrapeConfigDockerSwarmSdConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub filters: Option<Vec<ScrapeConfigDockerSwarmSdConfigsFilters>>,
     /// Configure whether HTTP requests follow HTTP 3xx redirects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// Address of the Docker daemon
     pub host: String,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
@@ -2740,33 +2317,20 @@ pub struct ScrapeConfigDockerSwarmSdConfigs {
     pub port: Option<i32>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header:
-        Option<BTreeMap<String, ScrapeConfigDockerSwarmSdConfigsProxyConnectHeader>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigDockerSwarmSdConfigsProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
     /// The time after which the service discovery data is refreshed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
     /// Role of the targets to retrieve. Must be `Services`, `Tasks`, or `Nodes`.
     pub role: ScrapeConfigDockerSwarmSdConfigsRole,
@@ -2782,9 +2346,9 @@ pub struct ScrapeConfigDockerSwarmSdConfigsAuthorization {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ScrapeConfigDockerSwarmSdConfigsAuthorizationCredentials>,
     /// Defines the authentication type. The value is case-insensitive.
-    ///
+    /// 
     /// "Basic" is not a supported value.
-    ///
+    /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -2879,38 +2443,25 @@ pub struct ScrapeConfigDockerSwarmSdConfigsOauth2 {
     pub client_secret: ScrapeConfigDockerSwarmSdConfigsOauth2ClientSecret,
     /// `endpointParams` configures the HTTP parameters to append to the token
     /// URL.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header:
-        Option<BTreeMap<String, ScrapeConfigDockerSwarmSdConfigsOauth2ProxyConnectHeader>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigDockerSwarmSdConfigsOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -3019,39 +2570,23 @@ pub struct ScrapeConfigDockerSwarmSdConfigsOauth2TlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ScrapeConfigDockerSwarmSdConfigsOauth2TlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigDockerSwarmSdConfigsOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigDockerSwarmSdConfigsOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigDockerSwarmSdConfigsOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -3226,39 +2761,23 @@ pub struct ScrapeConfigDockerSwarmSdConfigsTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ScrapeConfigDockerSwarmSdConfigsTlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigDockerSwarmSdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigDockerSwarmSdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigDockerSwarmSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -3399,7 +2918,7 @@ pub enum ScrapeConfigDockerSwarmSdConfigsTlsConfigMinVersion {
 /// The private IP address is used by default, but may be changed to the public IP address with relabeling.
 /// The IAM credentials used must have the ec2:DescribeInstances permission to discover scrape targets
 /// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#ec2_sd_config
-///
+/// 
 /// The EC2 service discovery requires AWS API keys or role ARN for authentication.
 /// BasicAuth, Authorization and OAuth2 fields are not present on purpose.
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
@@ -3409,11 +2928,7 @@ pub struct ScrapeConfigEc2SdConfigs {
     pub access_key: Option<ScrapeConfigEc2SdConfigsAccessKey>,
     /// Whether to enable HTTP2.
     /// It requires Prometheus >= v2.41.0
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableHTTP2"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHTTP2")]
     pub enable_http2: Option<bool>,
     /// Filters can be used optionally to filter the instance list by other criteria.
     /// Available filter criteria can be found here:
@@ -3424,16 +2939,12 @@ pub struct ScrapeConfigEc2SdConfigs {
     pub filters: Option<Vec<ScrapeConfigEc2SdConfigsFilters>>,
     /// Configure whether HTTP requests follow HTTP 3xx redirects.
     /// It requires Prometheus >= v2.41.0
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
@@ -3443,32 +2954,20 @@ pub struct ScrapeConfigEc2SdConfigs {
     pub port: Option<i32>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigEc2SdConfigsProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
     /// RefreshInterval configures the refresh interval at which Prometheus will re-read the instance list.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
     /// The AWS region.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -3556,39 +3055,23 @@ pub struct ScrapeConfigEc2SdConfigsTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ScrapeConfigEc2SdConfigsTlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigEc2SdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigEc2SdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigEc2SdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -3739,23 +3222,15 @@ pub struct ScrapeConfigEurekaSdConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<ScrapeConfigEurekaSdConfigsBasicAuth>,
     /// Whether to enable HTTP2.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableHTTP2"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHTTP2")]
     pub enable_http2: Option<bool>,
     /// Configure whether HTTP requests follow HTTP 3xx redirects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
@@ -3765,33 +3240,20 @@ pub struct ScrapeConfigEurekaSdConfigs {
     pub oauth2: Option<ScrapeConfigEurekaSdConfigsOauth2>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header:
-        Option<BTreeMap<String, ScrapeConfigEurekaSdConfigsProxyConnectHeader>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigEurekaSdConfigsProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
     /// Refresh interval to re-read the instance list.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
     /// The URL to connect to the Eureka server.
     pub server: String,
@@ -3807,9 +3269,9 @@ pub struct ScrapeConfigEurekaSdConfigsAuthorization {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ScrapeConfigEurekaSdConfigsAuthorizationCredentials>,
     /// Defines the authentication type. The value is case-insensitive.
-    ///
+    /// 
     /// "Basic" is not a supported value.
-    ///
+    /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -3895,38 +3357,25 @@ pub struct ScrapeConfigEurekaSdConfigsOauth2 {
     pub client_secret: ScrapeConfigEurekaSdConfigsOauth2ClientSecret,
     /// `endpointParams` configures the HTTP parameters to append to the token
     /// URL.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header:
-        Option<BTreeMap<String, ScrapeConfigEurekaSdConfigsOauth2ProxyConnectHeader>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigEurekaSdConfigsOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -4035,39 +3484,23 @@ pub struct ScrapeConfigEurekaSdConfigsOauth2TlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ScrapeConfigEurekaSdConfigsOauth2TlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigEurekaSdConfigsOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigEurekaSdConfigsOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigEurekaSdConfigsOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -4233,39 +3666,23 @@ pub struct ScrapeConfigEurekaSdConfigsTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ScrapeConfigEurekaSdConfigsTlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigEurekaSdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigEurekaSdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigEurekaSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -4412,11 +3829,7 @@ pub struct ScrapeConfigFileSdConfigs {
     /// Files must be mounted using Prometheus.ConfigMaps or Prometheus.Secrets.
     pub files: Vec<String>,
     /// RefreshInterval configures the refresh interval at which Prometheus will reload the content of the files.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
 }
 
@@ -4424,11 +3837,11 @@ pub struct ScrapeConfigFileSdConfigs {
 /// The private IP address is used by default, but may be changed to
 /// the public IP address with relabeling.
 /// See https://prometheus.io/docs/prometheus/latest/configuration/configuration/#gce_sd_config
-///
+/// 
 /// The GCE service discovery will load the Google Cloud credentials
 /// from the file specified by the GOOGLE_APPLICATION_CREDENTIALS environment variable.
 /// See https://cloud.google.com/kubernetes-engine/docs/tutorials/authenticating-to-cloud-platform
-///
+/// 
 /// A pre-requisite for using GCESDConfig is that a Secret containing valid
 /// Google Cloud credentials is mounted into the Prometheus or PrometheusAgent
 /// pod via the `.spec.secrets` field and that the GOOGLE_APPLICATION_CREDENTIALS
@@ -4447,18 +3860,10 @@ pub struct ScrapeConfigGceSdConfigs {
     /// The Google Cloud Project ID
     pub project: String,
     /// RefreshInterval configures the refresh interval at which Prometheus will re-read the instance list.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
     /// The tag separator is used to separate the tags on concatenation
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tagSeparator"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tagSeparator")]
     pub tag_separator: Option<String>,
     /// The zone of the scrape targets. If you need multiple zones use multiple GCESDConfigs.
     pub zone: String,
@@ -4478,23 +3883,15 @@ pub struct ScrapeConfigHetznerSdConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<ScrapeConfigHetznerSdConfigsBasicAuth>,
     /// Whether to enable HTTP2.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableHTTP2"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHTTP2")]
     pub enable_http2: Option<bool>,
     /// Configure whether HTTP requests follow HTTP 3xx redirects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
@@ -4507,33 +3904,20 @@ pub struct ScrapeConfigHetznerSdConfigs {
     pub port: Option<i64>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header:
-        Option<BTreeMap<String, ScrapeConfigHetznerSdConfigsProxyConnectHeader>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigHetznerSdConfigsProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
     /// The time after which the servers are refreshed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
     /// The Hetzner role of entities that should be discovered.
     pub role: ScrapeConfigHetznerSdConfigsRole,
@@ -4550,9 +3934,9 @@ pub struct ScrapeConfigHetznerSdConfigsAuthorization {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ScrapeConfigHetznerSdConfigsAuthorizationCredentials>,
     /// Defines the authentication type. The value is case-insensitive.
-    ///
+    /// 
     /// "Basic" is not a supported value.
-    ///
+    /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -4639,38 +4023,25 @@ pub struct ScrapeConfigHetznerSdConfigsOauth2 {
     pub client_secret: ScrapeConfigHetznerSdConfigsOauth2ClientSecret,
     /// `endpointParams` configures the HTTP parameters to append to the token
     /// URL.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header:
-        Option<BTreeMap<String, ScrapeConfigHetznerSdConfigsOauth2ProxyConnectHeader>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigHetznerSdConfigsOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -4779,39 +4150,23 @@ pub struct ScrapeConfigHetznerSdConfigsOauth2TlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ScrapeConfigHetznerSdConfigsOauth2TlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigHetznerSdConfigsOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigHetznerSdConfigsOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigHetznerSdConfigsOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -4992,39 +4347,23 @@ pub struct ScrapeConfigHetznerSdConfigsTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ScrapeConfigHetznerSdConfigsTlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigHetznerSdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigHetznerSdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigHetznerSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -5175,23 +4514,15 @@ pub struct ScrapeConfigHttpSdConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<ScrapeConfigHttpSdConfigsBasicAuth>,
     /// Whether to enable HTTP2.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableHTTP2"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHTTP2")]
     pub enable_http2: Option<bool>,
     /// Configure whether HTTP requests follow HTTP 3xx redirects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
@@ -5201,33 +4532,21 @@ pub struct ScrapeConfigHttpSdConfigs {
     pub oauth2: Option<ScrapeConfigHttpSdConfigsOauth2>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigHttpSdConfigsProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
     /// RefreshInterval configures the refresh interval at which Prometheus will re-query the
     /// endpoint to update the target list.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
     /// TLS configuration applying to the target HTTP endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
@@ -5244,9 +4563,9 @@ pub struct ScrapeConfigHttpSdConfigsAuthorization {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ScrapeConfigHttpSdConfigsAuthorizationCredentials>,
     /// Defines the authentication type. The value is case-insensitive.
-    ///
+    /// 
     /// "Basic" is not a supported value.
-    ///
+    /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -5334,38 +4653,25 @@ pub struct ScrapeConfigHttpSdConfigsOauth2 {
     pub client_secret: ScrapeConfigHttpSdConfigsOauth2ClientSecret,
     /// `endpointParams` configures the HTTP parameters to append to the token
     /// URL.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header:
-        Option<BTreeMap<String, ScrapeConfigHttpSdConfigsOauth2ProxyConnectHeader>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigHttpSdConfigsOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -5474,39 +4780,23 @@ pub struct ScrapeConfigHttpSdConfigsOauth2TlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ScrapeConfigHttpSdConfigsOauth2TlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigHttpSdConfigsOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigHttpSdConfigsOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigHttpSdConfigsOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -5672,39 +4962,23 @@ pub struct ScrapeConfigHttpSdConfigsTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ScrapeConfigHttpSdConfigsTlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigHttpSdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigHttpSdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigHttpSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -5851,23 +5125,15 @@ pub struct ScrapeConfigIonosSdConfigs {
     #[serde(rename = "datacenterID")]
     pub datacenter_id: String,
     /// Configure whether to enable HTTP2.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableHTTP2"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHTTP2")]
     pub enable_http2: Option<bool>,
     /// Configure whether the HTTP requests should follow HTTP 3xx redirects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
@@ -5876,33 +5142,20 @@ pub struct ScrapeConfigIonosSdConfigs {
     pub port: Option<i32>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header:
-        Option<BTreeMap<String, ScrapeConfigIonosSdConfigsProxyConnectHeader>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigIonosSdConfigsProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
     /// Refresh interval to re-read the list of resources.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
     /// TLS configuration to use when connecting to the IONOS API.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
@@ -5916,9 +5169,9 @@ pub struct ScrapeConfigIonosSdConfigsAuthorization {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ScrapeConfigIonosSdConfigsAuthorizationCredentials>,
     /// Defines the authentication type. The value is case-insensitive.
-    ///
+    /// 
     /// "Basic" is not a supported value.
-    ///
+    /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -5968,39 +5221,23 @@ pub struct ScrapeConfigIonosSdConfigsTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ScrapeConfigIonosSdConfigsTlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigIonosSdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigIonosSdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigIonosSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -6151,11 +5388,7 @@ pub struct ScrapeConfigKubernetesSdConfigs {
     /// Optional metadata to attach to discovered targets.
     /// It requires Prometheus >= v2.35.0 when using the `Pod` role and
     /// Prometheus >= v2.37.0 for `Endpoints` and `Endpointslice` roles.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "attachMetadata"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "attachMetadata")]
     pub attach_metadata: Option<ScrapeConfigKubernetesSdConfigsAttachMetadata>,
     /// Authorization header to use on every scrape request.
     /// Cannot be set at the same time as `basicAuth`, or `oauth2`.
@@ -6166,18 +5399,10 @@ pub struct ScrapeConfigKubernetesSdConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<ScrapeConfigKubernetesSdConfigsBasicAuth>,
     /// Whether to enable HTTP2.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableHTTP2"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHTTP2")]
     pub enable_http2: Option<bool>,
     /// Configure whether HTTP requests follow HTTP 3xx redirects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// Optional namespace discovery. If omitted, Prometheus discovers targets across all namespaces.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -6185,7 +5410,7 @@ pub struct ScrapeConfigKubernetesSdConfigs {
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
@@ -6195,23 +5420,14 @@ pub struct ScrapeConfigKubernetesSdConfigs {
     pub oauth2: Option<ScrapeConfigKubernetesSdConfigsOauth2>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header:
-        Option<BTreeMap<String, ScrapeConfigKubernetesSdConfigsProxyConnectHeader>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigKubernetesSdConfigsProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -6249,9 +5465,9 @@ pub struct ScrapeConfigKubernetesSdConfigsAuthorization {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ScrapeConfigKubernetesSdConfigsAuthorizationCredentials>,
     /// Defines the authentication type. The value is case-insensitive.
-    ///
+    /// 
     /// "Basic" is not a supported value.
-    ///
+    /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -6332,11 +5548,7 @@ pub struct ScrapeConfigKubernetesSdConfigsNamespaces {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub names: Option<Vec<String>>,
     /// Includes the namespace in which the Prometheus pod runs to the list of watched namespaces.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ownNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownNamespace")]
     pub own_namespace: Option<bool>,
 }
 
@@ -6354,38 +5566,25 @@ pub struct ScrapeConfigKubernetesSdConfigsOauth2 {
     pub client_secret: ScrapeConfigKubernetesSdConfigsOauth2ClientSecret,
     /// `endpointParams` configures the HTTP parameters to append to the token
     /// URL.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header:
-        Option<BTreeMap<String, ScrapeConfigKubernetesSdConfigsOauth2ProxyConnectHeader>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigKubernetesSdConfigsOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -6494,39 +5693,23 @@ pub struct ScrapeConfigKubernetesSdConfigsOauth2TlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ScrapeConfigKubernetesSdConfigsOauth2TlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigKubernetesSdConfigsOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigKubernetesSdConfigsOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigKubernetesSdConfigsOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -6731,39 +5914,23 @@ pub struct ScrapeConfigKubernetesSdConfigsTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ScrapeConfigKubernetesSdConfigsTlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigKubernetesSdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigKubernetesSdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigKubernetesSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -6914,30 +6081,18 @@ pub struct ScrapeConfigKumaSdConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "clientID")]
     pub client_id: Option<String>,
     /// Whether to enable HTTP2.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableHTTP2"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHTTP2")]
     pub enable_http2: Option<bool>,
     /// The time after which the monitoring assignments are refreshed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "fetchTimeout"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "fetchTimeout")]
     pub fetch_timeout: Option<String>,
     /// Configure whether HTTP requests follow HTTP 3xx redirects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
@@ -6947,32 +6102,20 @@ pub struct ScrapeConfigKumaSdConfigs {
     pub oauth2: Option<ScrapeConfigKumaSdConfigsOauth2>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigKumaSdConfigsProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
     /// The time to wait between polling update requests.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
     /// Address of the Kuma Control Plane's MADS xDS server.
     pub server: String,
@@ -6988,9 +6131,9 @@ pub struct ScrapeConfigKumaSdConfigsAuthorization {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ScrapeConfigKumaSdConfigsAuthorizationCredentials>,
     /// Defines the authentication type. The value is case-insensitive.
-    ///
+    /// 
     /// "Basic" is not a supported value.
-    ///
+    /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -7076,38 +6219,25 @@ pub struct ScrapeConfigKumaSdConfigsOauth2 {
     pub client_secret: ScrapeConfigKumaSdConfigsOauth2ClientSecret,
     /// `endpointParams` configures the HTTP parameters to append to the token
     /// URL.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header:
-        Option<BTreeMap<String, ScrapeConfigKumaSdConfigsOauth2ProxyConnectHeader>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigKumaSdConfigsOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -7216,39 +6346,23 @@ pub struct ScrapeConfigKumaSdConfigsOauth2TlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ScrapeConfigKumaSdConfigsOauth2TlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigKumaSdConfigsOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigKumaSdConfigsOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigKumaSdConfigsOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -7414,39 +6528,23 @@ pub struct ScrapeConfigKumaSdConfigsTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ScrapeConfigKumaSdConfigsTlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigKumaSdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigKumaSdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigKumaSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -7599,26 +6697,18 @@ pub struct ScrapeConfigLightSailSdConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<ScrapeConfigLightSailSdConfigsBasicAuth>,
     /// Configure whether to enable HTTP2.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableHTTP2"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHTTP2")]
     pub enable_http2: Option<bool>,
     /// Custom endpoint to be used.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
     /// Configure whether the HTTP requests should follow HTTP 3xx redirects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
@@ -7632,33 +6722,20 @@ pub struct ScrapeConfigLightSailSdConfigs {
     pub port: Option<i32>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header:
-        Option<BTreeMap<String, ScrapeConfigLightSailSdConfigsProxyConnectHeader>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigLightSailSdConfigsProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
     /// Refresh interval to re-read the list of instances.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
     /// The AWS region.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -7699,9 +6776,9 @@ pub struct ScrapeConfigLightSailSdConfigsAuthorization {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ScrapeConfigLightSailSdConfigsAuthorizationCredentials>,
     /// Defines the authentication type. The value is case-insensitive.
-    ///
+    /// 
     /// "Basic" is not a supported value.
-    ///
+    /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -7788,38 +6865,25 @@ pub struct ScrapeConfigLightSailSdConfigsOauth2 {
     pub client_secret: ScrapeConfigLightSailSdConfigsOauth2ClientSecret,
     /// `endpointParams` configures the HTTP parameters to append to the token
     /// URL.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header:
-        Option<BTreeMap<String, ScrapeConfigLightSailSdConfigsOauth2ProxyConnectHeader>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigLightSailSdConfigsOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -7928,39 +6992,23 @@ pub struct ScrapeConfigLightSailSdConfigsOauth2TlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ScrapeConfigLightSailSdConfigsOauth2TlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigLightSailSdConfigsOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigLightSailSdConfigsOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigLightSailSdConfigsOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -8143,39 +7191,23 @@ pub struct ScrapeConfigLightSailSdConfigsTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ScrapeConfigLightSailSdConfigsTlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigLightSailSdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigLightSailSdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigLightSailSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -8320,23 +7352,15 @@ pub struct ScrapeConfigLinodeSdConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub authorization: Option<ScrapeConfigLinodeSdConfigsAuthorization>,
     /// Whether to enable HTTP2.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableHTTP2"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHTTP2")]
     pub enable_http2: Option<bool>,
     /// Configure whether HTTP requests follow HTTP 3xx redirects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
@@ -8349,43 +7373,26 @@ pub struct ScrapeConfigLinodeSdConfigs {
     pub port: Option<i32>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header:
-        Option<BTreeMap<String, ScrapeConfigLinodeSdConfigsProxyConnectHeader>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigLinodeSdConfigsProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
     /// Time after which the linode instances are refreshed.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
     /// Optional region to filter on.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
     /// The string by which Linode Instance tags are joined into the tag label.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tagSeparator"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tagSeparator")]
     pub tag_separator: Option<String>,
     /// TLS configuration applying to the target HTTP endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
@@ -8399,9 +7406,9 @@ pub struct ScrapeConfigLinodeSdConfigsAuthorization {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ScrapeConfigLinodeSdConfigsAuthorizationCredentials>,
     /// Defines the authentication type. The value is case-insensitive.
-    ///
+    /// 
     /// "Basic" is not a supported value.
-    ///
+    /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -8438,38 +7445,25 @@ pub struct ScrapeConfigLinodeSdConfigsOauth2 {
     pub client_secret: ScrapeConfigLinodeSdConfigsOauth2ClientSecret,
     /// `endpointParams` configures the HTTP parameters to append to the token
     /// URL.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header:
-        Option<BTreeMap<String, ScrapeConfigLinodeSdConfigsOauth2ProxyConnectHeader>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigLinodeSdConfigsOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -8578,39 +7572,23 @@ pub struct ScrapeConfigLinodeSdConfigsOauth2TlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ScrapeConfigLinodeSdConfigsOauth2TlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigLinodeSdConfigsOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigLinodeSdConfigsOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigLinodeSdConfigsOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -8776,39 +7754,23 @@ pub struct ScrapeConfigLinodeSdConfigsTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ScrapeConfigLinodeSdConfigsTlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigLinodeSdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigLinodeSdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigLinodeSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -8947,20 +7909,20 @@ pub enum ScrapeConfigLinodeSdConfigsTlsConfigMinVersion {
 
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
-///
+/// 
 /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScrapeConfigMetricRelabelings {
     /// Action to perform based on the regex matching.
-    ///
+    /// 
     /// `Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.
     /// `DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.
-    ///
+    /// 
     /// Default: "Replace"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<ScrapeConfigMetricRelabelingsAction>,
     /// Modulus to take of the hash of the source label values.
-    ///
+    /// 
     /// Only applicable when the action is `HashMod`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub modulus: Option<i64>,
@@ -8969,7 +7931,7 @@ pub struct ScrapeConfigMetricRelabelings {
     pub regex: Option<String>,
     /// Replacement value against which a Replace action is performed if the
     /// regular expression matches.
-    ///
+    /// 
     /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replacement: Option<String>,
@@ -8979,29 +7941,21 @@ pub struct ScrapeConfigMetricRelabelings {
     /// The source labels select values from existing labels. Their content is
     /// concatenated using the configured Separator and matched against the
     /// configured regular expression.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
     pub source_labels: Option<Vec<String>>,
     /// Label to which the resulting string is written in a replacement.
-    ///
+    /// 
     /// It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,
     /// `KeepEqual` and `DropEqual` actions.
-    ///
+    /// 
     /// Regex capture groups are available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetLabel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
     pub target_label: Option<String>,
 }
 
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
-///
+/// 
 /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ScrapeConfigMetricRelabelingsAction {
@@ -9051,11 +8005,7 @@ pub enum ScrapeConfigMetricRelabelingsAction {
 pub struct ScrapeConfigNomadSdConfigs {
     /// The information to access the Nomad API. It is to be defined
     /// as the Nomad documentation requires.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowStale"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowStale")]
     pub allow_stale: Option<bool>,
     /// Authorization header to use on every scrape request.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -9064,25 +8014,17 @@ pub struct ScrapeConfigNomadSdConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<ScrapeConfigNomadSdConfigsBasicAuth>,
     /// Whether to enable HTTP2.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableHTTP2"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHTTP2")]
     pub enable_http2: Option<bool>,
     /// Configure whether HTTP requests follow HTTP 3xx redirects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub namespace: Option<String>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
@@ -9092,23 +8034,14 @@ pub struct ScrapeConfigNomadSdConfigs {
     pub oauth2: Option<ScrapeConfigNomadSdConfigsOauth2>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header:
-        Option<BTreeMap<String, ScrapeConfigNomadSdConfigsProxyConnectHeader>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigNomadSdConfigsProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -9116,20 +8049,12 @@ pub struct ScrapeConfigNomadSdConfigs {
     /// Duration is a valid time duration that can be parsed by Prometheus model.ParseDuration() function.
     /// Supported units: y, w, d, h, m, s, ms
     /// Examples: `30s`, `1m`, `1h20m15s`, `15d`
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub region: Option<String>,
     pub server: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tagSeparator"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tagSeparator")]
     pub tag_separator: Option<String>,
     /// TLS configuration applying to the target HTTP endpoint.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
@@ -9143,9 +8068,9 @@ pub struct ScrapeConfigNomadSdConfigsAuthorization {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ScrapeConfigNomadSdConfigsAuthorizationCredentials>,
     /// Defines the authentication type. The value is case-insensitive.
-    ///
+    /// 
     /// "Basic" is not a supported value.
-    ///
+    /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -9231,38 +8156,25 @@ pub struct ScrapeConfigNomadSdConfigsOauth2 {
     pub client_secret: ScrapeConfigNomadSdConfigsOauth2ClientSecret,
     /// `endpointParams` configures the HTTP parameters to append to the token
     /// URL.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header:
-        Option<BTreeMap<String, ScrapeConfigNomadSdConfigsOauth2ProxyConnectHeader>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigNomadSdConfigsOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -9371,39 +8283,23 @@ pub struct ScrapeConfigNomadSdConfigsOauth2TlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ScrapeConfigNomadSdConfigsOauth2TlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigNomadSdConfigsOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigNomadSdConfigsOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigNomadSdConfigsOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -9569,39 +8465,23 @@ pub struct ScrapeConfigNomadSdConfigsTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ScrapeConfigNomadSdConfigsTlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigNomadSdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigNomadSdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigNomadSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -9751,37 +8631,25 @@ pub struct ScrapeConfigOauth2 {
     pub client_secret: ScrapeConfigOauth2ClientSecret,
     /// `endpointParams` configures the HTTP parameters to append to the token
     /// URL.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
     pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -9890,39 +8758,23 @@ pub struct ScrapeConfigOauth2TlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ScrapeConfigOauth2TlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -10067,38 +8919,21 @@ pub enum ScrapeConfigOauth2TlsConfigMinVersion {
 pub struct ScrapeConfigOpenstackSdConfigs {
     /// Whether the service discovery should list all instances for all projects.
     /// It is only relevant for the 'instance' role and usually requires admin permissions.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allTenants"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allTenants")]
     pub all_tenants: Option<bool>,
     /// ApplicationCredentialID
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "applicationCredentialId"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "applicationCredentialId")]
     pub application_credential_id: Option<String>,
     /// The ApplicationCredentialID or ApplicationCredentialName fields are
     /// required if using an application credential to authenticate. Some providers
     /// allow you to create an application credential to authenticate rather than a
     /// password.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "applicationCredentialName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "applicationCredentialName")]
     pub application_credential_name: Option<String>,
     /// The applicationCredentialSecret field is required if using an application
     /// credential to authenticate.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "applicationCredentialSecret"
-    )]
-    pub application_credential_secret:
-        Option<ScrapeConfigOpenstackSdConfigsApplicationCredentialSecret>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "applicationCredentialSecret")]
+    pub application_credential_secret: Option<ScrapeConfigOpenstackSdConfigsApplicationCredentialSecret>,
     /// Availability of the endpoint to connect to.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub availability: Option<ScrapeConfigOpenstackSdConfigsAvailability>,
@@ -10107,19 +8942,11 @@ pub struct ScrapeConfigOpenstackSdConfigs {
     pub domain_id: Option<String>,
     /// At most one of domainId and domainName must be provided if using username
     /// with Identity V3. Otherwise, either are optional.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "domainName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "domainName")]
     pub domain_name: Option<String>,
     /// IdentityEndpoint specifies the HTTP endpoint that is required to work with
     /// the Identity API of the appropriate version.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "identityEndpoint"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "identityEndpoint")]
     pub identity_endpoint: Option<String>,
     /// Password for the Identity V2 and V3 APIs. Consult with your provider's
     /// control panel to discover your account's preferred method of authentication.
@@ -10136,18 +8963,10 @@ pub struct ScrapeConfigOpenstackSdConfigs {
     /// Some providers allow you to specify a ProjectName instead of the ProjectId.
     /// Some require both. Your provider's authentication policies will determine
     /// how these fields influence authentication.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "projectName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "projectName")]
     pub project_name: Option<String>,
     /// Refresh interval to re-read the instance list.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
     /// The OpenStack Region.
     pub region: String,
@@ -10240,39 +9059,23 @@ pub struct ScrapeConfigOpenstackSdConfigsTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ScrapeConfigOpenstackSdConfigsTlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigOpenstackSdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigOpenstackSdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigOpenstackSdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -10426,11 +9229,7 @@ pub struct ScrapeConfigOvhcloudSdConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub endpoint: Option<String>,
     /// Refresh interval to re-read the resources list.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
     /// Service of the targets to retrieve. Must be `VPS` or `DedicatedServer`.
     pub service: String,
@@ -10500,32 +9299,20 @@ pub struct ScrapeConfigPuppetDbsdConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "basicAuth")]
     pub basic_auth: Option<ScrapeConfigPuppetDbsdConfigsBasicAuth>,
     /// Configure whether to enable HTTP2.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableHTTP2"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHTTP2")]
     pub enable_http2: Option<bool>,
     /// Configure whether the HTTP requests should follow HTTP 3xx redirects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// Whether to include the parameters as meta labels.
     /// Note: Enabling this exposes parameters in the Prometheus UI and API. Make sure
     /// that you don't have secrets exposed as parameters if you enable this.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "includeParameters"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "includeParameters")]
     pub include_parameters: Option<bool>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
@@ -10538,23 +9325,14 @@ pub struct ScrapeConfigPuppetDbsdConfigs {
     pub port: Option<i32>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header:
-        Option<BTreeMap<String, ScrapeConfigPuppetDbsdConfigsProxyConnectHeader>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigPuppetDbsdConfigsProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -10563,11 +9341,7 @@ pub struct ScrapeConfigPuppetDbsdConfigs {
     /// https://puppet.com/docs/puppetdb/latest/api/query/v4/pql.html
     pub query: String,
     /// Refresh interval to re-read the list of resources.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
     /// TLS configuration to connect to the Puppet DB.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
@@ -10584,9 +9358,9 @@ pub struct ScrapeConfigPuppetDbsdConfigsAuthorization {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub credentials: Option<ScrapeConfigPuppetDbsdConfigsAuthorizationCredentials>,
     /// Defines the authentication type. The value is case-insensitive.
-    ///
+    /// 
     /// "Basic" is not a supported value.
-    ///
+    /// 
     /// Default: "Bearer"
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "type")]
     pub r#type: Option<String>,
@@ -10673,38 +9447,25 @@ pub struct ScrapeConfigPuppetDbsdConfigsOauth2 {
     pub client_secret: ScrapeConfigPuppetDbsdConfigsOauth2ClientSecret,
     /// `endpointParams` configures the HTTP parameters to append to the token
     /// URL.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "endpointParams"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "endpointParams")]
     pub endpoint_params: Option<BTreeMap<String, String>>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header:
-        Option<BTreeMap<String, ScrapeConfigPuppetDbsdConfigsOauth2ProxyConnectHeader>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigPuppetDbsdConfigsOauth2ProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
@@ -10813,39 +9574,23 @@ pub struct ScrapeConfigPuppetDbsdConfigsOauth2TlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ScrapeConfigPuppetDbsdConfigsOauth2TlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigPuppetDbsdConfigsOauth2TlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigPuppetDbsdConfigsOauth2TlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigPuppetDbsdConfigsOauth2TlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -11011,39 +9756,23 @@ pub struct ScrapeConfigPuppetDbsdConfigsTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ScrapeConfigPuppetDbsdConfigsTlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigPuppetDbsdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigPuppetDbsdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigPuppetDbsdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -11182,20 +9911,20 @@ pub enum ScrapeConfigPuppetDbsdConfigsTlsConfigMinVersion {
 
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
-///
+/// 
 /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
 pub struct ScrapeConfigRelabelings {
     /// Action to perform based on the regex matching.
-    ///
+    /// 
     /// `Uppercase` and `Lowercase` actions require Prometheus >= v2.36.0.
     /// `DropEqual` and `KeepEqual` actions require Prometheus >= v2.41.0.
-    ///
+    /// 
     /// Default: "Replace"
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub action: Option<ScrapeConfigRelabelingsAction>,
     /// Modulus to take of the hash of the source label values.
-    ///
+    /// 
     /// Only applicable when the action is `HashMod`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub modulus: Option<i64>,
@@ -11204,7 +9933,7 @@ pub struct ScrapeConfigRelabelings {
     pub regex: Option<String>,
     /// Replacement value against which a Replace action is performed if the
     /// regular expression matches.
-    ///
+    /// 
     /// Regex capture groups are available.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub replacement: Option<String>,
@@ -11214,29 +9943,21 @@ pub struct ScrapeConfigRelabelings {
     /// The source labels select values from existing labels. Their content is
     /// concatenated using the configured Separator and matched against the
     /// configured regular expression.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "sourceLabels"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "sourceLabels")]
     pub source_labels: Option<Vec<String>>,
     /// Label to which the resulting string is written in a replacement.
-    ///
+    /// 
     /// It is mandatory for `Replace`, `HashMod`, `Lowercase`, `Uppercase`,
     /// `KeepEqual` and `DropEqual` actions.
-    ///
+    /// 
     /// Regex capture groups are available.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "targetLabel"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "targetLabel")]
     pub target_label: Option<String>,
 }
 
 /// RelabelConfig allows dynamic rewriting of the label set for targets, alerts,
 /// scraped samples and remote write samples.
-///
+/// 
 /// More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 pub enum ScrapeConfigRelabelingsAction {
@@ -11291,30 +10012,18 @@ pub struct ScrapeConfigScalewaySdConfigs {
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "apiURL")]
     pub api_url: Option<String>,
     /// Whether to enable HTTP2.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "enableHTTP2"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "enableHTTP2")]
     pub enable_http2: Option<bool>,
     /// Configure whether HTTP requests follow HTTP 3xx redirects.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "followRedirects"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "followRedirects")]
     pub follow_redirects: Option<bool>,
     /// NameFilter specify a name filter (works as a LIKE) to apply on the server listing request.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "nameFilter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "nameFilter")]
     pub name_filter: Option<String>,
     /// `noProxy` is a comma-separated string that can contain IPs, CIDR notation, domain names
     /// that should be excluded from proxying. IP and domain names can
     /// contain port numbers.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "noProxy")]
     pub no_proxy: Option<String>,
@@ -11326,33 +10035,20 @@ pub struct ScrapeConfigScalewaySdConfigs {
     pub project_id: String,
     /// ProxyConnectHeader optionally specifies headers to send to
     /// proxies during CONNECT requests.
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyConnectHeader"
-    )]
-    pub proxy_connect_header:
-        Option<BTreeMap<String, ScrapeConfigScalewaySdConfigsProxyConnectHeader>>,
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyConnectHeader")]
+    pub proxy_connect_header: Option<BTreeMap<String, ScrapeConfigScalewaySdConfigsProxyConnectHeader>>,
     /// Whether to use the proxy configuration defined by environment variables (HTTP_PROXY, HTTPS_PROXY, and NO_PROXY).
-    ///
+    /// 
     /// It requires Prometheus >= v2.43.0 or Alertmanager >= 0.25.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "proxyFromEnvironment"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyFromEnvironment")]
     pub proxy_from_environment: Option<bool>,
     /// `proxyURL` defines the HTTP proxy server to use.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "proxyUrl")]
     pub proxy_url: Option<String>,
     /// Refresh interval to re-read the list of instances.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "refreshInterval"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "refreshInterval")]
     pub refresh_interval: Option<String>,
     /// Service of the targets to retrieve. Must be `Instance` or `Baremetal`.
     pub role: ScrapeConfigScalewaySdConfigsRole,
@@ -11360,11 +10056,7 @@ pub struct ScrapeConfigScalewaySdConfigs {
     #[serde(rename = "secretKey")]
     pub secret_key: ScrapeConfigScalewaySdConfigsSecretKey,
     /// TagsFilter specify a tag filter (a server needs to have all defined tags to be listed) to apply on the server listing request.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "tagsFilter"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "tagsFilter")]
     pub tags_filter: Option<Vec<String>>,
     /// TLS configuration to use on every scrape request
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "tlsConfig")]
@@ -11426,39 +10118,23 @@ pub struct ScrapeConfigScalewaySdConfigsTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ScrapeConfigScalewaySdConfigsTlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigScalewaySdConfigsTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigScalewaySdConfigsTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigScalewaySdConfigsTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -11625,39 +10301,23 @@ pub struct ScrapeConfigTlsConfig {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cert: Option<ScrapeConfigTlsConfigCert>,
     /// Disable target certificate validation.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "insecureSkipVerify"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "insecureSkipVerify")]
     pub insecure_skip_verify: Option<bool>,
     /// Secret containing the client key file for the targets.
     #[serde(default, skip_serializing_if = "Option::is_none", rename = "keySecret")]
     pub key_secret: Option<ScrapeConfigTlsConfigKeySecret>,
     /// Maximum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.41.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "maxVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "maxVersion")]
     pub max_version: Option<ScrapeConfigTlsConfigMaxVersion>,
     /// Minimum acceptable TLS version.
-    ///
+    /// 
     /// It requires Prometheus >= v2.35.0.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "minVersion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "minVersion")]
     pub min_version: Option<ScrapeConfigTlsConfigMinVersion>,
     /// Used to verify the hostname for the targets.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "serverName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "serverName")]
     pub server_name: Option<String>,
 }
 
@@ -11793,3 +10453,4 @@ pub enum ScrapeConfigTlsConfigMinVersion {
     #[serde(rename = "TLS13")]
     Tls13,
 }
+

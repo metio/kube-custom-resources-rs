@@ -4,42 +4,29 @@
 
 #[allow(unused_imports)]
 mod prelude {
-    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
     pub use kube::CustomResource;
-    pub use serde::{Deserialize, Serialize};
+    pub use serde::{Serialize, Deserialize};
     pub use std::collections::BTreeMap;
+    pub use k8s_openapi::apimachinery::pkg::apis::meta::v1::Condition;
 }
 use self::prelude::*;
 
 /// TemporalNamespaceSpec defines the desired state of Namespace.
 #[derive(CustomResource, Serialize, Deserialize, Clone, Debug, Default, PartialEq)]
-#[kube(
-    group = "temporal.io",
-    version = "v1beta1",
-    kind = "TemporalNamespace",
-    plural = "temporalnamespaces"
-)]
+#[kube(group = "temporal.io", version = "v1beta1", kind = "TemporalNamespace", plural = "temporalnamespaces")]
 #[kube(namespaced)]
 #[kube(status = "TemporalNamespaceStatus")]
 #[kube(schema = "disabled")]
-#[kube(derive = "Default")]
-#[kube(derive = "PartialEq")]
+#[kube(derive="Default")]
+#[kube(derive="PartialEq")]
 pub struct TemporalNamespaceSpec {
     /// The name of active Temporal Cluster.
     /// Only applicable if the namespace is a global namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "activeClusterName"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "activeClusterName")]
     pub active_cluster_name: Option<String>,
     /// AllowDeletion makes the controller delete the Temporal namespace if the
     /// CRD is deleted.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "allowDeletion"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "allowDeletion")]
     pub allow_deletion: Option<bool>,
     /// Archival is a per-namespace archival configuration.
     /// If not set, the default cluster configuration is used.
@@ -59,27 +46,15 @@ pub struct TemporalNamespaceSpec {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub description: Option<String>,
     /// IsGlobalNamespace defines whether the namespace is a global namespace.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "isGlobalNamespace"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "isGlobalNamespace")]
     pub is_global_namespace: Option<bool>,
     /// Namespace owner email.
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "ownerEmail"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "ownerEmail")]
     pub owner_email: Option<String>,
     /// RetentionPeriod to apply on closed workflow executions.
     #[serde(rename = "retentionPeriod")]
     pub retention_period: String,
-    #[serde(
-        default,
-        skip_serializing_if = "Option::is_none",
-        rename = "securityToken"
-    )]
+    #[serde(default, skip_serializing_if = "Option::is_none", rename = "securityToken")]
     pub security_token: Option<String>,
 }
 
@@ -145,3 +120,4 @@ pub struct TemporalNamespaceStatus {
     /// Conditions represent the latest available observations of the Namespace state.
     pub conditions: Vec<Condition>,
 }
+
