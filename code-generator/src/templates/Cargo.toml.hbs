@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: The kube-custom-resources-rs Authors
+# SPDX-License-Identifier: 0BSD
+
+[package]
+name = "kcr_{{group_name_snake_case}}"
+version = "9999.99.99"
+edition.workspace = true
+authors.workspace = true
+description.workspace = true
+homepage.workspace = true
+readme.workspace = true
+keywords.workspace = true
+categories.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[dependencies]
+schemars = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+k8s-openapi = { workspace = true }
+kube = { workspace = true }
+
+[dev-dependencies]
+k8s-openapi = { workspace = true, features = ["{{k8s_openapi_kubernetes_version}}"] }
+
+[package.metadata.docs.rs]
+features = ["k8s-openapi/{{k8s_openapi_kubernetes_version}}"]

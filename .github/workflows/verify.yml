@@ -1,10 +1,12 @@
 # SPDX-FileCopyrightText: The kube-custom-resources-rs Authors
 # SPDX-License-Identifier: 0BSD
 
-name: Verify Commits
+name: Verify code-generator
 on:
   pull_request:
     branches: [ main ]
+    paths:
+      - code-generator/**
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -19,35 +21,3 @@ jobs:
         uses: Swatinem/rust-cache@v2
       - name: Check Code Generator
         run: cargo check --package code-generator
-      - name: Check changed CRDs
-        run: |
-          all_good=yes
-          for feature in $(git diff --name-only origin/main -- ./kube-custom-resources-rs/src | grep --invert-match lib.rs | xargs --no-run-if-empty -I{} dirname {} | xargs --no-run-if-empty -I{} dirname {} | xargs --no-run-if-empty -I{} basename {} | sort --unique); do
-            echo "trying to test ${feature}"
-            if [ -f "./kube-custom-resources-rs/src/${feature}/mod.rs" ]; then
-              if ! ./code-generator/test-custom-resources.sh "${feature}"; then
-                all_good=no
-              fi
-            fi
-          done
-          if [ "${all_good}" == no ]; then
-            echo 'we encountered test failures'
-            exit 1
-          fi
-        env:
-          RUSTFLAGS: "--deny warnings"
-          K8S_OPENAPI_ENABLED_VERSION: "1.31"
-      - name: Check Dependency Updates
-        run: ./code-generator/test-custom-resources.sh about_k8s_io
-        if: ${{ github.actor == 'dependabot[bot]' }}
-        env:
-          RUSTFLAGS: "--deny warnings"
-          K8S_OPENAPI_ENABLED_VERSION: "1.31"
-      - name: Try-run Cargo Version Update
-        if: steps.commits.outputs.count > 0
-        run: sed -i -e '0,/edition/s/^version = .*/version = "${{ steps.release.outputs.version }}"/' kube-custom-resources-rs/Cargo.toml
-      - name: Print modified Cargo.toml
-        run: cat kube-custom-resources-rs/Cargo.toml
-      - uses: dtolnay/rust-toolchain@nightly
-      - uses: dtolnay/install@cargo-docs-rs
-      - run: cargo +nightly docs-rs --package kube-custom-resources-rs
